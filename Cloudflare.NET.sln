@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET", "src\Cloudflare.NET\Cloudflare.NET.csproj", "{454CEB33-511D-4B86-B128-D0356521232C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Cloudflare.NET-prompt.md = docs\Cloudflare.NET-prompt.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{454CEB33-511D-4B86-B128-D0356521232C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{454CEB33-511D-4B86-B128-D0356521232C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{454CEB33-511D-4B86-B128-D0356521232C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{454CEB33-511D-4B86-B128-D0356521232C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {662B2030-6A34-4D59-A378-38639F315156}
+	EndGlobalSection
+EndGlobal
