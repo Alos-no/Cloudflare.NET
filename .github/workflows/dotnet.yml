@@ -48,3 +48,5 @@ jobs:
         Cloudflare__AccountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         Cloudflare__ZoneId: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         Cloudflare__BaseDomain: ${{ secrets.CLOUDFLARE_BASE_DOMAIN }}
+        R2__AccessKeyId: ${{ secrets.R2_ACCESS_KEY_ID }}
+        R2__SecretAccessKey: ${{ secrets.R2_SECRET_ACCESS_KEY }}

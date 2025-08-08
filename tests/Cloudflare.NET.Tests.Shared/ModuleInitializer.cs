@@ -9,12 +9,18 @@ public static class ModuleInitializer
   [ModuleInitializer]
   public static void Initialize()
   {
-    // Add a scrubber for the API token to avoid leaking it in snapshots.
-    VerifierSettings.AddScrubber(text => text.Replace(TestConfiguration.CloudflareSettings.ApiToken, "---REDACTED-TOKEN---"));
+    var settings = TestConfiguration.CloudflareSettings;
 
-    // Add scrubbers for other secrets.
-    VerifierSettings.AddScrubber(text => text.Replace(TestConfiguration.CloudflareSettings.AccountId, "---REDACTED-ACCOUNT-ID---"));
-    VerifierSettings.AddScrubber(text => text.Replace(TestConfiguration.CloudflareSettings.ZoneId, "---REDACTED-ZONE-ID---"));
+    // Add a scrubber for the API token to avoid leaking it in snapshots, but only if the token exists.
+    if (!TestConfigurationValidator.IsSecretMissing(settings.ApiToken))
+      VerifierSettings.AddScrubber(text => text.Replace(settings.ApiToken, "---REDACTED-TOKEN---"));
+
+    // Add scrubbers for other secrets, but only if they exist.
+    if (!TestConfigurationValidator.IsSecretMissing(settings.AccountId))
+      VerifierSettings.AddScrubber(text => text.Replace(settings.AccountId, "---REDACTED-ACCOUNT-ID---"));
+
+    if (!TestConfigurationValidator.IsSecretMissing(settings.ZoneId))
+      VerifierSettings.AddScrubber(text => text.Replace(settings.ZoneId, "---REDACTED-ZONE-ID---"));
 
     // Use Argonaut for beautiful diffs.
     VerifyDiffPlex.Initialize();

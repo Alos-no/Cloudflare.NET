@@ -1,25 +1,31 @@
 # Cross-platform PowerShell script to configure user secrets for Cloudflare.NET test projects.
 # Requires PowerShell Core (pwsh) to be installed.
-# To run from the 'src/Cloudflare.NET' directory: pwsh -File ./scripts/setup-secrets.ps1
+# To run from the project root: pwsh -File ./scripts/setup-secrets.ps1
 
 # --- Configuration ---
 $ErrorActionPreference = "Stop"
 
 # Define paths relative to the script's own location ($PSScriptRoot) to make it robust.
-$CoreTestProject = Join-Path -Path $PSScriptRoot -ChildPath "..\tests\Cloudflare.NET.Tests\Cloudflare.NET.Tests.csproj"
-$AnalyticsTestProject = Join-Path -Path $PSScriptRoot -ChildPath "..\tests\Cloudflare.NET.Analytics.Tests\Cloudflare.NET.Analytics.Tests.csproj"
+$scriptRoot = $PSScriptRoot
+$CoreTestProject = Join-Path -Path $scriptRoot -ChildPath "..\tests\Cloudflare.NET.Tests\Cloudflare.NET.Tests.csproj"
+$AnalyticsTestProject = Join-Path -Path $scriptRoot -ChildPath "..\tests\Cloudflare.NET.Analytics.Tests\Cloudflare.NET.Analytics.Tests.csproj"
+$R2TestProject = Join-Path -Path $scriptRoot -ChildPath "..\tests\Cloudflare.NET.R2.Tests\Cloudflare.NET.R2.Tests.csproj"
 
 $projects = @(
     $CoreTestProject,
-    $AnalyticsTestProject
+    $AnalyticsTestProject,
+    $R2TestProject
 )
 
 # Define the secrets required, with user-friendly prompts.
-$secrets = @{
+# Using [ordered] ensures that the prompts appear in the exact order they are defined here.
+$secrets = [ordered]@{
     "Cloudflare:AccountId"   = "Enter your Cloudflare Account ID:";
-    "Cloudflare:ApiToken"    = "Enter your Cloudflare API Token (needs R2:Read/Write, DNS:Read/Write permissions):";
     "Cloudflare:ZoneId"      = "Enter the Cloudflare Zone ID to use for integration tests:";
     "Cloudflare:BaseDomain"  = "Enter the Base Domain associated with the Zone ID (e.g., example.com):";
+    "Cloudflare:ApiToken"    = "Enter your Cloudflare API Token (needs R2:Read/Write, DNS:Read/Write permissions):";
+    "R2:AccessKeyId"         = "Enter your Cloudflare R2 Access Key ID:";
+    "R2:SecretAccessKey"     = "Enter your Cloudflare R2 Secret Access Key:";
 }
 
 # --- Script Body ---
@@ -32,11 +38,12 @@ Write-Host ""
 $secretValues = @{}
 foreach ($key in $secrets.Keys) {
     $prompt = $secrets[$key]
-    # Check if the key is for the API token to handle it securely.
-    $isToken = $key -like "*ApiToken*"
+    # Determine if the secret is sensitive and should be read securely.
+    $isSensitive = $key -like "*ApiToken*" -or $key -like "*SecretAccessKey*"
     
-    if ($isToken) {
-        Write-Host $prompt -ForegroundColor Cyan
+    Write-Host $prompt -ForegroundColor Cyan
+    
+    if ($isSensitive) {
         $value = Read-Host -AsSecureString
     } else {
         $value = Read-Host -Prompt $prompt
@@ -54,14 +61,14 @@ foreach ($key in $secrets.Keys) {
 }
 
 Write-Host ""
-Write-Host "Secrets collected. Now applying to test projects..." -ForegroundColor Green
+Write-Host "Secrets collected. Now applying to all test projects..." -ForegroundColor Green
 Write-Host ""
 
 # 2. Initialize and set secrets for each project.
 foreach ($projectPath in $projects) {
     # Verify the project path exists before proceeding.
     if (-not (Test-Path -Path $projectPath -PathType Leaf)) {
-        Write-Error "Could not find project file at path: $projectPath"
+        Write-Warning "Could not find project file at path: $projectPath. Skipping."
         continue
     }
 
@@ -91,7 +98,7 @@ foreach ($projectPath in $projects) {
             }
             Write-Host "  - Set secret for '$key'."
         }
-        Write-Host "Project '$projectPath' configured successfully." -ForegroundColor Green
+        Write-Host "Project configured successfully." -ForegroundColor Green
         Write-Host ""
     }
     catch {
