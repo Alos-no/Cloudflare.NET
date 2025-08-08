@@ -1,0 +1,20 @@
+﻿{
+  capturedRequest: {
+    Method: POST,
+    Uri: https://api.cloudflare.com/client/v4/accounts/test-account-id/r2/buckets/test-bucket/domains/custom,
+    Content: {
+      Headers: {
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: {
+        domain: r2.example.com,
+        enabled: true,
+        zoneId: test-zone-id
+      }
+    }
+  },
+  result: {
+    Domain: r2.example.com,
+    Status: pending_validation
+  }
+}

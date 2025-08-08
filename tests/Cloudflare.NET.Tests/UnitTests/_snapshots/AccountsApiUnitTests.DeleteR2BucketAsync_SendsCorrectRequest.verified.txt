@@ -1,0 +1,4 @@
+﻿{
+  Method: DELETE,
+  Uri: https://api.cloudflare.com/client/v4/accounts/test-account-id/r2/buckets/test-bucket-to-delete
+}

@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Cloudflare.NET.R2</RootNamespace>
+
+    <!-- NuGet Package Properties -->
+    <PackageId>Cloudflare.NET.R2</PackageId>
+    <Version>1.0.0-beta1</Version>
+    <Authors>Alos</Authors>
+    <Description>An extension package for the Cloudflare.NET ecosystem that provides a strongly-typed client for Cloudflare R2 storage, leveraging the S3-compatible API.</Description>
+    <PackageTags>cloudflare;sdk;alos;r2;s3;storage;aws</PackageTags>
+    <RepositoryUrl>https://github.com/Alos-no/Cloudflare.NET</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This package will use the official AWS SDK for S3 operations. -->
+    <PackageReference Include="AWSSDK.S3" Version="4.0.6.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cloudflare.NET\Cloudflare.NET.csproj" />
+  </ItemGroup>
+</Project>

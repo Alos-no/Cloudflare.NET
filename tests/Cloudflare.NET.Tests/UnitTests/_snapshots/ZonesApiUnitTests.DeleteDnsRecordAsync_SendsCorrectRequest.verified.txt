@@ -1,0 +1,4 @@
+﻿{
+  Method: DELETE,
+  Uri: https://api.cloudflare.com/client/v4/zones/test-zone-id/dns_records/dns-record-to-delete-id
+}

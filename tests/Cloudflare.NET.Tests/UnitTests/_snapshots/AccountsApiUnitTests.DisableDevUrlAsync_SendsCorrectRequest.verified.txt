@@ -1,0 +1,12 @@
+﻿{
+  Method: PUT,
+  Uri: https://api.cloudflare.com/client/v4/accounts/test-account-id/r2/buckets/test-bucket/domains/managed,
+  Content: {
+    Headers: {
+      Content-Type: application/json; charset=utf-8
+    },
+    Value: {
+      enabled: false
+    }
+  }
+}

@@ -1,0 +1,61 @@
+﻿namespace Cloudflare.NET.R2.Tests.Fixtures;
+
+using Amazon.S3;
+using Accounts;
+using Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using NET.Tests.Shared.Fixtures;
+
+/// <summary>
+///   An xUnit class fixture that sets up a dependency injection container with the
+///   Cloudflare.NET.R2 SDK registered. This provides a configured IR2Client instance for use in
+///   integration tests.
+/// </summary>
+public class R2ClientTestFixture : IDisposable
+{
+  #region Properties & Fields - Non-Public
+
+  private readonly IServiceProvider _serviceProvider;
+
+  #endregion
+
+  #region Constructors
+
+  public R2ClientTestFixture()
+  {
+    var builder = Host.CreateApplicationBuilder();
+
+    // Register core services first so R2 can resolve its dependencies
+    builder.Services.AddCloudflareApiClient(TestConfiguration.Configuration);
+
+    // Use the SDK's own extension method to register the R2 client.
+    builder.Services.AddCloudflareR2Client(TestConfiguration.Configuration);
+
+    var host = builder.Build();
+    _serviceProvider = host.Services;
+  }
+
+  public void Dispose()
+  {
+    if (_serviceProvider is IHost host)
+      host.Dispose();
+    else if (_serviceProvider is IDisposable disposable)
+      disposable.Dispose();
+    GC.SuppressFinalize(this);
+  }
+
+  #endregion
+
+  #region Properties & Fields - Public
+
+  public IR2Client R2Client => _serviceProvider.GetRequiredService<IR2Client>();
+
+  /// <summary>Gets the fully configured Accounts API client from the DI container.</summary>
+  public IAccountsApi AccountsApi => _serviceProvider.GetRequiredService<ICloudflareApiClient>().Accounts;
+
+  /// <summary>Gets the underlying AWS S3 client configured for R2.</summary>
+  public IAmazonS3 S3Client => _serviceProvider.GetRequiredService<IAmazonS3>();
+
+  #endregion
+}

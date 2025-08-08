@@ -4,6 +4,35 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>Cloudflare.NET</RootNamespace>
+    <UserSecretsId>595f0707-156c-4a26-a044-ed1d71f66b96</UserSecretsId>
+
+    <!-- NuGet Package Properties -->
+    <PackageId>Cloudflare.NET</PackageId>
+    <Version>1.0.0-beta1</Version>
+    <Authors>Alos</Authors>
+    <Description>Unofficial .NET SDK for the Cloudflare API, providing a strongly-typed interface for Cloudflare services.</Description>
+    <PackageTags>cloudflare;api;sdk;alos;r2;firewall;dns</PackageTags>
+    <RepositoryUrl>https://github.com/Alos-no/Cloudflare.NET</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Analytics\" />
+  </ItemGroup>
+
 
 </Project>

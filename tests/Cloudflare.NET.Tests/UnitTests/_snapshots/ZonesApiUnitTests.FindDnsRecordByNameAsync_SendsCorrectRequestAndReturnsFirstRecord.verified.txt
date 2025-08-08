@@ -1,0 +1,15 @@
+﻿{
+  capturedRequest: {
+    Uri: {
+      Path: https://api.cloudflare.com/client/v4/zones/test-zone-id/dns_records,
+      Query: {
+        name: findme.example.com
+      }
+    }
+  },
+  result: {
+    Id: id-1,
+    Name: findme.example.com,
+    Type: A
+  }
+}

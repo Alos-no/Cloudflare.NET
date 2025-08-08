@@ -10,6 +10,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{02EA681E-C
 		docs\Cloudflare.NET-prompt.md = docs\Cloudflare.NET-prompt.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.Analytics", "src\Cloudflare.NET.Analytics\Cloudflare.NET.Analytics.csproj", "{C7F6A9B9-2333-714C-BCEE-839598CEC5B1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.Tests", "tests\Cloudflare.NET.Tests\Cloudflare.NET.Tests.csproj", "{8AD893A2-5040-BA99-5647-D97F0D970429}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.Analytics.Tests", "tests\Cloudflare.NET.Analytics.Tests\Cloudflare.NET.Analytics.Tests.csproj", "{7E436184-1F0A-519D-D5A0-3F55B7E50170}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.Tests.Shared", "tests\Cloudflare.NET.Tests.Shared\Cloudflare.NET.Tests.Shared.csproj", "{CDB5944A-365C-729D-34DA-EA0724005C55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.R2", "src\Cloudflare.NET.R2\Cloudflare.NET.R2.csproj", "{99A11516-07A4-419F-B8F3-071829883438}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.R2.Tests", "tests\Cloudflare.NET.R2.Tests\Cloudflare.NET.R2.Tests.csproj", "{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevOps", "DevOps", "{3E8398BB-7F85-445C-9C29-E002A1C97866}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		scripts\setup-secrets.ps1 = scripts\setup-secrets.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,9 +40,39 @@ Global
 		{454CEB33-511D-4B86-B128-D0356521232C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{454CEB33-511D-4B86-B128-D0356521232C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{454CEB33-511D-4B86-B128-D0356521232C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7F6A9B9-2333-714C-BCEE-839598CEC5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7F6A9B9-2333-714C-BCEE-839598CEC5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7F6A9B9-2333-714C-BCEE-839598CEC5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7F6A9B9-2333-714C-BCEE-839598CEC5B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AD893A2-5040-BA99-5647-D97F0D970429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AD893A2-5040-BA99-5647-D97F0D970429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AD893A2-5040-BA99-5647-D97F0D970429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AD893A2-5040-BA99-5647-D97F0D970429}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E436184-1F0A-519D-D5A0-3F55B7E50170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E436184-1F0A-519D-D5A0-3F55B7E50170}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E436184-1F0A-519D-D5A0-3F55B7E50170}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E436184-1F0A-519D-D5A0-3F55B7E50170}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB5944A-365C-729D-34DA-EA0724005C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB5944A-365C-729D-34DA-EA0724005C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB5944A-365C-729D-34DA-EA0724005C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB5944A-365C-729D-34DA-EA0724005C55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99A11516-07A4-419F-B8F3-071829883438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99A11516-07A4-419F-B8F3-071829883438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99A11516-07A4-419F-B8F3-071829883438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99A11516-07A4-419F-B8F3-071829883438}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8AD893A2-5040-BA99-5647-D97F0D970429} = {07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}
+		{7E436184-1F0A-519D-D5A0-3F55B7E50170} = {07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}
+		{CDB5944A-365C-729D-34DA-EA0724005C55} = {07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}
+		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E} = {07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {662B2030-6A34-4D59-A378-38639F315156}
