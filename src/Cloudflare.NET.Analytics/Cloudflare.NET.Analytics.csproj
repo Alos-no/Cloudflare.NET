@@ -20,6 +20,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Cloudflare.NET\Cloudflare.NET.csproj" />
   </ItemGroup>
 
