@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
       {
         ServiceURL           = endpointUrl,
         ForcePathStyle       = true,
-        AuthenticationRegion = r2Settings.Region,
+        AuthenticationRegion = r2Settings.Region
       };
 
       return new AmazonS3Client(r2Settings.AccessKeyId, r2Settings.SecretAccessKey, config);

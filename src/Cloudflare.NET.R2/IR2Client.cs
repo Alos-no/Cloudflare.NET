@@ -287,6 +287,7 @@ public interface IR2Client
   /// <exception cref="CloudflareR2OperationException">Thrown if URL generation fails for any part.</exception>
   IReadOnlyDictionary<int, string> CreatePresignedUploadPartsUrls(string bucketName, PresignedUploadPartsRequest request);
 
+#if false // There is currently a NRE in the AWS SDK when using CreatePresignedPostUrl with R2.
   /// <summary>Creates a presigned POST URL for browser-based uploads, with conditions.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="request">The parameters and conditions for the presigned POST.</param>
@@ -294,4 +295,5 @@ public interface IR2Client
   /// <exception cref="CloudflareR2OperationException">Thrown if URL generation fails.</exception>
   Task<PresignedPostResponse> CreatePresignedPostUrlAsync(string               bucketName,
                                                           PresignedPostRequest request);
+#endif
 }

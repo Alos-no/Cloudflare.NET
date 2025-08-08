@@ -85,8 +85,8 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
                                                     Stream            inputStream,
                                                     CancellationToken cancellationToken = default)
   {
-    // For a single operation, partial metrics on failure are zero.
-    var metrics = new R2Result();
+    // Assume 1 Class A op for the attempt.
+    var metrics = new R2Result(1);
 
     // Capture the length before the stream is consumed by the S3 client.
     var ingressBytes = inputStream.CanSeek ? inputStream.Length : -1; // -1 indicates unknown size
@@ -112,7 +112,10 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     catch (AmazonS3Exception ex)
     {
       logger.LogError(ex, "AWS SDK Error during single-part upload to s3://{Bucket}/{Key}", bucketName, objectKey);
-      // TODO: Consider using stream offset to compute how much has been transferred if the error happens mid-request
+      // If the stream is seekable, we can determine how many bytes were transferred before the error.
+      if (inputStream.CanSeek)
+        metrics = metrics with { IngressBytes = inputStream.Position };
+
       throw new CloudflareR2OperationException($"Single-part upload failed for s3://{bucketName}/{objectKey}", metrics, ex);
     }
   }
@@ -152,11 +155,10 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     var uploadId = initResult.Data;
 
     var uploadParts = new List<PartETag>();
+    long filePosition = 0;
 
     try
     {
-      long filePosition = 0;
-
       // Clamp the user-provided part size between the allowed R2 limits.
       var chunkSize = Math.Clamp(partSize.GetValueOrDefault(DefaultPartSize), R2MinPartSize, R2MaxPartSize);
 
@@ -185,11 +187,15 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         };
 
         // 2. Upload part (1 Class A op per part)
+        // We must account for the Class A operation *before* the call, so the attempt is
+        // always counted, even on failure.
+        totalMetrics += new R2Result(1);
         var partResponse = await s3Client.UploadPartAsync(uploadRequest, cancellationToken);
 
         uploadParts.Add(new PartETag(partResponse.PartNumber!.Value, partResponse.ETag));
 
-        totalMetrics += new R2Result(1, IngressBytes: currentPartSize);
+        // If the upload succeeds, we add the ingress bytes.
+        totalMetrics += new R2Result(IngressBytes: currentPartSize);
         filePosition += currentPartSize;
       }
 
@@ -205,6 +211,12 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     catch (Exception ex)
     {
       logger.LogError(ex, "Multipart upload failed for s3://{Bucket}/{Key}. Aborting...", bucketName, objectKey);
+      
+      // If the stream is seekable, we can calculate how many bytes of the *failing* part were transferred.
+      // `filePosition` holds the total size of successfully uploaded parts.
+      // `inputStream.Position` is where the stream reader stopped on error.
+      if (inputStream.CanSeek)
+        totalMetrics += new R2Result(IngressBytes: inputStream.Position - filePosition);
 
       // 4. Abort on failure (1 Class A op)
       totalMetrics += await AbortMultipartUploadAsync(bucketName, objectKey, uploadId, CancellationToken.None);
@@ -231,7 +243,8 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
                                                 Stream            outputStream,
                                                 CancellationToken cancellationToken = default)
   {
-    var metrics = new R2Result(ClassBOperations: 1); // Assume 1 Class B op for the attempt
+    // Assume 1 Class B op for the attempt.
+    var metrics = new R2Result(ClassBOperations: 1);
 
     try
     {
@@ -250,6 +263,10 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     catch (AmazonS3Exception ex)
     {
       logger.LogError(ex, "AWS SDK Error during download from s3://{Bucket}/{Key}", bucketName, objectKey);
+      // If the output stream is seekable, we can determine how many bytes were written before the error.
+      if (outputStream.CanSeek)
+        metrics = metrics with { EgressBytes = outputStream.Position };
+      
       throw new CloudflareR2OperationException($"Download failed for s3://{bucketName}/{objectKey}", metrics, ex);
     }
   }
@@ -376,11 +393,11 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
 
       try
       {
-        // A ListObjectsV2 call is one Class A operation.
+        // A ListObjectsV2 call is one Class A operation. Account for it before the call.
+        totalMetrics += new R2Result(1);
+        
         var listRequest  = new ListObjectsV2Request { BucketName = bucketName, ContinuationToken = continuationToken };
         var listResponse = await s3Client.ListObjectsV2Async(listRequest, cancellationToken);
-
-        totalMetrics += new R2Result(1);
 
         // The S3Objects list can be null if the response contains no objects.
         objectsInPage = listResponse.S3Objects ?? [];
@@ -466,9 +483,10 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       do
       {
         cancellationToken.ThrowIfCancellationRequested();
-
-        response     =  await s3Client.ListObjectsV2Async(request, cancellationToken);
+        
+        // Account for the Class A operation before the call.
         totalMetrics += new R2Result(1);
+        response     =  await s3Client.ListObjectsV2Async(request, cancellationToken);
 
         // The S3Objects list can be null if the response contains no objects.
         if (response.S3Objects is not null)
@@ -511,9 +529,10 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
 
       try
       {
+        // Account for the Class A operation before the call.
+        totalMetrics += new R2Result(1);
         var response = await s3Client.ListPartsAsync(request, cancellationToken);
 
-        totalMetrics += new R2Result(1);
         allParts.AddRange(response.Parts.Select(p => new ListedPart(p.PartNumber, p.ETag, p.Size, p.LastModified)));
 
         if (response.IsTruncated != true) // IsTruncated is type `bool?`
@@ -559,7 +578,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         foreach (var header in request.HeadersToSign)
           presignedUrlRequest.Headers[header.Key] = header.Value;
 
-      return s3Client.GetPreSignedURL(presignedUrlRequest);
+      return GeneratePresignedUrl(presignedUrlRequest);
     }
     catch (AmazonS3Exception ex)
     {
@@ -567,6 +586,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     }
   }
 
+#if false // There is currently a NRE in the AWS SDK when using CreatePresignedPostUrl with R2.
   /// <inheritdoc />
   public async Task<PresignedPostResponse> CreatePresignedPostUrlAsync(string               bucketName,
                                                                        PresignedPostRequest request)
@@ -602,6 +622,16 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     {
       throw new CloudflareR2OperationException("Failed to generate presigned POST URL.", new R2Result(), ex);
     }
+  }
+#endif
+
+  /// <summary>Generates a presigned URL using the underlying S3 client.</summary>
+  /// <param name="request">The request for the presigned URL.</param>
+  /// <returns>The generated presigned URL.</returns>
+  /// <remarks>This method is virtual to allow for mocking in unit tests.</remarks>
+  protected internal virtual string GeneratePresignedUrl(GetPreSignedUrlRequest request)
+  {
+    return s3Client.GetPreSignedURL(request);
   }
 
   /// <inheritdoc />
@@ -660,7 +690,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         foreach (var header in request.HeadersToSign)
           presignedUrlRequest.Headers[header.Key] = header.Value;
 
-      return s3Client.GetPreSignedURL(presignedUrlRequest);
+      return GeneratePresignedUrl(presignedUrlRequest);
     }
     catch (AmazonS3Exception ex)
     {
@@ -710,7 +740,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         presignedUrlRequest.Headers["Content-Length"] = contentLength.ToString();
 
         // Generate the signed URL for the current part and add it to the dictionary.
-        urls[partNumber] = s3Client.GetPreSignedURL(presignedUrlRequest);
+        urls[partNumber] = GeneratePresignedUrl(presignedUrlRequest);
       }
 
       return urls;
@@ -783,5 +813,5 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     }
   }
 
-  #endregion
+#endregion
 }

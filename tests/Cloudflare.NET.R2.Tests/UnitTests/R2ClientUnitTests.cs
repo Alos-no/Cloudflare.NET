@@ -1,9 +1,6 @@
 namespace Cloudflare.NET.R2.Tests.UnitTests;
 
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -12,19 +9,24 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Models;
 using Moq;
+using Moq.Protected;
 using NET.Tests.Shared.Fixtures;
 
 [Trait("Category", TestConstants.TestCategories.Unit)]
 public class R2ClientUnitTests
 {
-  #region Properties & Fields - Non-Public
-
-  private readonly Mock<IAmazonS3> _mockS3Client;
-  private readonly R2Client        _sut;
+  #region Constants & Statics
 
   // Constants from R2Client to use in tests.
   private const long R2MinPartSize = 5L * 1024 * 1024;
   private const long R2MaxPartSize = 5L * 1024 * 1024 * 1024;
+
+  #endregion
+
+  #region Properties & Fields - Non-Public
+
+  private readonly Mock<IAmazonS3> _mockS3Client;
+  private readonly R2Client        _sut;
 
   #endregion
 
@@ -62,10 +64,14 @@ public class R2ClientUnitTests
   }
 
   [Fact]
-  public async Task UploadSinglePartAsync_OnS3Error_ThrowsCloudflareR2OperationException()
+  public async Task UploadSinglePartAsync_OnS3Error_ThrowsWithCorrectMetrics()
   {
     // Arrange
-    using var stream = new MemoryStream(new byte[1024]);
+    var mockStream = new Mock<MemoryStream> { CallBase = true };
+    mockStream.Object.Write(new byte[1024], 0, 1024);
+    // Simulate that the SDK read 512 bytes before failing.
+    mockStream.Object.Position = 512;
+
     var s3Exception = new AmazonS3Exception("Access Denied", ErrorType.Sender, "AccessDenied", "reqid", HttpStatusCode.Forbidden);
 
     _mockS3Client
@@ -73,13 +79,15 @@ public class R2ClientUnitTests
       .ThrowsAsync(s3Exception);
 
     // Act
-    var action = () => _sut.UploadSinglePartAsync("bucket", "key", stream);
+    var action = () => _sut.UploadSinglePartAsync("bucket", "key", mockStream.Object);
 
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
     ex.Which.InnerException.Should().Be(s3Exception);
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(0); // The operation failed, but the attempt is not counted here.
-    ex.Which.PartialMetrics.IngressBytes.Should().Be(0);
+    // The operation attempt should always be counted.
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+    // The partial ingress should be captured from the stream's position.
+    ex.Which.PartialMetrics.IngressBytes.Should().Be(512);
   }
 
   [Fact]
@@ -147,8 +155,8 @@ public class R2ClientUnitTests
   public async Task UploadMultipartAsync_WhenInitiateFails_ThrowsCloudflareR2OperationException()
   {
     // Arrange
-    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
-    var s3Exception = new AmazonS3Exception("Initiate Failed");
+    using var stream      = new MemoryStream(new byte[60 * 1024 * 1024]);
+    var       s3Exception = new AmazonS3Exception("Initiate Failed");
 
     _mockS3Client
       .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
@@ -167,16 +175,28 @@ public class R2ClientUnitTests
   public async Task UploadMultipartAsync_WhenPartUploadFails_AbortsAndThrows()
   {
     // Arrange
-    using var stream   = new MemoryStream(new byte[60 * 1024 * 1024]);
-    var       uploadId = "test-upload-id";
+    var mockStream = new Mock<MemoryStream> { CallBase = true };
+    mockStream.Object.Write(new byte[60 * 1024 * 1024], 0, 60 * 1024 * 1024);
+    // Simulate that the SDK read 1MB into the failing part before erroring.
+    // The default part size is 50MB, so the position will be 50MB (part 1) + 1MB (failed part 2).
+    mockStream.SetupGet(s => s.Position).Returns(50 * 1024 * 1024 + 1 * 1024 * 1024);
+    mockStream.Object.Position = 0; // Reset for actual test.
+
+    var uploadId    = "test-upload-id";
     var s3Exception = new AmazonS3Exception("Part Upload Failed");
 
     _mockS3Client
       .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
       .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = uploadId });
 
+    // First part succeeds.
     _mockS3Client
-      .Setup(c => c.UploadPartAsync(It.IsAny<UploadPartRequest>(), It.IsAny<CancellationToken>()))
+      .Setup(c => c.UploadPartAsync(It.Is<UploadPartRequest>(r => r.PartNumber == 1), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new UploadPartResponse { PartNumber = 1, ETag = "etag-1" });
+
+    // Second part fails.
+    _mockS3Client
+      .Setup(c => c.UploadPartAsync(It.Is<UploadPartRequest>(r => r.PartNumber == 2), It.IsAny<CancellationToken>()))
       .ThrowsAsync(s3Exception);
 
     _mockS3Client
@@ -184,25 +204,27 @@ public class R2ClientUnitTests
       .ReturnsAsync(new AbortMultipartUploadResponse());
 
     // Act
-    var action = () => _sut.UploadMultipartAsync("bucket", "key", stream, null);
+    var action = () => _sut.UploadMultipartAsync("bucket", "key", mockStream.Object, null);
 
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
     ex.Which.InnerException.Should().Be(s3Exception);
-    // 1 (init) + 1 (failed part) + 1 (abort)
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(3);
+    // 1 (init) + 1 (successful part) + 1 (failed part) + 1 (abort)
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(4);
+    // 50MB (successful part 1) + 1MB (partial ingress from failed part 2)
+    ex.Which.PartialMetrics.IngressBytes.Should().Be(50 * 1024 * 1024 + 1 * 1024 * 1024);
     _mockS3Client.Verify(c => c.AbortMultipartUploadAsync(
-      It.Is<AbortMultipartUploadRequest>(r => r.UploadId == uploadId), It.IsAny<CancellationToken>()), Times.Once);
+                           It.Is<AbortMultipartUploadRequest>(r => r.UploadId == uploadId), It.IsAny<CancellationToken>()), Times.Once);
   }
 
   [Fact]
   public async Task UploadMultipartAsync_WithTooSmallPartSize_ClampsToMin()
   {
     // Arrange
-    var       fileSize = 60 * 1024 * 1024;
-    using var stream   = new MemoryStream(new byte[fileSize]);
-    var       uploadId = "test-upload-id";
-    var capturedRequests = new List<UploadPartRequest>();
+    var       fileSize         = 60 * 1024 * 1024;
+    using var stream           = new MemoryStream(new byte[fileSize]);
+    var       uploadId         = "test-upload-id";
+    var       capturedRequests = new List<UploadPartRequest>();
 
     _mockS3Client
       .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
@@ -224,20 +246,29 @@ public class R2ClientUnitTests
   }
 
   [Fact]
-  public async Task DownloadFileAsync_WhenObjectDoesNotExist_ThrowsCloudflareR2OperationException()
+  public async Task DownloadFileAsync_OnS3Error_ThrowsWithCorrectMetrics()
   {
     // Arrange
+    var mockStream = new Mock<MemoryStream> { CallBase = true };
+    // Simulate that we wrote 256 bytes to the output stream before it failed.
+    mockStream.SetupGet(s => s.Position).Returns(256);
+    mockStream.Object.Position = 0; // Reset for test.
+
+    var s3Exception = new AmazonS3Exception("Network Error", ErrorType.Receiver, "NetworkError", "reqid", HttpStatusCode.ServiceUnavailable);
     _mockS3Client
       .Setup(c => c.GetObjectAsync(It.IsAny<GetObjectRequest>(), It.IsAny<CancellationToken>()))
-      .ThrowsAsync(new AmazonS3Exception("Not Found", ErrorType.Sender, "NoSuchKey", "reqid", HttpStatusCode.NotFound));
+      .ThrowsAsync(s3Exception);
 
     // Act
-    var action = async () => await _sut.DownloadFileAsync("bucket", "non-existent-key", "some-path");
+    var action = async () => await _sut.DownloadFileAsync("bucket", "key", mockStream.Object);
 
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
     ex.Which.InnerException.Should().BeOfType<AmazonS3Exception>();
+    // The operation attempt should always be counted.
     ex.Which.PartialMetrics.ClassBOperations.Should().Be(1);
+    // The partial egress should be captured from the stream's position.
+    ex.Which.PartialMetrics.EgressBytes.Should().Be(256);
   }
 
   [Fact]
@@ -378,7 +409,8 @@ public class R2ClientUnitTests
 
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2ListException<string>>();
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(0);
+    // The cost of the single failed list attempt should be counted.
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
     ex.Which.PartialData.Should().BeEmpty();
   }
 
@@ -456,7 +488,7 @@ public class R2ClientUnitTests
 
 
   [Fact]
-  public async Task ListPartsAsync_OnFailure_ThrowsWithPartialData()
+  public async Task ListPartsAsync_OnFailure_ThrowsWithPartialDataAndCorrectMetrics()
   {
     // Arrange
     var uploadId   = "test-upload-id";
@@ -473,7 +505,64 @@ public class R2ClientUnitTests
     var ex = await action.Should().ThrowAsync<CloudflareR2ListException<ListedPart>>();
     ex.Which.PartialData.Should().HaveCount(10);
     ex.Which.PartialData.First().PartNumber.Should().Be(1);
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+    // 1 for the successful call, 1 for the failed attempt.
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(2);
+  }
+
+  [Fact]
+  public void CreatePresignedPutUrl_OnS3Error_ThrowsCloudflareR2OperationException()
+  {
+    // Arrange
+    var s3Exception = new AmazonS3Exception("Presigning failed");
+    var request     = new PresignedPutRequest("key", TimeSpan.FromMinutes(5), 1024, "text/plain");
+
+    // We mock the R2Client itself to override the virtual URL generation method.
+    var mockLogger   = new Mock<ILogger<R2Client>>();
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLogger.Object, mockS3Client.Object) { CallBase = true };
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Throws(s3Exception);
+
+    var sut = mockR2Client.Object;
+
+    // Act
+    var action = () => sut.CreatePresignedPutUrl("bucket", request);
+
+    // Assert
+    var ex = action.Should().Throw<CloudflareR2OperationException>().Which;
+    ex.InnerException.Should().Be(s3Exception);
+    ex.Message.Should().Be("Failed to generate presigned PUT URL.");
+  }
+
+  [Fact]
+  public void CreatePresignedUploadPartUrl_OnS3Error_ThrowsCloudflareR2OperationException()
+  {
+    // Arrange
+    var s3Exception = new AmazonS3Exception("Presigning failed");
+    var request     = new PresignedUploadPartRequest("key", "upload-id", 1, TimeSpan.FromMinutes(5), 1024, "application/octet-stream");
+
+    // We mock the R2Client itself to override the virtual URL generation method.
+    var mockLogger   = new Mock<ILogger<R2Client>>();
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLogger.Object, mockS3Client.Object) { CallBase = true };
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Throws(s3Exception);
+
+    var sut = mockR2Client.Object;
+
+    // Act
+    var action = () => sut.CreatePresignedUploadPartUrl("bucket", request);
+
+    // Assert
+    var ex = action.Should().Throw<CloudflareR2OperationException>().Which;
+    ex.InnerException.Should().Be(s3Exception);
+    ex.Message.Should().Be("Failed to generate presigned part URL.");
   }
 
   [Fact]
@@ -481,24 +570,29 @@ public class R2ClientUnitTests
   {
     // Arrange
     var s3Exception = new AmazonS3Exception("Presigning failed");
-    var request = new PresignedUploadPartsRequest("bucket", "key", TimeSpan.FromMinutes(5),
+    var request = new PresignedUploadPartsRequest("key", "upload-id", TimeSpan.FromMinutes(5),
                                                   new Dictionary<int, long> { { 1, 1024 } }, "application/octet-stream");
 
-    // This setup uses a concrete client to test the exception wrapping logic.
-    var mockS3Config  = new AmazonS3Config { ServiceURL = "https://dummy.r2.dev" };
-    var mockS3Client  = new Mock<AmazonS3Client>("accessKey", "secretKey", mockS3Config);
-    var mockLogger    = new Mock<ILogger<R2Client>>();
-    var sutWithRealS3 = new R2Client(mockLogger.Object, mockS3Client.Object);
+    // We mock the R2Client itself to override the virtual URL generation method.
+    var mockLogger = new Mock<ILogger<R2Client>>();
+    // The mock S3 client is still needed for the R2Client constructor, but its methods won't be called by the SUT.
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLogger.Object, mockS3Client.Object) { CallBase = true };
 
-    mockS3Client
-      .Setup(c => c.GetPreSignedURL(It.IsAny<GetPreSignedUrlRequest>()))
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
       .Throws(s3Exception);
 
+    var sut = mockR2Client.Object;
+
     // Act
-    var action = () => sutWithRealS3.CreatePresignedUploadPartsUrls("bucket", request);
+    var action = () => sut.CreatePresignedUploadPartsUrls("bucket", request);
 
     // Assert
-    action.Should().Throw<CloudflareR2OperationException>().WithInnerException<AmazonS3Exception>();
+    var ex = action.Should().Throw<CloudflareR2OperationException>().Which;
+    ex.InnerException.Should().Be(s3Exception);
+    ex.Message.Should().Be($"Failed to generate one or more presigned part URLs for upload {request.UploadId}.");
   }
 
   #endregion

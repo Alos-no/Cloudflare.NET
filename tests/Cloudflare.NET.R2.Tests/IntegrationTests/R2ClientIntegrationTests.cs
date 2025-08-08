@@ -370,7 +370,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
       // Assert
       var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
       ex.Which.InnerException.Should().BeOfType<AmazonS3Exception>()
-        .Which.Message.Should().Contain("InvalidPart"); // R2/S3 specific error message
+        .Which.ErrorCode.Should().Contain("InvalidPart"); // R2/S3 specific error message
     }
     finally
     {
@@ -408,6 +408,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     listResult.Data.Should().ContainSingle().Which.Size.Should().Be(tempFile.FileSize);
   }
 
+#if false // There is currently a NRE in the AWS SDK when using CreatePresignedPostUrl with R2.
   [IntegrationTest]
   public async Task CanGenerateAndUsePresignedPostUrl()
   {
@@ -447,6 +448,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     var listResult = await _sut.ListObjectsAsync(_bucketName, key);
     listResult.Data.Should().ContainSingle().Which.Size.Should().Be(tempFile.FileSize);
   }
+#endif
 
-  #endregion
+#endregion
 }
