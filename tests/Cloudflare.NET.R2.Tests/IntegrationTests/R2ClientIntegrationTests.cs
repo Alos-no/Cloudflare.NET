@@ -115,7 +115,8 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
 
     // 6. Delete single object
     var deleteResult = await _sut.DeleteObjectAsync(_bucketName, smallFileKey);
-    deleteResult.ClassAOperations.Should().Be(1);
+    // DeleteObject is a free operation.
+    deleteResult.ClassAOperations.Should().Be(0);
 
     // 7. Verify deletion
     var listAfterDeleteResult = await _sut.ListObjectsAsync(_bucketName, "lifecycle/");
@@ -229,7 +230,8 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     var deleteResult = await _sut.DeleteObjectsAsync(_bucketName, keys);
 
     // Assert
-    deleteResult.ClassAOperations.Should().Be(1);
+    // DeleteObjects is a free operation.
+    deleteResult.ClassAOperations.Should().Be(0);
     var listResult = await _sut.ListObjectsAsync(_bucketName, "delete-batch-");
     listResult.Data.Should().BeEmpty();
   }
@@ -274,7 +276,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     var clearResult = await _sut.ClearBucketAsync(_bucketName);
 
     // Assert
-    clearResult.ClassAOperations.Should().BeGreaterThanOrEqualTo(2); // At least one list and one delete for each page
+    clearResult.ClassAOperations.Should().Be(1); // One list operation, deletes are free
     var listResult = await _sut.ListObjectsAsync(_bucketName, null);
     listResult.Data.Should().BeEmpty();
   }

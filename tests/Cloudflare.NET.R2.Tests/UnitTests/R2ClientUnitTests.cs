@@ -209,8 +209,8 @@ public class R2ClientUnitTests
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
     ex.Which.InnerException.Should().Be(s3Exception);
-    // 1 (init) + 1 (successful part) + 1 (failed part) + 1 (abort)
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(4);
+    // 1 (init) + 1 (successful part) + 1 (failed part) + 0 (free abort)
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(3);
     // 50MB (successful part 1) + 1MB (partial ingress from failed part 2)
     ex.Which.PartialMetrics.IngressBytes.Should().Be(50 * 1024 * 1024 + 1 * 1024 * 1024);
     _mockS3Client.Verify(c => c.AbortMultipartUploadAsync(
@@ -286,7 +286,8 @@ public class R2ClientUnitTests
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
     ex.Which.InnerException.Should().Be(s3Exception);
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+    // Delete is a free operation, so the failed attempt should not count as a Class A op.
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(0);
   }
 
   [Fact]
@@ -325,7 +326,8 @@ public class R2ClientUnitTests
     capturedRequests.Count.Should().Be(2);
     capturedRequests[0].Objects.Count.Should().Be(1000);
     capturedRequests[1].Objects.Count.Should().Be(500);
-    result.ClassAOperations.Should().Be(2);
+    // DeleteObjects is considered a free operation.
+    result.ClassAOperations.Should().Be(0);
   }
 
   [Fact]
@@ -347,7 +349,8 @@ public class R2ClientUnitTests
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2BatchException<string>>();
     ex.Which.FailedItems.Should().ContainSingle().Which.Should().Be("key-fail");
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+    // DeleteObjects is now considered a free operation.
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(0);
   }
 
   [Fact]
@@ -369,7 +372,8 @@ public class R2ClientUnitTests
     // Assert
     var ex = await action.Should().ThrowAsync<CloudflareR2BatchException<string>>();
     ex.Which.FailedItems.Should().ContainSingle().Which.Should().Be("key-fail");
-    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+    // DeleteObjects is considered a free operation.
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(0);
   }
 
   [Fact]
@@ -393,7 +397,8 @@ public class R2ClientUnitTests
     // Assert
     _mockS3Client.Verify(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
-    result.ClassAOperations.Should().Be(4); // 2 lists + 2 deletes
+    // 2 lists (Class A) + 2 free deletes
+    result.ClassAOperations.Should().Be(2);
   }
 
   [Fact]
@@ -425,7 +430,7 @@ public class R2ClientUnitTests
 
     _mockS3Client
       .Setup(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()))
-      .ThrowsAsync(new CloudflareR2BatchException<string>("delete failed", ["key-5"], new R2Result(1), new Exception()));
+      .ThrowsAsync(new CloudflareR2BatchException<string>("delete failed", ["key-5"], new R2Result(0), new Exception()));
 
 
     // Act
@@ -448,7 +453,7 @@ public class R2ClientUnitTests
 
     // This exception indicates all 10 keys in the batch failed.
     var batchException = new CloudflareR2BatchException<string>(
-      "delete failed", keys.Select(k => k.Key).ToList(), new R2Result(1), new Exception());
+      "delete failed", keys.Select(k => k.Key).ToList(), new R2Result(0), new Exception());
     _mockS3Client
       .Setup(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()))
       .ThrowsAsync(batchException);

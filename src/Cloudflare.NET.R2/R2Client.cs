@@ -218,7 +218,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       if (inputStream.CanSeek)
         totalMetrics += new R2Result(IngressBytes: inputStream.Position - filePosition);
 
-      // 4. Abort on failure (1 Class A op)
+      // 4. Abort on failure (Free operation, but we still perform it)
       totalMetrics += await AbortMultipartUploadAsync(bucketName, objectKey, uploadId, CancellationToken.None);
 
       throw new CloudflareR2OperationException($"Multipart upload failed for s3://{bucketName}/{objectKey} and was aborted.",
@@ -274,7 +274,8 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
   /// <inheritdoc />
   public async Task<R2Result> DeleteObjectAsync(string bucketName, string objectKey, CancellationToken cancellationToken = default)
   {
-    var metrics = new R2Result(1); // Assume 1 Class A op for the attempt
+    // According to documentation, DeleteObject is a free operation.
+    var metrics = new R2Result();
 
     try
     {
@@ -284,7 +285,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       await s3Client.DeleteObjectAsync(request, cancellationToken);
       logger.LogDebug("Successfully deleted s3://{Bucket}/{Key}.", bucketName, objectKey);
 
-      return new R2Result(1);
+      return metrics;
     }
     catch (AmazonS3Exception ex)
     {
@@ -322,8 +323,8 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
 
       try
       {
-        // A single DeleteObjects request is one Class A operation, regardless of the number of keys (up to 1000).
-        totalMetrics += new R2Result(1);
+        // DeleteObjects is free.
+        totalMetrics += new R2Result();
 
         var response = await s3Client.DeleteObjectsAsync(deleteRequest, cancellationToken);
 
@@ -790,7 +791,8 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
                                                         string            uploadId,
                                                         CancellationToken cancellationToken = default)
   {
-    var metrics = new R2Result(1);
+    // According to the CF documentation, AbortMultipartUpload is a free operation.
+    var metrics = new R2Result();
 
     try
     {
