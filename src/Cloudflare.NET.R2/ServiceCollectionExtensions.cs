@@ -15,14 +15,30 @@ public static class ServiceCollectionExtensions
 {
   #region Methods
 
-  /// <summary>Registers the IR2Client and its dependencies with the service collection.</summary>
+  /// <summary>
+  ///   Registers the IR2Client and its dependencies using a configuration section. This is a
+  ///   convenience method that binds to the "R2" section of the configuration.
+  /// </summary>
   /// <param name="services">The IServiceCollection to add the services to.</param>
   /// <param name="configuration">The application configuration, used to bind R2 settings.</param>
   /// <returns>The IServiceCollection so that additional calls can be chained.</returns>
   public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, IConfiguration configuration)
   {
+    return services.AddCloudflareR2Client(options => configuration.GetSection("R2").Bind(options));
+  }
+
+
+  /// <summary>
+  ///   Registers the IR2Client and its dependencies, allowing for fine-grained programmatic
+  ///   configuration.
+  /// </summary>
+  /// <param name="services">The IServiceCollection to add the services to.</param>
+  /// <param name="configureOptions">An action to configure the <see cref="R2Settings" />.</param>
+  /// <returns>The IServiceCollection so that additional calls can be chained.</returns>
+  public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, Action<R2Settings> configureOptions)
+  {
     // Bind the R2 settings from the "R2" configuration section.
-    services.Configure<R2Settings>(configuration.GetSection("R2"));
+    services.Configure(configureOptions);
 
     // Register the AmazonS3Client as a singleton, configured specifically for Cloudflare R2.
     services.AddSingleton<IAmazonS3>(sp =>

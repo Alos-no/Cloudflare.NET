@@ -13,7 +13,11 @@ public static class ServiceCollectionExtensions
 {
   #region Methods
 
-  /// <summary>Registers the ICloudflareApiClient and its dependencies with the service collection.</summary>
+  /// <summary>
+  ///   Registers the ICloudflareApiClient and its dependencies using a configuration
+  ///   section. This is a convenience method that binds to the "Cloudflare" section of the
+  ///   configuration.
+  /// </summary>
   /// <param name="services">The IServiceCollection to add the services to.</param>
   /// <param name="configuration">The application configuration.</param>
   /// <returns>The IServiceCollection so that additional calls can be chained.</returns>
@@ -21,8 +25,25 @@ public static class ServiceCollectionExtensions
     this IServiceCollection services,
     IConfiguration          configuration)
   {
-    // Bind the options from the "Cloudflare" section of appsettings.json
-    services.Configure<CloudflareApiOptions>(configuration.GetSection("Cloudflare"));
+    // This overload is for convenience. It finds the "Cloudflare" section and uses it
+    // to configure the options.
+    return services.AddCloudflareApiClient(options => configuration.GetSection("Cloudflare").Bind(options));
+  }
+
+
+  /// <summary>
+  ///   Registers the ICloudflareApiClient and its dependencies, allowing for fine-grained
+  ///   programmatic configuration.
+  /// </summary>
+  /// <param name="services">The IServiceCollection to add the services to.</param>
+  /// <param name="configureOptions">An action to configure the <see cref="CloudflareApiOptions" />.</param>
+  /// <returns>The IServiceCollection so that additional calls can be chained.</returns>
+  public static IServiceCollection AddCloudflareApiClient(this IServiceCollection services,
+                                                          Action<CloudflareApiOptions>
+                                                            configureOptions)
+  {
+    // Configure the options using the provided delegate.
+    services.Configure(configureOptions);
 
     // Register the authentication handler as a transient service.
     services.AddTransient<AuthenticationHandler>();

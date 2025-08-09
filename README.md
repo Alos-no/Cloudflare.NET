@@ -139,17 +139,3 @@ To adhere to the principle of least privilege, create a Cloudflare API token wit
 | **User API-tokens** | User | **Read** | Build applications that can inspect their own token permissions. |
 
 > **CI/CD Token Tip**: For running this repository's integration tests, your CI token needs `Workers R2 Storage Write` and `Zone DNS Edit` to create and tear down test resources.
-
----
-
-## 5. Local Development & Debugging
-
-This repository is structured to enable a seamless development experience where a consuming project can directly reference the local SDK source code instead of the NuGet package.
-
-This is controlled by the `UseLocalCloudflareSdk` property in a `Directory.Build.props` file placed at the solution root.
-
-*   **To develop locally (`<UseLocalCloudflareSdk>true</UseLocalCloudflareSdk>`):**
-    Visual Studio will use the local `Cloudflare.NET.csproj` projects. You can set breakpoints in the SDK, make changes, and recompile, and the consuming application will immediately pick up the changes.
-
-*   **To simulate NuGet usage (`<UseLocalCloudflareSdk>false</UseLocalCloudflareSdk>`):**
-    The consuming application will use the `<PackageReference>` to fetch the SDK from a NuGet feed, simulating the experience for an external consumer. This is ideal for CI builds.
