@@ -254,7 +254,8 @@ public class R2ClientUnitTests
     mockStream.SetupGet(s => s.Position).Returns(256);
     mockStream.Object.Position = 0; // Reset for test.
 
-    var s3Exception = new AmazonS3Exception("Network Error", ErrorType.Receiver, "NetworkError", "reqid", HttpStatusCode.ServiceUnavailable);
+    var s3Exception =
+      new AmazonS3Exception("Network Error", ErrorType.Receiver, "NetworkError", "reqid", HttpStatusCode.ServiceUnavailable);
     _mockS3Client
       .Setup(c => c.GetObjectAsync(It.IsAny<GetObjectRequest>(), It.IsAny<CancellationToken>()))
       .ThrowsAsync(s3Exception);
@@ -575,8 +576,11 @@ public class R2ClientUnitTests
   {
     // Arrange
     var s3Exception = new AmazonS3Exception("Presigning failed");
-    var request = new PresignedUploadPartsRequest("key", "upload-id", TimeSpan.FromMinutes(5),
-                                                  new Dictionary<int, long> { { 1, 1024 } }, "application/octet-stream");
+    var request = new PresignedUploadPartsRequest(
+      "key", "upload-id",
+      TimeSpan.FromMinutes(5),
+      new Dictionary<int, long> { { 1, 1024 } }
+    );
 
     // We mock the R2Client itself to override the virtual URL generation method.
     var mockLogger = new Mock<ILogger<R2Client>>();

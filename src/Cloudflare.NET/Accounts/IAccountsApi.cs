@@ -1,6 +1,8 @@
 ﻿namespace Cloudflare.NET.Accounts;
 
+using AccessRules;
 using Models;
+using Rulesets;
 
 /// <summary>
 ///   Defines the contract for interacting with Cloudflare Account resources, including R2
@@ -8,6 +10,12 @@ using Models;
 /// </summary>
 public interface IAccountsApi
 {
+  /// <summary>Gets the API resource for managing account-level IP Access Rules.</summary>
+  IAccountAccessRulesApi AccessRules { get; }
+
+  /// <summary>Gets the API resource for managing account-level Rulesets.</summary>
+  IAccountRulesetsApi Rulesets { get; }
+
   /// <summary>Creates a new R2 bucket.</summary>
   /// <param name="bucketName">The desired name for the new bucket.</param>
   /// <param name="cancellationToken">A cancellation token.</param>

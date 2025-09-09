@@ -154,7 +154,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     totalMetrics += initResult.Metrics;
     var uploadId = initResult.Data;
 
-    var uploadParts = new List<PartETag>();
+    var  uploadParts  = new List<PartETag>();
     long filePosition = 0;
 
     try
@@ -211,7 +211,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     catch (Exception ex)
     {
       logger.LogError(ex, "Multipart upload failed for s3://{Bucket}/{Key}. Aborting...", bucketName, objectKey);
-      
+
       // If the stream is seekable, we can calculate how many bytes of the *failing* part were transferred.
       // `filePosition` holds the total size of successfully uploaded parts.
       // `inputStream.Position` is where the stream reader stopped on error.
@@ -266,7 +266,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       // If the output stream is seekable, we can determine how many bytes were written before the error.
       if (outputStream.CanSeek)
         metrics = metrics with { EgressBytes = outputStream.Position };
-      
+
       throw new CloudflareR2OperationException($"Download failed for s3://{bucketName}/{objectKey}", metrics, ex);
     }
   }
@@ -396,7 +396,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       {
         // A ListObjectsV2 call is one Class A operation. Account for it before the call.
         totalMetrics += new R2Result(1);
-        
+
         var listRequest  = new ListObjectsV2Request { BucketName = bucketName, ContinuationToken = continuationToken };
         var listResponse = await s3Client.ListObjectsV2Async(listRequest, cancellationToken);
 
@@ -484,7 +484,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       do
       {
         cancellationToken.ThrowIfCancellationRequested();
-        
+
         // Account for the Class A operation before the call.
         totalMetrics += new R2Result(1);
         response     =  await s3Client.ListObjectsV2Async(request, cancellationToken);
@@ -597,8 +597,8 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       var s3Request = new CreatePresignedPostRequest
       {
         BucketName = bucketName,
-        Key        = request.Key,
-        Expires    = DateTime.UtcNow.Add(request.ExpiresAfter)
+        Key = request.Key,
+        Expires = DateTime.UtcNow.Add(request.ExpiresAfter)
       };
 
       if (request.ContentType is not null)
@@ -630,7 +630,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
   /// <param name="request">The request for the presigned URL.</param>
   /// <returns>The generated presigned URL.</returns>
   /// <remarks>This method is virtual to allow for mocking in unit tests.</remarks>
-  protected internal virtual string GeneratePresignedUrl(GetPreSignedUrlRequest request)
+  internal protected virtual string GeneratePresignedUrl(GetPreSignedUrlRequest request)
   {
     return s3Client.GetPreSignedURL(request);
   }
@@ -700,7 +700,9 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
   }
 
   /// <inheritdoc />
-  public IReadOnlyDictionary<int, string> CreatePresignedUploadPartsUrls(string bucketName, PresignedUploadPartsRequest request)
+  public IReadOnlyDictionary<int, string> CreatePresignedUploadPartsUrls(
+    string                      bucketName,
+    PresignedUploadPartsRequest request)
   {
     // Pre-size the dictionary to the exact number of parts to avoid reallocations.
     var urls = new Dictionary<int, string>(request.PartNumberAndLength.Count);
@@ -815,5 +817,5 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     }
   }
 
-#endregion
+  #endregion
 }

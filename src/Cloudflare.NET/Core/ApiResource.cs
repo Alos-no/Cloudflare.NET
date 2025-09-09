@@ -3,6 +3,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Exceptions;
 using Models;
 
 /// <summary>Base class for API resource clients, providing shared functionality.</summary>
@@ -60,6 +61,14 @@ public abstract class ApiResource
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
+  /// <summary>Sends a PATCH request to the specified URI.</summary>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> PatchAsync<TResult>(string requestUri, object? payload, CancellationToken cancellationToken = default)
+  {
+    var response = await _httpClient.PatchAsJsonAsync(requestUri, payload, _serializerOptions, cancellationToken);
+    return await ProcessResponse<TResult>(response, cancellationToken);
+  }
+
   /// <summary>Sends a DELETE request to the specified URI.</summary>
   /// <returns>The deserialized "result" object from the API response.</returns>
   protected async Task<TResult> DeleteAsync<TResult>(string requestUri, CancellationToken cancellationToken = default)
@@ -78,7 +87,7 @@ public abstract class ApiResource
   ///   code.
   /// </exception>
   /// <exception cref="JsonException">Thrown if the API response body cannot be deserialized.</exception>
-  /// <exception cref="InvalidOperationException">
+  /// <exception cref="CloudflareApiException">
   ///   Thrown if the API returns a success status code
   ///   but the response indicates failure (e.g., `success: false`).
   /// </exception>
@@ -109,9 +118,11 @@ public abstract class ApiResource
     // Check the 'success' flag within the Cloudflare response body.
     if (cloudflareResponse is null || !cloudflareResponse.Success)
     {
-      var errorMessages = string.Join(", ", cloudflareResponse?.Errors.Select(e => $"[{e.Code}] {e.Message}") ?? ["Unknown error"]);
-      throw new InvalidOperationException(
-        $"Cloudflare API returned a failure response: {errorMessages}. Raw response: {responseBody}");
+      var errors        = cloudflareResponse?.Errors ?? [];
+      var errorMessages = string.Join(", ", errors.Select(e => $"[{e.Code}] {e.Message}"));
+      throw new CloudflareApiException(
+        $"Cloudflare API returned a failure response: {errorMessages}. Raw response: {responseBody}",
+        errors);
     }
 
     // The result can be null for some successful operations (e.g., DELETE),

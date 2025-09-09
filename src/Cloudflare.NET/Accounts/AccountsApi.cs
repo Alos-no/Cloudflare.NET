@@ -1,20 +1,49 @@
 ﻿namespace Cloudflare.NET.Accounts;
 
+using AccessRules;
 using Core;
 using Microsoft.Extensions.Options;
 using Models;
+using Rulesets;
 
 /// <summary>Implements the API for managing Cloudflare Account resources.</summary>
-/// <remarks>Initializes a new instance of the <see cref="AccountsApi" /> class.</remarks>
-/// <param name="httpClient">The HttpClient for making requests.</param>
-/// <param name="options">The Cloudflare API options.</param>
-public class AccountsApi(HttpClient httpClient, IOptions<CloudflareApiOptions> options)
-  : ApiResource(httpClient), IAccountsApi
+public class AccountsApi : ApiResource, IAccountsApi
 {
   #region Properties & Fields - Non-Public
 
   /// <summary>The Cloudflare Account ID.</summary>
-  private readonly string _accountId = options.Value.AccountId;
+  private readonly string _accountId;
+
+  /// <summary>The lazy-initialized Account Access Rules API resource.</summary>
+  private readonly Lazy<IAccountAccessRulesApi> _accessRules;
+
+  /// <summary>The lazy-initialized Account Rulesets API resource.</summary>
+  private readonly Lazy<IAccountRulesetsApi> _rulesets;
+
+  #endregion
+
+  #region Constructors
+
+  /// <summary>Initializes a new instance of the <see cref="AccountsApi" /> class.</summary>
+  /// <param name="httpClient">The HttpClient for making requests.</param>
+  /// <param name="options">The Cloudflare API options.</param>
+  public AccountsApi(HttpClient httpClient, IOptions<CloudflareApiOptions> options)
+    : base(httpClient)
+  {
+    _accountId   = options.Value.AccountId;
+    _accessRules = new Lazy<IAccountAccessRulesApi>(() => new AccountAccessRulesApi(httpClient, options));
+    _rulesets    = new Lazy<IAccountRulesetsApi>(() => new AccountRulesetsApi(httpClient, options));
+  }
+
+  #endregion
+
+  #region Properties Impl - Public
+
+  /// <inheritdoc />
+  public IAccountAccessRulesApi AccessRules => _accessRules.Value;
+
+  /// <inheritdoc />
+  public IAccountRulesetsApi Rulesets => _rulesets.Value;
 
   #endregion
 

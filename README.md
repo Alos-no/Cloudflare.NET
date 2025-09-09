@@ -127,9 +127,11 @@ To adhere to the principle of least privilege, create a Cloudflare API token wit
 | :--- | :--- | :--- | :--- |
 | **Workers R2 Storage** | Account | **Write** | Create/delete R2 buckets, manage domains. |
 | **Workers R2 Storage** | Account | **Read** | List buckets and read configurations. |
-| **Account Firewall Access Rules** | Account | **Write** | Programmatically manage IP Access Rules. |
-| **Account Firewall Access Rules** | Account | **Read** | Audit and list existing firewall rules. |
-| **Account Rulesets** | Account | **Write** | Deploy and manage WAF custom rulesets. |
+| **Account Firewall Access Rules** | Account | **Write** | Programmatically manage IP Access Rules at the account level. |
+| **Account Firewall Access Rules** | Account | **Read** | Audit and list existing firewall rules at the account level. |
+| **Zone Firewall Rules** | Zone | **Write** | Programmatically manage IP Access Rules at the zone level. |
+| **Account Rulesets** | Account | **Write** | Deploy and manage WAF custom rulesets at the account level. |
+| **Zone WAF** | Zone | **Write** | Deploy and manage WAF custom rulesets at the zone level. |
 | **Zone DNS** | Zone | **Edit** | Automate DNS changes for SaaS or application onboarding. |
 | **Zone DNS** | Zone | **Read** | Scan and verify DNS state before migrations. |
 | **SSL and Certificates** | Zone | **Write** | Automate client certificate lifecycle management. |

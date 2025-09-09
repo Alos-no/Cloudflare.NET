@@ -13,10 +13,6 @@ using Amazon.S3.Model;
 ///   A dictionary mapping each part number to its specific
 ///   content length.
 /// </param>
-/// <param name="ContentType">
-///   The MIME type for all parts (e.g., "application/octet-stream"). This
-///   is enforced by R2.
-/// </param>
 /// <param name="HeadersToSign">
 ///   An optional dictionary of additional headers to include in the
 ///   signatures for all parts.
@@ -26,7 +22,5 @@ public record PresignedUploadPartsRequest(
   string                               UploadId,
   TimeSpan                             ExpiresAfter,
   IReadOnlyDictionary<int, long>       PartNumberAndLength,
-  string                               ContentType,
-  IEnumerable<S3PostCondition>?        Conditions    = null,
   IReadOnlyDictionary<string, string>? HeadersToSign = null
 );

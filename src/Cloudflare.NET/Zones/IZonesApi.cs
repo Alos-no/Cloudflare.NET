@@ -1,6 +1,9 @@
 namespace Cloudflare.NET.Zones;
 
+using AccessRules;
+using Firewall;
 using Models;
+using Rulesets;
 
 /// <summary>
 ///   Defines the contract for interacting with Cloudflare Zone resources, primarily DNS
@@ -8,12 +11,25 @@ using Models;
 /// </summary>
 public interface IZonesApi
 {
-  /// <summary>
-  /// Fetches the details for a specific Zone by its ID.
-  /// </summary>
+  /// <summary>Gets the API resource for managing zone-level IP Access Rules.</summary>
+  IZoneAccessRulesApi AccessRules { get; }
+
+  /// <summary>Gets the API resource for managing zone-level Rulesets.</summary>
+  IZoneRulesetsApi Rulesets { get; }
+
+  /// <summary>Gets the API resource for managing Zone Lockdown rules.</summary>
+  IZoneLockdownApi Lockdown { get; }
+
+  /// <summary>Gets the API resource for managing User-Agent blocking rules.</summary>
+  IZoneUaRulesApi UaRules { get; }
+
+  /// <summary>Fetches the details for a specific Zone by its ID.</summary>
   /// <param name="zoneId">The identifier of the Zone.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="Zone"/> details.</returns>
+  /// <returns>
+  ///   A task that represents the asynchronous operation. The task result contains the
+  ///   <see cref="Zone" /> details.
+  /// </returns>
   Task<Zone> GetZoneDetailsAsync(string zoneId, CancellationToken cancellationToken = default);
 
   /// <summary>Creates a CNAME DNS record to point a custom domain to Cloudflare's infrastructure.</summary>
