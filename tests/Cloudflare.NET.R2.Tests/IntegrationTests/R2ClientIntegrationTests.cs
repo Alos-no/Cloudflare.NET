@@ -1,18 +1,18 @@
 namespace Cloudflare.NET.R2.Tests.IntegrationTests;
 
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
+using Accounts;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Accounts;
 using Exceptions;
 using Fixtures;
 using FluentAssertions;
 using Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using Models;
 using NET.Tests.Shared.Fixtures;
 using NET.Tests.Shared.Helpers;
+using Xunit.Abstractions;
 
 [Trait("Category", TestConstants.TestCategories.Integration)]
 public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsyncLifetime
@@ -28,11 +28,15 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
 
   #region Constructors
 
-  public R2ClientIntegrationTests(R2ClientTestFixture fixture)
+  public R2ClientIntegrationTests(R2ClientTestFixture fixture, ITestOutputHelper output)
   {
     _sut         = fixture.R2Client;
     _accountsApi = fixture.AccountsApi;
     _s3Client    = fixture.S3Client;
+
+    // Wire up the logger provider to the current test's output.
+    var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
+    loggerProvider.Current = output;
   }
 
   #endregion
@@ -204,9 +208,9 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     uploadResult.ClassAOperations.Should().Be(1);
 
     // Verify by downloading
-    using var downloadFile   = new TempFile(0);
+    using var downloadFile = new TempFile(0);
     // ReSharper disable once AccessToDisposedClosure
-    var       downloadAction = () => _sut.DownloadFileAsync(_bucketName, key, downloadFile.FilePath);
+    var downloadAction = () => _sut.DownloadFileAsync(_bucketName, key, downloadFile.FilePath);
 
     await downloadAction.Should().NotThrowAsync();
     var fi = new FileInfo(downloadFile.FilePath);
@@ -240,10 +244,10 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   public async Task DeleteObjectsAsync_WithNonExistentKeys_SucceedsAndReportsNoErrors()
   {
     // Arrange
-    var realKey1 = $"real-key-1-{Guid.NewGuid()}.txt";
-    var realKey2 = $"real-key-2-{Guid.NewGuid()}.txt";
-    var fakeKey1 = "this-key-does-not-exist.txt";
-    var fakeKey2 = "neither-does-this-one.txt";
+    var       realKey1 = $"real-key-1-{Guid.NewGuid()}.txt";
+    var       realKey2 = $"real-key-2-{Guid.NewGuid()}.txt";
+    var       fakeKey1 = "this-key-does-not-exist.txt";
+    var       fakeKey2 = "neither-does-this-one.txt";
     using var tempFile = new TempFile(10);
     await _sut.UploadAsync(_bucketName, realKey1, tempFile.FilePath);
     await _sut.UploadAsync(_bucketName, realKey2, tempFile.FilePath);
@@ -300,7 +304,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     listResult.Data[0].Size.Should().Be(fileV2.FileSize);
 
     using var downloadFile = new TempFile(0);
-    
+
     await _sut.DownloadFileAsync(_bucketName, key, downloadFile.FilePath);
     var downloadedBytes = await File.ReadAllBytesAsync(downloadFile.FilePath);
     var originalBytesV2 = await File.ReadAllBytesAsync(fileV2.FilePath);
@@ -339,28 +343,28 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   public async Task CompleteMultipartUploadAsync_WithInvalidPart_ThrowsException()
   {
     // Arrange
-    var       key      = $"bad-multipart-{Guid.NewGuid()}.bin";
-    using var tempFile = new TempFile(6 * 1024 * 1024); // 6MB
-    var uploadIdResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
-    var uploadId       = uploadIdResult.Data;
-    
+    var       key            = $"bad-multipart-{Guid.NewGuid()}.bin";
+    using var tempFile       = new TempFile(6 * 1024 * 1024); // 6MB
+    var       uploadIdResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var       uploadId       = uploadIdResult.Data;
+
     try
     {
       // Upload a valid part 1 using the raw S3 client to get a valid ETag
-      await using var fileStream  = File.OpenRead(tempFile.FilePath);
-      
-      var       partRequest = new UploadPartRequest
+      await using var fileStream = File.OpenRead(tempFile.FilePath);
+
+      var partRequest = new UploadPartRequest
       {
-        BucketName                     = _bucketName,
-        Key                            = key,
-        UploadId                       = uploadId,
-        PartNumber                     = 1,
-        PartSize                       = 5 * 1024 * 1024,
-        InputStream                    = fileStream,
-        DisablePayloadSigning          = true,
+        BucketName                       = _bucketName,
+        Key                              = key,
+        UploadId                         = uploadId,
+        PartNumber                       = 1,
+        PartSize                         = 5 * 1024 * 1024,
+        InputStream                      = fileStream,
+        DisablePayloadSigning            = true,
         DisableDefaultChecksumValidation = true
       };
-      
+
       await _s3Client.UploadPartAsync(partRequest);
 
       // Create an invalid PartETag list for the complete call
@@ -396,10 +400,10 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     presignedUrl.Should().NotBeNullOrEmpty();
 
     // 2. Use the URL with a standard HttpClient
-    using var httpClient = new HttpClient();
-    await using var fileStream = File.OpenRead(tempFile.FilePath);
-    using var fileContent = new StreamContent(fileStream);
-    fileContent.Headers.ContentType     = new MediaTypeHeaderValue(contentType);
+    using var       httpClient  = new HttpClient();
+    await using var fileStream  = File.OpenRead(tempFile.FilePath);
+    using var       fileContent = new StreamContent(fileStream);
+    fileContent.Headers.ContentType   = new MediaTypeHeaderValue(contentType);
     fileContent.Headers.ContentLength = tempFile.FileSize;
     var httpResponse = await httpClient.PutAsync(presignedUrl, fileContent);
 
@@ -415,9 +419,9 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   public async Task CanGenerateAndUsePresignedPostUrl()
   {
     // Arrange
-    var       key         = $"presigned-post-{Guid.NewGuid()}.txt";
+    var       key = $"presigned-post-{Guid.NewGuid()}.txt";
     var       contentType = "text/plain";
-    using var tempFile    = new TempFile(1024);
+    using var tempFile = new TempFile(1024);
     var request = new PresignedPostRequest(
       key,
       TimeSpan.FromMinutes(10),
@@ -433,7 +437,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
 
     // 2. Use the data to perform an upload
     using var httpClient = new HttpClient();
-    using var formData   = new MultipartFormDataContent();
+    using var formData = new MultipartFormDataContent();
 
     // Add all the required fields from the response
     foreach (var field in postResponse.Fields)
@@ -452,5 +456,5 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   }
 #endif
 
-#endregion
+  #endregion
 }

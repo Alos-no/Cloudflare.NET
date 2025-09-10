@@ -1,6 +1,8 @@
 ﻿namespace Cloudflare.NET.Tests.Shared.Fixtures;
 
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 /// <summary>
 ///   A helper class to build configuration from multiple sources (JSON, Environment, User
@@ -24,12 +26,21 @@ public static class TestConfiguration
   static TestConfiguration()
   {
     // Build configuration from appsettings.json, environment variables, and user secrets.
-    // User secrets are anchored to the main SDK project assembly to be accessible from all test projects.
-    Configuration = new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json", true, true)
-                    .AddEnvironmentVariables()
-                    .AddUserSecrets<CloudflareApiClient>()
-                    .Build();
+    var builder = new ConfigurationBuilder()
+                  .AddJsonFile("appsettings.json", true, true)
+                  .AddEnvironmentVariables();
+
+    // Dynamically find the assembly containing the user secrets. This is necessary because
+    // the UserSecretsId is defined in the test projects, not the core library. We scan
+    // the loaded assemblies to find one that has the attribute and use it as the anchor.
+    var testAssemblyWithSecrets = AppDomain.CurrentDomain.GetAssemblies()
+                                           .FirstOrDefault(a => a.GetCustomAttribute<UserSecretsIdAttribute>() != null);
+
+    if (testAssemblyWithSecrets != null)
+      builder.AddUserSecrets(testAssemblyWithSecrets);
+
+    Configuration = builder.Build();
+
 
     // Bind the configuration to a strongly-typed settings object.
     CloudflareSettings = new TestCloudflareSettings();

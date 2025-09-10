@@ -2,11 +2,29 @@
 
 using GraphQL;
 using GraphQL.Client.Abstractions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Xunit.Abstractions;
 
 /// <summary>Contains unit tests for the <see cref="AnalyticsApi" /> class.</summary>
 public class AnalyticsApiUnitTests
 {
+  #region Properties & Fields - Non-Public
+
+  private readonly ILoggerFactory _loggerFactory;
+
+  #endregion
+
+  #region Constructors
+
+  public AnalyticsApiUnitTests(ITestOutputHelper output)
+  {
+    var loggerProvider = new XunitTestOutputLoggerProvider { Current = output };
+    _loggerFactory = new LoggerFactory([loggerProvider]);
+  }
+
+  #endregion
+
   #region Methods
 
   /// <summary>
@@ -28,7 +46,7 @@ public class AnalyticsApiUnitTests
 
     // The options are not used directly by the AnalyticsApi but are required by the constructor.
     _ = Options.Create(new CloudflareApiOptions());
-    var sut = new AnalyticsApi(mockGraphQlClient.Object);
+    var sut = new AnalyticsApi(mockGraphQlClient.Object, _loggerFactory);
 
     // Act
     var result = await sut.SendQueryAsync<object>(request);
@@ -56,7 +74,7 @@ public class AnalyticsApiUnitTests
       .ReturnsAsync(graphQlResponse);
 
     _ = Options.Create(new CloudflareApiOptions());
-    var sut = new AnalyticsApi(mockGraphQlClient.Object);
+    var sut = new AnalyticsApi(mockGraphQlClient.Object, _loggerFactory);
 
     // Act
     var action = async () => await sut.SendQueryAsync<object>(request);
@@ -83,7 +101,7 @@ public class AnalyticsApiUnitTests
       .ReturnsAsync(graphQlResponse);
 
     _ = Options.Create(new CloudflareApiOptions());
-    var sut = new AnalyticsApi(mockGraphQlClient.Object);
+    var sut = new AnalyticsApi(mockGraphQlClient.Object, _loggerFactory);
 
     // Act
     var action = async () => await sut.SendQueryAsync<object>(request);

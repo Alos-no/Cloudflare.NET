@@ -1,23 +1,42 @@
 ﻿namespace Cloudflare.NET.Zones.AccessRules;
 
 using Core;
+using Core.Models;
+using Microsoft.Extensions.Logging;
 using Security.Firewall;
 using Security.Firewall.Models;
 
 /// <summary>Implements the API for managing IP Access Rules at the zone level.</summary>
-public class ZoneAccessRulesApi(HttpClient httpClient)
-  : ApiResource(httpClient), IZoneAccessRulesApi
+public class ZoneAccessRulesApi(HttpClient httpClient, ILoggerFactory loggerFactory)
+  : ApiResource(httpClient, loggerFactory.CreateLogger<ZoneAccessRulesApi>()), IZoneAccessRulesApi
 {
   #region Methods Impl
 
   /// <inheritdoc />
-  public async Task<IReadOnlyList<AccessRule>> ListAsync(string                  zoneId,
-                                                         ListAccessRulesFilters? filters           = null,
-                                                         CancellationToken       cancellationToken = default)
+  public async Task<PagePaginatedResult<AccessRule>> ListAsync(string                  zoneId,
+                                                               ListAccessRulesFilters? filters           = null,
+                                                               CancellationToken       cancellationToken = default)
   {
     var queryString = AccessRuleQueryBuilder.Build(filters);
     var endpoint    = $"zones/{zoneId}/firewall/access_rules/rules{queryString}";
-    return await GetAsync<IReadOnlyList<AccessRule>>(endpoint, cancellationToken);
+    return await GetPagePaginatedResultAsync<AccessRule>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public IAsyncEnumerable<AccessRule> ListAllAsync(string                  zoneId,
+                                                   ListAccessRulesFilters? filters           = null,
+                                                   CancellationToken       cancellationToken = default)
+  {
+    // Create a new filter object for the query builder, ensuring pagination parameters are not included.
+    var listFilters = filters is not null
+      ? filters with { Page = null, PerPage = null }
+      : null;
+
+    var queryString = AccessRuleQueryBuilder.Build(listFilters);
+    var endpoint    = $"zones/{zoneId}/firewall/access_rules/rules{queryString}";
+
+    // Use the base class helper to handle the pagination loop, passing the original per_page value.
+    return GetPaginatedAsync<AccessRule>(endpoint, filters?.PerPage, cancellationToken);
   }
 
   /// <inheritdoc />

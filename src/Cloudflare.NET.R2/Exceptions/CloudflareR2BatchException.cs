@@ -4,7 +4,8 @@ using Models;
 
 /// <summary>
 ///   Represents an exception thrown during a batch operation (e.g., DeleteObjectsAsync)
-///   where some items failed to be processed.
+///   where some items failed to be processed. This exception contains the list of items
+///   that failed, allowing for targeted retries.
 /// </summary>
 /// <typeparam name="T">The type of the items that failed.</typeparam>
 public class CloudflareR2BatchException<T> : CloudflareR2OperationException

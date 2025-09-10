@@ -1,16 +1,68 @@
 ﻿namespace Cloudflare.NET.Zones.Rulesets;
 
+using Core.Models;
 using Security.Rulesets.Models;
-using System;
 
-/// <summary>Defines the contract for managing Rulesets at the zone level.</summary>
+/// <summary>
+///   <para>Defines the contract for managing Rulesets at the zone level.</para>
+///   <para>
+///     This includes WAF Custom Rules, Rate Limiting Rules, Redirects, and other advanced
+///     configurations for a specific zone.
+///   </para>
+/// </summary>
 public interface IZoneRulesetsApi
 {
-  /// <summary>Lists all rulesets for a zone.</summary>
+  /// <summary>Lists all rulesets for a zone, allowing for manual pagination control.</summary>
+  /// <remarks>
+  ///   This method is intended for developers who need to control the pagination process
+  ///   manually. To fetch the next page of results, use the <c>Cursor</c> from the
+  ///   <c>CursorInfo</c> property of the returned <see cref="CursorPaginatedResult{T}" /> in your
+  ///   next call.
+  /// </remarks>
   /// <param name="zoneId">The ID of the zone.</param>
+  /// <param name="filters">
+  ///   Optional pagination filters, including the cursor from a previous
+  ///   response.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>A read-only list of rulesets.</returns>
-  Task<IReadOnlyList<Ruleset>> ListAsync(string zoneId, CancellationToken cancellationToken = default);
+  /// <returns>A single page of rulesets along with pagination information.</returns>
+  Task<CursorPaginatedResult<Ruleset>> ListAsync(string               zoneId,
+                                                 ListRulesetsFilters? filters           = null,
+                                                 CancellationToken    cancellationToken = default);
+
+  /// <summary>Lists all rulesets for a zone, automatically handling cursor-based pagination.</summary>
+  /// <remarks>
+  ///   This method simplifies fetching all rulesets by abstracting away the pagination
+  ///   logic.
+  /// </remarks>
+  /// <param name="zoneId">The ID of the zone.</param>
+  /// <param name="perPage">The number of results to fetch per API page.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An asynchronous stream of all rulesets for the zone.</returns>
+  IAsyncEnumerable<Ruleset> ListAllAsync(string zoneId, int? perPage = null, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Lists the version history for a specific phase entrypoint at the zone level, allowing
+  ///   for manual pagination.
+  /// </summary>
+  /// <param name="zoneId">The ID of the zone.</param>
+  /// <param name="phase">The phase of the entrypoint.</param>
+  /// <param name="filters">Optional pagination filters.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A single page of ruleset versions along with pagination information.</returns>
+  Task<PagePaginatedResult<Ruleset>> ListPhaseEntrypointVersionsAsync(
+    string                      zoneId,
+    string                      phase,
+    ListRulesetVersionsFilters? filters           = null,
+    CancellationToken           cancellationToken = default);
+
+  /// <summary>Gets a specific version of a phase entrypoint ruleset at the zone level.</summary>
+  /// <param name="zoneId">The ID of the zone.</param>
+  /// <param name="phase">The phase of the entrypoint.</param>
+  /// <param name="version">The version number to retrieve.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The specified version of the ruleset.</returns>
+  Task<Ruleset> GetPhaseEntrypointVersionAsync(string zoneId, string phase, string version, CancellationToken cancellationToken = default);
 
   /// <summary>Gets a single ruleset by its ID within a zone.</summary>
   /// <param name="zoneId">The ID of the zone.</param>

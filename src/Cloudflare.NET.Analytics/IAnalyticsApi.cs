@@ -11,7 +11,10 @@ public interface IAnalyticsApi
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
-  ///   deserialized data from the API response.
+  ///   deserialized data from the API response's "data" field.
   /// </returns>
+  /// <exception cref="InvalidOperationException">
+  ///   Thrown if the GraphQL API returns errors or if the response data is null.
+  /// </exception>
   Task<TResponse> SendQueryAsync<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default);
 }

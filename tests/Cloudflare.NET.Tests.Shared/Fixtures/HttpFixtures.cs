@@ -52,8 +52,12 @@ public static class HttpFixtures
   /// </summary>
   /// <param name="responseContent">The string content to return in the response.</param>
   /// <param name="statusCode">The HTTP status code to return.</param>
+  /// <param name="callback">An optional callback to inspect the request message.</param>
   /// <returns>A configured mock of <see cref="HttpMessageHandler" />.</returns>
-  public static Mock<HttpMessageHandler> GetMockHttpMessageHandler(string responseContent, HttpStatusCode statusCode)
+  public static Mock<HttpMessageHandler> GetMockHttpMessageHandler(
+    string                                         responseContent,
+    HttpStatusCode                                 statusCode,
+    Action<HttpRequestMessage, CancellationToken>? callback)
   {
     var mockHandler = new Mock<HttpMessageHandler>();
     var response = new HttpResponseMessage
@@ -62,17 +66,32 @@ public static class HttpFixtures
       Content    = new StringContent(responseContent, System.Text.Encoding.UTF8, "application/json")
     };
 
-    mockHandler
-      .Protected()
-      .Setup<Task<HttpResponseMessage>>(
-        "SendAsync",
-        ItExpr.IsAny<HttpRequestMessage>(),
-        ItExpr.IsAny<CancellationToken>()
-      )
-      .ReturnsAsync(response);
+    var setup = mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                  "SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>()
+                );
+
+    if (callback is not null)
+      setup.Callback(callback);
+
+    setup.ReturnsAsync(response);
 
     return mockHandler;
   }
+
+
+  /// <summary>
+  ///   Creates a mock <see cref="HttpMessageHandler" /> that is set up to return a specific
+  ///   response.
+  /// </summary>
+  /// <param name="responseContent">The string content to return in the response.</param>
+  /// <param name="statusCode">The HTTP status code to return.</param>
+  /// <returns>A configured mock of <see cref="HttpMessageHandler" />.</returns>
+  public static Mock<HttpMessageHandler> GetMockHttpMessageHandler(string responseContent, HttpStatusCode statusCode) =>
+    GetMockHttpMessageHandler(responseContent, statusCode, null);
 
   #endregion
 }

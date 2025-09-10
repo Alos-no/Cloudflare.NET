@@ -12,7 +12,11 @@ public sealed record ApiResponse<T>(
   [property: JsonPropertyName("messages")]
   IReadOnlyList<ApiMessage> Messages,
   [property: JsonPropertyName("result")]
-  T? Result
+  T? Result,
+  [property: JsonPropertyName("result_info")]
+  ResultInfo? ResultInfo = null,
+  [property: JsonPropertyName("cursor_result_info")]
+  CursorResultInfo? CursorResultInfo = null
 );
 
 /// <summary>Represents a single error object in a Cloudflare API response.</summary>

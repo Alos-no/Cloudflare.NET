@@ -1,19 +1,39 @@
 ﻿namespace Cloudflare.NET.Zones.Firewall;
 
 using Core;
+using Core.Models;
+using Microsoft.Extensions.Logging;
 using Security.Firewall.Models;
 
 /// <summary>Implements the API for managing User-Agent blocking rules.</summary>
-public class ZoneUaRulesApi(HttpClient httpClient)
-  : ApiResource(httpClient), IZoneUaRulesApi
+public class ZoneUaRulesApi(HttpClient httpClient, ILoggerFactory loggerFactory)
+  : ApiResource(httpClient, loggerFactory.CreateLogger<ZoneUaRulesApi>()), IZoneUaRulesApi
 {
   #region Methods Impl
 
   /// <inheritdoc />
-  public async Task<IReadOnlyList<UaRule>> ListAsync(string zoneId, CancellationToken cancellationToken = default)
+  public async Task<PagePaginatedResult<UaRule>> ListAsync(string              zoneId,
+                                                           ListUaRulesFilters? filters           = null,
+                                                           CancellationToken   cancellationToken = default)
+  {
+    var queryParams = new List<string>();
+
+    if (filters?.Page is not null)
+      queryParams.Add($"page={filters.Page}");
+    if (filters?.PerPage is not null)
+      queryParams.Add($"per_page={filters.PerPage}");
+
+    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
+
+    var endpoint = $"zones/{zoneId}/firewall/ua_rules{queryString}";
+    return await GetPagePaginatedResultAsync<UaRule>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public IAsyncEnumerable<UaRule> ListAllAsync(string zoneId, int? perPage = null, CancellationToken cancellationToken = default)
   {
     var endpoint = $"zones/{zoneId}/firewall/ua_rules";
-    return await GetAsync<IReadOnlyList<UaRule>>(endpoint, cancellationToken);
+    return GetPaginatedAsync<UaRule>(endpoint, perPage, cancellationToken);
   }
 
   /// <inheritdoc />

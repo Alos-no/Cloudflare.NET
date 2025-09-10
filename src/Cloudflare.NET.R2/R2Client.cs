@@ -3,35 +3,57 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Exceptions;
+using Logging;
 using Microsoft.Extensions.Logging;
 using Models;
 
 /// <summary>Implements the client that interacts with Cloudflare R2's S3-compatible API.</summary>
-public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client, IDisposable
+public class R2Client : IR2Client, IDisposable
 {
+  #region Properties & Fields - Non-Public
+
+  private readonly ILogger<R2Client> _logger;
+  private readonly IAmazonS3         _s3Client;
+
+  #endregion
+
   #region Constants & Statics
 
   /// <summary>Use multipart for uploads above 50MB.</summary>
-  private const long R2MutlipartFileSizeThreshold = 50L * 1024 * 1024;
-  /// <summary>Cloudflare R2 has a maximum file size of 5 MiB less than 5 GiB, so 4.995 GiB.</summary>
-  private const long R2MaxFileSize = 5L * 1024 * 1024 * 1024 - R2MinPartSize;
+  internal const long R2MutlipartFileSizeThreshold = 50L * 1024 * 1024;
+  /// <summary>Cloudflare R2 has a maximum file size of 5 GiB for a single PutObject operation.</summary>
+  internal const long R2MaxSinglePartUploadSize = 5L * 1024 * 1024 * 1024;
+  /// <summary>Cloudflare R2 has a maximum total object size of 5 TiB for multipart uploads.</summary>
+  internal const long R2MaxMultipartFileSize = 5L * 1024 * 1024 * 1024 * 1024;
   /// <summary>Cloudflare R2 has a minimum part size of 5 MiB for multipart uploads.</summary>
-  private const long R2MinPartSize = 5L * 1024 * 1024;
+  internal const long R2MinPartSize = 5L * 1024 * 1024;
   /// <summary>Cloudflare R2 has a maximum part size of 5 GiB.</summary>
-  private const long R2MaxPartSize = 5L * 1024 * 1024 * 1024;
+  internal const long R2MaxPartSize = 5L * 1024 * 1024 * 1024;
   /// <summary>The default chunk size for multipart uploads if not specified by the user (50 MiB).</summary>
-  private const long DefaultPartSize = 50L * 1024 * 1024;
+  internal const long DefaultPartSize = 50L * 1024 * 1024;
   /// <summary>The maximum number of keys allowed in a single DeleteObjects request.</summary>
-  private const int MaxKeysPerDelete = 1000;
+  internal const int MaxKeysPerDelete = 1000;
 
   #endregion
 
   #region Constructors
 
+  /// <summary>
+  ///   Initializes a new instance of the <see cref="R2Client" /> class. This is the
+  ///   designated constructor for dependency injection.
+  /// </summary>
+  /// <param name="loggerFactory">The logger factory used to create a typed logger.</param>
+  /// <param name="s3Client">The underlying S3-compatible client.</param>
+  public R2Client(ILoggerFactory loggerFactory, IAmazonS3 s3Client)
+  {
+    _logger   = loggerFactory.CreateLogger<R2Client>();
+    _s3Client = s3Client;
+  }
+
   /// <summary>Disposes the underlying S3 client.</summary>
   public void Dispose()
   {
-    s3Client.Dispose();
+    _s3Client.Dispose();
     GC.SuppressFinalize(this);
   }
 
@@ -48,6 +70,10 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
   {
     var fileInfo = new FileInfo(filePath);
 
+    if (fileInfo.Length > R2MaxMultipartFileSize)
+      throw new ArgumentException($"File size ({fileInfo.Length} bytes) exceeds the maximum R2 object size of 5 TiB.",
+                                  nameof(filePath));
+
     if (fileInfo.Length < R2MutlipartFileSizeThreshold)
       return UploadSinglePartAsync(bucketName, objectKey, filePath, cancellationToken);
 
@@ -61,6 +87,10 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
                                     long?             partSize          = null,
                                     CancellationToken cancellationToken = default)
   {
+    if (fileStream.CanSeek && fileStream.Length > R2MaxMultipartFileSize)
+      throw new ArgumentException($"Stream length ({fileStream.Length} bytes) exceeds the maximum R2 object size of 5 TiB.",
+                                  nameof(fileStream));
+
     if (fileStream is { CanSeek: true, Length: < R2MutlipartFileSizeThreshold })
       return UploadSinglePartAsync(bucketName, objectKey, fileStream, cancellationToken);
 
@@ -85,6 +115,12 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
                                                     Stream            inputStream,
                                                     CancellationToken cancellationToken = default)
   {
+    // Pre-flight check for single-part upload size limit if the stream is seekable.
+    if (inputStream.CanSeek && inputStream.Length > R2MaxSinglePartUploadSize)
+      throw new ArgumentException(
+        $"Stream length ({inputStream.Length} bytes) exceeds the maximum size for a single-part upload (5 GiB).",
+        nameof(inputStream));
+
     // Assume 1 Class A op for the attempt.
     var metrics = new R2Result(1);
 
@@ -104,14 +140,14 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         DisableDefaultChecksumValidation = true
       };
 
-      await s3Client.PutObjectAsync(request, cancellationToken);
-      logger.LogDebug("Successfully uploaded to s3://{Bucket}/{Key} via single PUT.", bucketName, objectKey);
+      await _s3Client.PutObjectAsync(request, cancellationToken);
+      _logger.UploadedSinglePart(bucketName, objectKey);
 
       return new R2Result(1, IngressBytes: ingressBytes);
     }
     catch (AmazonS3Exception ex)
     {
-      logger.LogError(ex, "AWS SDK Error during single-part upload to s3://{Bucket}/{Key}", bucketName, objectKey);
+      _logger.UploadSinglePartFailed(ex, bucketName, objectKey);
       // If the stream is seekable, we can determine how many bytes were transferred before the error.
       if (inputStream.CanSeek)
         metrics = metrics with { IngressBytes = inputStream.Position };
@@ -139,6 +175,11 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
                                                    long?             partSize,
                                                    CancellationToken cancellationToken = default)
   {
+    // Pre-flight check for total object size limit. This is the definitive check for multipart.
+    if (inputStream.CanSeek && inputStream.Length > R2MaxMultipartFileSize)
+      throw new ArgumentException($"Stream length ({inputStream.Length} bytes) exceeds the maximum R2 object size of 5 TiB.",
+                                  nameof(inputStream));
+
     if (!inputStream.CanSeek)
       // For a non-seekable stream, we would need to read it into chunks in memory or a temporary file.
       // This is complex and memory-intensive, so we'll consider it out of scope for this implementation.
@@ -190,7 +231,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         // We must account for the Class A operation *before* the call, so the attempt is
         // always counted, even on failure.
         totalMetrics += new R2Result(1);
-        var partResponse = await s3Client.UploadPartAsync(uploadRequest, cancellationToken);
+        var partResponse = await _s3Client.UploadPartAsync(uploadRequest, cancellationToken);
 
         uploadParts.Add(new PartETag(partResponse.PartNumber!.Value, partResponse.ETag));
 
@@ -204,13 +245,13 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
 
       totalMetrics += completeResult;
 
-      logger.LogDebug("Successfully uploaded to s3://{Bucket}/{Key} via multipart.", bucketName, objectKey);
+      _logger.UploadedMultipart(bucketName, objectKey);
 
       return totalMetrics with { IngressBytes = fileSize };
     }
     catch (Exception ex)
     {
-      logger.LogError(ex, "Multipart upload failed for s3://{Bucket}/{Key}. Aborting...", bucketName, objectKey);
+      _logger.MultipartFailed(ex, bucketName, objectKey);
 
       // If the stream is seekable, we can calculate how many bytes of the *failing* part were transferred.
       // `filePosition` holds the total size of successfully uploaded parts.
@@ -251,18 +292,18 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       var request = new GetObjectRequest { BucketName = bucketName, Key = objectKey };
 
       // GetObject is a Class B operation.
-      using var response = await s3Client.GetObjectAsync(request, cancellationToken);
+      using var response = await _s3Client.GetObjectAsync(request, cancellationToken);
 
       await response.ResponseStream.CopyToAsync(outputStream, cancellationToken);
 
       var fileSize = response.ContentLength;
-      logger.LogDebug("Successfully downloaded s3://{Bucket}/{Key}.", bucketName, objectKey);
+      _logger.DownloadedObject(bucketName, objectKey);
 
       return new R2Result(ClassBOperations: 1, EgressBytes: fileSize);
     }
     catch (AmazonS3Exception ex)
     {
-      logger.LogError(ex, "AWS SDK Error during download from s3://{Bucket}/{Key}", bucketName, objectKey);
+      _logger.DownloadFailed(ex, bucketName, objectKey);
       // If the output stream is seekable, we can determine how many bytes were written before the error.
       if (outputStream.CanSeek)
         metrics = metrics with { EgressBytes = outputStream.Position };
@@ -282,14 +323,14 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       var request = new DeleteObjectRequest { BucketName = bucketName, Key = objectKey };
 
       // DeleteObject is a Class A operation.
-      await s3Client.DeleteObjectAsync(request, cancellationToken);
-      logger.LogDebug("Successfully deleted s3://{Bucket}/{Key}.", bucketName, objectKey);
+      await _s3Client.DeleteObjectAsync(request, cancellationToken);
+      _logger.DeletedObject(bucketName, objectKey);
 
       return metrics;
     }
     catch (AmazonS3Exception ex)
     {
-      logger.LogError(ex, "AWS SDK Error during delete of s3://{Bucket}/{Key}", bucketName, objectKey);
+      _logger.DeleteFailed(ex, bucketName, objectKey);
       throw new CloudflareR2OperationException($"Delete failed for s3://{bucketName}/{objectKey}", metrics, ex);
     }
   }
@@ -326,7 +367,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         // DeleteObjects is free.
         totalMetrics += new R2Result();
 
-        var response = await s3Client.DeleteObjectsAsync(deleteRequest, cancellationToken);
+        var response = await _s3Client.DeleteObjectsAsync(deleteRequest, cancellationToken);
 
         // The AWS SDK can, in fact, return a null list if there are no errors. This check handles that case.
         if (response.DeleteErrors is not null && response.DeleteErrors.Count > 0)
@@ -350,13 +391,12 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         exceptions.Add(ex);
         if (continueOnError)
         {
-          logger.LogWarning(ex, "A batch delete failed for bucket {BucketName}. Adding all keys from batch to failed list.",
-                            bucketName);
+          _logger.BatchDeleteFailedContinueOnError(ex, bucketName);
           failedKeys.AddRange(batch);
         }
         else
         {
-          logger.LogError(ex, "A batch delete failed for bucket {BucketName} and continueOnError is false.", bucketName);
+          _logger.BatchDeleteFailedStopOnError(ex, bucketName);
           throw new CloudflareR2BatchException<string>(
             "A batch delete API call failed and continueOnError is false.",
             batch, totalMetrics, new AggregateException(exceptions));
@@ -370,7 +410,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         failedKeys.Distinct().ToList(), // Ensure unique keys
         totalMetrics, new AggregateException(exceptions));
 
-    logger.LogInformation("Successfully deleted {Count} objects from bucket {BucketName}.", keysToDelete.Count, bucketName);
+    _logger.DeletedMultipleObjects(keysToDelete.Count, bucketName);
     return totalMetrics;
   }
 
@@ -379,7 +419,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
                                                bool              continueOnError   = true,
                                                CancellationToken cancellationToken = default)
   {
-    logger.LogInformation("Attempting to clear all objects from bucket: {BucketName}", bucketName);
+    _logger.ClearingBucket(bucketName);
     var  totalMetrics      = new R2Result();
     var  allFailedKeys     = new List<string>();
     var  allExceptions     = new List<Exception>();
@@ -398,7 +438,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         totalMetrics += new R2Result(1);
 
         var listRequest  = new ListObjectsV2Request { BucketName = bucketName, ContinuationToken = continuationToken };
-        var listResponse = await s3Client.ListObjectsV2Async(listRequest, cancellationToken);
+        var listResponse = await _s3Client.ListObjectsV2Async(listRequest, cancellationToken);
 
         // The S3Objects list can be null if the response contains no objects.
         objectsInPage = listResponse.S3Objects ?? [];
@@ -410,7 +450,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       }
       catch (AmazonS3Exception ex)
       {
-        logger.LogError(ex, "Failed to list objects while clearing bucket {BucketName}", bucketName);
+        _logger.ClearBucketListFailed(ex, bucketName);
         throw new CloudflareR2ListException<string>(
           "Listing objects failed during bucket clear operation.",
           allFailedKeys, totalMetrics, new AggregateException(allExceptions.Append(ex)));
@@ -437,23 +477,17 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
           // there is no point in continuing to list and re-attempting the same failing objects.
           if (ex.FailedItems.Count == objectsInPage.Count)
           {
-            logger.LogWarning(
-              "Unable to delete any objects in the current batch for bucket {BucketName}. Aborting clear operation to prevent an infinite loop.",
-              bucketName);
+            _logger.ClearBucketDeleteBatchFailedFull(bucketName);
             isTruncated = false; // Force the loop to terminate.
           }
           else if (!continueOnError)
           {
-            logger.LogError(ex, "Failed to delete a batch of objects while clearing bucket {BucketName} and continueOnError is false.",
-                            bucketName);
+            _logger.ClearBucketDeleteFailedStopOnError(ex, bucketName);
             throw; // Re-throw the batch exception
           }
           else
           {
-            logger.LogWarning(
-              ex,
-              "Failed to delete a batch of {Count} objects while clearing bucket {BucketName}. Continuing because continueOnError is true.",
-              ex.FailedItems.Count, bucketName);
+            _logger.ClearBucketDeleteBatchFailedPartial(ex, ex.FailedItems.Count, bucketName);
           }
         }
     } while (isTruncated);
@@ -463,8 +497,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         $"Failed to delete {allFailedKeys.Count} objects while clearing bucket {bucketName}.",
         allFailedKeys.Distinct().ToList(), totalMetrics, new AggregateException(allExceptions));
 
-    logger.LogInformation("Successfully cleared bucket {BucketName}, consuming {Ops} Class A operations.", bucketName,
-                          totalMetrics.ClassAOperations);
+    _logger.ClearedBucket(bucketName, totalMetrics.ClassAOperations);
     return totalMetrics;
   }
 
@@ -487,7 +520,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
 
         // Account for the Class A operation before the call.
         totalMetrics += new R2Result(1);
-        response     =  await s3Client.ListObjectsV2Async(request, cancellationToken);
+        response     =  await _s3Client.ListObjectsV2Async(request, cancellationToken);
 
         // The S3Objects list can be null if the response contains no objects.
         if (response.S3Objects is not null)
@@ -496,13 +529,12 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         request.ContinuationToken = response.NextContinuationToken;
       } while (response.IsTruncated == true); // IsTruncated is type `bool?`
 
-      logger.LogDebug("Successfully listed {Count} objects in s3://{Bucket} with prefix {Prefix}.", allObjects.Count, bucketName,
-                      prefix);
+      _logger.ListedObjects(allObjects.Count, bucketName, prefix);
       return new R2Result<IReadOnlyList<S3Object>>(allObjects, totalMetrics);
     }
     catch (AmazonS3Exception ex)
     {
-      logger.LogError(ex, "AWS SDK Error while listing s3://{Bucket}/{Prefix}", bucketName, prefix);
+      _logger.ListObjectsFailed(ex, bucketName, prefix);
       throw new CloudflareR2ListException<S3Object>(
         $"Listing objects failed for s3://{bucketName}/{prefix}",
         allObjects, totalMetrics, ex);
@@ -532,7 +564,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       {
         // Account for the Class A operation before the call.
         totalMetrics += new R2Result(1);
-        var response = await s3Client.ListPartsAsync(request, cancellationToken);
+        var response = await _s3Client.ListPartsAsync(request, cancellationToken);
 
         allParts.AddRange(response.Parts.Select(p => new ListedPart(p.PartNumber, p.ETag, p.Size, p.LastModified)));
 
@@ -543,7 +575,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
       }
       catch (AmazonS3Exception ex)
       {
-        logger.LogError(ex, "Failed to list parts for upload {UploadId}", uploadId);
+        _logger.ListPartsFailed(ex, uploadId);
         // Throw with the data we've managed to fetch so far.
         throw new CloudflareR2ListException<ListedPart>(
           $"Listing parts failed for uploadId {uploadId}",
@@ -583,6 +615,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     }
     catch (AmazonS3Exception ex)
     {
+      _logger.PresignedUrlGenerationFailed(ex, request.Key, bucketName);
       throw new CloudflareR2OperationException("Failed to generate presigned PUT URL.", new R2Result(), ex);
     }
   }
@@ -621,6 +654,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     }
     catch (AmazonS3Exception ex)
     {
+      _logger.PresignedUrlGenerationFailed(ex, request.Key, bucketName);
       throw new CloudflareR2OperationException("Failed to generate presigned POST URL.", new R2Result(), ex);
     }
   }
@@ -632,7 +666,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
   /// <remarks>This method is virtual to allow for mocking in unit tests.</remarks>
   internal protected virtual string GeneratePresignedUrl(GetPreSignedUrlRequest request)
   {
-    return s3Client.GetPreSignedURL(request);
+    return _s3Client.GetPreSignedURL(request);
   }
 
   /// <inheritdoc />
@@ -650,15 +684,14 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         Key        = objectKey
       };
 
-      var response = await s3Client.InitiateMultipartUploadAsync(request, cancellationToken);
+      var response = await _s3Client.InitiateMultipartUploadAsync(request, cancellationToken);
 
-      logger.LogDebug("Initiated multipart upload for s3://{Bucket}/{Key} with UploadId {UploadId}", bucketName, objectKey,
-                      response.UploadId);
+      _logger.InitiatedMultipartUpload(bucketName, objectKey, response.UploadId);
       return new R2Result<string>(response.UploadId, metrics);
     }
     catch (AmazonS3Exception ex)
     {
-      logger.LogError(ex, "Failed to initiate multipart upload for s3://{Bucket}/{Key}", bucketName, objectKey);
+      _logger.InitiateMultipartUploadFailed(ex, bucketName, objectKey);
       throw new CloudflareR2OperationException($"Failed to initiate multipart upload for s3://{bucketName}/{objectKey}", metrics, ex);
     }
   }
@@ -695,6 +728,7 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     }
     catch (AmazonS3Exception ex)
     {
+      _logger.PresignedUrlGenerationFailed(ex, request.Key, bucketName);
       throw new CloudflareR2OperationException("Failed to generate presigned part URL.", new R2Result(), ex);
     }
   }
@@ -751,6 +785,8 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
     catch (Exception ex)
     {
       // If any single URL generation fails, wrap it in a custom exception.
+      // The exception 'ex' will contain the specific part number that failed if debugged.
+      _logger.PresignedUrlGenerationFailed(ex, request.Key, bucketName);
       throw new CloudflareR2OperationException(
         $"Failed to generate one or more presigned part URLs for upload {request.UploadId}.", new R2Result(), ex);
     }
@@ -775,14 +811,14 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         PartETags  = parts.ToList()
       };
 
-      await s3Client.CompleteMultipartUploadAsync(request, cancellationToken);
-      logger.LogDebug("Successfully completed multipart upload for s3://{Bucket}/{Key}", bucketName, objectKey);
+      await _s3Client.CompleteMultipartUploadAsync(request, cancellationToken);
+      _logger.CompletedMultipartUpload(bucketName, objectKey);
 
       return metrics;
     }
     catch (AmazonS3Exception ex)
     {
-      logger.LogError(ex, "Failed to complete multipart upload for s3://{Bucket}/{Key}", bucketName, objectKey);
+      _logger.CompleteMultipartUploadFailed(ex, bucketName, objectKey);
       throw new CloudflareR2OperationException($"Failed to complete multipart upload for s3://{bucketName}/{objectKey}", metrics, ex);
     }
   }
@@ -805,14 +841,14 @@ public class R2Client(ILogger<R2Client> logger, IAmazonS3 s3Client) : IR2Client,
         UploadId   = uploadId
       };
 
-      await s3Client.AbortMultipartUploadAsync(request, cancellationToken);
-      logger.LogInformation("Successfully aborted multipart upload {UploadId}", uploadId);
+      await _s3Client.AbortMultipartUploadAsync(request, cancellationToken);
+      _logger.AbortedMultipartUpload(uploadId);
 
       return metrics;
     }
     catch (AmazonS3Exception ex)
     {
-      logger.LogError(ex, "Failed to abort multipart upload {UploadId}", uploadId);
+      _logger.AbortMultipartUploadFailed(ex, uploadId);
       throw new CloudflareR2OperationException($"Failed to abort multipart upload {uploadId}", metrics, ex);
     }
   }

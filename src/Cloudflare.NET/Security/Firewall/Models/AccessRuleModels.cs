@@ -22,7 +22,7 @@ public record AccessRule(
   [property: JsonPropertyName("notes")]
   string? Notes,
   [property: JsonPropertyName("allowed_modes")]
-  IReadOnlyList<string> AllowedModes,
+  IReadOnlyList<AccessRuleMode> AllowedModes,
   [property: JsonPropertyName("scope")]
   Scope Scope,
   [property: JsonPropertyName("created_on")]

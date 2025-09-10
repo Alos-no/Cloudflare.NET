@@ -2,7 +2,10 @@
 
 using AccessRules;
 using Core;
+using Core.Internal;
+using Core.Models;
 using Firewall;
+using Microsoft.Extensions.Logging;
 using Models;
 using Rulesets;
 
@@ -29,12 +32,14 @@ public class ZonesApi : ApiResource, IZonesApi
 
   /// <summary>Initializes a new instance of the <see cref="ZonesApi" /> class.</summary>
   /// <param name="httpClient">The HttpClient for making requests.</param>
-  public ZonesApi(HttpClient httpClient) : base(httpClient)
+  /// <param name="loggerFactory">The factory to create loggers for this and child resources.</param>
+  public ZonesApi(HttpClient httpClient, ILoggerFactory loggerFactory)
+    : base(httpClient, loggerFactory.CreateLogger<ZonesApi>())
   {
-    _accessRules = new Lazy<IZoneAccessRulesApi>(() => new ZoneAccessRulesApi(httpClient));
-    _rulesets    = new Lazy<IZoneRulesetsApi>(() => new ZoneRulesetsApi(httpClient));
-    _lockdown    = new Lazy<IZoneLockdownApi>(() => new ZoneLockdownApi(httpClient));
-    _uaRules     = new Lazy<IZoneUaRulesApi>(() => new ZoneUaRulesApi(httpClient));
+    _accessRules = new Lazy<IZoneAccessRulesApi>(() => new ZoneAccessRulesApi(httpClient, loggerFactory));
+    _rulesets    = new Lazy<IZoneRulesetsApi>(() => new ZoneRulesetsApi(httpClient, loggerFactory));
+    _lockdown    = new Lazy<IZoneLockdownApi>(() => new ZoneLockdownApi(httpClient, loggerFactory));
+    _uaRules     = new Lazy<IZoneUaRulesApi>(() => new ZoneUaRulesApi(httpClient, loggerFactory));
   }
 
   #endregion
@@ -83,11 +88,97 @@ public class ZonesApi : ApiResource, IZonesApi
   }
 
   /// <inheritdoc />
+  public IAsyncEnumerable<DnsRecord> ListAllDnsRecordsAsync(
+    string                 zoneId,
+    ListDnsRecordsFilters? filters           = null,
+    CancellationToken      cancellationToken = default)
+  {
+    // Ensure pagination parameters are excluded from the base URI for the helper.
+    var listFilters = filters is not null ? filters with { Page = null, PerPage = null } : null;
+    var queryString = BuildDnsListQueryString(listFilters);
+    var endpoint    = $"zones/{zoneId}/dns_records{queryString}";
+    return GetPaginatedAsync<DnsRecord>(endpoint, filters?.PerPage, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<string> ExportDnsRecordsAsync(string zoneId, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"zones/{zoneId}/dns_records/export";
+    return await GetStringAsync(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<DnsImportResult> ImportDnsRecordsAsync(
+    string            zoneId,
+    Stream            bindStream,
+    bool              proxied,
+    bool              overwriteExisting,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint =
+      $"zones/{zoneId}/dns_records/import?proxied={proxied.ToString().ToLower()}&overwrite_existing={overwriteExisting.ToString().ToLower()}";
+    return await PostMultipartFileAsync<DnsImportResult>(endpoint, bindStream, "bind_config.txt", "file", cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<PurgeCacheResult> PurgeCacheAsync(
+    string            zoneId,
+    PurgeCacheRequest request,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"zones/{zoneId}/purge_cache";
+    return await PostAsync<PurgeCacheResult>(endpoint, request, cancellationToken);
+  }
+
+  /// <inheritdoc />
   public async Task<DnsRecord?> FindDnsRecordByNameAsync(string zoneId, string hostname, CancellationToken cancellationToken = default)
   {
     var endpoint = $"zones/{zoneId}/dns_records?name={hostname}";
     var result   = await GetAsync<List<DnsRecord>>(endpoint, cancellationToken);
     return result.FirstOrDefault();
+  }
+
+  /// <inheritdoc />
+  public async Task<PagePaginatedResult<DnsRecord>> ListDnsRecordsAsync(
+    string                 zoneId,
+    ListDnsRecordsFilters? filters           = null,
+    CancellationToken      cancellationToken = default)
+  {
+    var queryString = BuildDnsListQueryString(filters);
+    var endpoint    = $"zones/{zoneId}/dns_records{queryString}";
+    return await GetPagePaginatedResultAsync<DnsRecord>(endpoint, cancellationToken);
+  }
+
+  #endregion
+
+  #region Methods
+
+  /// <summary>Builds a query string for listing DNS records based on the provided filters.</summary>
+  private static string BuildDnsListQueryString(ListDnsRecordsFilters? filters)
+  {
+    if (filters is null)
+      return string.Empty;
+
+    var queryParams = new List<string>();
+
+    if (!string.IsNullOrWhiteSpace(filters.Type))
+      queryParams.Add($"type={Uri.EscapeDataString(filters.Type)}");
+    if (!string.IsNullOrWhiteSpace(filters.Name))
+      queryParams.Add($"name={Uri.EscapeDataString(filters.Name)}");
+    if (!string.IsNullOrWhiteSpace(filters.Content))
+      queryParams.Add($"content={Uri.EscapeDataString(filters.Content)}");
+    if (filters.Proxied.HasValue)
+      queryParams.Add($"proxied={filters.Proxied.Value.ToString().ToLower()}");
+    if (filters.Page.HasValue)
+      queryParams.Add($"page={filters.Page.Value}");
+    if (filters.PerPage.HasValue)
+      queryParams.Add($"per_page={filters.PerPage.Value}");
+    if (!string.IsNullOrWhiteSpace(filters.Order))
+      queryParams.Add($"order={Uri.EscapeDataString(filters.Order)}");
+    if (filters.Direction.HasValue)
+      queryParams.Add($"direction={EnumHelper.GetEnumMemberValue(filters.Direction.Value)}");
+
+    return queryParams.Count > 0 ? $"?{string.Join("&", queryParams)}" : string.Empty;
   }
 
   #endregion

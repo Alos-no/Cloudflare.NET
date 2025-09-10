@@ -2,6 +2,7 @@
 
 using Accounts;
 using Core;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Zones;
 
@@ -23,11 +24,12 @@ public sealed class CloudflareApiClient : ICloudflareApiClient
   /// <summary>Initializes a new instance of the Cloudflare API client.</summary>
   /// <param name="httpClient">The HttpClient to be used for all API calls.</param>
   /// <param name="options">The Cloudflare API options.</param>
-  public CloudflareApiClient(HttpClient httpClient, IOptions<CloudflareApiOptions> options)
+  /// <param name="loggerFactory">The factory to create loggers for API resources.</param>
+  public CloudflareApiClient(HttpClient httpClient, IOptions<CloudflareApiOptions> options, ILoggerFactory loggerFactory)
   {
     // Lazily initialize API resources to avoid unnecessary allocations until they are first accessed.
-    _accounts = new Lazy<IAccountsApi>(() => new AccountsApi(httpClient, options));
-    _zones    = new Lazy<IZonesApi>(() => new ZonesApi(httpClient));
+    _accounts = new Lazy<IAccountsApi>(() => new AccountsApi(httpClient, options, loggerFactory));
+    _zones    = new Lazy<IZonesApi>(() => new ZonesApi(httpClient, loggerFactory));
   }
 
   #endregion

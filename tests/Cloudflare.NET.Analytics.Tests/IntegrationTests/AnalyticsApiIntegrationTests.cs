@@ -2,7 +2,9 @@
 
 using Fixtures;
 using GraphQL;
+using Microsoft.Extensions.DependencyInjection;
 using Models;
+using Xunit.Abstractions;
 
 /// <summary>Contains integration tests for the <see cref="AnalyticsApi" /> class.</summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
@@ -22,10 +24,15 @@ public class AnalyticsApiIntegrationTests : IClassFixture<AnalyticsApiTestFixtur
 
   /// <summary>Initializes a new instance of the <see cref="AnalyticsApiIntegrationTests" /> class.</summary>
   /// <param name="fixture">The shared test fixture that provides a configured analytics client.</param>
-  public AnalyticsApiIntegrationTests(AnalyticsApiTestFixture fixture)
+  /// <param name="output">The xUnit test output helper.</param>
+  public AnalyticsApiIntegrationTests(AnalyticsApiTestFixture fixture, ITestOutputHelper output)
   {
     _sut       = fixture.AnalyticsApi;
     _accountId = TestConfiguration.CloudflareSettings.AccountId;
+
+    // Wire up the logger provider to the current test's output.
+    var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
+    loggerProvider.Current = output;
   }
 
   #endregion

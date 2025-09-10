@@ -3,8 +3,13 @@
 using Models;
 
 /// <summary>
-///   Represents the base class for exceptions thrown by the Cloudflare.NET.R2 client. It
-///   captures partial metrics accumulated before the failure.
+///   <para>
+///     Represents the base class for exceptions thrown by the Cloudflare.NET.R2 client.
+///   </para>
+///   <para>
+///     It captures partial metrics accumulated before the failure, allowing for
+///     accurate cost tracking even in error scenarios.
+///   </para>
 /// </summary>
 public abstract class CloudflareR2Exception : Exception
 {

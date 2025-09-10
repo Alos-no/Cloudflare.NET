@@ -9,19 +9,26 @@ using Microsoft.Extensions.Options;
 
 /// <summary>
 ///   Provides extension methods for setting up the Cloudflare R2 client in an
-///   IServiceCollection.
+///   <see cref="IServiceCollection" />.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
   #region Methods
 
   /// <summary>
-  ///   Registers the IR2Client and its dependencies using a configuration section. This is a
-  ///   convenience method that binds to the "R2" section of the configuration.
+  ///   <para>
+  ///     Registers the <see cref="IR2Client" /> and its dependencies using a configuration
+  ///     section.
+  ///   </para>
+  ///   <para>
+  ///     This is a convenience method that binds to the "R2" section of the application's
+  ///     <see cref="IConfiguration" />. It also requires the "Cloudflare" section for the Account
+  ///     ID.
+  ///   </para>
   /// </summary>
-  /// <param name="services">The IServiceCollection to add the services to.</param>
+  /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
   /// <param name="configuration">The application configuration, used to bind R2 settings.</param>
-  /// <returns>The IServiceCollection so that additional calls can be chained.</returns>
+  /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, IConfiguration configuration)
   {
     return services.AddCloudflareR2Client(options => configuration.GetSection("R2").Bind(options));
@@ -29,12 +36,18 @@ public static class ServiceCollectionExtensions
 
 
   /// <summary>
-  ///   Registers the IR2Client and its dependencies, allowing for fine-grained programmatic
-  ///   configuration.
+  ///   <para>
+  ///     Registers the <see cref="IR2Client" /> and its dependencies, allowing for fine-grained
+  ///     programmatic configuration.
+  ///   </para>
+  ///   <para>
+  ///     This method sets up the underlying S3-compatible client tailored for R2 and registers
+  ///     the high-level <see cref="IR2Client" /> as a singleton.
+  ///   </para>
   /// </summary>
-  /// <param name="services">The IServiceCollection to add the services to.</param>
+  /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
   /// <param name="configureOptions">An action to configure the <see cref="R2Settings" />.</param>
-  /// <returns>The IServiceCollection so that additional calls can be chained.</returns>
+  /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, Action<R2Settings> configureOptions)
   {
     // Bind the R2 settings from the "R2" configuration section.

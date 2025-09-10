@@ -3,6 +3,7 @@
 using Accounts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Shared.Fixtures;
 using Zones;
 
@@ -34,6 +35,23 @@ public class CloudflareApiTestFixture : IAsyncLifetime
     // Create a host builder to configure the DI container.
     var builder = Host.CreateApplicationBuilder();
 
+    // The provider is added as a singleton so it can be resolved and updated by test classes.
+    var xunitProvider = new XunitTestOutputLoggerProvider();
+    builder.Services.AddSingleton(xunitProvider);
+
+    // Always surface logs in tests: single-line, timestamps, and scopes for traceability.
+    builder.Logging.ClearProviders();
+    builder.Logging.AddProvider(xunitProvider);
+    builder.Logging.AddSimpleConsole(o =>
+    {
+      o.SingleLine      = true;
+      o.IncludeScopes   = true;
+      o.TimestampFormat = "HH:mm:ss.fff zzz ";
+    });
+    builder.Logging.SetMinimumLevel(LogLevel.Trace);
+    builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
+    builder.Logging.AddFilter("System", LogLevel.Warning);
+
     // Use the SDK's own extension method to register the API client.
     // This ensures we are testing the actual DI configuration of the library.
     // The configuration (including secrets) is loaded from TestConfiguration.
@@ -45,7 +63,7 @@ public class CloudflareApiTestFixture : IAsyncLifetime
 
     // Resolve the main client once.
     _apiClient = _serviceProvider.GetRequiredService<ICloudflareApiClient>();
-    _settings = TestConfiguration.CloudflareSettings;
+    _settings  = TestConfiguration.CloudflareSettings;
   }
 
   /// <summary>Disposes of the underlying service provider.</summary>
@@ -62,6 +80,9 @@ public class CloudflareApiTestFixture : IAsyncLifetime
   #endregion
 
   #region Properties & Fields - Public
+
+  /// <summary>Gets the underlying service provider for resolving services in tests.</summary>
+  public IServiceProvider ServiceProvider => _serviceProvider;
 
   /// <summary>Gets the fully configured Accounts API client from the DI container.</summary>
   public IAccountsApi AccountsApi => _apiClient.Accounts;

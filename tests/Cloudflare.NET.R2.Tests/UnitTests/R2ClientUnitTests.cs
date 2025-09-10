@@ -11,18 +11,11 @@ using Models;
 using Moq;
 using Moq.Protected;
 using NET.Tests.Shared.Fixtures;
+using Xunit.Abstractions;
 
 [Trait("Category", TestConstants.TestCategories.Unit)]
 public class R2ClientUnitTests
 {
-  #region Constants & Statics
-
-  // Constants from R2Client to use in tests.
-  private const long R2MinPartSize = 5L * 1024 * 1024;
-  private const long R2MaxPartSize = 5L * 1024 * 1024 * 1024;
-
-  #endregion
-
   #region Properties & Fields - Non-Public
 
   private readonly Mock<IAmazonS3> _mockS3Client;
@@ -32,11 +25,12 @@ public class R2ClientUnitTests
 
   #region Constructors
 
-  public R2ClientUnitTests()
+  public R2ClientUnitTests(ITestOutputHelper output)
   {
     _mockS3Client = new Mock<IAmazonS3>();
-    var mockLogger = new Mock<ILogger<R2Client>>();
-    _sut = new R2Client(mockLogger.Object, _mockS3Client.Object);
+    var loggerProvider = new XunitTestOutputLoggerProvider { Current = output };
+    var loggerFactory  = new LoggerFactory([loggerProvider]);
+    _sut = new R2Client(loggerFactory, _mockS3Client.Object);
   }
 
   #endregion
@@ -242,7 +236,52 @@ public class R2ClientUnitTests
 
     // Assert
     capturedRequests.Should().NotBeEmpty();
-    capturedRequests.First().PartSize.Should().Be(R2MinPartSize);
+    capturedRequests.First().PartSize.Should().Be(R2Client.R2MinPartSize);
+  }
+
+  /// <summary>
+  ///   Verifies that if a user requests a part size larger than R2's maximum (5 GiB), the
+  ///   client clamps it down to the maximum allowed size.
+  /// </summary>
+  [Fact]
+  public async Task UploadMultipartAsync_WithTooLargePartSize_ClampsToMax()
+  {
+    // Arrange
+    // The file size MUST be larger than the max part size to test clamping.
+    // We'll simulate a file that would create one max-sized part and one smaller part.
+    var fileSize = R2Client.R2MaxPartSize + (10 * 1024 * 1024); // 5 GiB + 10 MiB
+
+    // Mock a seekable stream with a specific length, without allocating memory for it.
+    var mockStream = new Mock<Stream>();
+    mockStream.Setup(s => s.CanSeek).Returns(true);
+    mockStream.Setup(s => s.Length).Returns(fileSize);
+    // The S3 client will try to read from the stream, so we need to allow reads, returning 0 bytes read.
+    mockStream.Setup(s => s.Read(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>())).Returns(0);
+
+    var uploadId         = "test-upload-id";
+    var capturedRequests = new List<UploadPartRequest>();
+
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = uploadId });
+    _mockS3Client
+      .Setup(c => c.UploadPartAsync(It.IsAny<UploadPartRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<UploadPartRequest, CancellationToken>((req, _) => capturedRequests.Add(req))
+      .ReturnsAsync((UploadPartRequest req, CancellationToken _) => new UploadPartResponse { PartNumber = req.PartNumber, ETag = "etag" });
+    _mockS3Client
+      .Setup(c => c.CompleteMultipartUploadAsync(It.IsAny<CompleteMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new CompleteMultipartUploadResponse());
+
+    // Act: Request a part size of 6 GiB, which is above the 5 GiB maximum.
+    await _sut.UploadMultipartAsync("bucket", "key", mockStream.Object, 6L * 1024 * 1024 * 1024);
+
+    // Assert
+    capturedRequests.Should().NotBeEmpty();
+    // The first part's size should be clamped to the maximum allowed size.
+    capturedRequests.First().PartSize.Should().Be(R2Client.R2MaxPartSize);
+    // There should be a second part for the remainder.
+    capturedRequests.Should().HaveCount(2);
+    capturedRequests[1].PartSize.Should().Be(10 * 1024 * 1024);
   }
 
   [Fact]
@@ -523,9 +562,12 @@ public class R2ClientUnitTests
     var request     = new PresignedPutRequest("key", TimeSpan.FromMinutes(5), 1024, "text/plain");
 
     // We mock the R2Client itself to override the virtual URL generation method.
-    var mockLogger   = new Mock<ILogger<R2Client>>();
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
     var mockS3Client = new Mock<IAmazonS3>();
-    var mockR2Client = new Mock<R2Client>(mockLogger.Object, mockS3Client.Object) { CallBase = true };
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
 
     mockR2Client
       .Protected()
@@ -551,9 +593,12 @@ public class R2ClientUnitTests
     var request     = new PresignedUploadPartRequest("key", "upload-id", 1, TimeSpan.FromMinutes(5), 1024, "application/octet-stream");
 
     // We mock the R2Client itself to override the virtual URL generation method.
-    var mockLogger   = new Mock<ILogger<R2Client>>();
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
     var mockS3Client = new Mock<IAmazonS3>();
-    var mockR2Client = new Mock<R2Client>(mockLogger.Object, mockS3Client.Object) { CallBase = true };
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
 
     mockR2Client
       .Protected()
@@ -583,10 +628,13 @@ public class R2ClientUnitTests
     );
 
     // We mock the R2Client itself to override the virtual URL generation method.
-    var mockLogger = new Mock<ILogger<R2Client>>();
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
     // The mock S3 client is still needed for the R2Client constructor, but its methods won't be called by the SUT.
     var mockS3Client = new Mock<IAmazonS3>();
-    var mockR2Client = new Mock<R2Client>(mockLogger.Object, mockS3Client.Object) { CallBase = true };
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
 
     mockR2Client
       .Protected()
@@ -602,6 +650,72 @@ public class R2ClientUnitTests
     var ex = action.Should().Throw<CloudflareR2OperationException>().Which;
     ex.InnerException.Should().Be(s3Exception);
     ex.Message.Should().Be($"Failed to generate one or more presigned part URLs for upload {request.UploadId}.");
+  }
+
+  [Fact]
+  public async Task UploadSinglePartAsync_WithStreamTooLarge_ThrowsArgumentException()
+  {
+    // Arrange
+    var mockStream = new Mock<Stream>();
+    mockStream.Setup(s => s.CanSeek).Returns(true);
+    mockStream.Setup(s => s.Length).Returns(R2Client.R2MaxSinglePartUploadSize + 1);
+
+    // Act
+    var action = () => _sut.UploadSinglePartAsync("bucket", "key", mockStream.Object);
+
+    // Assert
+    await action.Should().ThrowAsync<ArgumentException>()
+          .WithMessage("Stream length (* bytes) exceeds the maximum size for a single-part upload (5 GiB).*");
+  }
+
+  [Fact]
+  public async Task UploadMultipartAsync_WithStreamTooLarge_ThrowsArgumentException()
+  {
+    // Arrange
+    var mockStream = new Mock<Stream>();
+    mockStream.Setup(s => s.CanSeek).Returns(true);
+    mockStream.Setup(s => s.Length).Returns(R2Client.R2MaxMultipartFileSize + 1);
+
+    // Act
+    var action = () => _sut.UploadMultipartAsync("bucket", "key", mockStream.Object, null);
+
+    // Assert
+    await action.Should().ThrowAsync<ArgumentException>()
+          .WithMessage("Stream length (* bytes) exceeds the maximum R2 object size of 5 TiB.*");
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithStreamTooLarge_ThrowsArgumentException()
+  {
+    // Arrange
+    var mockStream = new Mock<Stream>();
+    mockStream.Setup(s => s.CanSeek).Returns(true);
+    mockStream.Setup(s => s.Length).Returns(R2Client.R2MaxMultipartFileSize + 1);
+
+    // Act
+    var action = () => _sut.UploadAsync("bucket", "key", mockStream.Object);
+
+    // Assert
+    await action.Should().ThrowAsync<ArgumentException>()
+          .WithMessage("Stream length (* bytes) exceeds the maximum R2 object size of 5 TiB.*");
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithNonSeekableStream_BypassesSizeValidation()
+  {
+    // Arrange
+    var mockStream = new Mock<Stream>();
+    mockStream.Setup(s => s.CanSeek).Returns(false);
+    // Because the stream is non-seekable, the client must attempt a multipart upload.
+    // This will fail with a NotSupportedException, which is the expected behavior here.
+    // The key is that it should NOT fail with an ArgumentException from a size check.
+
+    // Act
+    var action = () => _sut.UploadAsync("bucket", "key", mockStream.Object);
+
+    // Assert
+    // The action should throw the exception from the multipart check, not the size validation.
+    await action.Should().ThrowAsync<NotSupportedException>();
   }
 
   #endregion

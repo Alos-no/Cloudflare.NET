@@ -1,15 +1,38 @@
 ﻿namespace Cloudflare.NET.Zones.Firewall;
 
+using Core.Models;
 using Security.Firewall.Models;
 
-/// <summary>Defines the contract for managing User-Agent blocking rules.</summary>
+/// <summary>
+///   <para>Defines the contract for managing User-Agent blocking rules.</para>
+///   <para>These rules allow you to block or challenge requests based on their User-Agent header.</para>
+/// </summary>
 public interface IZoneUaRulesApi
 {
-  /// <summary>Lists all User-Agent blocking rules for a zone.</summary>
+  /// <summary>
+  ///   Lists all User-Agent blocking rules for a zone, allowing for manual pagination
+  ///   control.
+  /// </summary>
+  /// <remarks>
+  ///   This method is intended for developers who need to control the pagination process
+  ///   manually. Use the properties of the returned <see cref="PagePaginatedResult{T}" /> to
+  ///   determine if there are more pages and to construct the filter for the next call.
+  /// </remarks>
   /// <param name="zoneId">The ID of the zone.</param>
+  /// <param name="filters">Optional pagination filters.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>A read-only list of User-Agent blocking rules.</returns>
-  Task<IReadOnlyList<UaRule>> ListAsync(string zoneId, CancellationToken cancellationToken = default);
+  /// <returns>A single page of User-Agent blocking rules along with pagination information.</returns>
+  Task<PagePaginatedResult<UaRule>> ListAsync(string              zoneId,
+                                              ListUaRulesFilters? filters           = null,
+                                              CancellationToken   cancellationToken = default);
+
+  /// <summary>Lists all User-Agent blocking rules for a zone, automatically handling pagination.</summary>
+  /// <remarks>This method simplifies fetching all rules by abstracting away the pagination logic.</remarks>
+  /// <param name="zoneId">The ID of the zone.</param>
+  /// <param name="perPage">The number of results to fetch per API page.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An asynchronous stream of all User-Agent blocking rules for the zone.</returns>
+  IAsyncEnumerable<UaRule> ListAllAsync(string zoneId, int? perPage = null, CancellationToken cancellationToken = default);
 
   /// <summary>Gets a single User-Agent blocking rule by its ID.</summary>
   /// <param name="zoneId">The ID of the zone.</param>

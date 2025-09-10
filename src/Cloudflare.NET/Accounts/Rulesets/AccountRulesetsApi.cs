@@ -1,12 +1,17 @@
 ﻿namespace Cloudflare.NET.Accounts.Rulesets;
 
 using Core;
+using Core.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Security.Rulesets.Models;
 
 /// <summary>Implements the API for managing Rulesets at the account level.</summary>
-public class AccountRulesetsApi(HttpClient httpClient, IOptions<CloudflareApiOptions> options)
-  : ApiResource(httpClient), IAccountRulesetsApi
+public class AccountRulesetsApi(
+  HttpClient                     httpClient,
+  IOptions<CloudflareApiOptions> options,
+  ILoggerFactory                 loggerFactory)
+  : ApiResource(httpClient, loggerFactory.CreateLogger<AccountRulesetsApi>()), IAccountRulesetsApi
 {
   #region Properties & Fields - Non-Public
 
@@ -17,10 +22,53 @@ public class AccountRulesetsApi(HttpClient httpClient, IOptions<CloudflareApiOpt
   #region Methods Impl
 
   /// <inheritdoc />
-  public async Task<IReadOnlyList<Ruleset>> ListAsync(CancellationToken cancellationToken = default)
+  public async Task<CursorPaginatedResult<Ruleset>> ListAsync(ListRulesetsFilters? filters           = null,
+                                                              CancellationToken    cancellationToken = default)
+  {
+    var queryParams = new List<string>();
+
+    if (filters?.PerPage is not null)
+      queryParams.Add($"per_page={filters.PerPage}");
+    if (!string.IsNullOrEmpty(filters?.Cursor))
+      queryParams.Add($"cursor={filters.Cursor}");
+
+    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
+
+    var endpoint = $"accounts/{_accountId}/rulesets{queryString}";
+    return await GetCursorPaginatedResultAsync<Ruleset>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public IAsyncEnumerable<Ruleset> ListAllAsync(int? perPage = null, CancellationToken cancellationToken = default)
   {
     var endpoint = $"accounts/{_accountId}/rulesets";
-    return await GetAsync<IReadOnlyList<Ruleset>>(endpoint, cancellationToken);
+    return GetCursorPaginatedAsync<Ruleset>(endpoint, perPage, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<PagePaginatedResult<Ruleset>> ListPhaseEntrypointVersionsAsync(
+    string                      phase,
+    ListRulesetVersionsFilters? filters           = null,
+    CancellationToken           cancellationToken = default)
+  {
+    var queryParams = new List<string>();
+
+    if (filters?.Page is not null)
+      queryParams.Add($"page={filters.Page}");
+    if (filters?.PerPage is not null)
+      queryParams.Add($"per_page={filters.PerPage}");
+
+    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
+
+    var endpoint = $"accounts/{_accountId}/rulesets/phases/{phase}/entrypoint/versions{queryString}";
+    return await GetPagePaginatedResultAsync<Ruleset>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<Ruleset> GetPhaseEntrypointVersionAsync(string phase, string version, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/rulesets/phases/{phase}/entrypoint/versions/{version}";
+    return await GetAsync<Ruleset>(endpoint, cancellationToken);
   }
 
   /// <inheritdoc />

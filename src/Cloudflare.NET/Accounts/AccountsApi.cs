@@ -2,6 +2,8 @@
 
 using AccessRules;
 using Core;
+using Core.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models;
 using Rulesets;
@@ -27,12 +29,13 @@ public class AccountsApi : ApiResource, IAccountsApi
   /// <summary>Initializes a new instance of the <see cref="AccountsApi" /> class.</summary>
   /// <param name="httpClient">The HttpClient for making requests.</param>
   /// <param name="options">The Cloudflare API options.</param>
-  public AccountsApi(HttpClient httpClient, IOptions<CloudflareApiOptions> options)
-    : base(httpClient)
+  /// <param name="loggerFactory">The factory to create loggers for this and child resources.</param>
+  public AccountsApi(HttpClient httpClient, IOptions<CloudflareApiOptions> options, ILoggerFactory loggerFactory)
+    : base(httpClient, loggerFactory.CreateLogger<AccountsApi>())
   {
     _accountId   = options.Value.AccountId;
-    _accessRules = new Lazy<IAccountAccessRulesApi>(() => new AccountAccessRulesApi(httpClient, options));
-    _rulesets    = new Lazy<IAccountRulesetsApi>(() => new AccountRulesetsApi(httpClient, options));
+    _accessRules = new Lazy<IAccountAccessRulesApi>(() => new AccountAccessRulesApi(httpClient, options, loggerFactory));
+    _rulesets    = new Lazy<IAccountRulesetsApi>(() => new AccountRulesetsApi(httpClient, options, loggerFactory));
   }
 
   #endregion
@@ -48,6 +51,39 @@ public class AccountsApi : ApiResource, IAccountsApi
   #endregion
 
   #region Methods Impl
+
+  /// <inheritdoc />
+  public async Task<CursorPaginatedResult<R2Bucket>> ListR2BucketsAsync(
+    ListR2BucketsFilters? filters           = null,
+    CancellationToken     cancellationToken = default)
+  {
+    var queryParams = new List<string>();
+
+    if (filters?.PerPage is not null)
+      queryParams.Add($"per_page={filters.PerPage}");
+    if (!string.IsNullOrEmpty(filters?.Cursor))
+      queryParams.Add($"cursor={filters.Cursor}");
+
+    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
+    var endpoint    = $"accounts/{_accountId}/r2/buckets{queryString}";
+
+    return await GetCursorPaginatedResultAsync<ListR2BucketsResponse, R2Bucket>(
+      endpoint,
+      response => response.Buckets,
+      cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public IAsyncEnumerable<R2Bucket> ListAllR2BucketsAsync(ListR2BucketsFilters? filters           = null,
+                                                          CancellationToken     cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets";
+    return GetCursorPaginatedAsync<ListR2BucketsResponse, R2Bucket>(
+      endpoint,
+      filters?.PerPage,
+      response => response.Buckets,
+      cancellationToken);
+  }
 
   /// <inheritdoc />
   public async Task DisableDevUrlAsync(string bucketName, CancellationToken cancellationToken = default)
@@ -93,11 +129,11 @@ public class AccountsApi : ApiResource, IAccountsApi
   }
 
   /// <inheritdoc />
-  public async Task<CreateBucketResponse> CreateR2BucketAsync(string bucketName, CancellationToken cancellationToken = default)
+  public async Task<R2Bucket> CreateR2BucketAsync(string bucketName, CancellationToken cancellationToken = default)
   {
     var requestBody = new CreateBucketRequest(bucketName);
     var endpoint    = $"accounts/{_accountId}/r2/buckets";
-    return await PostAsync<CreateBucketResponse>(endpoint, requestBody, cancellationToken);
+    return await PostAsync<R2Bucket>(endpoint, requestBody, cancellationToken);
   }
 
   #endregion

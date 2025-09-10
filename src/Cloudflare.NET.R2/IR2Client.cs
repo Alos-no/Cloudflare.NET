@@ -11,18 +11,24 @@ using Models;
 public interface IR2Client
 {
   /// <summary>
-  ///   Uploads a file, automatically choosing between a single PUT request or a multipart
-  ///   upload, depending on the file size.
+  ///   Uploads a file from a local path, automatically choosing between a single PUT
+  ///   request or a multipart upload based on the file size.
   /// </summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key (path) for the object in the bucket.</param>
   /// <param name="filePath">The path to the local file to upload.</param>
   /// <param name="partSize">
-  ///   The desired size for each part in a multipart upload. If null, a
-  ///   sensible default is used. Must be between 5MiB and 5GiB.
+  ///   The desired size in bytes for each part in a multipart upload. If null,
+  ///   a sensible default is used. The value is clamped between 5MiB and 5GiB.
   /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the file size exceeds R2's 5 TiB limit.</exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
+  /// <exception cref="FileNotFoundException">
+  ///   Thrown if the specified <paramref name="filePath" />
+  ///   does not exist.
+  /// </exception>
   Task<R2Result> UploadAsync(string            bucketName,
                              string            objectKey,
                              string            filePath,
@@ -31,17 +37,23 @@ public interface IR2Client
 
   /// <summary>
   ///   Uploads a file from a stream, automatically choosing between a single PUT request or
-  ///   a multipart upload, depending on the stream length (if seekable).
+  ///   a multipart upload. If the stream is seekable, the choice is based on its length.
+  ///   If it is not seekable, it will always attempt a multipart upload.
   /// </summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key (path) for the object in the bucket.</param>
   /// <param name="fileStream">The stream to upload.</param>
   /// <param name="partSize">
-  ///   The desired size for each part in a multipart upload. If null, a
-  ///   sensible default is used. Must be between 5MiB and 5GiB.
+  ///   The desired size in bytes for each part in a multipart upload. If null,
+  ///   a sensible default is used. The value is clamped between 5MiB and 5GiB.
   /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the stream is seekable and its length exceeds R2's 5 TiB limit.</exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
+  /// <exception cref="NotSupportedException">
+  ///   Thrown if a multipart upload is attempted but the stream is not seekable.
+  /// </exception>
   Task<R2Result> UploadAsync(string            bucketName,
                              string            objectKey,
                              Stream            fileStream,
@@ -49,14 +61,17 @@ public interface IR2Client
                              CancellationToken cancellationToken = default);
 
   /// <summary>
-  ///   Uploads a file using a single PUT request. The max upload size is 5 MiB less than 5
-  ///   GiB, so 4.995 GiB. Used for additional control, when UploadAsync doesn't fit.
+  ///   Uploads a file using a single PUT request. This method provides direct control and
+  ///   should be used when the automatic selection in
+  ///   <see cref="UploadAsync(string,string,string,long?,CancellationToken)" /> is not
+  ///   desired.
   /// </summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key (path) for the object in the bucket.</param>
   /// <param name="filePath">The path to the local file to upload.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the file size exceeds the 5 GiB single-part upload limit.</exception>
   /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
   Task<R2Result> UploadSinglePartAsync(string            bucketName,
                                        string            objectKey,
@@ -64,14 +79,16 @@ public interface IR2Client
                                        CancellationToken cancellationToken = default);
 
   /// <summary>
-  ///   Uploads a file using a single PUT request. The max upload size is 5 MiB less than 5
-  ///   GiB, so 4.995 GiB. Used for additional control, when UploadAsync doesn't fit.
+  ///   Uploads a file from a stream using a single PUT request. This method provides direct
+  ///   control and should be used when the automatic selection in
+  ///   <see cref="UploadAsync(string,string,Stream,long?,CancellationToken)" /> is not desired.
   /// </summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key (path) for the object in the bucket.</param>
   /// <param name="inputStream">The stream to upload.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the stream is seekable and its length exceeds the 5 GiB single-part upload limit.</exception>
   /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
   Task<R2Result> UploadSinglePartAsync(string            bucketName,
                                        string            objectKey,
@@ -79,20 +96,19 @@ public interface IR2Client
                                        CancellationToken cancellationToken = default);
 
   /// <summary>
-  ///   Uploads a file using a multipart upload. Object part sizes must be at least 5MiB but
-  ///   no larger than 5GiB. All parts except the last one must be the same size. The last part has
-  ///   no minimum size, but must be the same or smaller than the other parts. The maximum number of
-  ///   parts is 10,000. Used for additional control, when UploadAsync doesn't fit.
+  ///   Uploads a file using a multipart upload. This method provides direct control over
+  ///   multipart uploads.
   /// </summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key (path) for the object in the bucket.</param>
   /// <param name="filePath">The path to the local file to upload.</param>
   /// <param name="partSize">
-  ///   The desired size for each part. If null, a sensible default is used.
-  ///   Must be between 5MiB and 5GiB.
+  ///   The desired size in bytes for each part. If null, a sensible default is
+  ///   used. The value is clamped between 5MiB and 5GiB.
   /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the aggregate metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the file size exceeds R2's 5 TiB limit.</exception>
   /// <exception cref="CloudflareR2OperationException">Thrown if any part of the upload fails.</exception>
   Task<R2Result> UploadMultipartAsync(string            bucketName,
                                       string            objectKey,
@@ -101,21 +117,21 @@ public interface IR2Client
                                       CancellationToken cancellationToken = default);
 
   /// <summary>
-  ///   Uploads a file using a multipart upload. Object part sizes must be at least 5MiB but
-  ///   no larger than 5GiB. All parts except the last one must be the same size. The last part has
-  ///   no minimum size, but must be the same or smaller than the other parts. The maximum number of
-  ///   parts is 10,000. Used for additional control, when UploadAsync doesn't fit.
+  ///   Uploads a file from a stream using a multipart upload. The stream must be seekable.
+  ///   This method provides direct control over multipart uploads.
   /// </summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key (path) for the object in the bucket.</param>
-  /// <param name="inputStream">The stream to upload.</param>
+  /// <param name="inputStream">The stream to upload. Must be seekable.</param>
   /// <param name="partSize">
-  ///   The desired size for each part. If null, a sensible default is used.
-  ///   Must be between 5MiB and 5GiB.
+  ///   The desired size in bytes for each part. If null, a sensible default is
+  ///   used. The value is clamped between 5MiB and 5GiB.
   /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the aggregate metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the stream length exceeds R2's 5 TiB limit.</exception>
   /// <exception cref="CloudflareR2OperationException">Thrown if any part of the upload fails.</exception>
+  /// <exception cref="NotSupportedException">Thrown if the provided stream is not seekable.</exception>
   Task<R2Result> UploadMultipartAsync(string            bucketName,
                                       string            objectKey,
                                       Stream            inputStream,
@@ -147,15 +163,18 @@ public interface IR2Client
                                    Stream            outputStream,
                                    CancellationToken cancellationToken = default);
 
-  /// <summary>Deletes a single object from an R2 bucket.</summary>
+  /// <summary>Deletes a single object from an R2 bucket. This is a free operation.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key of the object to delete.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>An <see cref="R2Result" /> detailing the metrics of the delete operation.</returns>
+  /// <returns>
+  ///   An <see cref="R2Result" /> detailing the metrics of the delete operation (should be
+  ///   zero).
+  /// </returns>
   /// <exception cref="CloudflareR2OperationException">Thrown if the delete fails.</exception>
   Task<R2Result> DeleteObjectAsync(string bucketName, string objectKey, CancellationToken cancellationToken = default);
 
-  /// <summary>Deletes multiple objects from an R2 bucket in batches.</summary>
+  /// <summary>Deletes multiple objects from an R2 bucket in batches. This is a free operation.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKeys">An enumeration of object keys to delete.</param>
   /// <param name="continueOnError">
@@ -163,7 +182,10 @@ public interface IR2Client
   ///   throwing an exception only at the end. If false, it will stop on the first error.
   /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>An <see cref="R2Result" /> detailing the total metrics of all attempted operations.</returns>
+  /// <returns>
+  ///   An <see cref="R2Result" /> detailing the total metrics of all attempted operations
+  ///   (should be zero).
+  /// </returns>
   /// <exception cref="CloudflareR2BatchException{T}">
   ///   Thrown if one or more objects could not be
   ///   deleted. Contains a list of the failed keys.
@@ -178,7 +200,10 @@ public interface IR2Client
   ///   batches.
   /// </summary>
   /// <param name="bucketName">The name of the bucket to clear.</param>
-  /// <param name="continueOnError">If true, the operation will continue even if some batches fail.</param>
+  /// <param name="continueOnError">
+  ///   If true, the operation will continue even if some delete batches
+  ///   fail.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   An <see cref="R2Result" /> detailing the total metrics of all list and delete
@@ -251,12 +276,18 @@ public interface IR2Client
                                               IEnumerable<PartETag> parts,
                                               CancellationToken     cancellationToken = default);
 
-  /// <summary>Aborts a multipart upload, deleting any parts that have already been uploaded.</summary>
+  /// <summary>
+  ///   Aborts a multipart upload, deleting any parts that have already been uploaded. This
+  ///   is a free operation.
+  /// </summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key of the object.</param>
   /// <param name="uploadId">The ID of the multipart upload to abort.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>An <see cref="R2Result" /> detailing the metrics of the abort operation.</returns>
+  /// <returns>
+  ///   An <see cref="R2Result" /> detailing the metrics of the abort operation (should be
+  ///   zero).
+  /// </returns>
   /// <exception cref="CloudflareR2OperationException">Thrown if the operation fails.</exception>
   Task<R2Result> AbortMultipartUploadAsync(string            bucketName,
                                            string            objectKey,

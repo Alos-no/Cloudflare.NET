@@ -2,9 +2,12 @@
 
 using System.Net;
 using Accounts;
+using Accounts.Models;
 using Fixtures;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Fixtures;
 using Shared.Helpers;
+using Xunit.Abstractions;
 
 /// <summary>
 ///   Contains integration tests for the <see cref="AccountsApi" /> class. These tests
@@ -30,11 +33,16 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
 
   /// <summary>Initializes a new instance of the <see cref="AccountsApiIntegrationTests" /> class.</summary>
   /// <param name="fixture">The shared test fixture that provides configured API clients.</param>
-  public AccountsApiIntegrationTests(CloudflareApiTestFixture fixture)
+  /// <param name="output">The xUnit test output helper.</param>
+  public AccountsApiIntegrationTests(CloudflareApiTestFixture fixture, ITestOutputHelper output)
   {
     // The SUT is resolved via the fixture's pre-configured DI container.
     _sut      = fixture.AccountsApi;
     _settings = TestConfiguration.CloudflareSettings;
+
+    // Wire up the logger provider to the current test's output.
+    var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
+    loggerProvider.Current = output;
   }
 
   #endregion
@@ -122,6 +130,52 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       // 3. Detach Custom Domain (Cleanup)
       var detachAction = async () => await _sut.DetachCustomDomainAsync(_bucketName, hostname);
       await detachAction.Should().NotThrowAsync("the custom domain should be cleaned up successfully");
+    }
+  }
+
+  /// <summary>Verifies that R2 buckets can be listed successfully.</summary>
+  [IntegrationTest]
+  public async Task ListR2BucketsAsync_CanListSuccessfully()
+  {
+    // Arrange (bucket is created in InitializeAsync)
+    var filters = new ListR2BucketsFilters { PerPage = 1 };
+
+    // Act
+    var result = await _sut.ListR2BucketsAsync(filters);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty();
+    result.Items[0].Name.Should().NotBeNullOrWhiteSpace();
+    result.Items[0].Location.Should().NotBeNullOrWhiteSpace();
+    result.Items[0].CreationDate.Should().BeBefore(DateTime.UtcNow);
+  }
+
+  /// <summary>Verifies that the async stream can iterate through all created buckets.</summary>
+  [IntegrationTest]
+  public async Task ListAllR2BucketsAsync_CanIterateThroughAllBuckets()
+  {
+    // Arrange
+    var bucketName2 = $"cfnet-test-bucket-{Guid.NewGuid():N}";
+    await _sut.CreateR2BucketAsync(bucketName2);
+    var createdBucketNames = new[] { _bucketName, bucketName2 };
+
+    try
+    {
+      // Act
+      var allBuckets = new List<R2Bucket>();
+      await foreach (var bucket in _sut.ListAllR2BucketsAsync())
+        allBuckets.Add(bucket);
+
+      // Assert
+      allBuckets.Should().NotBeEmpty();
+      var allBucketNames = allBuckets.Select(b => b.Name).ToList();
+      allBucketNames.Should().Contain(createdBucketNames);
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DeleteR2BucketAsync(bucketName2);
     }
   }
 

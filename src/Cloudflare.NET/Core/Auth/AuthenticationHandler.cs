@@ -1,6 +1,7 @@
 namespace Cloudflare.NET.Core.Auth;
 
 using System.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 /// <summary>
@@ -9,12 +10,17 @@ using Microsoft.Extensions.Options;
 /// </summary>
 /// <remarks>Initializes a new instance of the <see cref="AuthenticationHandler" /> class.</remarks>
 /// <param name="options">The Cloudflare API options containing the token.</param>
-public class AuthenticationHandler(IOptions<CloudflareApiOptions> options) : DelegatingHandler
+/// <param name="logger">The logger for this handler.</param>
+public class AuthenticationHandler(IOptions<CloudflareApiOptions> options, ILogger<AuthenticationHandler> logger)
+  : DelegatingHandler
 {
   #region Properties & Fields - Non-Public
 
   /// <summary>The Cloudflare API token used for authentication.</summary>
   private readonly string _apiToken = options.Value.ApiToken;
+
+  /// <summary>The logger for this handler.</summary>
+  private readonly ILogger<AuthenticationHandler> _logger = logger;
 
   #endregion
 
@@ -26,6 +32,9 @@ public class AuthenticationHandler(IOptions<CloudflareApiOptions> options) : Del
   /// <returns>The HTTP response message.</returns>
   protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
   {
+    // Add logging to trace header injection.
+    _logger.AddingAuthHeader(request.RequestUri);
+
     // Set the authorization header for the API token.
     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiToken);
 

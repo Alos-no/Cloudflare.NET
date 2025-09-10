@@ -70,7 +70,11 @@ public record Logging(
 
 /// <summary>Defines the configuration for a rate limiting rule.</summary>
 /// <param name="Characteristics">The properties to track for rate limiting (e.g., "ip.src").</param>
-/// <param name="Period">The time period in seconds.</param>
+/// <param name="Period">
+///   The time period in seconds. Only specific values are allowed. It is highly recommended to
+///   use the constants defined in <see cref="SecurityConstants.RateLimiting.Periods" /> to avoid
+///   errors.
+/// </param>
 /// <param name="RequestsPerPeriod">
 ///   The number of requests allowed in the period for standard rate
 ///   limiting.
@@ -83,6 +87,7 @@ public record Logging(
 ///   For complexity-based limiting, the name of the response
 ///   header to send the score.
 /// </param>
+/// <param name="Simulate">If true, the rule will be logged but not actioned.</param>
 public record RateLimitParameters(
   [property: JsonPropertyName("characteristics")]
   IReadOnlyList<string> Characteristics,
@@ -99,5 +104,7 @@ public record RateLimitParameters(
   [property: JsonPropertyName("counting_expression")]
   string? CountingExpression = null,
   [property: JsonPropertyName("score_response_header_name")]
-  string? ScoreResponseHeaderName = null
+  string? ScoreResponseHeaderName = null,
+  [property: JsonPropertyName("simulate")]
+  bool? Simulate = null
 );

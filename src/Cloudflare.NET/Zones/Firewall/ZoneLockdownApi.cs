@@ -1,19 +1,39 @@
 ﻿namespace Cloudflare.NET.Zones.Firewall;
 
 using Core;
+using Core.Models;
+using Microsoft.Extensions.Logging;
 using Security.Firewall.Models;
 
 /// <summary>Implements the API for managing Zone Lockdown rules.</summary>
-public class ZoneLockdownApi(HttpClient httpClient)
-  : ApiResource(httpClient), IZoneLockdownApi
+public class ZoneLockdownApi(HttpClient httpClient, ILoggerFactory loggerFactory)
+  : ApiResource(httpClient, loggerFactory.CreateLogger<ZoneLockdownApi>()), IZoneLockdownApi
 {
   #region Methods Impl
 
   /// <inheritdoc />
-  public async Task<IReadOnlyList<Lockdown>> ListAsync(string zoneId, CancellationToken cancellationToken = default)
+  public async Task<PagePaginatedResult<Lockdown>> ListAsync(string               zoneId,
+                                                             ListLockdownFilters? filters           = null,
+                                                             CancellationToken    cancellationToken = default)
+  {
+    var queryParams = new List<string>();
+
+    if (filters?.Page is not null)
+      queryParams.Add($"page={filters.Page}");
+    if (filters?.PerPage is not null)
+      queryParams.Add($"per_page={filters.PerPage}");
+
+    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
+
+    var endpoint = $"zones/{zoneId}/firewall/lockdowns{queryString}";
+    return await GetPagePaginatedResultAsync<Lockdown>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public IAsyncEnumerable<Lockdown> ListAllAsync(string zoneId, int? perPage = null, CancellationToken cancellationToken = default)
   {
     var endpoint = $"zones/{zoneId}/firewall/lockdowns";
-    return await GetAsync<IReadOnlyList<Lockdown>>(endpoint, cancellationToken);
+    return GetPaginatedAsync<Lockdown>(endpoint, perPage, cancellationToken);
   }
 
   /// <inheritdoc />
