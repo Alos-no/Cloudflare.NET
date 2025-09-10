@@ -127,6 +127,104 @@ public class ZonesApiUnitTests
                     .Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records?name={hostname}");
   }
 
+  /// <summary>Verifies that FindDnsRecordByNameAsync returns null when no record is found.</summary>
+  [Fact]
+  public async Task FindDnsRecordByNameAsync_WhenNoRecordExists_ReturnsNull()
+  {
+    // Arrange
+    var zoneId   = "test-zone-id";
+    var hostname = "findme.example.com";
+
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(Array.Empty<DnsRecord>());
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var sut        = new ZonesApi(httpClient, _loggerFactory);
+
+    // Act
+    var result = await sut.FindDnsRecordByNameAsync(zoneId, hostname);
+
+    // Assert
+    result.Should().BeNull();
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.RequestUri!.ToString().Should()
+                    .Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records?name={hostname}");
+  }
+
+  /// <summary>
+  ///   Verifies that ListAllDnsRecordsAsync handles page-based pagination correctly.
+  ///   Cloudflare's page-based pagination uses a `result_info` object with `page` and `total_pages`
+  ///   to control the loop. [4, 8, 17]
+  /// </summary>
+  [Fact]
+  public async Task ListAllDnsRecordsAsync_ShouldHandlePaginationCorrectly()
+  {
+    // Arrange
+    var zoneId  = "test-zone-id";
+    var record1 = new DnsRecord("id-1", "a.example.com", "A");
+    var record2 = new DnsRecord("id-2", "b.example.com", "A");
+
+    // Mock first page response
+    var responsePage1 =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new[] { record1 },
+          result_info = new { page = 1, per_page = 1, count = 1, total_pages = 2, total_count = 2 }
+        },
+        _serializerOptions);
+
+    // Mock second page response
+    var responsePage2 =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new[] { record2 },
+          result_info = new { page = 2, per_page = 1, count = 1, total_pages = 2, total_count = 2 }
+        },
+        _serializerOptions);
+
+    var capturedRequests = new List<HttpRequestMessage>();
+    var mockHandler      = new Mock<HttpMessageHandler>();
+
+    // Setup sequential responses for the paginated calls.
+    mockHandler.Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequests.Add(req))
+               .Returns((HttpRequestMessage req, CancellationToken _) =>
+               {
+                 if (req.RequestUri!.ToString().Contains("page=2"))
+                   return Task.FromResult(
+                     new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage2) });
+
+                 return Task.FromResult(
+                   new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage1) });
+               });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var sut        = new ZonesApi(httpClient, _loggerFactory);
+
+    // Act
+    var allRecords = new List<DnsRecord>();
+    await foreach (var record in sut.ListAllDnsRecordsAsync(zoneId, new ListDnsRecordsFilters { PerPage = 1 }))
+      allRecords.Add(record);
+
+    // Assert
+    capturedRequests.Should().HaveCount(2);
+    capturedRequests[0].RequestUri!.Query.Should().Contain("page=1");
+    capturedRequests[1].RequestUri!.Query.Should().Contain("page=2");
+    allRecords.Should().HaveCount(2);
+    allRecords.Select(r => r.Id).Should().ContainInOrder("id-1", "id-2");
+  }
+
   /// <summary>
   ///   Verifies that ListDnsRecordsAsync constructs the correct request URI when all filters
   ///   are applied.

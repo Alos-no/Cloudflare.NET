@@ -21,11 +21,11 @@ public record R2Bucket(
   [property: JsonPropertyName("creation_date")]
   DateTime CreationDate,
   [property: JsonPropertyName("location")]
-  string Location,
+  string? Location,
   [property: JsonPropertyName("jurisdiction")]
-  string Jurisdiction,
+  string? Jurisdiction,
   [property: JsonPropertyName("storage_class")]
-  string StorageClass
+  string? StorageClass
 );
 
 /// <summary>Defines the filtering and pagination options for listing R2 Buckets.</summary>

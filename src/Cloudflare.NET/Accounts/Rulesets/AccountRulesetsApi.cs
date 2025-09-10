@@ -109,9 +109,9 @@ public class AccountRulesetsApi(
   }
 
   /// <inheritdoc />
-  public async Task<Ruleset> UpdatePhaseEntrypointAsync(string            phase,
-                                                        IEnumerable<Rule> rules,
-                                                        CancellationToken cancellationToken = default)
+  public async Task<Ruleset> UpdatePhaseEntrypointAsync(string                         phase,
+                                                        IEnumerable<CreateRuleRequest> rules,
+                                                        CancellationToken              cancellationToken = default)
   {
     var payload  = new { rules };
     var endpoint = $"accounts/{_accountId}/rulesets/phases/{phase}/entrypoint";

@@ -4,6 +4,7 @@ using System.Net;
 using Accounts.Rulesets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moq.Protected;
 using NET.Security;
 using NET.Security.Rulesets.Models;
 using Shared.Fixtures;
@@ -55,6 +56,62 @@ public class AccountRulesetsApiUnitTests
     capturedRequest!.RequestUri!.ToString().Should()
                     .Be(
                       $"https://api.cloudflare.com/client/v4/accounts/{accountId}/rulesets/phases/{phase}/entrypoint/versions?page=2&per_page=10");
+  }
+
+  /// <summary>
+  ///   Verifies that ListAllAsync handles cursor-based pagination correctly. This pagination
+  ///   style is common in newer Cloudflare APIs and is more resilient to data changes during
+  ///   iteration than page/offset methods. [13, 14, 15]
+  /// </summary>
+  [Fact]
+  public async Task ListAllAsync_ShouldHandlePaginationCorrectly()
+  {
+    // Arrange
+    var accountId = "test-account-id";
+    var rule1     = new Ruleset("id-1", "name1", "kind", "1", DateTime.UtcNow);
+    var rule2     = new Ruleset("id-2", "name2", "kind", "1", DateTime.UtcNow);
+    var cursor    = "next_page_cursor_token";
+    var options   = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+
+    // First page response with a cursor
+    var responsePage1 = HttpFixtures.CreateSuccessResponse(new[] { rule1 })
+                                    .Replace("\"result\":",
+                                             $"\"cursor_result_info\": {{ \"cursor\": \"{cursor}\" }}, \"result\":");
+
+    // Second page response without a cursor
+    var responsePage2 = HttpFixtures.CreateSuccessResponse(new[] { rule2 })
+                                    .Replace("\"result\":",
+                                             "\"cursor_result_info\": { \"cursor\": null }, \"result\":");
+
+    var capturedRequests = new List<HttpRequestMessage>();
+    var mockHandler      = new Mock<HttpMessageHandler>();
+    mockHandler.Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequests.Add(req))
+               .Returns((HttpRequestMessage req, CancellationToken _) =>
+               {
+                 if (req.RequestUri!.ToString().Contains(cursor))
+                   return Task.FromResult(new HttpResponseMessage
+                                            { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage2) });
+
+                 return Task.FromResult(new HttpResponseMessage
+                                          { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage1) });
+               });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var sut        = new AccountRulesetsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var allRules = new List<Ruleset>();
+    await foreach (var rule in sut.ListAllAsync())
+      allRules.Add(rule);
+
+    // Assert
+    capturedRequests.Should().HaveCount(2);
+    capturedRequests[0].RequestUri!.Query.Should().NotContain("cursor");
+    capturedRequests[1].RequestUri!.Query.Should().Contain($"cursor={cursor}");
+    allRules.Should().HaveCount(2);
+    allRules.Select(r => r.Id).Should().ContainInOrder("id-1", "id-2");
   }
 
   #endregion

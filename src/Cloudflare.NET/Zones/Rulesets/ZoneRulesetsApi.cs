@@ -31,10 +31,10 @@ public class ZoneRulesetsApi(HttpClient httpClient, ILoggerFactory loggerFactory
 
   /// <inheritdoc />
   public async Task<PagePaginatedResult<Ruleset>> ListPhaseEntrypointVersionsAsync(
-    string                       zoneId,
-    string                       phase,
-    ListRulesetVersionsFilters?  filters           = null,
-    CancellationToken            cancellationToken = default)
+    string                      zoneId,
+    string                      phase,
+    ListRulesetVersionsFilters? filters           = null,
+    CancellationToken           cancellationToken = default)
   {
     var queryParams = new List<string>();
 
@@ -50,7 +50,10 @@ public class ZoneRulesetsApi(HttpClient httpClient, ILoggerFactory loggerFactory
   }
 
   /// <inheritdoc />
-  public async Task<Ruleset> GetPhaseEntrypointVersionAsync(string zoneId, string phase, string version, CancellationToken cancellationToken = default)
+  public async Task<Ruleset> GetPhaseEntrypointVersionAsync(string            zoneId,
+                                                            string            phase,
+                                                            string            version,
+                                                            CancellationToken cancellationToken = default)
   {
     var endpoint = $"zones/{zoneId}/rulesets/phases/{phase}/entrypoint/versions/{version}";
     return await GetAsync<Ruleset>(endpoint, cancellationToken);
@@ -104,10 +107,10 @@ public class ZoneRulesetsApi(HttpClient httpClient, ILoggerFactory loggerFactory
   }
 
   /// <inheritdoc />
-  public async Task<Ruleset> UpdatePhaseEntrypointAsync(string            zoneId,
-                                                        string            phase,
-                                                        IEnumerable<Rule> rules,
-                                                        CancellationToken cancellationToken = default)
+  public async Task<Ruleset> UpdatePhaseEntrypointAsync(string                         zoneId,
+                                                        string                         phase,
+                                                        IEnumerable<CreateRuleRequest> rules,
+                                                        CancellationToken              cancellationToken = default)
   {
     var payload  = new { rules };
     var endpoint = $"zones/{zoneId}/rulesets/phases/{phase}/entrypoint";

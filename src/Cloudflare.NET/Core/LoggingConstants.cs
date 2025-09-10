@@ -14,7 +14,7 @@ public static class LoggingConstants
     ///   Category used by the HTTP 429 rate limiting (Polly) resilience pipeline. This enables
     ///   tuning verbosity for rate-limit diagnostics independently.
     /// </summary>
-    public const string HttpRateLimiting = "Cloudflare.NET.Http.RateLimiting";
+    public const string HttpResilience = "Cloudflare.NET.Http.Resilience";
 
     /// <summary>
     ///   Category for the <c>Cloudflare.NET.Core.Auth.AuthenticationHandler</c>. This is

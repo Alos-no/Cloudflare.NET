@@ -129,7 +129,8 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
 
       var reimportedRecord = await _sut.FindDnsRecordByNameAsync(_zoneId, tempRecordName);
       reimportedRecord.Should().NotBeNull();
-      _recordId = reimportedRecord!.Id; // Ensure cleanup
+      // The 'finally' block handles the cleanup of the re-imported record.
+      // Do not assign its ID to the instance field '_recordId' to avoid a double-delete in DisposeAsync.
     }
     finally
     {
@@ -137,6 +138,54 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
       var finalRecord = await _sut.FindDnsRecordByNameAsync(_zoneId, tempRecordName);
       if (finalRecord is not null)
         await _sut.DeleteDnsRecordAsync(_zoneId, finalRecord.Id);
+    }
+  }
+
+  /// <summary>
+  ///   Verifies that the ListAllDnsRecordsAsync method correctly handles multiple pages of
+  ///   results from the live API. It creates enough records to span across pages and asserts that
+  ///   the total count is correct. The `IAsyncEnumerable` pattern is used here to abstract away the
+  ///   underlying pagination mechanism, providing a simpler development experience. [1, 5, 7]
+  /// </summary>
+  [IntegrationTest]
+  public async Task ListAllDnsRecordsAsync_HandlesMultiplePages()
+  {
+    // Arrange: Create enough records to guarantee pagination
+    var recordsToCreate  = 3;
+    var createdRecordIds = new List<string>();
+    var baseHostname     = $"_cfnet-pagination-test-{Guid.NewGuid():N}";
+    // Use a unique CNAME target for this test run to allow for efficient filtering. The 'name'
+    // parameter is an exact match, so filtering by a unique 'content' is the correct way to
+    // isolate records for this test. [1, 2]
+    var cnameTarget      = $"{Guid.NewGuid():N}.test-target.com";
+
+    try
+    {
+      for (var i = 0; i < recordsToCreate; i++)
+      {
+        var hostname = $"{baseHostname}-{i}.{_settings.BaseDomain}";
+        var record   = await _sut.CreateCnameRecordAsync(_zoneId, hostname, cnameTarget);
+        createdRecordIds.Add(record.Id);
+      }
+
+      // Act: List records with a small per-page limit to force pagination.
+      // We filter by the unique content to ensure we only get records from this test run.
+      var filters    = new Zones.Models.ListDnsRecordsFilters { Content = cnameTarget, PerPage = 2 };
+      var allRecords = new List<Zones.Models.DnsRecord>();
+
+      // Using a small PerPage value forces the pagination logic to be exercised.
+      await foreach (var record in _sut.ListAllDnsRecordsAsync(_zoneId, filters))
+        allRecords.Add(record);
+
+      // Assert
+      allRecords.Should().HaveCount(recordsToCreate);
+      allRecords.Select(r => r.Id).Should().BeEquivalentTo(createdRecordIds);
+    }
+    finally
+    {
+      // Cleanup
+      foreach (var recordId in createdRecordIds)
+        await _sut.DeleteDnsRecordAsync(_zoneId, recordId);
     }
   }
 
@@ -171,6 +220,24 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     findResult.Id.Should().Be(_recordId);
     findResult.Name.Should().Be(_hostname);
     findResult.Type.Should().Be("CNAME");
+  }
+
+  /// <summary>
+  ///   Verifies that attempting to delete a non-existent resource correctly throws a 404 Not
+  ///   Found exception.
+  /// </summary>
+  [IntegrationTest]
+  public async Task DeleteDnsRecordAsync_WhenRecordDoesNotExist_ThrowsNotFound()
+  {
+    // Arrange
+    var nonExistentId = "00000000000000000000000000000000";
+
+    // Act
+    var action = async () => await _sut.DeleteDnsRecordAsync(_zoneId, nonExistentId);
+
+    // Assert
+    var ex = await action.Should().ThrowAsync<HttpRequestException>();
+    ex.Which.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
   }
 
   /// <summary>Verifies that the details for a specific zone can be fetched successfully.</summary>

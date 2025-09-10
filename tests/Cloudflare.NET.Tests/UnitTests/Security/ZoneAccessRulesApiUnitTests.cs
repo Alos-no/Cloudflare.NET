@@ -1,0 +1,73 @@
+﻿namespace Cloudflare.NET.Tests.UnitTests.Security;
+
+using System.Net;
+using Microsoft.Extensions.Logging;
+using NET.Security.Firewall.Models;
+using Shared.Fixtures;
+using Xunit.Abstractions;
+using Zones.AccessRules;
+
+[Trait("Category", TestConstants.TestCategories.Unit)]
+public class ZoneAccessRulesApiUnitTests
+{
+  #region Properties & Fields - Non-Public
+
+  private readonly ILoggerFactory _loggerFactory;
+
+  #endregion
+
+  #region Constructors
+
+  public ZoneAccessRulesApiUnitTests(ITestOutputHelper output)
+  {
+    var loggerProvider = new XunitTestOutputLoggerProvider { Current = output };
+    _loggerFactory = new LoggerFactory([loggerProvider]);
+  }
+
+  #endregion
+
+  #region Methods
+
+  [Fact]
+  public async Task CreateAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var zoneId = "test-zone-id";
+    var request = new CreateAccessRuleRequest(
+      AccessRuleMode.Challenge,
+      new IpConfiguration("192.0.2.1"),
+      "Test rule"
+    );
+    var expectedResponse = new AccessRule(
+      "rule-id-123",
+      request.Mode,
+      request.Configuration,
+      request.Notes,
+      [],
+      new Scope(zoneId, "zone"),
+      DateTimeOffset.UtcNow,
+      DateTimeOffset.UtcNow
+    );
+
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResponse);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var sut        = new ZoneAccessRulesApi(httpClient, _loggerFactory);
+
+    // Act
+    var result = await sut.CreateAsync(zoneId, request);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResponse, options => options.ComparingByMembers<DateTimeOffset>());
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Post);
+    capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/firewall/access_rules/rules");
+    var content = await capturedRequest.Content!.ReadFromJsonAsync<CreateAccessRuleRequest>();
+    content.Should().BeEquivalentTo(request);
+  }
+
+  #endregion
+}

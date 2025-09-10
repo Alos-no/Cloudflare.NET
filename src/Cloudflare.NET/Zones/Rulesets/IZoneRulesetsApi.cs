@@ -105,10 +105,10 @@ public interface IZoneRulesetsApi
   /// <param name="rules">The list of rules to set for the ruleset.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The updated ruleset.</returns>
-  Task<Ruleset> UpdatePhaseEntrypointAsync(string            zoneId,
-                                           string            phase,
-                                           IEnumerable<Rule> rules,
-                                           CancellationToken cancellationToken = default);
+  Task<Ruleset> UpdatePhaseEntrypointAsync(string                         zoneId,
+                                           string                         phase,
+                                           IEnumerable<CreateRuleRequest> rules,
+                                           CancellationToken              cancellationToken = default);
 
   /// <summary>Adds a new rule to a specific zone-level ruleset.</summary>
   /// <param name="zoneId">The ID of the zone.</param>

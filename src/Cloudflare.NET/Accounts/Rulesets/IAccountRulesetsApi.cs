@@ -92,7 +92,9 @@ public interface IAccountRulesetsApi
   /// <param name="rules">The list of rules to set for the ruleset.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The updated ruleset.</returns>
-  Task<Ruleset> UpdatePhaseEntrypointAsync(string phase, IEnumerable<Rule> rules, CancellationToken cancellationToken = default);
+  Task<Ruleset> UpdatePhaseEntrypointAsync(string                         phase,
+                                           IEnumerable<CreateRuleRequest> rules,
+                                           CancellationToken              cancellationToken = default);
 
   /// <summary>Adds a new rule to a specific account-level ruleset.</summary>
   /// <param name="rulesetId">The ID of the ruleset.</param>

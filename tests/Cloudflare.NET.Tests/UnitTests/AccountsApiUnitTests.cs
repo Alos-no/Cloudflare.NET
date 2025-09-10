@@ -99,7 +99,7 @@ public class AccountsApiUnitTests
   {
     // Arrange
     var                 accountId       = "test-account-id";
-    var                 successResponse = HttpFixtures.CreateSuccessResponse(Array.Empty<R2Bucket>());
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
     HttpRequestMessage? capturedRequest = null;
     var mockHandler =
       HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
@@ -123,7 +123,7 @@ public class AccountsApiUnitTests
     // Arrange
     var                 accountId       = "test-account-id";
     var                 filters         = new ListR2BucketsFilters(50, "abc123def");
-    var                 successResponse = HttpFixtures.CreateSuccessResponse(Array.Empty<R2Bucket>());
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
     HttpRequestMessage? capturedRequest = null;
     var mockHandler =
       HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);

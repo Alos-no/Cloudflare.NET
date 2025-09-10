@@ -36,7 +36,15 @@ First, configure your secrets in `appsettings.json` or through user secrets / en
   "Cloudflare": {
     "ApiToken": "your-cloudflare-api-token",
     "AccountId": "your-cloudflare-account-id",
-    "ZoneId": "your-zone-id-for-testing-or-ops"
+    "ZoneId": "your-zone-id-for-testing-or-ops",
+    // Optional
+    "DefaultTimeout": "00:00:30",
+    "RateLimiting": {
+      "IsEnabled": true,
+      "MaxRetries": 3,
+      "PermitLimit": 25,
+      "QueueLimit": 10
+    }
   }
 }
 ```

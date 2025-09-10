@@ -37,9 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Analytics\" />
-    <Folder Include="Core\NewFolder\" />
+    <!-- Allow the test project to access internal members for testing purposes. -->
+    <InternalsVisibleTo Include="Cloudflare.NET.Tests" />
   </ItemGroup>
-
 
 </Project>
