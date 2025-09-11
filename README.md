@@ -1,16 +1,22 @@
 ﻿# Cloudflare.NET SDK
 
 [![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt)
+
+[![NuGet (Cloudflare.NET.Api)](https://img.shields.io/nuget/v/Cloudflare.NET.Api)](https://www.nuget.org/packages/Cloudflare.NET.Api/)
+[![NuGet (Cloudflare.NET.R2)](https://img.shields.io/nuget/v/Cloudflare.NET.R2)](https://www.nuget.org/packages/Cloudflare.NET.R2/)
+[![NuGet (Cloudflare.NET.Analytics)](https://img.shields.io/nuget/v/Cloudflare.NET.Analytics)](https://www.nuget.org/packages/Cloudflare.NET.Analytics/)
+
 
 This is an unofficial .NET SDK for the Cloudflare API. Its primary goal is to provide a strongly-typed, testable, and maintainable library for interacting with various Cloudflare services. The core SDK is lean and focuses on the REST API, while optional functionality, like the Analytics GraphQL API, is provided in a separate extension package.
 
 ## 1. Installation
 
-The SDK is split into two packages. Install the one(s) you need from NuGet.
+The SDK is split into multiple packages. Install the one(s) you need from NuGet.
 
 **Core REST API Client (Required):**
 ```powershell
-Install-Package Cloudflare.NET
+Install-Package Cloudflare.NET.Api
 ```
 
 **R2 S3-Compatible Client (Optional):**
@@ -36,7 +42,6 @@ First, configure your secrets in `appsettings.json` or through user secrets / en
   "Cloudflare": {
     "ApiToken": "your-cloudflare-api-token",
     "AccountId": "your-cloudflare-account-id",
-    "ZoneId": "your-zone-id-for-testing-or-ops",
     // Optional
     "DefaultTimeout": "00:00:30",
     "RateLimiting": {
@@ -151,8 +156,8 @@ To adhere to the principle of least privilege, create a Cloudflare API token wit
 
 | Permission Group (UI Label) | Scope | Level | Typical Uses |
 | :--- | :--- | :--- | :--- |
-| **Workers R2 Storage** | Account | **Write** | Create/delete R2 buckets, manage domains (`Cloudflare.NET`). |
-| **Workers R2 Storage** | Account | **Read** | List buckets and read configurations (`Cloudflare.NET`). |
+| **Workers R2 Storage** | Account | **Write** | Create/delete R2 buckets, manage domains (`Cloudflare.NET.Api`). |
+| **Workers R2 Storage** | Account | **Read** | List buckets and read configurations (`Cloudflare.NET.Api`). |
 | **Account Firewall Access Rules** | Account | **Write** | Programmatically manage IP Access Rules at the account level. |
 | **Account Firewall Access Rules** | Account | **Read** | Audit and list existing firewall rules at the account level. |
 | **Firewall Services** | Zone | **Write** | Programmatically manage IP Access Rules at the zone level. |

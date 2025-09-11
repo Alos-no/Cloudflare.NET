@@ -13,7 +13,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <!-- NuGet Package Properties -->
-    <PackageId>Cloudflare.NET</PackageId>
+    <PackageId>Cloudflare.NET.Api</PackageId>
     <Version>1.0.0</Version>
     <Authors>Alos</Authors>
     <Description>Unofficial .NET SDK for the Cloudflare API, providing a strongly-typed interface for Cloudflare services.</Description>

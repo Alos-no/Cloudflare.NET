@@ -28,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevOps", "DevOps", "{3E8398BB-7F85-445C-9C29-E002A1C97866}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		scripts\publish.ps1 = scripts\publish.ps1
 		scripts\setup-secrets.ps1 = scripts\setup-secrets.ps1
 	EndProjectSection
 EndProject
