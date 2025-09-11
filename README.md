@@ -120,6 +120,8 @@ public class MyCloudflareService(ICloudflareApiClient cf, IAnalyticsApi analytic
 | **Accounts** | IP Access Rules | ✅ **Implemented** | `GET, POST, PATCH, DELETE /accounts/{id}/firewall/access_rules/rules` |
 | **Accounts** | Rulesets (WAF) | ✅ **Implemented** | `GET, POST, PUT, DELETE /accounts/{id}/rulesets`, including phase entrypoints and rule management. |
 | **Zones** | DNS Records | ✅ **Implemented** | `GET, POST, DELETE /zones/{id}/dns_records` |
+| **Zones** | DNS Records (Bulk) | ✅ **Implemented** | `POST .../import`, `GET .../export` |
+| **Zones** | Cache Purge | ✅ **Implemented** | `POST /zones/{id}/purge_cache` |
 | **Zones** | Zone Details | ✅ **Implemented** | `GET /zones/{id}` |
 | **Zones** | IP Access Rules | ✅ **Implemented** | `GET, POST, PATCH, DELETE /zones/{id}/firewall/access_rules/rules` |
 | **Zones** | Zone Lockdown | ✅ **Implemented** | `GET, POST, PUT, DELETE /zones/{id}/firewall/lockdowns` |
@@ -136,9 +138,6 @@ The following API surfaces are planned for implementation to support advanced us
 | :--- | :--- | :--- |
 | **Custom Hostnames (SaaS)** | SaaS application vanity domain management. | `POST /zones/{zoneId}/custom_hostnames` |
 | **SSL & Certificates (mTLS)** | Securing endpoints with Mutual TLS (mTLS). | `GET /zones/{zoneId}/client_certificates` |
-| **Account Rulesets (WAF)** | Programmatically manage and audit WAF custom rules. | `GET /accounts/{accountId}/rulesets` |
-| **Zone DNS (Bulk)** | Bulk DNS record management and migrations. | `POST /zones/{zoneId}/dns_records/import` |
-| **Cache Purge** | Automated cache purging after content updates. | `POST /zones/{zoneId}/purge_cache` |
 | **R2 Object Metadata** | Manage advanced, Cloudflare-specific object metadata. | `GET /accounts/{...}/r2/buckets/{...}/objects` |
 | **User & Tokens** | Automated API token management and permission auditing. | `GET /user/permissions`, `GET /user/tokens` |
 
