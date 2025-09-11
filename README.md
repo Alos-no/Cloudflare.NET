@@ -3,9 +3,9 @@
 [![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt)
 
-[![NuGet (Cloudflare.NET.Api)](https://img.shields.io/nuget/v/Cloudflare.NET.Api)](https://www.nuget.org/packages/Cloudflare.NET.Api/)
-[![NuGet (Cloudflare.NET.R2)](https://img.shields.io/nuget/v/Cloudflare.NET.R2)](https://www.nuget.org/packages/Cloudflare.NET.R2/)
-[![NuGet (Cloudflare.NET.Analytics)](https://img.shields.io/nuget/v/Cloudflare.NET.Analytics)](https://www.nuget.org/packages/Cloudflare.NET.Analytics/)
+[![NuGet (Cloudflare.NET.Api)](https://img.shields.io/nuget/v/Cloudflare.NET.Api?label=Cloudflare.NET.Api)](https://www.nuget.org/packages/Cloudflare.NET.Api/)
+[![NuGet (Cloudflare.NET.R2)](https://img.shields.io/nuget/v/Cloudflare.NET.R2?label=Cloudflare.NET.R2)](https://www.nuget.org/packages/Cloudflare.NET.R2/)
+[![NuGet (Cloudflare.NET.Analytics)](https://img.shields.io/nuget/v/Cloudflare.NET.Analytics?label=Cloudflare.NET.Analytics)](https://www.nuget.org/packages/Cloudflare.NET.Analytics/)
 
 
 This is an unofficial .NET SDK for the Cloudflare API. Its primary goal is to provide a strongly-typed, testable, and maintainable library for interacting with various Cloudflare services. The core SDK is lean and focuses on the REST API, while optional functionality, like the Analytics GraphQL API, is provided in a separate extension package.
