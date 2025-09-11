@@ -31,6 +31,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevOps", "DevOps", "{3E8398
 		scripts\setup-secrets.ps1 = scripts\setup-secrets.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{DFD44D7E-A317-46F2-94E9-91FF79EB154F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.Sample", "samples\Cloudflare.NET.Sample.csproj\Cloudflare.NET.Sample.csproj", "{BC76B372-36D4-42CF-BFBD-C44442731862}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare.NET.R2.Sample", "samples\Cloudflare.NET.R2.Sample\Cloudflare.NET.R2.Sample.csproj", "{4BB515C8-D679-4DA6-B325-ED018855014C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +71,14 @@ Global
 		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC76B372-36D4-42CF-BFBD-C44442731862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC76B372-36D4-42CF-BFBD-C44442731862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC76B372-36D4-42CF-BFBD-C44442731862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC76B372-36D4-42CF-BFBD-C44442731862}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BB515C8-D679-4DA6-B325-ED018855014C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BB515C8-D679-4DA6-B325-ED018855014C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BB515C8-D679-4DA6-B325-ED018855014C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB515C8-D679-4DA6-B325-ED018855014C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +88,8 @@ Global
 		{7E436184-1F0A-519D-D5A0-3F55B7E50170} = {07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}
 		{CDB5944A-365C-729D-34DA-EA0724005C55} = {07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}
 		{69A40D36-8E09-4E46-BD5E-8AA5CD27337E} = {07BE85E6-0AE6-4BDC-BCC4-493AD82950AB}
+		{BC76B372-36D4-42CF-BFBD-C44442731862} = {DFD44D7E-A317-46F2-94E9-91FF79EB154F}
+		{4BB515C8-D679-4DA6-B325-ED018855014C} = {DFD44D7E-A317-46F2-94E9-91FF79EB154F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {662B2030-6A34-4D59-A378-38639F315156}

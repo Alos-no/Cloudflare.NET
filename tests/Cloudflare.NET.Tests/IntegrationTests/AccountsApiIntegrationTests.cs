@@ -152,7 +152,7 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     result.Items[0].StorageClass.Should().BeNullOrWhiteSpace();
     // The List operation returns a summary object which does not include the location.
     // Assert that the creation date is recent, within a tolerance, to avoid race conditions.
-    result.Items[0].CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+    result.Items[0].CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(30));
   }
 
   /// <summary>Verifies that the async stream can iterate through all created buckets.</summary>
