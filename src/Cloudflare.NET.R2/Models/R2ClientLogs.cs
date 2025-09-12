@@ -94,5 +94,8 @@ internal static partial class R2ClientLogs
   [LoggerMessage(EventId = 1027, Level = LogLevel.Error, Message = "Failed to generate a presigned URL for Key={Key} in Bucket={Bucket}")]
   public static partial void PresignedUrlGenerationFailed(this ILogger logger, Exception ex, string key, string bucket);
 
+  [LoggerMessage(EventId = 1028, Level = LogLevel.Critical, Message = "Inconsistent pagination from R2 for upload {UploadId}: IsTruncated is true, but NextPartNumberMarker is null. Aborting to prevent infinite loop.")]
+  public static partial void ListPartsPaginationInconsistency(this ILogger logger, string uploadId);
+
   #endregion
 }

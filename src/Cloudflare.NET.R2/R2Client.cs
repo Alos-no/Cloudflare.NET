@@ -33,6 +33,8 @@ public class R2Client : IR2Client, IDisposable
   internal const long DefaultPartSize = 50L * 1024 * 1024;
   /// <summary>The maximum number of keys allowed in a single DeleteObjects request.</summary>
   internal const int MaxKeysPerDelete = 1000;
+  /// <summary>The maximum number of parts allowed in a single multipart upload.</summary>
+  internal const int MaxPartsPerUpload = 10000;
 
   #endregion
 
@@ -87,7 +89,7 @@ public class R2Client : IR2Client, IDisposable
                                     long?             partSize          = null,
                                     CancellationToken cancellationToken = default)
   {
-    if (fileStream.CanSeek && fileStream.Length > R2MaxMultipartFileSize)
+    if (fileStream is { CanSeek: true, Length: > R2MaxMultipartFileSize })
       throw new ArgumentException($"Stream length ({fileStream.Length} bytes) exceeds the maximum R2 object size of 5 TiB.",
                                   nameof(fileStream));
 
@@ -186,7 +188,19 @@ public class R2Client : IR2Client, IDisposable
       throw new NotSupportedException(
         "Multipart upload from a non-seekable stream is not currently supported. The stream must support seeking to determine its length and to be read in parts.");
 
-    var fileSize     = inputStream.Length;
+    var fileSize = inputStream.Length;
+
+    // Clamp the user-provided part size between the allowed R2 limits.
+    var chunkSize = Math.Clamp(partSize.GetValueOrDefault(DefaultPartSize), R2MinPartSize, R2MaxPartSize);
+
+    // Pre-flight check for part count before initiating the upload.
+    var numParts = (long)Math.Ceiling((double)fileSize / chunkSize);
+
+    if (numParts > MaxPartsPerUpload)
+      throw new ArgumentException(
+        $"The calculated number of parts ({numParts}) exceeds the R2 maximum of {MaxPartsPerUpload} parts. Consider increasing the part size.",
+        nameof(partSize));
+
     var totalMetrics = new R2Result();
 
     // 1. Initiate (1 Class A op)
@@ -200,9 +214,6 @@ public class R2Client : IR2Client, IDisposable
 
     try
     {
-      // Clamp the user-provided part size between the allowed R2 limits.
-      var chunkSize = Math.Clamp(partSize.GetValueOrDefault(DefaultPartSize), R2MinPartSize, R2MaxPartSize);
-
       for (var i = 1; filePosition < fileSize; i++)
       {
         cancellationToken.ThrowIfCancellationRequested();
@@ -571,7 +582,19 @@ public class R2Client : IR2Client, IDisposable
         if (response.IsTruncated != true) // IsTruncated is type `bool?`
           break;
 
-        request.PartNumberMarker = response.NextPartNumberMarker?.ToString(); // NextPartNumberMarker is type `int?`
+        if (response.NextPartNumberMarker is null)
+        {
+          // If the provider says there's more data but doesn't provide a marker, we cannot continue.
+          // Throwing prevents an infinite loop of re-requesting the same first page.
+          _logger.ListPartsPaginationInconsistency(uploadId);
+          throw new CloudflareR2ListException<ListedPart>(
+            $"Listing parts for uploadId {uploadId} failed due to inconsistent pagination response from the provider (IsTruncated=true, but NextPartNumberMarker is null).",
+            allParts,
+            totalMetrics,
+            new InvalidOperationException("Inconsistent pagination response from S3-compatible provider."));
+        }
+
+        request.PartNumberMarker = response.NextPartNumberMarker.ToString(); // NextPartNumberMarker is type `int?`
       }
       catch (AmazonS3Exception ex)
       {
@@ -738,6 +761,52 @@ public class R2Client : IR2Client, IDisposable
     string                      bucketName,
     PresignedUploadPartsRequest request)
   {
+    // Pre-flight validation of part sizes for R2 compatibility.
+    // R2 requires all parts except the last one to be the same size.
+    if (request.PartNumberAndLength.Count > 1)
+    {
+      var sortedParts = request.PartNumberAndLength.OrderBy(kvp => kvp.Key).ToList();
+      // Use the size of the first part (in sequence) as the reference for uniform size.
+      var uniformPartSize = sortedParts.First().Value;
+
+      // Check all parts *except the last one* for uniform size.
+      for (var i = 0; i < sortedParts.Count - 1; i++)
+      {
+        var part = sortedParts[i];
+        if (part.Value != uniformPartSize)
+          throw new ArgumentException(
+            $"R2 requires all multipart parts except the last to be the same size. Part {part.Key} has size {part.Value}, but the uniform part size is {uniformPartSize}.",
+            nameof(request));
+
+        if (part.Value is < R2MinPartSize or > R2MaxPartSize)
+          throw new ArgumentException(
+            $"Part {part.Key} has size {part.Value}, which is outside the allowed range of {R2MinPartSize} to {R2MaxPartSize} bytes.",
+            nameof(request));
+      }
+
+      // Separately validate the last part's size. It can be smaller, but not larger.
+      var lastPart = sortedParts.Last();
+      if (lastPart.Value > uniformPartSize)
+        throw new ArgumentException(
+          $"The last part (Part {lastPart.Key}, Size {lastPart.Value}) cannot be larger than the uniform part size ({uniformPartSize}).",
+          nameof(request));
+
+      if (lastPart.Value is < R2MinPartSize or > R2MaxPartSize)
+        throw new ArgumentException(
+          $"The last part (Part {lastPart.Key}) has size {lastPart.Value}, which is outside the allowed range of {R2MinPartSize} to {R2MaxPartSize} bytes.",
+          nameof(request));
+    }
+    else if (request.PartNumberAndLength.Count == 1)
+    {
+      // If there's only one part, it still needs to be within the min/max size limits.
+      var singlePart = request.PartNumberAndLength.First();
+      if (singlePart.Value is < R2MinPartSize or > R2MaxPartSize)
+        throw new ArgumentException(
+          $"Part {singlePart.Key} has size {singlePart.Value}, which is outside the allowed range of {R2MinPartSize} to {R2MaxPartSize} bytes.",
+          nameof(request));
+    }
+
+
     // Pre-size the dictionary to the exact number of parts to avoid reallocations.
     var urls = new Dictionary<int, string>(request.PartNumberAndLength.Count);
 

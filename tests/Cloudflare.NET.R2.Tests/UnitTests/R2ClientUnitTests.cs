@@ -346,6 +346,32 @@ public class R2ClientUnitTests
 
 
   [Fact]
+  public async Task DeleteObjectsAsync_WhenErrorOccursAcrossMultipleBatches_AggregatesAllFailedKeys()
+  {
+    // Arrange
+    var keys = Enumerable.Range(1, 1500).Select(i => $"key-{i}").ToList();
+
+    var firstResponse = new DeleteObjectsResponse { DeleteErrors = [new DeleteError { Key = "key-500" }] };
+    var secondResponse = new DeleteObjectsResponse { DeleteErrors = [new DeleteError { Key = "key-1200" }] };
+
+    _mockS3Client.SetupSequence(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(firstResponse)
+                 .ReturnsAsync(secondResponse);
+
+    // Act
+    var action = () => _sut.DeleteObjectsAsync("bucket", keys, true);
+
+    // Assert
+    var ex = await action.Should().ThrowAsync<CloudflareR2BatchException<string>>();
+    ex.Which.FailedItems.Should().HaveCount(2);
+    ex.Which.FailedItems.Should().Contain("key-500");
+    ex.Which.FailedItems.Should().Contain("key-1200");
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(0); // Deletes are free
+    _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+  }
+
+
+  [Fact]
   public async Task DeleteObjectsAsync_WithOver1000Keys_BatchesRequests()
   {
     // Arrange
@@ -442,6 +468,29 @@ public class R2ClientUnitTests
   }
 
   [Fact]
+  public async Task ClearBucketAsync_WhenListReturnsNullObjectsButIsTruncated_ContinuesAndSucceeds()
+  {
+    // Arrange
+    var page2Keys = Enumerable.Range(1, 5).Select(i => new S3Object { Key = $"key-page2-{i}" }).ToList();
+
+    _mockS3Client.SetupSequence(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+                 // First page is empty but indicates more data is available.
+                 .ReturnsAsync(new ListObjectsV2Response { S3Objects = null, IsTruncated = true, NextContinuationToken = "token" })
+                 .ReturnsAsync(new ListObjectsV2Response { S3Objects = page2Keys, IsTruncated = false });
+
+    _mockS3Client.Setup(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(new DeleteObjectsResponse { DeleteErrors = [] });
+
+    // Act
+    var result = await _sut.ClearBucketAsync("bucket");
+
+    // Assert
+    _mockS3Client.Verify(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+    _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()), Times.Once); // Only one batch had keys
+    result.ClassAOperations.Should().Be(2); // 2 list calls
+  }
+
+  [Fact]
   public async Task ClearBucketAsync_WhenListFails_ThrowsCloudflareR2ListException()
   {
     // Arrange
@@ -529,6 +578,29 @@ public class R2ClientUnitTests
     result.Data.Should().HaveCount(15);
     result.Metrics.ClassAOperations.Should().Be(2);
     _mockS3Client.Verify(c => c.ListPartsAsync(It.IsAny<ListPartsRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+  }
+
+
+  [Fact]
+  public async Task ListPartsAsync_WhenProviderReturnsTruncatedWithNullMarker_ThrowsToPreventInfiniteLoop()
+  {
+    // Arrange
+    var page1Parts = Enumerable.Range(1, 10).Select(i => new PartDetail { PartNumber = i, ETag = $"etag-{i}" }).ToList();
+
+    _mockS3Client.SetupSequence(c => c.ListPartsAsync(It.IsAny<ListPartsRequest>(), It.IsAny<CancellationToken>()))
+                 // First page succeeds but the provider gives an inconsistent response.
+                 .ReturnsAsync(new ListPartsResponse { Parts = page1Parts, IsTruncated = true, NextPartNumberMarker = null })
+                 .ThrowsAsync(new AmazonS3Exception("This should not be called.")); // The SUT should not make a second call.
+
+    // Act
+    var action = () => _sut.ListPartsAsync("bucket", "key", "upload-id");
+
+    // Assert
+    var ex = await action.Should().ThrowAsync<CloudflareR2ListException<ListedPart>>();
+    ex.Which.InnerException.Should().BeOfType<InvalidOperationException>();
+    ex.Which.Message.Should().Contain("inconsistent pagination response");
+    ex.Which.PartialData.Should().HaveCount(10);
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1); // Only one attempt should be made.
   }
 
 
@@ -624,7 +696,8 @@ public class R2ClientUnitTests
     var request = new PresignedUploadPartsRequest(
       "key", "upload-id",
       TimeSpan.FromMinutes(5),
-      new Dictionary<int, long> { { 1, 1024 } }
+      // The part size must be valid to pass pre-flight checks and reach the mocked method.
+      new Dictionary<int, long> { { 1, R2Client.R2MinPartSize } }
     );
 
     // We mock the R2Client itself to override the virtual URL generation method.
@@ -652,6 +725,26 @@ public class R2ClientUnitTests
     ex.Message.Should().Be($"Failed to generate one or more presigned part URLs for upload {request.UploadId}.");
   }
 
+  [Theory]
+  [InlineData(new[] { R2Client.R2MinPartSize - 1 })]                                                  // Below min
+  [InlineData(new[] { R2Client.R2MaxPartSize + 1 })]                                                  // Above max
+  [InlineData(new[] { R2Client.R2MinPartSize, R2Client.R2MinPartSize + 1, R2Client.R2MinPartSize })]  // Non-uniform
+  [InlineData(new[] { R2Client.R2MinPartSize, R2Client.R2MinPartSize, R2Client.R2MinPartSize + 1 })]  // Last part larger
+  public void CreatePresignedUploadPartsUrls_WithInvalidPartSizesForR2_ThrowsArgumentException(long[] partSizes)
+  {
+    // Arrange
+    var partDict = partSizes.Select((size, index) => new { Key = index + 1, Value = size })
+                            .ToDictionary(p => p.Key, p => p.Value);
+
+    var request = new PresignedUploadPartsRequest("key", "upload-id", TimeSpan.FromMinutes(5), partDict);
+
+    // Act
+    var action = () => _sut.CreatePresignedUploadPartsUrls("bucket", request);
+
+    // Assert
+    action.Should().Throw<ArgumentException>();
+  }
+
   [Fact]
   public async Task UploadSinglePartAsync_WithStreamTooLarge_ThrowsArgumentException()
   {
@@ -674,14 +767,15 @@ public class R2ClientUnitTests
     // Arrange
     var mockStream = new Mock<Stream>();
     mockStream.Setup(s => s.CanSeek).Returns(true);
-    mockStream.Setup(s => s.Length).Returns(R2Client.R2MaxMultipartFileSize + 1);
+    // The default part size is 50MB. (5TiB / 50MB) > 10000, so this should fail the part count check.
+    mockStream.Setup(s => s.Length).Returns(R2Client.R2MaxMultipartFileSize);
 
     // Act
     var action = () => _sut.UploadMultipartAsync("bucket", "key", mockStream.Object, null);
 
     // Assert
     await action.Should().ThrowAsync<ArgumentException>()
-          .WithMessage("Stream length (* bytes) exceeds the maximum R2 object size of 5 TiB.*");
+          .WithMessage("The calculated number of parts (*) exceeds the R2 maximum of 10000 parts. Consider increasing the part size.*");
   }
 
   [Fact]
