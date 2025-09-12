@@ -1,5 +1,6 @@
 namespace Cloudflare.NET.R2.Tests.IntegrationTests;
 
+using System.Net;
 using System.Net.Http.Headers;
 using Accounts;
 using Amazon.S3;
@@ -412,6 +413,206 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     httpResponse.EnsureSuccessStatusCode();
     var listResult = await _sut.ListObjectsAsync(_bucketName, key);
     listResult.Data.Should().ContainSingle().Which.Size.Should().Be(tempFile.FileSize);
+  }
+
+  [IntegrationTest]
+  public async Task PresignedPutUrl_WithMismatchedContentType_ShouldFail()
+  {
+    // Arrange
+    var       key         = $"presigned-fail-content-type-{Guid.NewGuid()}.txt";
+    var       signedType  = "text/plain";
+    var       actualType  = "application/octet-stream";
+    using var tempFile    = new TempFile(128);
+    var       request     = new PresignedPutRequest(key, TimeSpan.FromMinutes(5), tempFile.FileSize, signedType);
+
+    // Act
+    var presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, request);
+    using var       httpClient  = new HttpClient();
+    await using var fileStream  = File.OpenRead(tempFile.FilePath);
+    using var       fileContent = new StreamContent(fileStream);
+    // Set the wrong Content-Type header
+    fileContent.Headers.ContentType   = new MediaTypeHeaderValue(actualType);
+    fileContent.Headers.ContentLength = tempFile.FileSize;
+    var httpResponse = await httpClient.PutAsync(presignedUrl, fileContent);
+
+    // Assert
+    httpResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden, "the signature should not match if Content-Type is different");
+  }
+
+  [IntegrationTest]
+  public async Task PresignedPutUrl_WithMismatchedContentLength_ShouldFail()
+  {
+    // Arrange
+    var       key          = $"presigned-fail-content-length-{Guid.NewGuid()}.txt";
+    var       contentType  = "text/plain";
+    var       signedLength = 128;
+    var       actualLength = signedLength - 1; // Mismatch
+    var       request      = new PresignedPutRequest(key, TimeSpan.FromMinutes(5), signedLength, contentType);
+
+    // Act
+    var presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, request);
+    using var       httpClient  = new HttpClient();
+
+    // Create a byte array with the 'actual' length. The HttpClient will send this array,
+    // and its Content-Length will be `actualLength`. R2 will reject this because the
+    // presigned URL was signed for `signedLength`. This avoids the client-side
+    // HttpRequestException that occurs when a StreamContent's length exceeds the
+    // explicitly set Content-Length header.
+    var uploadBytes = new byte[actualLength];
+    Random.Shared.NextBytes(uploadBytes);
+
+    using var fileContent = new ByteArrayContent(uploadBytes);
+    fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+    // Note: ByteArrayContent automatically sets the Content-Length header to its correct size.
+    var httpResponse = await httpClient.PutAsync(presignedUrl, fileContent);
+
+    // Assert
+    httpResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden, "the signature should not match if Content-Length is different");
+  }
+
+  [IntegrationTest]
+  public async Task PresignedUploadPart_WithMismatchedContentLength_ShouldFail()
+  {
+    // Arrange
+    var       key            = $"presigned-part-fail-{Guid.NewGuid()}.bin";
+    var       uploadIdResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var       uploadId       = uploadIdResult.Data;
+    var       partNumber     = 1;
+    var       signedLength   = 1024;
+    var       actualLength   = 512; // Mismatch
+    using var tempFile       = new TempFile(actualLength);
+
+    var request = new PresignedUploadPartRequest(key, uploadId, partNumber, TimeSpan.FromMinutes(5), signedLength,
+                                                 "application/octet-stream");
+
+    try
+    {
+      // Act
+      var presignedUrl = _sut.CreatePresignedUploadPartUrl(_bucketName, request);
+      using var       httpClient  = new HttpClient();
+      await using var fileStream  = File.OpenRead(tempFile.FilePath);
+      using var       fileContent = new StreamContent(fileStream);
+      fileContent.Headers.ContentLength = actualLength; // Use the actual, mismatched length
+      var httpResponse = await httpClient.PutAsync(presignedUrl, fileContent);
+
+      // Assert
+      httpResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden, "the signature should not match if Content-Length is different");
+    }
+    finally
+    {
+      await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId);
+    }
+  }
+
+  [IntegrationTest]
+  public async Task CompleteMultipartUploadAsync_WithDuplicatePart_ThrowsException()
+  {
+    // Arrange
+    var       key           = $"duplicate-part-list-{Guid.NewGuid()}.bin";
+    var       partSize      = (int)R2Client.R2MinPartSize;
+    using var tempFile      = new TempFile(partSize);
+    var       uploadIdResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var       uploadId      = uploadIdResult.Data;
+    var       uploadedParts = new Dictionary<int, string>();
+
+    try
+    {
+      // Upload parts 1 and 2
+      var partsToUpload = new[] { 1, 2 };
+      foreach (var partNumber in partsToUpload)
+      {
+        await using var fileStream = File.OpenRead(tempFile.FilePath);
+        var partRequest = new UploadPartRequest
+        {
+          BucketName                       = _bucketName,
+          Key                              = key,
+          UploadId                         = uploadId,
+          PartNumber                       = partNumber,
+          InputStream                      = fileStream,
+          PartSize                         = tempFile.FileSize,
+          DisablePayloadSigning            = true,
+          DisableDefaultChecksumValidation = true
+        };
+        var partResponse        = await _s3Client.UploadPartAsync(partRequest);
+        uploadedParts[partNumber] = partResponse.ETag;
+      }
+
+      // Construct a list with a duplicate part for the Complete call
+      var completionList = new List<PartETag> { new(1, uploadedParts[1]), new(2, uploadedParts[2]), new(1, uploadedParts[1]) };
+
+      // Act
+      var action = () => _sut.CompleteMultipartUploadAsync(_bucketName, key, uploadId, completionList);
+
+      // Assert
+      var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
+      ex.Which.InnerException.Should().BeOfType<AmazonS3Exception>()
+        .Which.ErrorCode.Should().Be("InternalError"); // R2 returns a generic error for duplicate parts
+    }
+    finally
+    {
+      // The Complete call is expected to fail, so the upload must be aborted.
+      await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId);
+    }
+  }
+
+  [IntegrationTest]
+  public async Task CompleteMultipartUploadAsync_WithOutOfOrderParts_Succeeds()
+  {
+    // Arrange
+    var       key           = $"out-of-order-parts-{Guid.NewGuid()}.bin";
+    var       partSize      = (int)R2Client.R2MinPartSize;
+    using var tempFile      = new TempFile(partSize); // Same content for both parts is fine
+    var       uploadIdResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var       uploadId      = uploadIdResult.Data;
+    var       uploadedParts = new Dictionary<int, string>();
+    string?   finalObjectEtag = null;
+
+    try
+    {
+      // Upload parts 1 and 2
+      var partsToUpload = new[] { 1, 2 };
+      foreach (var partNumber in partsToUpload)
+      {
+        await using var fileStream = File.OpenRead(tempFile.FilePath);
+        var partRequest = new UploadPartRequest
+        {
+          BucketName                       = _bucketName,
+          Key                              = key,
+          UploadId                         = uploadId,
+          PartNumber                       = partNumber,
+          InputStream                      = fileStream,
+          PartSize                         = tempFile.FileSize,
+          DisablePayloadSigning            = true,
+          DisableDefaultChecksumValidation = true
+        };
+        var partResponse        = await _s3Client.UploadPartAsync(partRequest);
+        uploadedParts[partNumber] = partResponse.ETag;
+      }
+
+      // Construct the list for the Complete call in a non-sequential order
+      var completionList = new List<PartETag> { new(2, uploadedParts[2]), new(1, uploadedParts[1]) };
+
+      // Act
+      var action = () => _sut.CompleteMultipartUploadAsync(_bucketName, key, uploadId, completionList);
+
+      // Assert: R2 allows out-of-order parts, so this should succeed.
+      var result = await action.Should().NotThrowAsync();
+      result.Subject.ClassAOperations.Should().Be(1);
+
+      // Verify the object was created successfully
+      var listResult = await _sut.ListObjectsAsync(_bucketName, key);
+      var createdObject = listResult.Data.Should().ContainSingle().Subject;
+      createdObject.Size.Should().Be(tempFile.FileSize * partsToUpload.Length);
+      finalObjectEtag = createdObject.ETag;
+    }
+    finally
+    {
+      if (finalObjectEtag is null)
+      {
+        // If completion failed or an assertion prevented `finalObjectEtag` from being set, abort.
+        await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId, CancellationToken.None);
+      }
+    }
   }
 
 #if false // There is currently a NRE in the AWS SDK when using CreatePresignedPostUrl with R2.
