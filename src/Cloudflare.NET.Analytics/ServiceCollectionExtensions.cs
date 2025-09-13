@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
     services.AddSingleton<IAnalyticsApi, AnalyticsApi>();
 
     // Register a named HttpClient for GraphQL that uses the standard resilience pipeline. 
-    services.AddHttpClient("Cloudflare.GraphQL", (sp, client) =>
+    services.AddHttpClient(Constants.GraphQlHttpClientName, (sp, client) =>
             {
               var options = sp.GetRequiredService<IOptions<CloudflareApiOptions>>().Value;
 
@@ -62,10 +62,12 @@ public static class ServiceCollectionExtensions
     {
       var options = sp.GetRequiredService<IOptions<CloudflareApiOptions>>().Value;
 
+      // While the code generator uses [JsonPropertyName] which takes precedence,
+      // setting CamelCase is a robust default for any ad-hoc types.
       var camelCaseOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
       var serializer       = new SystemTextJsonSerializer(camelCaseOptions);
 
-      var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("Cloudflare.GraphQL");
+      var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(Constants.GraphQlHttpClientName);
 
       var gqlOptions = new GraphQLHttpClientOptions
       {

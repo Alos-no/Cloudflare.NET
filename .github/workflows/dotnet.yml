@@ -2,9 +2,9 @@ name: .NET Build and Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
 
 jobs:
   build-and-test:
@@ -27,18 +27,10 @@ jobs:
       # Build the entire solution to ensure all projects compile.
       run: dotnet build Cloudflare.NET.sln --no-restore
 
-    - name: Run Fast Tests (Unit) on Pull Requests
-      # This step runs on every pull request for quick feedback.
-      # It explicitly EXCLUDES the 'Integration' category, so no live API calls are made.
-      # It does not require secrets to succeed.
-      if: github.event_name == 'pull_request'
-      run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal --filter "TestCategory!=Integration"
-
-    - name: Run All Tests on Main Branch (Unit and Integration)
-      # This step ONLY runs after a merge to the 'main' branch.
-      # It runs the full test suite, including live integration tests.
+    - name: Run All Tests on Main/Develop Branch (Unit and Integration)
+      # Runs the full test suite, including live integration tests.
       # This step REQUIRES the secrets to be configured in the repository.
-      if: github.event_name != 'pull_request'
+      if: github.ref_name == 'main' || github.ref_name == 'develop')
       run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal
       env:
         # These secrets must be configured in the GitHub repository settings.
