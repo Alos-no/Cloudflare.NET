@@ -30,7 +30,7 @@ jobs:
     - name: Run All Tests on Main/Develop Branch (Unit and Integration)
       # Runs the full test suite, including live integration tests.
       # This step REQUIRES the secrets to be configured in the repository.
-      if: github.ref_name == 'main' || github.ref_name == 'develop')
+      if: github.ref_name == 'main' || github.ref_name == 'develop'
       run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal
       env:
         # These secrets must be configured in the GitHub repository settings.
