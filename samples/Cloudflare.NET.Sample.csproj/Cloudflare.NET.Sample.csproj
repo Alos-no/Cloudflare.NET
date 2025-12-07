@@ -7,6 +7,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+
   <!-- Use SDK projects locally -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cloudflare.NET\Cloudflare.NET.csproj" />

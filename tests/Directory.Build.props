@@ -1,0 +1,38 @@
+<Project>
+
+  <!-- Import root Directory.Build.props to inherit common settings (Nullable, ImplicitUsings, etc.) -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!-- 
+    Override root Directory.Build.props settings for test projects.
+    
+    Test projects multi-target to ensure library works across supported frameworks:
+    - net8.0:  .NET 8 LTS
+    - net10.0: Latest .NET
+  -->
+
+  <PropertyGroup>
+    <!-- Multi-target tests -->
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+
+    <!-- Test projects are not packaged -->
+    <IsPackable>false</IsPackable>
+
+    <!-- Disable trim/AOT analysis for test projects -->
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+
+    <!-- Disable XML documentation warnings for test projects -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    
+    <!-- 
+      Strong naming - Test projects must be signed with the same key as source projects
+      to access internals via InternalsVisibleTo. Re-specify the key file path relative 
+      to the tests directory.
+    -->
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Cloudflare.NET.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+</Project>

@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Analytics;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Core;
+using Core.Internal;
 using Core.Validation;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
@@ -151,7 +152,7 @@ public static class ServiceCollectionExtensions
   public static IServiceCollection AddCloudflareAnalytics(this IServiceCollection services,
                                                           string                  name)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
     // Register the validator for clear error messages when creating named clients.
     // Using AddSingleton allows multiple validators to be registered.
@@ -174,13 +175,16 @@ public static class ServiceCollectionExtensions
     // Register the factory for named clients. TryAdd ensures we don't replace an existing registration.
     services.TryAddSingleton<IAnalyticsApiFactory, AnalyticsApiFactory>();
 
+#if NET8_0_OR_GREATER
     // Register a keyed service for direct DI injection using [FromKeyedServices("name")].
+    // Keyed services are only available in .NET 8+.
     services.AddKeyedSingleton<IAnalyticsApi>(name, (serviceProvider, key) =>
     {
       var factory = serviceProvider.GetRequiredService<IAnalyticsApiFactory>();
 
       return factory.CreateClient((string)key!);
     });
+#endif
 
     return services;
   }

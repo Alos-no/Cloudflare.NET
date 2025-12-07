@@ -1,27 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Cloudflare.NET</RootNamespace>
 
-    <!-- SourceLink -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
-    <!-- NuGet Package Properties -->
+    <!-- NuGet Package Properties (common properties inherited from Directory.Build.props) -->
     <PackageId>Cloudflare.NET.Api</PackageId>
-    <Version>1.0.3</Version>
-    <Authors>Alos</Authors>
+    <Version>1.1.0</Version>
     <Description>Unofficial .NET SDK for the Cloudflare API, providing a strongly-typed interface for Cloudflare services.</Description>
     <PackageTags>cloudflare;api;sdk;alos;r2;firewall;dns</PackageTags>
-    <RepositoryUrl>https://github.com/Alos-no/Cloudflare.NET</RepositoryUrl>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,15 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Allow the test project to access internal members for testing purposes. -->
-    <InternalsVisibleTo Include="Cloudflare.NET.Tests" />
+    <InternalsVisibleTo Include="Cloudflare.NET.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100d98e8b97b0350b40906bd5df5717148cb992b318ccfc5b511a2758770023573bace0e28ac77f2c9ce1ad95511d412f3aa214a8b2b8cc17f8bb1cf56e47cc8b111fb05b9d40ca3fd9268a788f646d26a7699ae16b1ca7980691d61db31c294bd97525f12c1ae407b2edfb4e0d11b7c454645a724532e9def8d5b1f3eb81994cc4" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using Amazon.S3;
 using Configuration;
 using Core;
+using Core.Internal;
 using Core.Validation;
 using Exceptions;
 using Microsoft.Extensions.Logging;
@@ -85,8 +86,14 @@ public sealed class R2ClientFactory : IR2ClientFactory, IDisposable
   /// <inheritdoc />
   public IR2Client CreateClient(string name)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
+
+#if NET7_0_OR_GREATER
     ObjectDisposedException.ThrowIf(_disposed, this);
+#else
+    if (_disposed)
+      throw new ObjectDisposedException(nameof(R2ClientFactory));
+#endif
 
     // Use GetOrAdd to ensure thread-safe creation of clients.
     return _clientCache.GetOrAdd(name, CreateClientCore);

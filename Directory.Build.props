@@ -1,0 +1,81 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Multi-targeting: .NET 8 (LTS), .NET 9, .NET 10 -->
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+
+    <!-- Language & Nullability -->
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Build Quality -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- Strong Naming - All assemblies are signed with the same key for identity and tamper protection. -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Cloudflare.NET.snk</AssemblyOriginatorKeyFile>
+
+    <!-- SourceLink -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- 
+      Trim/AOT Analysis - Disabled.
+      
+      This library uses reflection-based JSON serialization (System.Text.Json without source generators),
+      which is not compatible with trimming or Native AOT. Enabling these analyzers would require
+      migrating to source-generated JSON serializers, which is a significant undertaking.
+      
+      To enable in the future:
+      1. Migrate to System.Text.Json source generators (JsonSerializerContext)
+      2. Set EnableTrimAnalyzer, IsTrimmable, and IsAotCompatible to true
+    -->
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+
+    <!-- 
+      Documentation - Generate XML docs but don't fail on missing comments.
+      This allows IntelliSense to work for documented members while not blocking the build.
+      CS1591: Missing XML comment for publicly visible type or member
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- 
+    Centralized NuGet Package Metadata
+    These properties are shared across all packages in this solution.
+    Individual projects override PackageId, Version, Description, and PackageTags as needed.
+  -->
+  <PropertyGroup>
+    <Authors>Alos</Authors>
+    <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Alos Engineering</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Alos-no/Cloudflare.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Alos-no/Cloudflare.NET</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- Package generation settings -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
+    
+    <!-- 
+      Package Validation - Ensures API compatibility and package correctness.
+      Validates that the package doesn't break consumers on updates.
+    -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+  </PropertyGroup>
+
+  <!-- SourceLink Package -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

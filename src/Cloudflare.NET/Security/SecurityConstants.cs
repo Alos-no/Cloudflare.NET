@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Security;
+namespace Cloudflare.NET.Security;
 
 /// <summary>
 ///   Provides centralized, strongly-typed constants for Cloudflare security features, reducing the risk of errors

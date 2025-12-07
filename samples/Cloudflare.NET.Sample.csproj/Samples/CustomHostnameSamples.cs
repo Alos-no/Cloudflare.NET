@@ -1,4 +1,4 @@
-namespace Cloudflare.NET.SampleCoreConsole.Samples;
+namespace Cloudflare.NET.Sample.Samples;
 
 using Microsoft.Extensions.Logging;
 using Zones.CustomHostnames.Models;
@@ -10,21 +10,31 @@ using Zones.CustomHostnames.Models;
 ///     customers' vanity domains. This sample covers:
 ///   </para>
 ///   <list type="bullet">
-///     <item><description>Creating a custom hostname with SSL configuration.</description></item>
-///     <item><description>Retrieving custom hostname status and ownership verification details.</description></item>
-///     <item><description>Updating a custom hostname (e.g., changing TLS settings).</description></item>
-///     <item><description>Listing all custom hostnames with automatic pagination.</description></item>
-///     <item><description>Fallback origin management.</description></item>
-///     <item><description>Deleting a custom hostname.</description></item>
+///     <item>
+///       <description>Creating a custom hostname with SSL configuration.</description>
+///     </item>
+///     <item>
+///       <description>Retrieving custom hostname status and ownership verification details.</description>
+///     </item>
+///     <item>
+///       <description>Updating a custom hostname (e.g., changing TLS settings).</description>
+///     </item>
+///     <item>
+///       <description>Listing all custom hostnames with automatic pagination.</description>
+///     </item>
+///     <item>
+///       <description>Fallback origin management.</description>
+///     </item>
+///     <item>
+///       <description>Deleting a custom hostname.</description>
+///     </item>
 ///   </list>
 /// </summary>
 public class CustomHostnameSamples(ICloudflareApiClient cf, ILogger<CustomHostnameSamples> logger)
 {
   #region Methods
 
-  /// <summary>
-  ///   Runs the complete Custom Hostnames API sample lifecycle.
-  /// </summary>
+  /// <summary>Runs the complete Custom Hostnames API sample lifecycle.</summary>
   /// <param name="zoneId">The zone ID to operate on.</param>
   /// <param name="baseDomain">The base domain of the zone (e.g., "example.com").</param>
   /// <returns>A list of cleanup actions to be executed after the sample run.</returns>
@@ -75,17 +85,17 @@ public class CustomHostnameSamples(ICloudflareApiClient cf, ILogger<CustomHostna
     // - TLS 1.2 minimum version for security.
     // - HTTP/2 enabled for performance.
     var sslConfig = new SslConfiguration(
-      Method: DcvMethod.Txt,
-      Type: CertificateType.Dv,
-      Settings: new SslSettings(
+      DcvMethod.Txt,
+      CertificateType.Dv,
+      new SslSettings(
         MinTlsVersion: MinTlsVersion.Tls12,
         Http2: SslToggle.On
       )
     );
 
     var request = new CreateCustomHostnameRequest(
-      Hostname: hostname,
-      Ssl: sslConfig
+      hostname,
+      sslConfig
     );
 
     try
@@ -193,10 +203,10 @@ public class CustomHostnameSamples(ICloudflareApiClient cf, ILogger<CustomHostna
 
     // Update to enforce TLS 1.3 minimum and enable Early Hints.
     var updateRequest = new UpdateCustomHostnameRequest(
-      Ssl: new SslConfiguration(
-        Method: DcvMethod.Txt,
-        Type: CertificateType.Dv,
-        Settings: new SslSettings(
+      new SslConfiguration(
+        DcvMethod.Txt,
+        CertificateType.Dv,
+        new SslSettings(
           MinTlsVersion: MinTlsVersion.Tls13,
           EarlyHints: SslToggle.On
         )
@@ -235,13 +245,11 @@ public class CustomHostnameSamples(ICloudflareApiClient cf, ILogger<CustomHostna
 
       // Only log the first 10 for brevity.
       if (count <= 10)
-      {
         logger.LogInformation("  [{Index}] {Hostname} (Status: {Status}, SSL: {SslStatus})",
                               count,
                               hostname.Hostname,
                               hostname.Status,
                               hostname.Ssl.Status);
-      }
     }
 
     logger.LogInformation("Total custom hostnames in zone: {Count}", count);

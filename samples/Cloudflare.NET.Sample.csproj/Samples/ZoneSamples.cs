@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.SampleCoreConsole.Samples;
+﻿namespace Cloudflare.NET.Sample.Samples;
 
 using Microsoft.Extensions.Logging;
 using Zones.Models;

@@ -116,7 +116,7 @@ public class R2SettingsValidatorTests
 
     // Assert
     result.Failed.Should().BeTrue();
-    var errorMessage = result.Failures.First();
+    var errorMessage = result.Failures!.First();
 
     // Should mention R2 API tokens
     errorMessage.Should().Contain("R2 API Tokens");

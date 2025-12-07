@@ -1,4 +1,4 @@
-namespace Cloudflare.NET.Analytics.Models;
+namespace Cloudflare.NET.Analytics.Tests.IntegrationTests.Models;
 
 using System.Text.Json.Serialization;
 

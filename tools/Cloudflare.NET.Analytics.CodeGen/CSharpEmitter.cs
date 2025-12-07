@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 
 // *************************************************************************************************
@@ -9,9 +9,11 @@ using System.Text.RegularExpressions;
 // - Simple include/exclude filtering by regex to scope the output to Analytics datasets.
 // *************************************************************************************************
 
-public sealed class CSharpEmitter(string ns, string includeRegex, string excludeRegex, bool verbose)
+public sealed class CSharpEmitter(string ns, string includeRegex, string excludeRegex, bool verbose = false)
 {
   #region Properties & Fields - Non-Public
+
+  private readonly bool _verbose = verbose;
 
   private readonly Regex? _include = string.IsNullOrWhiteSpace(includeRegex)
     ? null
@@ -57,7 +59,10 @@ public sealed class CSharpEmitter(string ns, string includeRegex, string exclude
                       .OrderBy(t => t.Name, StringComparer.Ordinal)
                       .ToList();
 
-    // 2) Emit enums first (they’re simple and referenced by objects)
+    if (_verbose)
+      Console.WriteLine($"Emitting {types.Count} types matching filters...");
+
+    // 2) Emit enums first (they're simple and referenced by objects)
     foreach (var t in types.Where(t => t.Kind == "ENUM"))
       EmitEnum(sb, t);
 

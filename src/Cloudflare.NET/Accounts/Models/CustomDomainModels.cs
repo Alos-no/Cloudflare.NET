@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Accounts.Models;
+namespace Cloudflare.NET.Accounts.Models;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;

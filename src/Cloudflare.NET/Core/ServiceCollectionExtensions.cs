@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.RateLimiting;
 using Auth;
+using Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -129,7 +130,7 @@ public static class ServiceCollectionExtensions
     string                  name,
     IConfiguration          configuration)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
     // Bind to the section "Cloudflare:{name}" for named clients.
     var sectionName = $"Cloudflare:{name}";
@@ -197,7 +198,7 @@ public static class ServiceCollectionExtensions
                                                           string                       name,
                                                           Action<CloudflareApiOptions> configureOptions)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
     // Configure named options. This allows IOptionsMonitor<CloudflareApiOptions>.Get(name) to work.
     services.Configure(name, configureOptions);
@@ -233,13 +234,16 @@ public static class ServiceCollectionExtensions
     // TryAdd ensures we don't replace an existing registration.
     services.TryAddSingleton<ICloudflareApiClientFactory, CloudflareApiClientFactory>();
 
+#if NET8_0_OR_GREATER
     // Register a keyed service for direct DI injection using [FromKeyedServices("name")].
+    // Keyed services are only available in .NET 8+.
     services.AddKeyedTransient<ICloudflareApiClient>(name, (serviceProvider, key) =>
     {
       var factory = serviceProvider.GetRequiredService<ICloudflareApiClientFactory>();
 
       return factory.CreateClient((string)key!);
     });
+#endif
 
     return services;
   }
@@ -407,28 +411,28 @@ public static class ServiceCollectionExtensions
               method == HttpMethod.Delete;
 
             if (!isIdempotent)
-              return ValueTask.FromResult(false);
+              return new ValueTask<bool>(false);
           }
 
           // 1) Exceptions we consider transient.
           if (args.Outcome.Exception is HttpRequestException or TimeoutRejectedException)
-            return ValueTask.FromResult(true);
+            return new ValueTask<bool>(true);
 
           // 2) HTTP responses we consider transient.
           if (args.Outcome.Result is not { } response)
-            return ValueTask.FromResult(false);
+            return new ValueTask<bool>(false);
 
           var statusCode = response.StatusCode;
 
           // Retry on 408 and 5xx.
           if (statusCode == HttpStatusCode.RequestTimeout || (int)statusCode >= 500)
-            return ValueTask.FromResult(true);
+            return new ValueTask<bool>(true);
 
           // Retry on 429 only when rate-limit handling is enabled.
           if (statusCode == HttpStatusCode.TooManyRequests)
-            return ValueTask.FromResult(cfOptions.RateLimiting.IsEnabled);
+            return new ValueTask<bool>(cfOptions.RateLimiting.IsEnabled);
 
-          return ValueTask.FromResult(false);
+          return new ValueTask<bool>(false);
         },
 
         OnRetry = args =>

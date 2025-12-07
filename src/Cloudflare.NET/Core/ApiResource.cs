@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Core;
+namespace Cloudflare.NET.Core;
 
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
@@ -7,6 +7,9 @@ using System.Text.Json.Serialization;
 using Exceptions;
 using Microsoft.Extensions.Logging;
 using Models;
+#if !NET8_0_OR_GREATER
+using Json;
+#endif
 
 /// <summary>Base class for API resource clients, providing shared functionality.</summary>
 public abstract class ApiResource
@@ -35,7 +38,11 @@ public abstract class ApiResource
     Logger     = logger;
     _serializerOptions = new JsonSerializerOptions
     {
-      PropertyNamingPolicy   = JsonNamingPolicy.SnakeCaseLower,
+#if NET8_0_OR_GREATER
+      PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+#else
+      PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance,
+#endif
       DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
   }
@@ -128,7 +135,12 @@ public abstract class ApiResource
     Logger.SendingRequest("GET", requestUri);
     var response = await HttpClient.GetAsync(requestUri, cancellationToken);
     Logger.ReceivedResponse(response.StatusCode, response.RequestMessage?.RequestUri);
+    // ReadAsStringAsync with CancellationToken is only available in .NET 5+.
+#if NET5_0_OR_GREATER
     var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+#else
+    var responseBody = await response.Content.ReadAsStringAsync();
+#endif
 
     if (!response.IsSuccessStatusCode)
     {
@@ -152,10 +164,15 @@ public abstract class ApiResource
         // Ignore if not a JSON error; the HttpRequestException below will be thrown.
       }
 
+#if NET5_0_OR_GREATER
       throw new HttpRequestException(
         $"Cloudflare API request failed with status code {(int)response.StatusCode} ({response.ReasonPhrase}). Response Body: {responseBody}",
         null,
         response.StatusCode);
+#else
+      throw new HttpRequestException(
+        $"Cloudflare API request failed with status code {(int)response.StatusCode} ({response.ReasonPhrase}). Response Body: {responseBody}");
+#endif
     }
 
     return responseBody;
@@ -386,7 +403,13 @@ public abstract class ApiResource
   {
     var requestUri = response.RequestMessage?.RequestUri;
     Logger.ReceivedResponse(response.StatusCode, requestUri);
+
+    // ReadAsStringAsync with CancellationToken is only available in .NET 5+.
+#if NET5_0_OR_GREATER
     var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+#else
+    var responseBody = await response.Content.ReadAsStringAsync();
+#endif
 
     // If the status code is not successful, we throw a detailed HttpRequestException.
     if (!response.IsSuccessStatusCode)
@@ -441,10 +464,15 @@ public abstract class ApiResource
         dateHeaderDisplay);
 
       // This will create a detailed exception message including the status code, reason, and response body.
+#if NET5_0_OR_GREATER
       throw new HttpRequestException(
         $"Cloudflare API request failed with status code {(int)response.StatusCode} ({response.ReasonPhrase}). Response Body: {responseBody}",
         null,
         response.StatusCode);
+#else
+      throw new HttpRequestException(
+        $"Cloudflare API request failed with status code {(int)response.StatusCode} ({response.ReasonPhrase}). Response Body: {responseBody}");
+#endif
     }
 
     // Attempt to deserialize the standard Cloudflare API envelope.

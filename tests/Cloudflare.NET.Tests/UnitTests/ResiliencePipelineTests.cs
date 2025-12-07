@@ -47,8 +47,9 @@ public class ResiliencePipelineTests
     var (client, _) = SetupClient(
       options =>
       {
-        // Set a very short timeout for this test.
-        options.DefaultTimeout = TimeSpan.FromMilliseconds(100);
+        // Set the minimum allowed timeout (1 second) for this test.
+        // Note: Microsoft.Extensions.Http.Resilience requires timeout to be between 1 second and 1 day.
+        options.DefaultTimeout = TimeSpan.FromSeconds(1);
         // Disable retries to isolate the timeout behavior.
         options.RateLimiting.MaxRetries = 0;
       },
@@ -59,7 +60,7 @@ public class ResiliencePipelineTests
                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                .Returns(async (HttpRequestMessage _, CancellationToken ct) =>
                {
-                 await Task.Delay(TimeSpan.FromMilliseconds(500), ct);
+                 await Task.Delay(TimeSpan.FromSeconds(5), ct);
                  // We should never get here because the timeout will cancel the task.
                  return new HttpResponseMessage(HttpStatusCode.OK);
                });

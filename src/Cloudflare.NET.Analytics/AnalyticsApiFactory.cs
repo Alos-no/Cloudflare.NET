@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Analytics;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using Core;
+using Core.Internal;
 using Core.Validation;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
@@ -86,8 +87,14 @@ public sealed class AnalyticsApiFactory : IAnalyticsApiFactory, IDisposable
   /// <inheritdoc />
   public IAnalyticsApi CreateClient(string name)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
+
+#if NET7_0_OR_GREATER
     ObjectDisposedException.ThrowIf(_disposed, this);
+#else
+    if (_disposed)
+      throw new ObjectDisposedException(nameof(AnalyticsApiFactory));
+#endif
 
     // Use GetOrAdd to ensure thread-safe creation of clients.
     return _clientCache.GetOrAdd(name, CreateClientCore).Api;
