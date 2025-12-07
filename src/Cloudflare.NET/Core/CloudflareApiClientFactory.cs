@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Core;
 using Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Validation;
 
 /// <summary>
 ///   Factory that creates named <see cref="ICloudflareApiClient" /> instances. Each named client is configured with
@@ -64,10 +65,8 @@ public sealed class CloudflareApiClientFactory : ICloudflareApiClientFactory
     // is not found, so we validate that critical properties are set.
     var options = _optionsMonitor.Get(name);
 
-    if (string.IsNullOrWhiteSpace(options.ApiToken))
-      throw new InvalidOperationException(
-        $"No Cloudflare API client configuration found for name '{name}'. " +
-        $"Ensure AddCloudflareApiClient(\"{name}\", ...) has been called during service registration.");
+    // Validate the named options using the shared validator for consistent, clear error messages.
+    ValidateNamedClientConfiguration(name, options);
 
     // The HttpClient name follows a convention: "CloudflareApiClient:{name}"
     // This matches the name used during registration in ServiceCollectionExtensions.
@@ -78,6 +77,27 @@ public sealed class CloudflareApiClientFactory : ICloudflareApiClientFactory
     var optionsWrapper = new NamedOptionsWrapper<CloudflareApiOptions>(options);
 
     return new CloudflareApiClient(httpClient, optionsWrapper, _loggerFactory);
+  }
+
+
+  /// <summary>Validates the configuration for a named Cloudflare API client.</summary>
+  /// <param name="name">The name of the client configuration being validated.</param>
+  /// <param name="options">The options to validate.</param>
+  /// <exception cref="InvalidOperationException">Thrown when required configuration is missing or invalid.</exception>
+  private static void ValidateNamedClientConfiguration(string name, CloudflareApiOptions options)
+  {
+    // Use the static validation method for consistent error messages that include the client name.
+    var result = CloudflareApiOptionsValidator.ValidateConfiguration(
+      name, options, CloudflareValidationRequirements.Default);
+
+    if (result.Failed)
+    {
+      var message = result.Failures.Count() == 1
+        ? $"Cloudflare API configuration error: {result.Failures.First()}"
+        : $"Cloudflare API configuration errors for named client '{name}':\n- " + string.Join("\n- ", result.Failures);
+
+      throw new InvalidOperationException(message);
+    }
   }
 
   #endregion

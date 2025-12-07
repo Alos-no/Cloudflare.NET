@@ -4,6 +4,8 @@ using System.Collections.Concurrent;
 using Amazon.S3;
 using Configuration;
 using Core;
+using Core.Validation;
+using Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -97,24 +99,19 @@ public sealed class R2ClientFactory : IR2ClientFactory, IDisposable
   /// <summary>Creates a new R2 client instance for the given name.</summary>
   /// <param name="name">The name of the client configuration.</param>
   /// <returns>A new <see cref="IR2Client" /> instance.</returns>
+  /// <exception cref="CloudflareR2ConfigurationException">
+  ///   Thrown when required configuration is missing or invalid for the named client.
+  /// </exception>
   private IR2Client CreateClientCore(string name)
   {
     // Retrieve the named R2 settings.
     var r2Settings = _r2OptionsMonitor.Get(name);
 
-    // Validate that the R2 settings are configured.
-    if (string.IsNullOrWhiteSpace(r2Settings.AccessKeyId))
-      throw new InvalidOperationException(
-        $"No R2 client configuration found for name '{name}'. " +
-        $"Ensure AddCloudflareR2Client(\"{name}\", ...) has been called during service registration.");
-
     // Retrieve the named Cloudflare options (for Account ID).
     var cloudflareSettings = _cloudflareOptionsMonitor.Get(name);
 
-    if (string.IsNullOrWhiteSpace(cloudflareSettings.AccountId))
-      throw new InvalidOperationException(
-        $"Cloudflare Account ID is missing for named client '{name}'. " +
-        $"Ensure the Account ID is configured in the Cloudflare options for this named client.");
+    // Validate configuration and collect all errors for a comprehensive error message.
+    ValidateNamedClientConfiguration(name, r2Settings, cloudflareSettings);
 
     // Construct the R2 endpoint URL using the Account ID.
     var endpointUrl = string.Format(r2Settings.EndpointUrl, cloudflareSettings.AccountId);
@@ -132,6 +129,44 @@ public sealed class R2ClientFactory : IR2ClientFactory, IDisposable
 
     // Create and return the R2 client.
     return new R2Client(_loggerFactory, s3Client);
+  }
+
+
+  /// <summary>Validates the configuration for a named R2 client and throws a descriptive exception if invalid.</summary>
+  /// <param name="name">The name of the client configuration being validated.</param>
+  /// <param name="r2Settings">The R2 settings to validate.</param>
+  /// <param name="cloudflareSettings">The Cloudflare API settings to validate (for Account ID).</param>
+  /// <exception cref="CloudflareR2ConfigurationException">
+  ///   Thrown when any required configuration is missing or invalid.
+  /// </exception>
+  private static void ValidateNamedClientConfiguration(string               name,
+                                                        R2Settings           r2Settings,
+                                                        CloudflareApiOptions cloudflareSettings)
+  {
+    var errors = new List<string>();
+
+    // Validate R2 settings using the static validation method for consistent error messages.
+    var r2Result = R2SettingsValidator.ValidateConfiguration(name, r2Settings);
+
+    if (r2Result.Failed)
+      errors.AddRange(r2Result.Failures);
+
+    // Validate Cloudflare settings using the static validation method with R2-specific requirements.
+    var cfResult = CloudflareApiOptionsValidator.ValidateConfiguration(
+      name, cloudflareSettings, CloudflareValidationRequirements.ForR2);
+
+    if (cfResult.Failed)
+      errors.AddRange(cfResult.Failures);
+
+    // Throw a comprehensive exception if any validation errors occurred.
+    if (errors.Count > 0)
+    {
+      var message = errors.Count == 1
+        ? $"Cloudflare R2 configuration error: {errors[0]}"
+        : $"Cloudflare R2 configuration errors for named client '{name}':\n- " + string.Join("\n- ", errors);
+
+      throw new CloudflareR2ConfigurationException(message);
+    }
   }
 
   #endregion

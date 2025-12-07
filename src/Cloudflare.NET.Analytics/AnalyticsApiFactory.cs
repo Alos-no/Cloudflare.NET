@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Analytics;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using Core;
+using Core.Validation;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
@@ -99,21 +100,16 @@ public sealed class AnalyticsApiFactory : IAnalyticsApiFactory, IDisposable
   /// <summary>Creates a new Analytics API client instance for the given name.</summary>
   /// <param name="name">The name of the client configuration.</param>
   /// <returns>A tuple containing the new <see cref="IAnalyticsApi" /> instance and its underlying GraphQL client.</returns>
+  /// <exception cref="InvalidOperationException">
+  ///   Thrown when required configuration is missing or invalid for the named client.
+  /// </exception>
   private (IAnalyticsApi Api, IGraphQLClient GraphQlClient) CreateClientCore(string name)
   {
     // Retrieve the named Cloudflare options.
     var options = _optionsMonitor.Get(name);
 
-    // Validate that the options are configured.
-    if (string.IsNullOrWhiteSpace(options.ApiToken))
-      throw new InvalidOperationException(
-        $"No Cloudflare API configuration found for name '{name}'. " +
-        $"Ensure AddCloudflareApiClient(\"{name}\", ...) has been called during service registration.");
-
-    if (string.IsNullOrWhiteSpace(options.GraphQlApiUrl))
-      throw new InvalidOperationException(
-        $"Cloudflare GraphQL API URL is missing for named client '{name}'. " +
-        $"Please configure it in the Cloudflare options for this named client.");
+    // Validate the named options using the shared validator for consistent, clear error messages.
+    ValidateNamedClientConfiguration(name, options);
 
     // Get the named HttpClient.
     var httpClientName = GetHttpClientName(name);
@@ -137,6 +133,27 @@ public sealed class AnalyticsApiFactory : IAnalyticsApiFactory, IDisposable
     var analyticsApi = new AnalyticsApi(graphQlClient, _loggerFactory);
 
     return (analyticsApi, graphQlClient);
+  }
+
+
+  /// <summary>Validates the configuration for a named Analytics client.</summary>
+  /// <param name="name">The name of the client configuration being validated.</param>
+  /// <param name="options">The options to validate.</param>
+  /// <exception cref="InvalidOperationException">Thrown when required configuration is missing or invalid.</exception>
+  private static void ValidateNamedClientConfiguration(string name, CloudflareApiOptions options)
+  {
+    // Use the static validation method for consistent error messages that include the client name.
+    var result = CloudflareApiOptionsValidator.ValidateConfiguration(
+      name, options, CloudflareValidationRequirements.ForAnalytics);
+
+    if (result.Failed)
+    {
+      var message = result.Failures.Count() == 1
+        ? $"Cloudflare Analytics configuration error: {result.Failures.First()}"
+        : $"Cloudflare Analytics configuration errors for named client '{name}':\n- " + string.Join("\n- ", result.Failures);
+
+      throw new InvalidOperationException(message);
+    }
   }
 
 

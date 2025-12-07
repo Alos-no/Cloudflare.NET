@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Tests.UnitTests;
+namespace Cloudflare.NET.Tests.UnitTests;
 
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
@@ -353,7 +353,11 @@ public class ResiliencePipelineTests
     // Use the real DI extension method from the SDK.
     services.AddCloudflareApiClient(options =>
     {
-      // Apply test-specific options.
+      // Provide a valid test ApiToken to pass validation.
+      // The actual value doesn't matter since we're using mocked HTTP handlers.
+      options.ApiToken = "test-api-token-for-resilience-tests";
+
+      // Apply test-specific options (may override the above if needed).
       configureOptions?.Invoke(options);
     });
 

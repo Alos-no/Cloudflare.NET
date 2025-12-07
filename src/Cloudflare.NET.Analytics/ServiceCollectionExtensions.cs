@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Analytics;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Core;
+using Core.Validation;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
@@ -27,11 +28,31 @@ public static class ServiceCollectionExtensions
   ///       cref="Core.ServiceCollectionExtensions.AddCloudflareApiClient(IServiceCollection, IConfiguration)" />
   ///     , as it relies on the core <see cref="CloudflareApiOptions" /> for authentication and endpoint configuration.
   ///   </para>
+  ///   <para>
+  ///     Configuration is validated at application startup. If required settings (ApiToken, GraphQlApiUrl) are missing,
+  ///     an <see cref="OptionsValidationException" /> is thrown with a clear error message indicating
+  ///     what configuration is missing and how to fix it.
+  ///   </para>
   /// </summary>
   /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
+  /// <exception cref="OptionsValidationException">
+  ///   Thrown at application startup if required configuration is missing or invalid.
+  /// </exception>
   public static IServiceCollection AddCloudflareAnalytics(this IServiceCollection services)
   {
+    // Register the validator for early failure with clear error messages.
+    // Use Analytics-specific requirements that validate ApiToken and GraphQlApiUrl.
+    // Using AddSingleton allows multiple validators to be registered (e.g., Core + Analytics).
+    // The Options infrastructure runs ALL registered validators and aggregates failures.
+    services.AddSingleton<IValidateOptions<CloudflareApiOptions>>(
+      new CloudflareApiOptionsValidator(CloudflareValidationRequirements.ForAnalytics));
+
+    // Add options validation at startup to fail fast with clear error messages.
+    services
+      .AddOptions<CloudflareApiOptions>()
+      .ValidateOnStart();
+
     // Register the Analytics API implementation.
     services.AddSingleton<IAnalyticsApi, AnalyticsApi>();
 
@@ -77,12 +98,20 @@ public static class ServiceCollectionExtensions
   /// </param>
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is null or whitespace.</exception>
+  /// <exception cref="InvalidOperationException">
+  ///   Thrown when the named client is created if required configuration is missing or invalid.
+  /// </exception>
   /// <remarks>
   ///   <para>
   ///     This method requires that the Cloudflare API options for the same name are registered using
   ///     <see
   ///       cref="Core.ServiceCollectionExtensions.AddCloudflareApiClient(IServiceCollection, string, System.Action{CloudflareApiOptions})" />
   ///     . The API token and GraphQL URL from those options are used for authentication and endpoint configuration.
+  ///   </para>
+  ///   <para>
+  ///     Unlike the default client registration, named clients are validated when first created via the factory
+  ///     or keyed services, not at application startup. This is because named configurations may be dynamically
+  ///     added or configured after startup.
   ///   </para>
   /// </remarks>
   /// <example>
@@ -122,6 +151,11 @@ public static class ServiceCollectionExtensions
   {
     ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
+    // Register the validator for clear error messages when creating named clients.
+    // Using AddSingleton allows multiple validators to be registered.
+    services.AddSingleton<IValidateOptions<CloudflareApiOptions>>(
+      new CloudflareApiOptionsValidator(CloudflareValidationRequirements.ForAnalytics));
+
     // Compute the HttpClient name for this named configuration.
     var httpClientName = AnalyticsApiFactory.GetHttpClientName(name);
 
@@ -152,16 +186,18 @@ public static class ServiceCollectionExtensions
   /// <summary>Configures the HttpClient for GraphQL requests.</summary>
   /// <param name="client">The HttpClient to configure.</param>
   /// <param name="options">The Cloudflare API options.</param>
+  /// <remarks>
+  ///   <para>
+  ///     For default clients, validation is performed at startup via <c>ValidateOnStart()</c>.
+  ///     For named clients, validation is performed by <see cref="AnalyticsApiFactory" /> before
+  ///     creating the HttpClient. This method assumes the options have already been validated.
+  ///   </para>
+  /// </remarks>
   private static void ConfigureHttpClient(HttpClient client, CloudflareApiOptions options)
   {
-    if (string.IsNullOrWhiteSpace(options.ApiToken))
-      throw new InvalidOperationException(
-        "Cloudflare API Token is missing. Please ensure AddCloudflareApiClient() is configured correctly.");
-
-    if (string.IsNullOrWhiteSpace(options.GraphQlApiUrl))
-      throw new InvalidOperationException(
-        "Cloudflare GraphQL API URL is missing. Please configure it in the 'Cloudflare' settings section.");
-
+    // Note: Validation is handled elsewhere:
+    // - Default clients: ValidateOnStart() at startup
+    // - Named clients: AnalyticsApiFactory.ValidateNamedClientConfiguration() before HttpClient creation
     client.BaseAddress                         = new Uri(options.GraphQlApiUrl);
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", options.ApiToken);
   }

@@ -86,9 +86,9 @@ public class NamedAnalyticsClientTests
     // Act
     var action = () => factory.CreateClient(unregisteredName);
 
-    // Assert
+    // Assert - Now uses shared validator with clear error message
     action.Should().Throw<InvalidOperationException>()
-          .WithMessage($"*No Cloudflare API configuration found for name '{unregisteredName}'*");
+          .WithMessage("*Cloudflare ApiToken is required*");
   }
 
 

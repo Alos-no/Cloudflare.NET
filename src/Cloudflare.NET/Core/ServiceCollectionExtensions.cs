@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Timeout;
+using Validation;
 
 /// <summary>Provides extension methods for setting up the Cloudflare API client in an IServiceCollection.</summary>
 public static class ServiceCollectionExtensions
@@ -54,15 +55,34 @@ public static class ServiceCollectionExtensions
   ///     This method sets up the necessary <see cref="HttpClient" />, authentication handler, and resilience policies
   ///     for rate limiting and transient error handling.
   ///   </para>
+  ///   <para>
+  ///     Configuration is validated at application startup. If required settings (ApiToken) are missing,
+  ///     an <see cref="OptionsValidationException" /> is thrown with a clear error message indicating
+  ///     what configuration is missing and how to fix it.
+  ///   </para>
   /// </summary>
   /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
   /// <param name="configureOptions">An action to configure the <see cref="CloudflareApiOptions" />.</param>
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
+  /// <exception cref="OptionsValidationException">
+  ///   Thrown at application startup if required configuration is missing or invalid.
+  /// </exception>
   public static IServiceCollection AddCloudflareApiClient(this IServiceCollection      services,
                                                           Action<CloudflareApiOptions> configureOptions)
   {
     // Configure the default (unnamed) options using the provided delegate.
     services.Configure(configureOptions);
+
+    // Register the validator for early failure with clear error messages.
+    // Using AddSingleton allows multiple validators to be registered (e.g., Core + Analytics).
+    // The Options infrastructure runs ALL registered validators and aggregates failures.
+    services.AddSingleton<IValidateOptions<CloudflareApiOptions>>(
+      new CloudflareApiOptionsValidator(CloudflareValidationRequirements.Default));
+
+    // Add options validation at startup to fail fast with clear error messages.
+    services
+      .AddOptions<CloudflareApiOptions>()
+      .ValidateOnStart();
 
     // Register the authentication handler as a transient service.
     services.AddTransient<AuthenticationHandler>();
@@ -132,6 +152,16 @@ public static class ServiceCollectionExtensions
   /// <param name="configureOptions">An action to configure the <see cref="CloudflareApiOptions" />.</param>
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is null or whitespace.</exception>
+  /// <exception cref="InvalidOperationException">
+  ///   Thrown when the named client is created if required configuration is missing or invalid.
+  /// </exception>
+  /// <remarks>
+  ///   <para>
+  ///     Unlike the default client registration, named clients are validated when first created via the factory
+  ///     or keyed services, not at application startup. This is because named configurations may be dynamically
+  ///     added or configured after startup.
+  ///   </para>
+  /// </remarks>
   /// <example>
   ///   <code>
   /// // Register multiple named clients
@@ -169,6 +199,11 @@ public static class ServiceCollectionExtensions
 
     // Configure named options. This allows IOptionsMonitor<CloudflareApiOptions>.Get(name) to work.
     services.Configure(name, configureOptions);
+
+    // Register the validator for clear error messages when creating named clients.
+    // Using AddSingleton allows multiple validators to be registered (e.g., Core + Analytics).
+    services.AddSingleton<IValidateOptions<CloudflareApiOptions>>(
+      new CloudflareApiOptionsValidator(CloudflareValidationRequirements.Default));
 
     // Compute the HttpClient name for this named configuration.
     var httpClientName = GetHttpClientName(name);

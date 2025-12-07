@@ -14,7 +14,7 @@
 
     <!-- NuGet Package Properties -->
     <PackageId>Cloudflare.NET.R2</PackageId>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>Alos</Authors>
     <Description>An extension package for the Cloudflare.NET ecosystem that provides a strongly-typed client for Cloudflare R2 storage, leveraging the S3-compatible API.</Description>
     <PackageTags>cloudflare;sdk;alos;r2;s3;storage;aws</PackageTags>

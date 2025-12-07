@@ -73,7 +73,7 @@ public class NamedR2ClientTests
   ///   (missing R2 settings).
   /// </summary>
   [Fact]
-  public void CreateClient_WithUnregisteredName_ThrowsInvalidOperationException()
+  public void CreateClient_WithUnregisteredName_ThrowsConfigurationException()
   {
     // Arrange
     const string registeredName   = "primary";
@@ -100,15 +100,15 @@ public class NamedR2ClientTests
     // Act
     var action = () => factory.CreateClient(unregisteredName);
 
-    // Assert
-    action.Should().Throw<InvalidOperationException>()
-          .WithMessage($"*No R2 client configuration found for name '{unregisteredName}'*");
+    // Assert - Now uses CloudflareR2ConfigurationException with clear error message
+    action.Should().Throw<Exceptions.CloudflareR2ConfigurationException>()
+          .WithMessage("*R2 AccessKeyId is required*");
   }
 
 
   /// <summary>Verifies that the factory throws when the Cloudflare Account ID is missing for the named client.</summary>
   [Fact]
-  public void CreateClient_WithMissingAccountId_ThrowsInvalidOperationException()
+  public void CreateClient_WithMissingAccountId_ThrowsConfigurationException()
   {
     // Arrange
     const string clientName = "primary";
@@ -129,9 +129,9 @@ public class NamedR2ClientTests
     // Act
     var action = () => factory.CreateClient(clientName);
 
-    // Assert
-    action.Should().Throw<InvalidOperationException>()
-          .WithMessage("*Account ID is missing*");
+    // Assert - Now uses CloudflareR2ConfigurationException with clear error message from shared validator
+    action.Should().Throw<Exceptions.CloudflareR2ConfigurationException>()
+          .WithMessage("*Cloudflare AccountId is required*");
   }
 
 
