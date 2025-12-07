@@ -68,20 +68,126 @@ First, configure your secrets in `appsettings.json` or through user secrets / en
 
 Register the client(s) in your `Program.cs` or `Startup.cs`.
 
+**Option A: Configuration-based (from `appsettings.json`)**
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Register the core REST API client
+// Register from IConfiguration (binds to "Cloudflare" and "R2" sections)
 builder.Services.AddCloudflareApiClient(builder.Configuration);
-
-// 2. (Optional) Register the R2 client for object storage
 builder.Services.AddCloudflareR2Client(builder.Configuration);
-
-// 3. (Optional) Register the Analytics GraphQL client
 builder.Services.AddCloudflareAnalytics();
 ```
 
-### 2.3 Usage Example
+**Option B: Code-based (programmatic configuration)**
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+// Configure options directly in code
+builder.Services.AddCloudflareApiClient(options =>
+{
+    options.ApiToken = "your-api-token";
+    options.AccountId = "your-account-id";
+    options.DefaultTimeout = TimeSpan.FromSeconds(30);
+    options.RateLimiting.IsEnabled = true;
+    options.RateLimiting.MaxRetries = 3;
+});
+
+builder.Services.AddCloudflareR2Client(options =>
+{
+    options.AccessKeyId = "your-r2-access-key";
+    options.SecretAccessKey = "your-r2-secret";
+    // EndpointUrl defaults to "https://{0}.r2.cloudflarestorage.com"
+});
+
+builder.Services.AddCloudflareAnalytics();
+```
+
+### 2.3 Named Clients (Multi-Account Support)
+
+For applications managing multiple Cloudflare accounts, use **named clients**. Each named client has its own configuration and can be retrieved via a factory or keyed services.
+
+**Registration:**
+```csharp
+// Register multiple named clients
+builder.Services.AddCloudflareApiClient("production", options =>
+{
+    options.ApiToken = "prod-token";
+    options.AccountId = "prod-account-id";
+});
+builder.Services.AddCloudflareR2Client("production", options =>
+{
+    options.AccessKeyId = "prod-r2-key";
+    options.SecretAccessKey = "prod-r2-secret";
+});
+builder.Services.AddCloudflareAnalytics("production");
+
+builder.Services.AddCloudflareApiClient("staging", options =>
+{
+    options.ApiToken = "staging-token";
+    options.AccountId = "staging-account-id";
+});
+builder.Services.AddCloudflareR2Client("staging", options =>
+{
+    options.AccessKeyId = "staging-r2-key";
+    options.SecretAccessKey = "staging-r2-secret";
+});
+builder.Services.AddCloudflareAnalytics("staging");
+```
+
+**Usage via Factory:**
+```csharp
+public class MultiAccountService(
+    ICloudflareApiClientFactory apiFactory,
+    IR2ClientFactory r2Factory,
+    IAnalyticsApiFactory analyticsFactory)
+{
+    public async Task ManageProductionAsync()
+    {
+        var prodApi = apiFactory.CreateClient("production");
+        var prodR2 = r2Factory.CreateClient("production");
+        var prodAnalytics = analyticsFactory.CreateClient("production");
+        
+        // Use clients...
+    }
+}
+```
+
+**Usage via Keyed Services (.NET 8+):**
+```csharp
+public class MyService(
+    [FromKeyedServices("production")] ICloudflareApiClient prodClient,
+    [FromKeyedServices("staging")] ICloudflareApiClient stagingClient)
+{
+    // Both clients are injected directly
+}
+```
+
+**Configuration-based Named Clients:**
+
+You can also configure named clients via `appsettings.json`:
+```json
+{
+  "Cloudflare:production": {
+    "ApiToken": "prod-token",
+    "AccountId": "prod-account-id"
+  },
+  "Cloudflare:staging": {
+    "ApiToken": "staging-token",
+    "AccountId": "staging-account-id"
+  },
+  "R2:production": {
+    "AccessKeyId": "prod-r2-key",
+    "SecretAccessKey": "prod-r2-secret"
+  }
+}
+```
+```csharp
+builder.Services.AddCloudflareApiClient("production", builder.Configuration);
+builder.Services.AddCloudflareApiClient("staging", builder.Configuration);
+builder.Services.AddCloudflareR2Client("production", builder.Configuration);
+```
+
+### 2.4 Usage Example
 
 Inject the client interfaces and use them in your services.
 
