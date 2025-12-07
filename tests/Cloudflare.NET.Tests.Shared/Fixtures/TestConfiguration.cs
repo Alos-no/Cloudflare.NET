@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
 
 /// <summary>
-///   A helper class to build configuration from multiple sources (JSON, Environment, User
-///   Secrets) for use in tests.
+///   A helper class to build configuration from multiple sources (JSON, Environment, User Secrets) for use in
+///   tests.
 /// </summary>
 public static class TestConfiguration
 {
@@ -51,8 +51,8 @@ public static class TestConfiguration
 }
 
 /// <summary>
-///   Represents the configuration options required for the Cloudflare API client tests,
-///   extending the base options with test-specific properties.
+///   Represents the configuration options required for the Cloudflare API client tests, extending the base options
+///   with test-specific properties.
 /// </summary>
 public class TestCloudflareSettings : CloudflareApiOptions
 {

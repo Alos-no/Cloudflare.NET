@@ -27,10 +27,7 @@ public class AnalyticsApiUnitTests
 
   #region Methods
 
-  /// <summary>
-  ///   Verifies that SendQueryAsync returns the data correctly when the API call is
-  ///   successful.
-  /// </summary>
+  /// <summary>Verifies that SendQueryAsync returns the data correctly when the API call is successful.</summary>
   [Fact]
   public async Task SendQueryAsync_OnSuccess_ReturnsData()
   {
@@ -56,10 +53,7 @@ public class AnalyticsApiUnitTests
     mockGraphQlClient.Verify(c => c.SendQueryAsync<object>(request, It.IsAny<CancellationToken>()), Times.Once);
   }
 
-  /// <summary>
-  ///   Verifies that SendQueryAsync throws an InvalidOperationException when the GraphQL
-  ///   response contains errors.
-  /// </summary>
+  /// <summary>Verifies that SendQueryAsync throws an InvalidOperationException when the GraphQL response contains errors.</summary>
   [Fact]
   public async Task SendQueryAsync_OnApiErrors_ThrowsInvalidOperationException()
   {
@@ -83,10 +77,7 @@ public class AnalyticsApiUnitTests
     await action.Should().ThrowAsync<InvalidOperationException>().WithMessage("GraphQL query failed: Invalid field 'id'");
   }
 
-  /// <summary>
-  ///   Verifies that SendQueryAsync throws an InvalidOperationException when the GraphQL
-  ///   response contains no data.
-  /// </summary>
+  /// <summary>Verifies that SendQueryAsync throws an InvalidOperationException when the GraphQL response contains no data.</summary>
   [Fact]
   public async Task SendQueryAsync_OnNullData_ThrowsInvalidOperationException()
   {

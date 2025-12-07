@@ -1,4 +1,4 @@
-﻿# Cloudflare.NET SDK
+# Cloudflare.NET SDK
 
 [![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt)
@@ -132,6 +132,7 @@ public class MyCloudflareService(ICloudflareApiClient cf, IAnalyticsApi analytic
 | **Zones** | Zone Lockdown | ✅ **Implemented** | `GET, POST, PUT, DELETE /zones/{id}/firewall/lockdowns` |
 | **Zones** | User-Agent Rules | ✅ **Implemented** | `GET, POST, PUT, DELETE /zones/{id}/firewall/ua_rules` |
 | **Zones** | Rulesets (WAF) | ✅ **Implemented** | `GET, POST, PUT, DELETE /zones/{id}/rulesets`, including phase entrypoints and rule management. |
+| **Zones** | Custom Hostnames (SaaS) | ✅ **Implemented** | `GET, POST, PATCH, DELETE /zones/{id}/custom_hostnames`, including fallback origin management. |
 | **Analytics** | GraphQL API | ✅ **Implemented** | **(Extension Package)** Provides a generic GraphQL client. |
 | **R2 Client** | S3-Compatible API | ✅ **Implemented** | **(Extension Package)** Provides a high-level client for object storage operations. |
 
@@ -141,7 +142,6 @@ The following API surfaces are planned for implementation to support advanced us
 
 | API Family / Endpoint Group | Use Case | Notable Paths |
 | :--- | :--- | :--- |
-| **Custom Hostnames (SaaS)** | SaaS application vanity domain management. | `POST /zones/{zoneId}/custom_hostnames` |
 | **SSL & Certificates (mTLS)** | Securing endpoints with Mutual TLS (mTLS). | `GET /zones/{zoneId}/client_certificates` |
 | **R2 Object Metadata** | Manage advanced, Cloudflare-specific object metadata. | `GET /accounts/{...}/r2/buckets/{...}/objects` |
 | **User & Tokens** | Automated API token management and permission auditing. | `GET /user/permissions`, `GET /user/tokens` |

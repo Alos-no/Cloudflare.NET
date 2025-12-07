@@ -3,8 +3,8 @@
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-///   Contains high-performance, source-generated logging definitions for the R2Client.
-///   Using the LoggerMessage pattern avoids boxing and template parsing for hot-path logs.
+///   Contains high-performance, source-generated logging definitions for the R2Client. Using the LoggerMessage
+///   pattern avoids boxing and template parsing for hot-path logs.
 /// </summary>
 internal static partial class R2ClientLogs
 {
@@ -73,19 +73,26 @@ internal static partial class R2ClientLogs
   [LoggerMessage(EventId = 1020, Level = LogLevel.Error, Message = "Failed to abort multipart upload {UploadId}")]
   public static partial void AbortMultipartUploadFailed(this ILogger logger, Exception ex, string uploadId);
 
-  [LoggerMessage(EventId = 1021, Level = LogLevel.Warning, Message = "A batch delete failed for bucket {BucketName}. Adding all keys from batch to failed list.")]
+  [LoggerMessage(EventId = 1021, Level = LogLevel.Warning,
+                 Message = "A batch delete failed for bucket {BucketName}. Adding all keys from batch to failed list.")]
   public static partial void BatchDeleteFailedContinueOnError(this ILogger logger, Exception ex, string bucketName);
 
-  [LoggerMessage(EventId = 1022, Level = LogLevel.Error, Message = "A batch delete failed for bucket {BucketName} and continueOnError is false.")]
+  [LoggerMessage(EventId = 1022, Level = LogLevel.Error,
+                 Message = "A batch delete failed for bucket {BucketName} and continueOnError is false.")]
   public static partial void BatchDeleteFailedStopOnError(this ILogger logger, Exception ex, string bucketName);
 
-  [LoggerMessage(EventId = 1023, Level = LogLevel.Warning, Message = "Unable to delete any objects in the current batch for bucket {BucketName}. Aborting clear operation to prevent an infinite loop.")]
+  [LoggerMessage(EventId = 1023, Level = LogLevel.Warning,
+                 Message =
+                   "Unable to delete any objects in the current batch for bucket {BucketName}. Aborting clear operation to prevent an infinite loop.")]
   public static partial void ClearBucketDeleteBatchFailedFull(this ILogger logger, string bucketName);
 
-  [LoggerMessage(EventId = 1024, Level = LogLevel.Error, Message = "Failed to delete a batch of objects while clearing bucket {BucketName} and continueOnError is false.")]
+  [LoggerMessage(EventId = 1024, Level = LogLevel.Error,
+                 Message = "Failed to delete a batch of objects while clearing bucket {BucketName} and continueOnError is false.")]
   public static partial void ClearBucketDeleteFailedStopOnError(this ILogger logger, Exception ex, string bucketName);
 
-  [LoggerMessage(EventId = 1025, Level = LogLevel.Warning, Message = "Failed to delete a batch of {Count} objects while clearing bucket {BucketName}. Continuing because continueOnError is true.")]
+  [LoggerMessage(EventId = 1025, Level = LogLevel.Warning,
+                 Message =
+                   "Failed to delete a batch of {Count} objects while clearing bucket {BucketName}. Continuing because continueOnError is true.")]
   public static partial void ClearBucketDeleteBatchFailedPartial(this ILogger logger, Exception ex, int count, string bucketName);
 
   [LoggerMessage(EventId = 1026, Level = LogLevel.Error, Message = "Failed to list parts for upload {UploadId}")]
@@ -94,7 +101,9 @@ internal static partial class R2ClientLogs
   [LoggerMessage(EventId = 1027, Level = LogLevel.Error, Message = "Failed to generate a presigned URL for Key={Key} in Bucket={Bucket}")]
   public static partial void PresignedUrlGenerationFailed(this ILogger logger, Exception ex, string key, string bucket);
 
-  [LoggerMessage(EventId = 1028, Level = LogLevel.Critical, Message = "Inconsistent pagination from R2 for upload {UploadId}: IsTruncated is true, but NextPartNumberMarker is null. Aborting to prevent infinite loop.")]
+  [LoggerMessage(EventId = 1028, Level = LogLevel.Critical,
+                 Message =
+                   "Inconsistent pagination from R2 for upload {UploadId}: IsTruncated is true, but NextPartNumberMarker is null. Aborting to prevent infinite loop.")]
   public static partial void ListPartsPaginationInconsistency(this ILogger logger, string uploadId);
 
   #endregion

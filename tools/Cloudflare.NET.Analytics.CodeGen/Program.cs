@@ -54,7 +54,7 @@ var namespaceOption = new Option<string>("--namespace")
 
 var writeSchemaJsonOption = new Option<bool>("--emit-schema-json")
 {
-  Description = "If set, writes the raw schema to the path specified by --schema-out.",
+  Description         = "If set, writes the raw schema to the path specified by --schema-out.",
   DefaultValueFactory = _ => true
 };
 
@@ -166,13 +166,11 @@ static FileInfo GetRepoRelativeFile(params string[] segments)
   };
 
   foreach (var start in candidates.Distinct(StringComparer.OrdinalIgnoreCase))
-  {
     if (TryFindGitRepoRoot(start, out var repoRoot))
     {
       var full = Path.GetFullPath(Path.Combine(repoRoot, Path.Combine(segments)));
       return new FileInfo(full);
     }
-  }
 
   // Fallback: if no .git was found (uncommon in CI tarballs, etc.), anchor to BaseDirectory.
   var fallback = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, Path.Combine(segments)));
@@ -204,7 +202,7 @@ static bool TryFindGitRepoRoot(string startDirectory, out string repoRoot)
 
 static bool IsGitRepoRoot(string directory)
 {
-  var gitDirPath  = Path.Combine(directory, ".git");
+  var gitDirPath = Path.Combine(directory, ".git");
 
   // Support both classic repos (.git is a directory) and linked worktrees (.git is a file pointing to gitdir).
   return Directory.Exists(gitDirPath) || File.Exists(gitDirPath);

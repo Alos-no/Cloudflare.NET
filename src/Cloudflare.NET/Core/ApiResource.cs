@@ -116,18 +116,12 @@ public abstract class ApiResource
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
-  /// <summary>
-  ///   Sends a GET request to an endpoint that returns a raw string response (e.g., BIND
-  ///   file export).
-  /// </summary>
+  /// <summary>Sends a GET request to an endpoint that returns a raw string response (e.g., BIND file export).</summary>
   /// <param name="requestUri">The URI to send the request to.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The raw string content of the response body.</returns>
   /// <exception cref="CloudflareApiException">Thrown if the API returns a JSON error envelope.</exception>
-  /// <exception cref="HttpRequestException">
-  ///   Thrown if the API returns a non-success status code
-  ///   that is not a JSON error.
-  /// </exception>
+  /// <exception cref="HttpRequestException">Thrown if the API returns a non-success status code that is not a JSON error.</exception>
   protected async Task<string> GetStringAsync(string requestUri, CancellationToken cancellationToken = default)
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
@@ -167,10 +161,7 @@ public abstract class ApiResource
     return responseBody;
   }
 
-  /// <summary>
-  ///   Sends a POST request with a multipart/form-data payload containing a single file
-  ///   stream.
-  /// </summary>
+  /// <summary>Sends a POST request with a multipart/form-data payload containing a single file stream.</summary>
   /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
   /// <param name="requestUri">The URI to send the request to.</param>
   /// <param name="stream">The stream content to upload.</param>
@@ -227,8 +218,8 @@ public abstract class ApiResource
 
 
   /// <summary>
-  ///   Gets a single page of results from a cursor-based paginated endpoint where the item
-  ///   list is nested within a wrapper object in the API response. This is the core implementation.
+  ///   Gets a single page of results from a cursor-based paginated endpoint where the item list is nested within a
+  ///   wrapper object in the API response. This is the core implementation.
   /// </summary>
   /// <typeparam name="TWrapper">The type of the wrapper object in the 'result' field.</typeparam>
   /// <typeparam name="TItem">The type of the item in the list.</typeparam>
@@ -257,10 +248,7 @@ public abstract class ApiResource
   /// <summary>Gets a paginated list of resources, automatically handling multiple pages of results.</summary>
   /// <typeparam name="TItem">The type of the item in the list.</typeparam>
   /// <param name="baseUri">The base request URI, without any page or per_page parameters.</param>
-  /// <param name="perPage">
-  ///   The number of items to request per page. If null, the API default is
-  ///   used.
-  /// </param>
+  /// <param name="perPage">The number of items to request per page. If null, the API default is used.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An asynchronous stream of items.</returns>
   protected async IAsyncEnumerable<TItem> GetPaginatedAsync<TItem>(
@@ -319,8 +307,8 @@ public abstract class ApiResource
   }
 
   /// <summary>
-  ///   Gets a paginated list of resources using cursor-based pagination where the item list
-  ///   is nested within a wrapper object. This is the core implementation.
+  ///   Gets a paginated list of resources using cursor-based pagination where the item list is nested within a
+  ///   wrapper object. This is the core implementation.
   /// </summary>
   /// <typeparam name="TWrapper">The type of the wrapper object in the 'result' field.</typeparam>
   /// <typeparam name="TItem">The type of the item in the list.</typeparam>
@@ -374,14 +362,11 @@ public abstract class ApiResource
   /// <param name="response">The HttpResponseMessage to process.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The deserialized "result" object.</returns>
-  /// <exception cref="HttpRequestException">
-  ///   Thrown if the API call returns a non-success status
-  ///   code.
-  /// </exception>
+  /// <exception cref="HttpRequestException">Thrown if the API call returns a non-success status code.</exception>
   /// <exception cref="JsonException">Thrown if the API response body cannot be deserialized.</exception>
   /// <exception cref="CloudflareApiException">
-  ///   Thrown if the API returns a success status code but
-  ///   the response indicates failure (e.g., `success: false`).
+  ///   Thrown if the API returns a success status code but the response indicates
+  ///   failure (e.g., `success: false`).
   /// </exception>
   private async Task<T> ProcessResponse<T>(HttpResponseMessage response, CancellationToken cancellationToken)
   {
@@ -393,8 +378,8 @@ public abstract class ApiResource
   }
 
   /// <summary>
-  ///   Handles the common logic for processing an API response: checking for non-success
-  ///   status, deserializing, and checking the internal 'success' flag.
+  ///   Handles the common logic for processing an API response: checking for non-success status, deserializing, and
+  ///   checking the internal 'success' flag.
   /// </summary>
   /// <returns>The full, successfully deserialized <see cref="ApiResponse{T}" />.</returns>
   protected async Task<ApiResponse<T>> ProcessAndDeserializeAsync<T>(HttpResponseMessage response, CancellationToken cancellationToken)

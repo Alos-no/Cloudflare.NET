@@ -8,19 +8,15 @@ using Microsoft.Extensions.Options;
 using R2;
 
 /// <summary>
-///   Entry point for the R2 sample. This demonstrates how to: - Build a Generic Host and
-///   wire up both the Cloudflare REST client and the R2 client - Create or reuse a bucket -
-///   Upload small objects - List and download objects - Clean up uploaded objects and
-///   (optionally) the temporary bucket
+///   Entry point for the R2 sample. This demonstrates how to: - Build a Generic Host and wire up both the
+///   Cloudflare REST client and the R2 client - Create or reuse a bucket - Upload small objects - List and download
+///   objects - Clean up uploaded objects and (optionally) the temporary bucket
 /// </summary>
 public static class Program
 {
   #region Methods
 
-  /// <summary>
-  ///   Main entry point. Configures DI for Cloudflare REST + R2 clients and runs a short
-  ///   scenario against R2.
-  /// </summary>
+  /// <summary>Main entry point. Configures DI for Cloudflare REST + R2 clients and runs a short scenario against R2.</summary>
   public static async Task Main(string[] args)
   {
     // Build a Generic Host with configuration and logging.
@@ -74,7 +70,7 @@ public static class Program
     // Determine bucket name:
     // - If R2:SampleBucketName is provided, reuse it and DO NOT delete it.
     // - Otherwise, create a temporary unique bucket and delete it at the end.
-    var configuredName      = GetOptionalConfig(host, "R2:SampleBucketName");
+    var configuredName = GetOptionalConfig(host, "R2:SampleBucketName");
     var bucketName = string.IsNullOrWhiteSpace(configuredName)
       ? $"cfnet-sample-{Guid.NewGuid():N}"
       : configuredName;
@@ -159,8 +155,8 @@ public static class Program
   }
 
   /// <summary>
-  ///   Gets a single configuration value if present; returns an empty string if not found.
-  ///   This keeps the sample resilient if the optional key is omitted.
+  ///   Gets a single configuration value if present; returns an empty string if not found. This keeps the sample
+  ///   resilient if the optional key is omitted.
   /// </summary>
   private static string GetOptionalConfig(IHost host, string key)
   {

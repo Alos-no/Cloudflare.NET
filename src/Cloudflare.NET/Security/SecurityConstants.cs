@@ -1,14 +1,14 @@
 ﻿namespace Cloudflare.NET.Security;
 
 /// <summary>
-///   Provides centralized, strongly-typed constants for Cloudflare security features,
-///   reducing the risk of errors from using raw string literals.
+///   Provides centralized, strongly-typed constants for Cloudflare security features, reducing the risk of errors
+///   from using raw string literals.
 /// </summary>
 public static class SecurityConstants
 {
   /// <summary>
-  ///   Constants for the Cloudflare Ruleset Engine phases. These are used to identify the
-  ///   execution stage for a ruleset.
+  ///   Constants for the Cloudflare Ruleset Engine phases. These are used to identify the execution stage for a
+  ///   ruleset.
   /// </summary>
   public static class RulesetPhases
   {

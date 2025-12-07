@@ -26,9 +26,8 @@ public record AttachCustomDomainRequest(
 );
 
 /// <summary>
-///   Represents the response from attaching or querying a custom domain. The custom
-///   converter handles the polymorphic 'status' field. The EdgeHostname may be null in some
-///   responses.
+///   Represents the response from attaching or querying a custom domain. The custom converter handles the
+///   polymorphic 'status' field. The EdgeHostname may be null in some responses.
 /// </summary>
 [JsonConverter(typeof(CustomDomainResponseConverter))]
 public record CustomDomainResponse(
@@ -38,8 +37,8 @@ public record CustomDomainResponse(
 );
 
 /// <summary>
-///   This helper record models the nested 'status' object returned by the Cloudflare API
-///   when querying an existing custom domain.
+///   This helper record models the nested 'status' object returned by the Cloudflare API when querying an existing
+///   custom domain.
 /// </summary>
 public record CustomDomainStatusObject(
   [property: JsonPropertyName("ownership")]
@@ -49,9 +48,9 @@ public record CustomDomainStatusObject(
 );
 
 /// <summary>
-///   A custom JSON converter for the CustomDomainResponse record. It handles the case
-///   where the "status" field from the Cloudflare API can be either a simple string (on creation)
-///   or a complex object (when querying an existing domain).
+///   A custom JSON converter for the CustomDomainResponse record. It handles the case where the "status" field from
+///   the Cloudflare API can be either a simple string (on creation) or a complex object (when querying an existing
+///   domain).
 /// </summary>
 public class CustomDomainResponseConverter : JsonConverter<CustomDomainResponse>
 {

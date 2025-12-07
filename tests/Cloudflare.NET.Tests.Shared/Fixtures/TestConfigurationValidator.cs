@@ -1,9 +1,6 @@
 ﻿namespace Cloudflare.NET.Tests.Shared.Fixtures;
 
-/// <summary>
-///   Provides helper methods for validating that the necessary test configuration and
-///   secrets are present.
-/// </summary>
+/// <summary>Provides helper methods for validating that the necessary test configuration and secrets are present.</summary>
 public static class TestConfigurationValidator
 {
   #region Methods
@@ -16,10 +13,7 @@ public static class TestConfigurationValidator
     return string.IsNullOrWhiteSpace(value) || value.Equals("from-user-secrets", StringComparison.OrdinalIgnoreCase);
   }
 
-  /// <summary>
-  ///   Gets a list of all required secrets that are currently missing for the full
-  ///   integration test suite.
-  /// </summary>
+  /// <summary>Gets a list of all required secrets that are currently missing for the full integration test suite.</summary>
   /// <returns>A list of names of the missing secrets. The list is empty if all secrets are present.</returns>
   public static List<string> GetMissingIntegrationSecrets()
   {

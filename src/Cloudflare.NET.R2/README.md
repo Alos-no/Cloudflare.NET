@@ -41,6 +41,15 @@ In your `appsettings.json`, configure both the core Cloudflare settings (for the
 }
 ```
 
+**Notes:**
+- `AccessKeyId` and `SecretAccessKey` are **required**. Generate these from the Cloudflare dashboard under R2 > Manage R2 API Tokens.
+- `AccountId` (in the Cloudflare section) is **required** for constructing the R2 endpoint URL.
+- `EndpointUrl` and `Region` are **optional** with sensible defaults:
+  - `EndpointUrl`: `https://{0}.r2.cloudflarestorage.com` (the `{0}` is replaced with your Account ID)
+  - `Region`: `auto`
+
+**Configuration validation** happens at application startup. If required settings are missing, the application will fail to start with a clear error message indicating what's missing and how to fix it.
+
 ### 3.2 Register Services
 
 In your application's service configuration (e.g., `Program.cs`), register the R2 client. Also register the core client if you need to manage buckets.

@@ -71,22 +71,15 @@ public record Logging(
 /// <summary>Defines the configuration for a rate limiting rule.</summary>
 /// <param name="Characteristics">The properties to track for rate limiting (e.g., "ip.src").</param>
 /// <param name="Period">
-///   The time period in seconds. Only specific values are allowed. It is highly recommended to
-///   use the constants defined in <see cref="SecurityConstants.RateLimiting.Periods" /> to avoid
-///   errors.
+///   The time period in seconds. Only specific values are allowed. It is highly recommended to use the
+///   constants defined in <see cref="SecurityConstants.RateLimiting.Periods" /> to avoid errors.
 /// </param>
-/// <param name="RequestsPerPeriod">
-///   The number of requests allowed in the period for standard rate
-///   limiting.
-/// </param>
+/// <param name="RequestsPerPeriod">The number of requests allowed in the period for standard rate limiting.</param>
 /// <param name="ScorePerPeriod">The score threshold for complexity-based rate limiting.</param>
 /// <param name="MitigationTimeout">The duration in seconds to apply the mitigation action.</param>
 /// <param name="RequestsToOrigin">Whether to count requests to origin (ignores cache).</param>
 /// <param name="CountingExpression">A filter expression to specify which requests to count.</param>
-/// <param name="ScoreResponseHeaderName">
-///   For complexity-based limiting, the name of the response
-///   header to send the score.
-/// </param>
+/// <param name="ScoreResponseHeaderName">For complexity-based limiting, the name of the response header to send the score.</param>
 /// <param name="Simulate">If true, the rule will be logged but not actioned.</param>
 public record RateLimitParameters(
   [property: JsonPropertyName("characteristics")]

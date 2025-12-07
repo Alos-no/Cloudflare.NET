@@ -6,9 +6,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /// <summary>
-///   A JsonConverterFactory that creates a converter to properly handle enums decorated
-///   with EnumMemberAttribute. This allows for serialization and deserialization based on the
-///   attribute's value rather than the enum member's name.
+///   A JsonConverterFactory that creates a converter to properly handle enums decorated with EnumMemberAttribute.
+///   This allows for serialization and deserialization based on the attribute's value rather than the enum member's name.
 /// </summary>
 public class JsonStringEnumMemberConverter : JsonConverterFactory
 {

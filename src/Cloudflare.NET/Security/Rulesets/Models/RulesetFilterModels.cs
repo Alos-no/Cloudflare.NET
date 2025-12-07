@@ -12,6 +12,6 @@ public record ListRulesetsFilters(
 /// <param name="Page">The page number of the result set.</param>
 /// <param name="PerPage">The number of versions to return per page.</param>
 public record ListRulesetVersionsFilters(
-  int? Page = null,
+  int? Page    = null,
   int? PerPage = null
 );

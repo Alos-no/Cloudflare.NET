@@ -9,9 +9,9 @@ using Security.Firewall.Models;
 
 /// <summary>Implements the API for managing IP Access Rules at the account level.</summary>
 public class AccountAccessRulesApi(
-  HttpClient                   httpClient,
+  HttpClient                     httpClient,
   IOptions<CloudflareApiOptions> options,
-  ILoggerFactory               loggerFactory)
+  ILoggerFactory                 loggerFactory)
   : ApiResource(httpClient, loggerFactory.CreateLogger<AccountAccessRulesApi>()), IAccountAccessRulesApi
 {
   #region Properties & Fields - Non-Public

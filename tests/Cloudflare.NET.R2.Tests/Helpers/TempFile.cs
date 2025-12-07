@@ -1,8 +1,8 @@
 ﻿namespace Cloudflare.NET.R2.Tests.Helpers;
 
 /// <summary>
-///   A helper class to create a temporary file with random data for testing uploads. The
-///   file is automatically deleted when the object is disposed.
+///   A helper class to create a temporary file with random data for testing uploads. The file is automatically
+///   deleted when the object is disposed.
 /// </summary>
 public sealed class TempFile : IDisposable
 {

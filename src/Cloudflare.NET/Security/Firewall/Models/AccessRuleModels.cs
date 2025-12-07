@@ -39,10 +39,7 @@ public record Scope(
   [property: JsonPropertyName("type")]
   string Type);
 
-/// <summary>
-///   Represents the abstract configuration for an access rule, defining what to match
-///   against.
-/// </summary>
+/// <summary>Represents the abstract configuration for an access rule, defining what to match against.</summary>
 [JsonConverter(typeof(AccessRuleConfigurationConverter))]
 public abstract record AccessRuleConfiguration(
   [property: JsonPropertyName("target")]
@@ -62,10 +59,7 @@ public record AsnConfiguration(string Value) : AccessRuleConfiguration(AccessRul
 /// <summary>An access rule configuration that targets a two-letter country code.</summary>
 public record CountryConfiguration(string Value) : AccessRuleConfiguration(AccessRuleTarget.Country, Value);
 
-/// <summary>
-///   Custom JSON converter for deserializing the polymorphic
-///   <see cref="AccessRuleConfiguration" />.
-/// </summary>
+/// <summary>Custom JSON converter for deserializing the polymorphic <see cref="AccessRuleConfiguration" />.</summary>
 public class AccessRuleConfigurationConverter : JsonConverter<AccessRuleConfiguration>
 {
   #region Methods Impl

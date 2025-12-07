@@ -59,9 +59,8 @@ public class AccountRulesetsApiUnitTests
   }
 
   /// <summary>
-  ///   Verifies that ListAllAsync handles cursor-based pagination correctly. This pagination
-  ///   style is common in newer Cloudflare APIs and is more resilient to data changes during
-  ///   iteration than page/offset methods. [13, 14, 15]
+  ///   Verifies that ListAllAsync handles cursor-based pagination correctly. This pagination style is common in newer
+  ///   Cloudflare APIs and is more resilient to data changes during iteration than page/offset methods. [13, 14, 15]
   /// </summary>
   [Fact]
   public async Task ListAllAsync_ShouldHandlePaginationCorrectly()

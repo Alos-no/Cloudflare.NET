@@ -6,24 +6,20 @@ using Security.Rulesets.Models;
 /// <summary>
 ///   <para>Defines the contract for managing Rulesets at the zone level.</para>
 ///   <para>
-///     This includes WAF Custom Rules, Rate Limiting Rules, Redirects, and other advanced
-///     configurations for a specific zone.
+///     This includes WAF Custom Rules, Rate Limiting Rules, Redirects, and other advanced configurations for a
+///     specific zone.
 ///   </para>
 /// </summary>
 public interface IZoneRulesetsApi
 {
   /// <summary>Lists all rulesets for a zone, allowing for manual pagination control.</summary>
   /// <remarks>
-  ///   This method is intended for developers who need to control the pagination process
-  ///   manually. To fetch the next page of results, use the <c>Cursor</c> from the
-  ///   <c>CursorInfo</c> property of the returned <see cref="CursorPaginatedResult{T}" /> in your
-  ///   next call.
+  ///   This method is intended for developers who need to control the pagination process manually. To fetch the next
+  ///   page of results, use the <c>Cursor</c> from the <c>CursorInfo</c> property of the returned
+  ///   <see cref="CursorPaginatedResult{T}" /> in your next call.
   /// </remarks>
   /// <param name="zoneId">The ID of the zone.</param>
-  /// <param name="filters">
-  ///   Optional pagination filters, including the cursor from a previous
-  ///   response.
-  /// </param>
+  /// <param name="filters">Optional pagination filters, including the cursor from a previous response.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A single page of rulesets along with pagination information.</returns>
   Task<CursorPaginatedResult<Ruleset>> ListAsync(string               zoneId,
@@ -31,20 +27,14 @@ public interface IZoneRulesetsApi
                                                  CancellationToken    cancellationToken = default);
 
   /// <summary>Lists all rulesets for a zone, automatically handling cursor-based pagination.</summary>
-  /// <remarks>
-  ///   This method simplifies fetching all rulesets by abstracting away the pagination
-  ///   logic.
-  /// </remarks>
+  /// <remarks>This method simplifies fetching all rulesets by abstracting away the pagination logic.</remarks>
   /// <param name="zoneId">The ID of the zone.</param>
   /// <param name="perPage">The number of results to fetch per API page.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An asynchronous stream of all rulesets for the zone.</returns>
   IAsyncEnumerable<Ruleset> ListAllAsync(string zoneId, int? perPage = null, CancellationToken cancellationToken = default);
 
-  /// <summary>
-  ///   Lists the version history for a specific phase entrypoint at the zone level, allowing
-  ///   for manual pagination.
-  /// </summary>
+  /// <summary>Lists the version history for a specific phase entrypoint at the zone level, allowing for manual pagination.</summary>
   /// <param name="zoneId">The ID of the zone.</param>
   /// <param name="phase">The phase of the entrypoint.</param>
   /// <param name="filters">Optional pagination filters.</param>

@@ -14,7 +14,7 @@
 
     <!-- NuGet Package Properties -->
     <PackageId>Cloudflare.NET.Analytics</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.4</Version>
     <Authors>Alos</Authors>
     <Description>An extension package for Cloudflare.NET that provides a strongly-typed client for the Cloudflare Analytics GraphQL API.</Description>
     <PackageTags>cloudflare;api;sdk;alos;analytics;graphql</PackageTags>
@@ -36,10 +36,6 @@
   <ItemGroup>
     <PackageReference Include="GraphQL.Client" Version="6.1.0" />
     <PackageReference Include="GraphQL.Client.Serializer.SystemTextJson" Version="6.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

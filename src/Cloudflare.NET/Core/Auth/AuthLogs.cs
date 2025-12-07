@@ -2,10 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-/// <summary>
-///   Contains high-performance, source-generated logging definitions for the
-///   AuthenticationHandler.
-/// </summary>
+/// <summary>Contains high-performance, source-generated logging definitions for the AuthenticationHandler.</summary>
 internal static partial class AuthLogs
 {
   #region Methods

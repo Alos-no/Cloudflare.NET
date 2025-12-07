@@ -1,7 +1,7 @@
 ﻿namespace Cloudflare.NET.R2.Tests.Fixtures;
 
-using Amazon.S3;
 using Accounts;
+using Amazon.S3;
 using Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,9 +9,8 @@ using Microsoft.Extensions.Logging;
 using NET.Tests.Shared.Fixtures;
 
 /// <summary>
-///   An xUnit class fixture that sets up a dependency injection container with the
-///   Cloudflare.NET.R2 SDK registered. This provides a configured IR2Client instance for use in
-///   integration tests.
+///   An xUnit class fixture that sets up a dependency injection container with the Cloudflare.NET.R2 SDK
+///   registered. This provides a configured IR2Client instance for use in integration tests.
 /// </summary>
 public class R2ClientTestFixture : IDisposable
 {

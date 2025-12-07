@@ -419,17 +419,17 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   public async Task PresignedPutUrl_WithMismatchedContentType_ShouldFail()
   {
     // Arrange
-    var       key         = $"presigned-fail-content-type-{Guid.NewGuid()}.txt";
-    var       signedType  = "text/plain";
-    var       actualType  = "application/octet-stream";
-    using var tempFile    = new TempFile(128);
-    var       request     = new PresignedPutRequest(key, TimeSpan.FromMinutes(5), tempFile.FileSize, signedType);
+    var       key        = $"presigned-fail-content-type-{Guid.NewGuid()}.txt";
+    var       signedType = "text/plain";
+    var       actualType = "application/octet-stream";
+    using var tempFile   = new TempFile(128);
+    var       request    = new PresignedPutRequest(key, TimeSpan.FromMinutes(5), tempFile.FileSize, signedType);
 
     // Act
-    var presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, request);
-    using var       httpClient  = new HttpClient();
-    await using var fileStream  = File.OpenRead(tempFile.FilePath);
-    using var       fileContent = new StreamContent(fileStream);
+    var             presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, request);
+    using var       httpClient   = new HttpClient();
+    await using var fileStream   = File.OpenRead(tempFile.FilePath);
+    using var       fileContent  = new StreamContent(fileStream);
     // Set the wrong Content-Type header
     fileContent.Headers.ContentType   = new MediaTypeHeaderValue(actualType);
     fileContent.Headers.ContentLength = tempFile.FileSize;
@@ -443,15 +443,15 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   public async Task PresignedPutUrl_WithMismatchedContentLength_ShouldFail()
   {
     // Arrange
-    var       key          = $"presigned-fail-content-length-{Guid.NewGuid()}.txt";
-    var       contentType  = "text/plain";
-    var       signedLength = 128;
-    var       actualLength = signedLength - 1; // Mismatch
-    var       request      = new PresignedPutRequest(key, TimeSpan.FromMinutes(5), signedLength, contentType);
+    var key          = $"presigned-fail-content-length-{Guid.NewGuid()}.txt";
+    var contentType  = "text/plain";
+    var signedLength = 128;
+    var actualLength = signedLength - 1; // Mismatch
+    var request      = new PresignedPutRequest(key, TimeSpan.FromMinutes(5), signedLength, contentType);
 
     // Act
-    var presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, request);
-    using var       httpClient  = new HttpClient();
+    var       presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, request);
+    using var httpClient   = new HttpClient();
 
     // Create a byte array with the 'actual' length. The HttpClient will send this array,
     // and its Content-Length will be `actualLength`. R2 will reject this because the
@@ -488,10 +488,10 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     try
     {
       // Act
-      var presignedUrl = _sut.CreatePresignedUploadPartUrl(_bucketName, request);
-      using var       httpClient  = new HttpClient();
-      await using var fileStream  = File.OpenRead(tempFile.FilePath);
-      using var       fileContent = new StreamContent(fileStream);
+      var             presignedUrl = _sut.CreatePresignedUploadPartUrl(_bucketName, request);
+      using var       httpClient   = new HttpClient();
+      await using var fileStream   = File.OpenRead(tempFile.FilePath);
+      using var       fileContent  = new StreamContent(fileStream);
       fileContent.Headers.ContentLength = actualLength; // Use the actual, mismatched length
       var httpResponse = await httpClient.PutAsync(presignedUrl, fileContent);
 
@@ -508,12 +508,12 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   public async Task CompleteMultipartUploadAsync_WithDuplicatePart_ThrowsException()
   {
     // Arrange
-    var       key           = $"duplicate-part-list-{Guid.NewGuid()}.bin";
-    var       partSize      = (int)R2Client.R2MinPartSize;
-    using var tempFile      = new TempFile(partSize);
+    var       key            = $"duplicate-part-list-{Guid.NewGuid()}.bin";
+    var       partSize       = (int)R2Client.R2MinPartSize;
+    using var tempFile       = new TempFile(partSize);
     var       uploadIdResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
-    var       uploadId      = uploadIdResult.Data;
-    var       uploadedParts = new Dictionary<int, string>();
+    var       uploadId       = uploadIdResult.Data;
+    var       uploadedParts  = new Dictionary<int, string>();
 
     try
     {
@@ -533,7 +533,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
           DisablePayloadSigning            = true,
           DisableDefaultChecksumValidation = true
         };
-        var partResponse        = await _s3Client.UploadPartAsync(partRequest);
+        var partResponse = await _s3Client.UploadPartAsync(partRequest);
         uploadedParts[partNumber] = partResponse.ETag;
       }
 
@@ -559,12 +559,12 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
   public async Task CompleteMultipartUploadAsync_WithOutOfOrderParts_Succeeds()
   {
     // Arrange
-    var       key           = $"out-of-order-parts-{Guid.NewGuid()}.bin";
-    var       partSize      = (int)R2Client.R2MinPartSize;
-    using var tempFile      = new TempFile(partSize); // Same content for both parts is fine
-    var       uploadIdResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
-    var       uploadId      = uploadIdResult.Data;
-    var       uploadedParts = new Dictionary<int, string>();
+    var       key             = $"out-of-order-parts-{Guid.NewGuid()}.bin";
+    var       partSize        = (int)R2Client.R2MinPartSize;
+    using var tempFile        = new TempFile(partSize); // Same content for both parts is fine
+    var       uploadIdResult  = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var       uploadId        = uploadIdResult.Data;
+    var       uploadedParts   = new Dictionary<int, string>();
     string?   finalObjectEtag = null;
 
     try
@@ -585,7 +585,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
           DisablePayloadSigning            = true,
           DisableDefaultChecksumValidation = true
         };
-        var partResponse        = await _s3Client.UploadPartAsync(partRequest);
+        var partResponse = await _s3Client.UploadPartAsync(partRequest);
         uploadedParts[partNumber] = partResponse.ETag;
       }
 
@@ -600,7 +600,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
       result.Subject.ClassAOperations.Should().Be(1);
 
       // Verify the object was created successfully
-      var listResult = await _sut.ListObjectsAsync(_bucketName, key);
+      var listResult    = await _sut.ListObjectsAsync(_bucketName, key);
       var createdObject = listResult.Data.Should().ContainSingle().Subject;
       createdObject.Size.Should().Be(tempFile.FileSize * partsToUpload.Length);
       finalObjectEtag = createdObject.ETag;
@@ -608,10 +608,8 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     finally
     {
       if (finalObjectEtag is null)
-      {
         // If completion failed or an assertion prevented `finalObjectEtag` from being set, abort.
         await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId, CancellationToken.None);
-      }
     }
   }
 

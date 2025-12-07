@@ -2,10 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-/// <summary>
-///   Contains pagination information from a Cloudflare API list response that uses page
-///   numbers.
-/// </summary>
+/// <summary>Contains pagination information from a Cloudflare API list response that uses page numbers.</summary>
 /// <param name="Page">The current page number.</param>
 /// <param name="PerPage">The number of items per page.</param>
 /// <param name="Count">The number of items in the current page.</param>
@@ -24,10 +21,7 @@ public sealed record ResultInfo(
   int TotalPages
 );
 
-/// <summary>
-///   Contains pagination information from a Cloudflare API list response that uses
-///   cursors.
-/// </summary>
+/// <summary>Contains pagination information from a Cloudflare API list response that uses cursors.</summary>
 /// <param name="Count">The number of items in the current page.</param>
 /// <param name="PerPage">The number of items per page.</param>
 /// <param name="Cursor">A token that can be used to fetch the next page of results.</param>

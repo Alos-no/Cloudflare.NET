@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 /// <summary>
-///   A delegating handler that injects the Cloudflare API token into the Authorization
-///   header of each outgoing request.
+///   A delegating handler that injects the Cloudflare API token into the Authorization header of each outgoing
+///   request.
 /// </summary>
 /// <remarks>Initializes a new instance of the <see cref="AuthenticationHandler" /> class.</remarks>
 /// <param name="options">The Cloudflare API options containing the token.</param>

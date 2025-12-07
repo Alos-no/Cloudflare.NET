@@ -5,9 +5,8 @@ using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
 /// <summary>
-///   ILoggerProvider that writes logs to xUnit's ITestOutputHelper. This version is
-///   designed to be compatible with IClassFixture by using an AsyncLocal to store the
-///   ITestOutputHelper for the currently executing test.
+///   ILoggerProvider that writes logs to xUnit's ITestOutputHelper. This version is designed to be compatible with
+///   IClassFixture by using an AsyncLocal to store the ITestOutputHelper for the currently executing test.
 /// </summary>
 public sealed class XunitTestOutputLoggerProvider : ILoggerProvider
 {
@@ -16,8 +15,8 @@ public sealed class XunitTestOutputLoggerProvider : ILoggerProvider
   private readonly ConcurrentDictionary<string, XunitLogger> _loggers = new();
 
   /// <summary>
-  ///   This allows the ITestOutputHelper to be set on a per-test basis, making the provider
-  ///   safe to use as a singleton within a test fixture.
+  ///   This allows the ITestOutputHelper to be set on a per-test basis, making the provider safe to use as a
+  ///   singleton within a test fixture.
   /// </summary>
   private readonly AsyncLocal<ITestOutputHelper?> _testOutputHelper = new();
 
@@ -31,10 +30,7 @@ public sealed class XunitTestOutputLoggerProvider : ILoggerProvider
 
   #region Properties & Fields - Public
 
-  /// <summary>
-  ///   Gets or sets the current ITestOutputHelper. This should be set by the test class
-  ///   constructor.
-  /// </summary>
+  /// <summary>Gets or sets the current ITestOutputHelper. This should be set by the test class constructor.</summary>
   public ITestOutputHelper? Current
   {
     get => _testOutputHelper.Value;

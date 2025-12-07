@@ -85,9 +85,7 @@ public sealed class CSharpEmitter(string ns, string includeRegex, string exclude
     {
       var v = values[i];
       if (!string.IsNullOrWhiteSpace(v.Description))
-      {
         AppendSummary(sb, v.Description!, "  ");
-      }
 
       sb.AppendLine($"  {SanitizeId(v.Name)}{(i < values.Count - 1 ? "," : string.Empty)}");
     }
@@ -110,9 +108,7 @@ public sealed class CSharpEmitter(string ns, string includeRegex, string exclude
       var propName = ToPascal(f.Name);
 
       if (!string.IsNullOrWhiteSpace(f.Description))
-      {
         AppendSummary(sb, f.Description!, "  ");
-      }
 
       sb.AppendLine($"  [JsonPropertyName(\"{f.Name}\")]");
       sb.AppendLine($"  public {csType}{(nullable ? "?" : string.Empty)} {propName} {{ get; init; }}");
@@ -138,9 +134,7 @@ public sealed class CSharpEmitter(string ns, string includeRegex, string exclude
       var propName = ToPascal(f.Name);
 
       if (!string.IsNullOrWhiteSpace(f.Description))
-      {
         AppendSummary(sb, f.Description!, "  ");
-      }
 
       sb.AppendLine($"  [JsonPropertyName(\"{f.Name}\")]");
       sb.AppendLine($"  public {csType}{(nullable ? "?" : string.Empty)} {propName} {{ get; init; }}");
@@ -165,10 +159,8 @@ public sealed class CSharpEmitter(string ns, string includeRegex, string exclude
       // Defensive: if ofType is missing due to a shallow introspection query,
       // bail out gracefully and treat it as a non-null "String" (best-effort).
       if (cur.OfType is null)
-      {
         // NOTE: This can occur if the server limits depth or the query fragment isn't deep enough.
         break;
-      }
 
       cur = cur.OfType;
     }

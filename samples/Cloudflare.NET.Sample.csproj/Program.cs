@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.SampleCoreConsole;
+namespace Cloudflare.NET.SampleCoreConsole;
 
 using Core;
 using Microsoft.Extensions.Configuration;
@@ -9,18 +9,17 @@ using Microsoft.Extensions.Options;
 using Samples;
 
 /// <summary>
-///   Entry point for the Core REST sample. This demonstrates how to: - Build a Generic
-///   Host and wire up the Cloudflare REST client. - Run sample scenarios for various API features
-///   like Zones, Accounts (R2), and Security. - Ensure created resources are cleaned up after the
-///   sample runs.
+///   Entry point for the Core REST sample. This demonstrates how to: - Build a Generic Host and wire up the
+///   Cloudflare REST client. - Run sample scenarios for various API features like Zones, Accounts (R2), and Security. -
+///   Ensure created resources are cleaned up after the sample runs.
 /// </summary>
 public static class Program
 {
   #region Methods
 
   /// <summary>
-  ///   Main entry point. Sets up the Host, resolves the REST client and sample classes, and
-  ///   runs a series of end-to-end scenarios.
+  ///   Main entry point. Sets up the Host, resolves the REST client and sample classes, and runs a series of
+  ///   end-to-end scenarios.
   /// </summary>
   public static async Task Main(string[] args)
   {
@@ -43,6 +42,7 @@ public static class Program
     builder.Services.AddTransient<ZoneSamples>();
     builder.Services.AddTransient<AccountSamples>();
     builder.Services.AddTransient<SecuritySamples>();
+    builder.Services.AddTransient<CustomHostnameSamples>();
 
     using var host          = builder.Build();
     var       logger        = host.Services.GetRequiredService<ILoggerFactory>().CreateLogger("CloudflareSample");
@@ -67,9 +67,10 @@ public static class Program
     }
 
     // Resolve sample runners from DI container.
-    var zoneSamples     = host.Services.GetRequiredService<ZoneSamples>();
-    var accountSamples  = host.Services.GetRequiredService<AccountSamples>();
-    var securitySamples = host.Services.GetRequiredService<SecuritySamples>();
+    var zoneSamples           = host.Services.GetRequiredService<ZoneSamples>();
+    var accountSamples        = host.Services.GetRequiredService<AccountSamples>();
+    var securitySamples       = host.Services.GetRequiredService<SecuritySamples>();
+    var customHostnameSamples = host.Services.GetRequiredService<CustomHostnameSamples>();
 
     logger.LogInformation("Starting Cloudflare.NET SDK Samples...");
     logger.LogInformation("Using AccountId: {AccountId}, ZoneId: {ZoneId}", options.AccountId, zoneId);
@@ -87,13 +88,16 @@ public static class Program
     await Runner.RunAsync(logger, "Security/Account Firewall",
                           securitySamples.RunAccountFirewallSamplesAsync);
 
+    await Runner.RunAsync(logger, "Custom Hostnames (Cloudflare for SaaS)",
+                          () => customHostnameSamples.RunCustomHostnameSamplesAsync(zoneId!, baseDomain));
+
     logger.LogInformation("All sample scenarios complete.");
   }
 
   /// <summary>Fetches zone details to get the domain name for use in samples that create hostnames.</summary>
   private static async Task<string> GetBaseDomainAsync(IServiceProvider services, string zoneId, ILogger logger)
   {
-    var cf     = services.GetRequiredService<ICloudflareApiClient>();
+    var cf = services.GetRequiredService<ICloudflareApiClient>();
 
     try
     {

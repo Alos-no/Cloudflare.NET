@@ -4,8 +4,8 @@ using Core.Internal;
 using Models;
 
 /// <summary>
-///   A helper class responsible for building the query string for listing IP Access Rules
-///   based on a set of filters.
+///   A helper class responsible for building the query string for listing IP Access Rules based on a set of
+///   filters.
 /// </summary>
 internal static class AccessRuleQueryBuilder
 {

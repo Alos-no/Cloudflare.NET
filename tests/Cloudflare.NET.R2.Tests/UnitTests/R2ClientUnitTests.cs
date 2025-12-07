@@ -240,8 +240,8 @@ public class R2ClientUnitTests
   }
 
   /// <summary>
-  ///   Verifies that if a user requests a part size larger than R2's maximum (5 GiB), the
-  ///   client clamps it down to the maximum allowed size.
+  ///   Verifies that if a user requests a part size larger than R2's maximum (5 GiB), the client clamps it down to
+  ///   the maximum allowed size.
   /// </summary>
   [Fact]
   public async Task UploadMultipartAsync_WithTooLargePartSize_ClampsToMax()
@@ -249,7 +249,7 @@ public class R2ClientUnitTests
     // Arrange
     // The file size MUST be larger than the max part size to test clamping.
     // We'll simulate a file that would create one max-sized part and one smaller part.
-    var fileSize = R2Client.R2MaxPartSize + (10 * 1024 * 1024); // 5 GiB + 10 MiB
+    var fileSize = R2Client.R2MaxPartSize + 10 * 1024 * 1024; // 5 GiB + 10 MiB
 
     // Mock a seekable stream with a specific length, without allocating memory for it.
     var mockStream = new Mock<Stream>();
@@ -351,7 +351,7 @@ public class R2ClientUnitTests
     // Arrange
     var keys = Enumerable.Range(1, 1500).Select(i => $"key-{i}").ToList();
 
-    var firstResponse = new DeleteObjectsResponse { DeleteErrors = [new DeleteError { Key = "key-500" }] };
+    var firstResponse  = new DeleteObjectsResponse { DeleteErrors = [new DeleteError { Key = "key-500" }] };
     var secondResponse = new DeleteObjectsResponse { DeleteErrors = [new DeleteError { Key = "key-1200" }] };
 
     _mockS3Client.SetupSequence(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()))
@@ -475,7 +475,7 @@ public class R2ClientUnitTests
 
     _mockS3Client.SetupSequence(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
                  // First page is empty but indicates more data is available.
-                 .ReturnsAsync(new ListObjectsV2Response { S3Objects = null, IsTruncated = true, NextContinuationToken = "token" })
+                 .ReturnsAsync(new ListObjectsV2Response { S3Objects = null, IsTruncated      = true, NextContinuationToken = "token" })
                  .ReturnsAsync(new ListObjectsV2Response { S3Objects = page2Keys, IsTruncated = false });
 
     _mockS3Client.Setup(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()))
@@ -486,7 +486,8 @@ public class R2ClientUnitTests
 
     // Assert
     _mockS3Client.Verify(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
-    _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()), Times.Once); // Only one batch had keys
+    _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()),
+                         Times.Once);       // Only one batch had keys
     result.ClassAOperations.Should().Be(2); // 2 list calls
   }
 
@@ -726,10 +727,10 @@ public class R2ClientUnitTests
   }
 
   [Theory]
-  [InlineData(new[] { R2Client.R2MinPartSize - 1 })]                                                  // Below min
-  [InlineData(new[] { R2Client.R2MaxPartSize + 1 })]                                                  // Above max
-  [InlineData(new[] { R2Client.R2MinPartSize, R2Client.R2MinPartSize + 1, R2Client.R2MinPartSize })]  // Non-uniform
-  [InlineData(new[] { R2Client.R2MinPartSize, R2Client.R2MinPartSize, R2Client.R2MinPartSize + 1 })]  // Last part larger
+  [InlineData(new[] { R2Client.R2MinPartSize - 1 })]                                                 // Below min
+  [InlineData(new[] { R2Client.R2MaxPartSize + 1 })]                                                 // Above max
+  [InlineData(new[] { R2Client.R2MinPartSize, R2Client.R2MinPartSize + 1, R2Client.R2MinPartSize })] // Non-uniform
+  [InlineData(new[] { R2Client.R2MinPartSize, R2Client.R2MinPartSize, R2Client.R2MinPartSize + 1 })] // Last part larger
   public void CreatePresignedUploadPartsUrls_WithInvalidPartSizesForR2_ThrowsArgumentException(long[] partSizes)
   {
     // Arrange
@@ -758,7 +759,7 @@ public class R2ClientUnitTests
 
     // Assert
     await action.Should().ThrowAsync<ArgumentException>()
-          .WithMessage("Stream length (* bytes) exceeds the maximum size for a single-part upload (5 GiB).*");
+                .WithMessage("Stream length (* bytes) exceeds the maximum size for a single-part upload (5 GiB).*");
   }
 
   [Fact]
@@ -775,7 +776,8 @@ public class R2ClientUnitTests
 
     // Assert
     await action.Should().ThrowAsync<ArgumentException>()
-          .WithMessage("The calculated number of parts (*) exceeds the R2 maximum of 10000 parts. Consider increasing the part size.*");
+                .WithMessage(
+                  "The calculated number of parts (*) exceeds the R2 maximum of 10000 parts. Consider increasing the part size.*");
   }
 
   [Fact]
@@ -791,7 +793,7 @@ public class R2ClientUnitTests
 
     // Assert
     await action.Should().ThrowAsync<ArgumentException>()
-          .WithMessage("Stream length (* bytes) exceeds the maximum R2 object size of 5 TiB.*");
+                .WithMessage("Stream length (* bytes) exceeds the maximum R2 object size of 5 TiB.*");
   }
 
   [Fact]
