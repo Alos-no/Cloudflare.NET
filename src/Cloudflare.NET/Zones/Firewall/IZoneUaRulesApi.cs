@@ -9,14 +9,11 @@ using Security.Firewall.Models;
 /// </summary>
 public interface IZoneUaRulesApi
 {
-  /// <summary>
-  ///   Lists all User-Agent blocking rules for a zone, allowing for manual pagination
-  ///   control.
-  /// </summary>
+  /// <summary>Lists all User-Agent blocking rules for a zone, allowing for manual pagination control.</summary>
   /// <remarks>
-  ///   This method is intended for developers who need to control the pagination process
-  ///   manually. Use the properties of the returned <see cref="PagePaginatedResult{T}" /> to
-  ///   determine if there are more pages and to construct the filter for the next call.
+  ///   This method is intended for developers who need to control the pagination process manually. Use the properties
+  ///   of the returned <see cref="PagePaginatedResult{T}" /> to determine if there are more pages and to construct the
+  ///   filter for the next call.
   /// </remarks>
   /// <param name="zoneId">The ID of the zone.</param>
   /// <param name="filters">Optional pagination filters.</param>

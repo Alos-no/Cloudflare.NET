@@ -4,10 +4,7 @@ using Configuration;
 using Microsoft.Extensions.Configuration;
 using NET.Tests.Shared.Fixtures;
 
-/// <summary>
-///   A helper class to build and validate configuration specifically for R2 integration
-///   tests.
-/// </summary>
+/// <summary>A helper class to build and validate configuration specifically for R2 integration tests.</summary>
 public static class R2TestConfiguration
 {
   #region Constants & Statics

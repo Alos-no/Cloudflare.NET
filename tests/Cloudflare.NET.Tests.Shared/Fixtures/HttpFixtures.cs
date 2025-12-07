@@ -4,10 +4,7 @@ using System.Net;
 using System.Text.Json;
 using Moq.Protected;
 
-/// <summary>
-///   Provides helper methods and fixtures for creating mocked HTTP responses and handlers
-///   for unit tests.
-/// </summary>
+/// <summary>Provides helper methods and fixtures for creating mocked HTTP responses and handlers for unit tests.</summary>
 public static class HttpFixtures
 {
   #region Methods
@@ -46,10 +43,7 @@ public static class HttpFixtures
     return JsonSerializer.Serialize(response);
   }
 
-  /// <summary>
-  ///   Creates a mock <see cref="HttpMessageHandler" /> that is set up to return a specific
-  ///   response.
-  /// </summary>
+  /// <summary>Creates a mock <see cref="HttpMessageHandler" /> that is set up to return a specific response.</summary>
   /// <param name="responseContent">The string content to return in the response.</param>
   /// <param name="statusCode">The HTTP status code to return.</param>
   /// <param name="callback">An optional callback to inspect the request message.</param>
@@ -83,10 +77,7 @@ public static class HttpFixtures
   }
 
 
-  /// <summary>
-  ///   Creates a mock <see cref="HttpMessageHandler" /> that is set up to return a specific
-  ///   response.
-  /// </summary>
+  /// <summary>Creates a mock <see cref="HttpMessageHandler" /> that is set up to return a specific response.</summary>
   /// <param name="responseContent">The string content to return in the response.</param>
   /// <param name="statusCode">The HTTP status code to return.</param>
   /// <returns>A configured mock of <see cref="HttpMessageHandler" />.</returns>

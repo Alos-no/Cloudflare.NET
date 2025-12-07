@@ -3,11 +3,13 @@
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-///   Contains high-performance, source-generated logging definitions for the ApiResource.
-///   Using the LoggerMessage pattern avoids boxing and template parsing for hot-path logs.
+///   Contains high-performance, source-generated logging definitions for the ApiResource. Using the LoggerMessage
+///   pattern avoids boxing and template parsing for hot-path logs.
 /// </summary>
 internal static partial class ApiResourceLogs
 {
+  #region Methods
+
   [LoggerMessage(
     EventId = 101,
     Level = LogLevel.Trace,
@@ -27,10 +29,10 @@ internal static partial class ApiResourceLogs
       "Cloudflare API request to {RequestUri} failed with status code {StatusCode} ({ReasonPhrase}). Response Body: {ResponseBody}")]
   public static partial void RequestFailed(
     this ILogger logger,
-    Uri?          requestUri,
-    int           statusCode,
-    string?       reasonPhrase,
-    string        responseBody);
+    Uri?         requestUri,
+    int          statusCode,
+    string?      reasonPhrase,
+    string       responseBody);
 
   [LoggerMessage(
     EventId = 104,
@@ -60,4 +62,6 @@ internal static partial class ApiResourceLogs
     Level = LogLevel.Trace,
     Message = "Successfully processed successful response from {RequestUri}")]
   public static partial void ProcessedSuccessResponse(this ILogger logger, Uri? requestUri);
+
+  #endregion
 }

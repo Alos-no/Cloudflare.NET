@@ -96,10 +96,7 @@ public class ZonesApiUnitTests
                    .Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordId}");
   }
 
-  /// <summary>
-  ///   Verifies that FindDnsRecordByNameAsync sends a correctly formatted GET request and
-  ///   returns the first result.
-  /// </summary>
+  /// <summary>Verifies that FindDnsRecordByNameAsync sends a correctly formatted GET request and returns the first result.</summary>
   [Fact]
   public async Task FindDnsRecordByNameAsync_SendsCorrectRequestAndReturnsFirstRecord()
   {
@@ -154,9 +151,8 @@ public class ZonesApiUnitTests
   }
 
   /// <summary>
-  ///   Verifies that ListAllDnsRecordsAsync handles page-based pagination correctly.
-  ///   Cloudflare's page-based pagination uses a `result_info` object with `page` and `total_pages`
-  ///   to control the loop. [4, 8, 17]
+  ///   Verifies that ListAllDnsRecordsAsync handles page-based pagination correctly. Cloudflare's page-based
+  ///   pagination uses a `result_info` object with `page` and `total_pages` to control the loop. [4, 8, 17]
   /// </summary>
   [Fact]
   public async Task ListAllDnsRecordsAsync_ShouldHandlePaginationCorrectly()
@@ -225,10 +221,7 @@ public class ZonesApiUnitTests
     allRecords.Select(r => r.Id).Should().ContainInOrder("id-1", "id-2");
   }
 
-  /// <summary>
-  ///   Verifies that ListDnsRecordsAsync constructs the correct request URI when all filters
-  ///   are applied.
-  /// </summary>
+  /// <summary>Verifies that ListDnsRecordsAsync constructs the correct request URI when all filters are applied.</summary>
   [Fact]
   public async Task ListDnsRecordsAsync_ShouldConstructCorrectRequestUri_WithAllFilters()
   {
@@ -262,10 +255,7 @@ public class ZonesApiUnitTests
                     .Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records?{expectedQuery}");
   }
 
-  /// <summary>
-  ///   Verifies that ExportDnsRecordsAsync calls the correct endpoint and returns the raw
-  ///   string body.
-  /// </summary>
+  /// <summary>Verifies that ExportDnsRecordsAsync calls the correct endpoint and returns the raw string body.</summary>
   [Fact]
   public async Task ExportDnsRecordsAsync_ShouldCallCorrectEndpointAndReturnString()
   {
@@ -297,10 +287,7 @@ public class ZonesApiUnitTests
     capturedRequest!.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/export");
   }
 
-  /// <summary>
-  ///   Verifies that ImportDnsRecordsAsync sends a multipart/form-data request with the
-  ///   correct parameters.
-  /// </summary>
+  /// <summary>Verifies that ImportDnsRecordsAsync sends a multipart/form-data request with the correct parameters.</summary>
   [Fact]
   public async Task ImportDnsRecordsAsync_ShouldSendMultipartFormDataRequest()
   {
@@ -355,10 +342,7 @@ public class ZonesApiUnitTests
     content.Should().Be("{\"purge_everything\":true}");
   }
 
-  /// <summary>
-  ///   Verifies that PurgeCacheAsync serializes the correct payload for purging specific
-  ///   files.
-  /// </summary>
+  /// <summary>Verifies that PurgeCacheAsync serializes the correct payload for purging specific files.</summary>
   [Fact]
   public async Task PurgeCacheAsync_ShouldSerializeCorrectPayload_ForFiles()
   {

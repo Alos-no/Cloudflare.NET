@@ -6,17 +6,17 @@ using Security.Firewall.Models;
 /// <summary>
 ///   <para>Defines the contract for managing Zone Lockdown rules.</para>
 ///   <para>
-///     Lockdown rules specify a list of IP addresses that are the only ones allowed to access
-///     a given URL or set of URLs.
+///     Lockdown rules specify a list of IP addresses that are the only ones allowed to access a given URL or set of
+///     URLs.
 ///   </para>
 /// </summary>
 public interface IZoneLockdownApi
 {
   /// <summary>Lists all Lockdown rules for a zone, allowing for manual pagination.</summary>
   /// <remarks>
-  ///   This method is intended for developers who need to control the pagination process
-  ///   manually. Use the properties of the returned <see cref="PagePaginatedResult{T}" /> to
-  ///   determine if there are more pages and to construct the filter for the next call.
+  ///   This method is intended for developers who need to control the pagination process manually. Use the properties
+  ///   of the returned <see cref="PagePaginatedResult{T}" /> to determine if there are more pages and to construct the
+  ///   filter for the next call.
   /// </remarks>
   /// <param name="zoneId">The ID of the zone.</param>
   /// <param name="filters">Optional pagination filters.</param>

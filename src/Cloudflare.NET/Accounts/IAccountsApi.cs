@@ -6,12 +6,10 @@ using Models;
 using Rulesets;
 
 /// <summary>
+///   <para>Defines the contract for interacting with Cloudflare Account resources.</para>
 ///   <para>
-///     Defines the contract for interacting with Cloudflare Account resources.
-///   </para>
-///   <para>
-///     This includes managing R2 buckets and their associated domains, as well as account-level
-///     security resources like IP Access Rules and WAF Rulesets.
+///     This includes managing R2 buckets and their associated domains, as well as account-level security resources
+///     like IP Access Rules and WAF Rulesets.
 ///   </para>
 /// </summary>
 public interface IAccountsApi
@@ -28,8 +26,8 @@ public interface IAccountsApi
   /// <param name="bucketName">The desired name for the new bucket. Must be unique.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
-  ///   A task that represents the asynchronous operation. The task result contains the
-  ///   <see cref="R2Bucket" /> from the Cloudflare API, detailing the created bucket.
+  ///   A task that represents the asynchronous operation. The task result contains the <see cref="R2Bucket" /> from
+  ///   the Cloudflare API, detailing the created bucket.
   /// </returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/create/" />
   Task<R2Bucket> CreateR2BucketAsync(string bucketName, CancellationToken cancellationToken = default);
@@ -38,7 +36,8 @@ public interface IAccountsApi
   /// <param name="filters">Optional filters for pagination.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A single page of R2 buckets along with pagination information.</returns>
-  Task<CursorPaginatedResult<R2Bucket>> ListR2BucketsAsync(ListR2BucketsFilters? filters = null, CancellationToken cancellationToken = default);
+  Task<CursorPaginatedResult<R2Bucket>> ListR2BucketsAsync(ListR2BucketsFilters? filters           = null,
+                                                           CancellationToken     cancellationToken = default);
 
   /// <summary>Lists all R2 buckets in the account, automatically handling cursor-based pagination.</summary>
   /// <param name="filters">Optional filters for pagination. The cursor will be ignored.</param>

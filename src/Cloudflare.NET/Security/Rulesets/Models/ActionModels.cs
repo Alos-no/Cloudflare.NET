@@ -3,20 +3,16 @@
 using System.Text.Json.Serialization;
 
 /// <summary>
+///   <para>Action parameters for an 'execute' rule, used to deploy another ruleset, such as a Managed WAF Ruleset.</para>
 ///   <para>
-///     Action parameters for an 'execute' rule, used to deploy another ruleset, such as a
-///     Managed WAF Ruleset.
-///   </para>
-///   <para>
-///     This is primarily used to add a rule to the entrypoint of the
-///     <c>http_request_firewall_managed</c> phase to enable a Cloudflare-provided or a custom
-///     ruleset.
+///     This is primarily used to add a rule to the entrypoint of the <c>http_request_firewall_managed</c> phase to
+///     enable a Cloudflare-provided or a custom ruleset.
 ///   </para>
 /// </summary>
 /// <param name="Id">The ID of the ruleset to execute.</param>
 /// <param name="Version">
-///   The version of the ruleset to execute. For Cloudflare Managed Rulesets,
-///   it is common practice to use <c>"latest"</c> to ensure rules are kept up-to-date.
+///   The version of the ruleset to execute. For Cloudflare Managed Rulesets, it is common practice to
+///   use <c>"latest"</c> to ensure rules are kept up-to-date.
 /// </param>
 /// <param name="Overrides">Optional overrides for the executed ruleset.</param>
 public record ExecuteParameters(
@@ -69,9 +65,8 @@ public record CategoryOverride(
 /// <param name="Rulesets">A list of ruleset IDs to skip.</param>
 /// <param name="Rules">A list of rule IDs to skip.</param>
 /// <param name="Products">
-///   A list of legacy product names to skip (e.g., "waf", "zoneLockdown").
-///   Use the constants defined in <see cref="Security.SecurityConstants.SkipProducts" /> for
-///   valid values.
+///   A list of legacy product names to skip (e.g., "waf", "zoneLockdown"). Use the constants defined
+///   in <see cref="Security.SecurityConstants.SkipProducts" /> for valid values.
 /// </param>
 public record SkipParameters(
   [property: JsonPropertyName("phases")]

@@ -9,8 +9,8 @@ using Rulesets;
 /// <summary>
 ///   <para>Defines the contract for interacting with Cloudflare Zone resources.</para>
 ///   <para>
-///     This includes managing DNS records and all zone-level security features like IP Access
-///     Rules, WAF Rulesets, Zone Lockdown, and User-Agent blocking rules.
+///     This includes managing DNS records and all zone-level security features like IP Access Rules, WAF Rulesets,
+///     Zone Lockdown, and User-Agent blocking rules.
 ///   </para>
 /// </summary>
 public interface IZonesApi
@@ -34,23 +34,17 @@ public interface IZonesApi
   /// <summary>Fetches the details for a specific Zone by its ID.</summary>
   /// <param name="zoneId">The identifier of the Zone.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>
-  ///   A task that represents the asynchronous operation. The task result contains the
-  ///   <see cref="Zone" /> details.
-  /// </returns>
+  /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="Zone" /> details.</returns>
   Task<Zone> GetZoneDetailsAsync(string zoneId, CancellationToken cancellationToken = default);
 
-  /// <summary>
-  ///   Creates a CNAME DNS record, typically used to point a custom domain to Cloudflare's
-  ///   infrastructure.
-  /// </summary>
+  /// <summary>Creates a CNAME DNS record, typically used to point a custom domain to Cloudflare's infrastructure.</summary>
   /// <param name="zoneId">The ID of the zone where the record will be created.</param>
   /// <param name="hostname">The hostname for the CNAME record (e.g., "cdn.tenant.example.com").</param>
   /// <param name="cnameTarget">The target the CNAME should point to.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
-  ///   A task that represents the asynchronous operation. The task result contains the
-  ///   <see cref="DnsRecord" /> with details of the created record.
+  ///   A task that represents the asynchronous operation. The task result contains the <see cref="DnsRecord" /> with
+  ///   details of the created record.
   /// </returns>
   Task<DnsRecord> CreateCnameRecordAsync(string zoneId, string hostname, string cnameTarget, CancellationToken cancellationToken = default);
 
@@ -65,10 +59,7 @@ public interface IZonesApi
 
   /// <summary>Lists all DNS records for a zone, automatically handling pagination.</summary>
   /// <param name="zoneId">The ID of the zone.</param>
-  /// <param name="filters">
-  ///   Optional filters for sorting and matching. Pagination options will be
-  ///   ignored.
-  /// </param>
+  /// <param name="filters">Optional filters for sorting and matching. Pagination options will be ignored.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An asynchronous stream of all matching DNS records.</returns>
   IAsyncEnumerable<DnsRecord> ListAllDnsRecordsAsync(string                 zoneId,
@@ -96,10 +87,7 @@ public interface IZonesApi
 
   /// <summary>Purges assets from the Cloudflare cache for a zone.</summary>
   /// <param name="zoneId">The ID of the zone.</param>
-  /// <param name="request">
-  ///   The request defining what to purge (e.g., files, prefixes, or
-  ///   everything).
-  /// </param>
+  /// <param name="request">The request defining what to purge (e.g., files, prefixes, or everything).</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The result of the purge operation.</returns>
   Task<PurgeCacheResult> PurgeCacheAsync(string zoneId, PurgeCacheRequest request, CancellationToken cancellationToken = default);
@@ -109,10 +97,9 @@ public interface IZonesApi
   /// <param name="hostname">The name of the DNS record to find (e.g., "test.example.com").</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
-  ///   A task that represents the asynchronous operation. The task result contains the
-  ///   <see cref="DnsRecord" /> if found; otherwise, <see langword="null" />. If multiple records
-  ///   exist with the same name (e.g., A and AAAA), this method returns the first one from the API
-  ///   response.
+  ///   A task that represents the asynchronous operation. The task result contains the <see cref="DnsRecord" /> if
+  ///   found; otherwise, <see langword="null" />. If multiple records exist with the same name (e.g., A and AAAA), this
+  ///   method returns the first one from the API response.
   /// </returns>
   Task<DnsRecord?> FindDnsRecordByNameAsync(string zoneId, string hostname, CancellationToken cancellationToken = default);
 

@@ -96,7 +96,7 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       "true", // This expression means the managed ruleset will run for all requests
       $"cfnet-deploy-managed-ruleset-{Guid.NewGuid():N}",
       true,
-      ActionParameters: new ExecuteParameters(managedRulesetId, "latest")
+      new ExecuteParameters(managedRulesetId, "latest")
     );
     var updatedRules = originalRules.Append(newRule).ToList();
 
@@ -190,8 +190,8 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   }
 
   /// <summary>
-  ///   Helper to get the original list of rules for a phase, handling the case where the
-  ///   entrypoint might not exist yet (which is a valid state).
+  ///   Helper to get the original list of rules for a phase, handling the case where the entrypoint might not exist
+  ///   yet (which is a valid state).
   /// </summary>
   private async Task<IReadOnlyList<CreateRuleRequest>> GetOriginalRulesAsync(string zoneId, string phase)
   {
@@ -199,13 +199,13 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     {
       var originalRuleset = await _sut.Zones.Rulesets.GetPhaseEntrypointAsync(zoneId, phase);
       return originalRuleset.Rules?.Select(r => new CreateRuleRequest(
-                                                r.Action,
-                                                r.Expression,
-                                                r.Description,
-                                                r.Enabled,
-                                                r.ActionParameters,
-                                                r.Logging,
-                                                r.Ratelimit))
+                                             r.Action,
+                                             r.Expression,
+                                             r.Description,
+                                             r.Enabled,
+                                             r.ActionParameters,
+                                             r.Logging,
+                                             r.Ratelimit))
                             .ToList() ?? [];
     }
     catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)

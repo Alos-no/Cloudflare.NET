@@ -3,12 +3,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NET.Tests.Shared.Fixtures;
 
 /// <summary>
-///   An xUnit class fixture that sets up a dependency injection container with the full
-///   Cloudflare.NET SDK (Core and Analytics) registered. This provides a configured IAnalyticsApi
-///   instance for use in integration tests.
+///   An xUnit class fixture that sets up a dependency injection container with the full Cloudflare.NET SDK (Core
+///   and Analytics) registered. This provides a configured IAnalyticsApi instance for use in integration tests.
 /// </summary>
 public class AnalyticsApiTestFixture : IDisposable
 {

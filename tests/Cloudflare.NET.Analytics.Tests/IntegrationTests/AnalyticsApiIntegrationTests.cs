@@ -40,8 +40,8 @@ public class AnalyticsApiIntegrationTests : IClassFixture<AnalyticsApiTestFixtur
   #region Methods
 
   /// <summary>
-  ///   Verifies that a valid GraphQL query can be sent and a well-formed response is
-  ///   received without errors. This test confirms authentication and end-to-end connectivity.
+  ///   Verifies that a valid GraphQL query can be sent and a well-formed response is received without errors. This
+  ///   test confirms authentication and end-to-end connectivity.
   /// </summary>
   [IntegrationTest]
   public async Task CanSendValidQueryAndReceiveSuccessResponse()

@@ -15,14 +15,11 @@ public record CreateAccessRuleRequest(
   string? Notes = null
 );
 
-/// <summary>
-///   Defines the request payload for updating an existing IP Access Rule. All properties
-///   are optional.
-/// </summary>
+/// <summary>Defines the request payload for updating an existing IP Access Rule. All properties are optional.</summary>
 /// <param name="Mode">The new action to take. If null, the mode is not changed.</param>
 /// <param name="Notes">
-///   The new note for the rule. If null, the note is not changed. To clear a
-///   note, provide an empty string.
+///   The new note for the rule. If null, the note is not changed. To clear a note, provide an empty
+///   string.
 /// </param>
 public record UpdateAccessRuleRequest(
   [property: JsonPropertyName("mode")]

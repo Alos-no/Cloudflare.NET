@@ -58,19 +58,17 @@ public record DnsImportResult(
 /// <param name="Order">The field to order the results by.</param>
 /// <param name="Direction">The direction to sort the results.</param>
 public record ListDnsRecordsFilters(
-  string? Type = null,
-  string? Name = null,
-  string? Content = null,
-  bool? Proxied = null,
-  int? Page = null,
-  int? PerPage = null,
-  string? Order = null,
+  string?             Type      = null,
+  string?             Name      = null,
+  string?             Content   = null,
+  bool?               Proxied   = null,
+  int?                Page      = null,
+  int?                PerPage   = null,
+  string?             Order     = null,
   ListOrderDirection? Direction = null
 );
 
-/// <summary>
-/// Represents the detailed information for a Cloudflare Zone.
-/// </summary>
+/// <summary>Represents the detailed information for a Cloudflare Zone.</summary>
 /// <param name="Id">The Zone identifier tag.</param>
 /// <param name="Name">The domain name.</param>
 /// <param name="Status">The current status of the zone.</param>

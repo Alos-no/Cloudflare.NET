@@ -1,10 +1,7 @@
 namespace Cloudflare.NET.R2.Models;
 
 /// <summary>Represents the immutable, accumulated metrics of one or more R2 operations.</summary>
-/// <param name="ClassAOperations">
-///   The number of billable Class A operations (e.g., writes,
-///   lists).
-/// </param>
+/// <param name="ClassAOperations">The number of billable Class A operations (e.g., writes, lists).</param>
 /// <param name="ClassBOperations">The number of billable Class B operations (e.g., reads).</param>
 /// <param name="IngressBytes">The number of bytes uploaded to R2.</param>
 /// <param name="EgressBytes">The number of bytes downloaded from R2.</param>
@@ -30,10 +27,7 @@ public record R2Result(
   }
 }
 
-/// <summary>
-///   Represents the result of an R2 operation that returns a data payload in addition to
-///   billable metrics.
-/// </summary>
+/// <summary>Represents the result of an R2 operation that returns a data payload in addition to billable metrics.</summary>
 /// <typeparam name="T">The type of the data payload.</typeparam>
 /// <param name="Data">The data payload returned by the operation.</param>
 /// <param name="Metrics">The billable metrics for the operation.</param>

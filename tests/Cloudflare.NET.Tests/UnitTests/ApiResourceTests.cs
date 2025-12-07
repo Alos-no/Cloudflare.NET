@@ -10,8 +10,8 @@ using Shared.Fixtures;
 using Xunit.Abstractions;
 
 /// <summary>
-///   Contains unit tests for the abstract <see cref="ApiResource" /> class, tested via a
-///   concrete implementation (<see cref="AccountsApi" />).
+///   Contains unit tests for the abstract <see cref="ApiResource" /> class, tested via a concrete implementation (
+///   <see cref="AccountsApi" />).
 /// </summary>
 [Trait("Category", TestConstants.TestCategories.Unit)]
 public class ApiResourceTests
@@ -35,8 +35,8 @@ public class ApiResourceTests
   #region Methods
 
   /// <summary>
-  ///   Verifies that the response processing throws a <see cref="CloudflareApiException" />
-  ///   when the API returns success: false.
+  ///   Verifies that the response processing throws a <see cref="CloudflareApiException" /> when the API returns
+  ///   success: false.
   /// </summary>
   [Fact]
   public async Task ProcessResponse_WhenSuccessIsFalse_ThrowsCloudflareApiException()
@@ -78,10 +78,7 @@ public class ApiResourceTests
       .Which.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
   }
 
-  /// <summary>
-  ///   Verifies that an invalid JSON response results in a JsonException during
-  ///   deserialization.
-  /// </summary>
+  /// <summary>Verifies that an invalid JSON response results in a JsonException during deserialization.</summary>
   [Fact]
   public async Task ProcessResponse_OnInvalidJson_ThrowsJsonException()
   {

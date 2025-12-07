@@ -2,10 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-/// <summary>
-///   Defines the request payload for a cache purge operation. At least one property must
-///   be set.
-/// </summary>
+/// <summary>Defines the request payload for a cache purge operation. At least one property must be set.</summary>
 /// <param name="PurgeEverything">If true, purges all assets in the cache for the zone.</param>
 /// <param name="Files">A list of URLs to purge from the cache.</param>
 /// <param name="Prefixes">A list of URL prefixes to purge from the cache.</param>

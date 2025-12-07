@@ -9,20 +9,14 @@ using Security.Firewall.Models;
 /// </summary>
 public interface IZoneAccessRulesApi
 {
-  /// <summary>
-  ///   Lists all IP Access Rules for the specified zone, allowing for manual pagination
-  ///   control.
-  /// </summary>
+  /// <summary>Lists all IP Access Rules for the specified zone, allowing for manual pagination control.</summary>
   /// <remarks>
-  ///   This method is intended for developers who need to control the pagination process
-  ///   manually. Use the properties of the returned <see cref="PagePaginatedResult{T}" /> to
-  ///   determine if there are more pages and to construct the filter for the next call.
+  ///   This method is intended for developers who need to control the pagination process manually. Use the properties
+  ///   of the returned <see cref="PagePaginatedResult{T}" /> to determine if there are more pages and to construct the
+  ///   filter for the next call.
   /// </remarks>
   /// <param name="zoneId">The ID of the zone.</param>
-  /// <param name="filters">
-  ///   Optional filters to apply to the list operation, including pagination
-  ///   parameters.
-  /// </param>
+  /// <param name="filters">Optional filters to apply to the list operation, including pagination parameters.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A single page of access rules along with pagination information.</returns>
   Task<PagePaginatedResult<AccessRule>> ListAsync(string                  zoneId,
@@ -32,8 +26,8 @@ public interface IZoneAccessRulesApi
   /// <summary>Lists all IP Access Rules for the specified zone, automatically handling pagination.</summary>
   /// <param name="zoneId">The ID of the zone.</param>
   /// <param name="filters">
-  ///   Optional filters to apply to the list operation. Pagination parameters
-  ///   (Page, PerPage) will be ignored.
+  ///   Optional filters to apply to the list operation. Pagination parameters (Page, PerPage) will be
+  ///   ignored.
   /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An asynchronous stream of all access rules matching the criteria.</returns>

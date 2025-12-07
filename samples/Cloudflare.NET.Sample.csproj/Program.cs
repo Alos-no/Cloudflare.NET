@@ -9,18 +9,17 @@ using Microsoft.Extensions.Options;
 using Samples;
 
 /// <summary>
-///   Entry point for the Core REST sample. This demonstrates how to: - Build a Generic
-///   Host and wire up the Cloudflare REST client. - Run sample scenarios for various API features
-///   like Zones, Accounts (R2), and Security. - Ensure created resources are cleaned up after the
-///   sample runs.
+///   Entry point for the Core REST sample. This demonstrates how to: - Build a Generic Host and wire up the
+///   Cloudflare REST client. - Run sample scenarios for various API features like Zones, Accounts (R2), and Security. -
+///   Ensure created resources are cleaned up after the sample runs.
 /// </summary>
 public static class Program
 {
   #region Methods
 
   /// <summary>
-  ///   Main entry point. Sets up the Host, resolves the REST client and sample classes, and
-  ///   runs a series of end-to-end scenarios.
+  ///   Main entry point. Sets up the Host, resolves the REST client and sample classes, and runs a series of
+  ///   end-to-end scenarios.
   /// </summary>
   public static async Task Main(string[] args)
   {
@@ -93,7 +92,7 @@ public static class Program
   /// <summary>Fetches zone details to get the domain name for use in samples that create hostnames.</summary>
   private static async Task<string> GetBaseDomainAsync(IServiceProvider services, string zoneId, ILogger logger)
   {
-    var cf     = services.GetRequiredService<ICloudflareApiClient>();
+    var cf = services.GetRequiredService<ICloudflareApiClient>();
 
     try
     {

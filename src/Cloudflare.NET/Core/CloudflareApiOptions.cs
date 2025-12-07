@@ -6,8 +6,8 @@ public class RateLimitingOptions
   #region Properties & Fields - Public
 
   /// <summary>
-  ///   Gets or sets a value indicating whether automatic rate-limit handling is enabled.
-  ///   Defaults to <see langword="false" />.
+  ///   Gets or sets a value indicating whether automatic rate-limit handling is enabled. Defaults to
+  ///   <see langword="false" />.
   /// </summary>
   public bool IsEnabled { get; set; }
 
@@ -15,16 +15,12 @@ public class RateLimitingOptions
   public int MaxRetries { get; set; } = 2;
 
   /// <summary>
-  ///   Gets or sets the maximum number of concurrent requests allowed by the client-side
-  ///   rate limiter. Defaults to 25. This helps prevent sending a burst of requests that would
-  ///   trigger a 429 response.
+  ///   Gets or sets the maximum number of concurrent requests allowed by the client-side rate limiter. Defaults to
+  ///   25. This helps prevent sending a burst of requests that would trigger a 429 response.
   /// </summary>
   public int PermitLimit { get; set; } = 20;
 
-  /// <summary>
-  ///   Gets or sets the number of requests that can be queued when the concurrency limit is
-  ///   reached. Defaults to 50.
-  /// </summary>
+  /// <summary>Gets or sets the number of requests that can be queued when the concurrency limit is reached. Defaults to 50.</summary>
   public int QueueLimit { get; set; } = 50;
 
   #endregion
@@ -45,8 +41,8 @@ public class CloudflareApiOptions
   public string AccountId { get; set; } = string.Empty;
 
   /// <summary>
-  ///   Gets or sets the default timeout for a single HTTP request attempt. Defaults to 30
-  ///   seconds. This can be configured in appsettings.json (e.g., "00:00:30").
+  ///   Gets or sets the default timeout for a single HTTP request attempt. Defaults to 30 seconds. This can be
+  ///   configured in appsettings.json (e.g., "00:00:30").
   /// </summary>
   public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromSeconds(30);
 

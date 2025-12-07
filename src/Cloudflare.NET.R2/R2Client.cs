@@ -41,8 +41,8 @@ public class R2Client : IR2Client, IDisposable
   #region Constructors
 
   /// <summary>
-  ///   Initializes a new instance of the <see cref="R2Client" /> class. This is the
-  ///   designated constructor for dependency injection.
+  ///   Initializes a new instance of the <see cref="R2Client" /> class. This is the designated constructor for
+  ///   dependency injection.
   /// </summary>
   /// <param name="loggerFactory">The logger factory used to create a typed logger.</param>
   /// <param name="s3Client">The underlying S3-compatible client.</param>

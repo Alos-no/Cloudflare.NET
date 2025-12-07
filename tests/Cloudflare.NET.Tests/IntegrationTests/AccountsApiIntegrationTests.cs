@@ -10,8 +10,8 @@ using Shared.Helpers;
 using Xunit.Abstractions;
 
 /// <summary>
-///   Contains integration tests for the <see cref="AccountsApi" /> class. These tests
-///   interact with the live Cloudflare API and require credentials.
+///   Contains integration tests for the <see cref="AccountsApi" /> class. These tests interact with the live
+///   Cloudflare API and require credentials.
 /// </summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
 public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IAsyncLifetime
@@ -49,10 +49,7 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
 
   #region Methods Impl
 
-  /// <summary>
-  ///   Asynchronously creates the R2 bucket required for the tests. This runs once before
-  ///   any tests in this class.
-  /// </summary>
+  /// <summary>Asynchronously creates the R2 bucket required for the tests. This runs once before any tests in this class.</summary>
   public async Task InitializeAsync()
   {
     // Create a new R2 bucket for the test run.

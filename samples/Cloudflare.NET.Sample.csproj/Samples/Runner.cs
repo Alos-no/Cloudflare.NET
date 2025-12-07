@@ -10,10 +10,7 @@ public static class Runner
   /// <summary>Executes a sample scenario, managing a list of cleanup actions.</summary>
   /// <param name="logger">The logger to use for the scenario.</param>
   /// <param name="scenarioName">The name of the scenario for logging.</param>
-  /// <param name="scenarioAction">
-  ///   An async func that contains the sample logic and returns a list
-  ///   of cleanup funcs.
-  /// </param>
+  /// <param name="scenarioAction">An async func that contains the sample logic and returns a list of cleanup funcs.</param>
   public static async Task RunAsync(
     ILogger                      logger,
     string                       scenarioName,

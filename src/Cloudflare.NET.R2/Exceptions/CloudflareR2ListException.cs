@@ -3,9 +3,8 @@
 using Models;
 
 /// <summary>
-///   Represents an exception thrown during a paginated list operation where the operation
-///   failed mid-stream. This exception provides access to the data that was successfully
-///   retrieved before the failure occurred.
+///   Represents an exception thrown during a paginated list operation where the operation failed mid-stream. This
+///   exception provides access to the data that was successfully retrieved before the failure occurred.
 /// </summary>
 /// <typeparam name="T">The type of the items being listed.</typeparam>
 public class CloudflareR2ListException<T> : CloudflareR2OperationException

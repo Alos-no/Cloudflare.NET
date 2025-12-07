@@ -37,8 +37,8 @@ public class ResiliencePipelineTests
   #region Methods
 
   /// <summary>
-  ///   Verifies that the innermost "Attempt Timeout" strategy correctly cancels a single API
-  ///   call that exceeds the configured timeout.
+  ///   Verifies that the innermost "Attempt Timeout" strategy correctly cancels a single API call that exceeds the
+  ///   configured timeout.
   /// </summary>
   [Fact]
   public async Task AttemptTimeout_WhenApiCallExceedsTimeout_ThrowsTimeoutRejectedException()
@@ -73,10 +73,7 @@ public class ResiliencePipelineTests
     await action.Should().ThrowAsync<TimeoutRejectedException>();
   }
 
-  /// <summary>
-  ///   Verifies that the retry strategy correctly re-issues a request upon receiving a 5xx
-  ///   server error.
-  /// </summary>
+  /// <summary>Verifies that the retry strategy correctly re-issues a request upon receiving a 5xx server error.</summary>
   [Fact]
   public async Task Retry_WhenApiReturnsTransient5xxError_ShouldRetryRequest()
   {
@@ -115,8 +112,8 @@ public class ResiliencePipelineTests
   }
 
   /// <summary>
-  ///   Verifies that the retry strategy correctly re-issues a request for a 429 status code
-  ///   when rate limit handling is enabled.
+  ///   Verifies that the retry strategy correctly re-issues a request for a 429 status code when rate limit handling
+  ///   is enabled.
   /// </summary>
   [Fact]
   public async Task Retry_WhenRateLimitingIsEnabled_ShouldRetryOn429()
@@ -154,8 +151,8 @@ public class ResiliencePipelineTests
   }
 
   /// <summary>
-  ///   Verifies that the retry strategy does NOT re-issue a request for a 429 status code
-  ///   when rate limit handling is disabled.
+  ///   Verifies that the retry strategy does NOT re-issue a request for a 429 status code when rate limit handling is
+  ///   disabled.
   /// </summary>
   [Fact]
   public async Task Retry_WhenRateLimitingIsDisabled_ShouldNotRetryOn429()
@@ -198,8 +195,8 @@ public class ResiliencePipelineTests
 
 
   /// <summary>
-  ///   Verifies that non-idempotent methods (like POST) are not retried, even on transient
-  ///   failures, to prevent creating duplicate resources.
+  ///   Verifies that non-idempotent methods (like POST) are not retried, even on transient failures, to prevent
+  ///   creating duplicate resources.
   /// </summary>
   [Fact]
   public async Task Retry_ForUnsafePostMethod_ShouldNotRetryOnTransientError()
@@ -241,8 +238,8 @@ public class ResiliencePipelineTests
   }
 
   /// <summary>
-  ///   Verifies that the circuit breaker opens after a configured number of consecutive
-  ///   failures and that subsequent calls fail-fast with a BrokenCircuitException.
+  ///   Verifies that the circuit breaker opens after a configured number of consecutive failures and that subsequent
+  ///   calls fail-fast with a BrokenCircuitException.
   /// </summary>
   [Fact]
   public async Task CircuitBreaker_AfterConsecutiveFailures_ShouldOpenAndBlockCalls()
@@ -286,8 +283,8 @@ public class ResiliencePipelineTests
   }
 
   /// <summary>
-  ///   Verifies that the client-side rate limiter (bulkhead) rejects concurrent requests
-  ///   that exceed its configured permit limit.
+  ///   Verifies that the client-side rate limiter (bulkhead) rejects concurrent requests that exceed its configured
+  ///   permit limit.
   /// </summary>
   [Fact]
   public async Task RateLimiter_WhenConcurrencyExceeded_ShouldRejectRequest()
@@ -338,8 +335,8 @@ public class ResiliencePipelineTests
   }
 
   /// <summary>
-  ///   A helper method to set up the DI container with a mock HttpMessageHandler and custom
-  ///   options for a single test.
+  ///   A helper method to set up the DI container with a mock HttpMessageHandler and custom options for a single
+  ///   test.
   /// </summary>
   private (ICloudflareApiClient Client, Mock<HttpMessageHandler> Handler) SetupClient(
     Action<CloudflareApiOptions>?    configureOptions,

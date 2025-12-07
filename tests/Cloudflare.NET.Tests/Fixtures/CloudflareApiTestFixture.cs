@@ -8,9 +8,8 @@ using Shared.Fixtures;
 using Zones;
 
 /// <summary>
-///   An xUnit class fixture that sets up a dependency injection container with the
-///   Cloudflare.NET SDK registered. This provides configured API client instances for use in
-///   integration tests.
+///   An xUnit class fixture that sets up a dependency injection container with the Cloudflare.NET SDK registered.
+///   This provides configured API client instances for use in integration tests.
 /// </summary>
 public class CloudflareApiTestFixture : IAsyncLifetime
 {
@@ -94,10 +93,7 @@ public class CloudflareApiTestFixture : IAsyncLifetime
 
   #region Methods Impl
 
-  /// <summary>
-  ///   Initializes the fixture by fetching the Zone details from the API to infer the
-  ///   BaseDomain.
-  /// </summary>
+  /// <summary>Initializes the fixture by fetching the Zone details from the API to infer the BaseDomain.</summary>
   public async Task InitializeAsync()
   {
     if (TestConfigurationValidator.IsSecretMissing(_settings.ZoneId) ||

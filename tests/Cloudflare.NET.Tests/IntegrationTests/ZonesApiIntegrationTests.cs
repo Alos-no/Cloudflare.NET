@@ -53,10 +53,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
 
   #region Methods Impl
 
-  /// <summary>
-  ///   Asynchronously creates the DNS record required for the tests. This runs once before
-  ///   any tests in the class.
-  /// </summary>
+  /// <summary>Asynchronously creates the DNS record required for the tests. This runs once before any tests in the class.</summary>
   public async Task InitializeAsync()
   {
     var cnameTarget  = "localhost";
@@ -65,10 +62,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     _recordId = createResult.Id;
   }
 
-  /// <summary>
-  ///   Asynchronously deletes the DNS record after all tests in the class have run, ensuring
-  ///   a clean state.
-  /// </summary>
+  /// <summary>Asynchronously deletes the DNS record after all tests in the class have run, ensuring a clean state.</summary>
   public async Task DisposeAsync()
   {
     if (_recordId is not null)
@@ -142,10 +136,10 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
   }
 
   /// <summary>
-  ///   Verifies that the ListAllDnsRecordsAsync method correctly handles multiple pages of
-  ///   results from the live API. It creates enough records to span across pages and asserts that
-  ///   the total count is correct. The `IAsyncEnumerable` pattern is used here to abstract away the
-  ///   underlying pagination mechanism, providing a simpler development experience. [1, 5, 7]
+  ///   Verifies that the ListAllDnsRecordsAsync method correctly handles multiple pages of results from the live API.
+  ///   It creates enough records to span across pages and asserts that the total count is correct. The `IAsyncEnumerable`
+  ///   pattern is used here to abstract away the underlying pagination mechanism, providing a simpler development
+  ///   experience. [1, 5, 7]
   /// </summary>
   [IntegrationTest]
   public async Task ListAllDnsRecordsAsync_HandlesMultiplePages()
@@ -157,7 +151,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     // Use a unique CNAME target for this test run to allow for efficient filtering. The 'name'
     // parameter is an exact match, so filtering by a unique 'content' is the correct way to
     // isolate records for this test. [1, 2]
-    var cnameTarget      = $"{Guid.NewGuid():N}.test-target.com";
+    var cnameTarget = $"{Guid.NewGuid():N}.test-target.com";
 
     try
     {
@@ -222,10 +216,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     findResult.Type.Should().Be("CNAME");
   }
 
-  /// <summary>
-  ///   Verifies that attempting to delete a non-existent resource correctly throws a 404 Not
-  ///   Found exception.
-  /// </summary>
+  /// <summary>Verifies that attempting to delete a non-existent resource correctly throws a 404 Not Found exception.</summary>
   [IntegrationTest]
   public async Task DeleteDnsRecordAsync_WhenRecordDoesNotExist_ThrowsNotFound()
   {

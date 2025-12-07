@@ -1,8 +1,8 @@
 ﻿namespace Cloudflare.NET.Tests.Shared.Fixtures;
 
 /// <summary>
-///   Defines the contract for a class that can validate the presence of required secrets
-///   for a specific set of integration tests.
+///   Defines the contract for a class that can validate the presence of required secrets for a specific set of
+///   integration tests.
 /// </summary>
 public interface IIntegrationTestSecretValidator
 {
