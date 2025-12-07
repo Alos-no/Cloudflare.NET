@@ -1,0 +1,28 @@
+<Project>
+
+  <!-- 
+    Override root Directory.Build.props settings for sample projects.
+    Sample projects should target a single framework and not be packaged.
+  -->
+
+  <PropertyGroup>
+    <!-- Sample projects target the latest .NET only -->
+    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks></TargetFrameworks>
+
+    <!-- Sample projects are not packaged -->
+    <IsPackable>false</IsPackable>
+
+    <!-- Disable trim/AOT analysis for sample projects -->
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+
+    <!-- Disable XML documentation warnings for sample projects -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+
+    <!-- Disable strong naming for samples -->
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
+</Project>

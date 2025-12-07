@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.R2.Models;
+namespace Cloudflare.NET.R2.Models;
 
 using Amazon.S3.Model;
 
@@ -7,6 +7,7 @@ using Amazon.S3.Model;
 /// <param name="ExpiresAfter">The duration for which the presigned URL will be valid.</param>
 /// <param name="ContentLength">The exact size of the file to be uploaded, in bytes. This is enforced by R2.</param>
 /// <param name="ContentType">The MIME type of the file to be uploaded (e.g., "image/jpeg"). This is enforced by R2.</param>
+/// <param name="Conditions">Optional S3 POST policy conditions to enforce additional constraints on the upload.</param>
 /// <param name="HeadersToSign">
 ///   An optional dictionary of additional headers to include in the signature, enforcing them on
 ///   the client-side upload.

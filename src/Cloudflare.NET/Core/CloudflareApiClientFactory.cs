@@ -59,7 +59,7 @@ public sealed class CloudflareApiClientFactory : ICloudflareApiClientFactory
   /// <inheritdoc />
   public ICloudflareApiClient CreateClient(string name)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
     // Retrieve the named options. IOptionsMonitor.Get(name) returns the default value if the name
     // is not found, so we validate that critical properties are set.

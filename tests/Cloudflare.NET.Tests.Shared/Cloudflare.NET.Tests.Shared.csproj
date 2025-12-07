@@ -1,22 +1,31 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- 
+    This project inherits multi-targeting from tests/Directory.Build.props.
+    No explicit TargetFramework here to ensure it stays in sync with test projects.
+    
+    This is a shared infrastructure library, not a test project itself.
+  -->
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="Verify.DiffPlex" Version="3.1.2" />
-    <PackageReference Include="Verify.Xunit" Version="30.12.0" />
-    <PackageReference Include="xunit.extensibility.core" Version="2.9.3" />
+    <PackageReference Include="xunit" Version="2.9.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cloudflare.NET\Cloudflare.NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectCapability Remove="TestContainer" />
   </ItemGroup>
 
 </Project>

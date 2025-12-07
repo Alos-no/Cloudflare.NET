@@ -3,7 +3,6 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Exceptions;
-using Logging;
 using Microsoft.Extensions.Logging;
 using Models;
 

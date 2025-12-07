@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.R2.Models;
+namespace Cloudflare.NET.R2.Models;
 
 using Amazon.S3.Model;
 
@@ -12,6 +12,7 @@ using Amazon.S3.Model;
 ///   The MIME type of the file to be uploaded (e.g., "application/octet-stream"). This is enforced
 ///   by R2.
 /// </param>
+/// <param name="Conditions">Optional S3 POST policy conditions to enforce additional constraints on the upload.</param>
 /// <param name="HeadersToSign">
 ///   An optional dictionary of additional headers to include in the signature, enforcing them on
 ///   the client-side upload.

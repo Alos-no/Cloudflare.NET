@@ -10,6 +10,16 @@
 
 This is an unofficial .NET SDK for the Cloudflare API. Its primary goal is to provide a strongly-typed, testable, and maintainable library for interacting with various Cloudflare services. The core SDK is lean and focuses on the REST API, while optional functionality, like the Analytics GraphQL API, is provided in a separate extension package.
 
+## Supported Frameworks
+
+| Package | .NET 8 | .NET 9 | .NET 10 | Strong Named |
+|---------|:------:|:------:|:-------:|:------------:|
+| **Cloudflare.NET.Api** | ✅ | ✅ | ✅ | ✅ |
+| **Cloudflare.NET.R2** | ✅ | ✅ | ✅ | ✅ |
+| **Cloudflare.NET.Analytics** | ✅ | ✅ | ✅ | ❌* |
+
+> \* `Cloudflare.NET.Analytics` cannot be strong-named because its dependency (`GraphQL.Client`) is not strong-named.
+
 ## 1. Installation
 
 The SDK is split into multiple packages. Install the one(s) you need from NuGet.
@@ -172,5 +182,3 @@ To adhere to the principle of least privilege, create a Cloudflare API token wit
 | **SSL and Certificates** | Zone | **Read** | Monitor and report on client certificate status. Cloudflare SaaS. |
 | **Account Analytics** | Account | **Read** | Query R2 usage and other datasets via GraphQL. |
 | **User API-tokens** | User | **Read** | Build applications that can inspect their own token permissions. |
-
-> **CI/CD Token Tip**: For running this repository's integration tests, your CI token needs `Workers R2 Storage Write` and `Zone DNS Write` to create and tear down test resources.

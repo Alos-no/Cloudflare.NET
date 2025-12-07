@@ -124,6 +124,89 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
 
   #endregion
 
+  #region Methods
+
+  #region Tests - Fallback Origin
+
+  /// <summary>Tests the full fallback origin lifecycle: Create (or get existing), Update, Verify, and Restore/Delete.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     This test handles both scenarios: zones with an existing fallback origin and zones without one. If no fallback
+  ///     origin exists, it creates one, tests it, and then deletes it. If one exists, it updates it with a test value and
+  ///     restores the original.
+  ///   </para>
+  ///   <para>
+  ///     The fallback origin is optional in Cloudflare for SaaS - it's only needed when custom hostnames don't specify
+  ///     their own <c>custom_origin_server</c>.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest]
+  public async Task FallbackOrigin_FullLifecycle()
+  {
+    // Arrange - Check if a fallback origin already exists.
+    string? originalOrigin       = null;
+    var     fallbackOriginExists = false;
+
+    try
+    {
+      var existing = await _sut.GetFallbackOriginAsync(_zoneId);
+      originalOrigin       = existing.Origin;
+      fallbackOriginExists = true;
+    }
+    catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+    {
+      // No fallback origin configured - this is fine, we'll create one.
+      fallbackOriginExists = false;
+    }
+
+    // Use a test origin based on the zone's base domain.
+    var testOrigin = $"fallback-test.{_settings.BaseDomain}";
+
+    try
+    {
+      // Act - Create or Update the fallback origin.
+      var updateRequest = new UpdateFallbackOriginRequest(testOrigin);
+      var updateResult  = await _sut.UpdateFallbackOriginAsync(_zoneId, updateRequest);
+
+      // Assert - Update was successful.
+      updateResult.Should().NotBeNull();
+      updateResult.Origin.Should().Be(testOrigin);
+
+      // Act - Verify by getting the fallback origin.
+      var getResult = await _sut.GetFallbackOriginAsync(_zoneId);
+
+      // Assert - Get returns the expected value.
+      getResult.Should().NotBeNull();
+      getResult.Origin.Should().Be(testOrigin);
+    }
+    finally
+    {
+      // Cleanup - Restore original or delete if we created it.
+      try
+      {
+        if (fallbackOriginExists && originalOrigin is not null)
+        {
+          // Restore the original fallback origin.
+          var restoreRequest = new UpdateFallbackOriginRequest(originalOrigin);
+          await _sut.UpdateFallbackOriginAsync(_zoneId, restoreRequest);
+        }
+        else
+        {
+          // We created the fallback origin, so delete it.
+          await _sut.DeleteFallbackOriginAsync(_zoneId);
+        }
+      }
+      catch
+      {
+        // Ignore cleanup errors - manual cleanup may be needed.
+      }
+    }
+  }
+
+  #endregion
+
+  #endregion
+
 
   #region Tests - CRUD Lifecycle
 
@@ -230,8 +313,8 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
   {
     // Arrange
     // Use a short GUID segment to keep hostname under 64 chars (avoids Cloudflare Branding requirement).
-    var shortGuid          = Guid.NewGuid().ToString("N")[..8];
-    var hostname           = $"{TestHostnamePrefix}{shortGuid}.customer-test.net";
+    var shortGuid = Guid.NewGuid().ToString("N")[..8];
+    var hostname  = $"{TestHostnamePrefix}{shortGuid}.customer-test.net";
     // Use the zone's base domain for the custom origin server (not example.com which is prohibited).
     var customOriginServer = $"origin.{_settings.BaseDomain}";
     var sslConfig          = new SslConfiguration(DcvMethod.Txt, CertificateType.Dv);
@@ -401,9 +484,9 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
   #region Tests - Error Handling
 
   /// <summary>
-  ///   Verifies that attempting to get a non-existent custom hostname throws a Bad Request exception.
-  ///   Note: Unlike other Cloudflare APIs, the Custom Hostnames API returns 400 (not 404) with error code 1435
-  ///   "The custom hostname ID is invalid" for non-existent IDs.
+  ///   Verifies that attempting to get a non-existent custom hostname throws a Bad Request exception. Note: Unlike
+  ///   other Cloudflare APIs, the Custom Hostnames API returns 400 (not 404) with error code 1435 "The custom hostname ID is
+  ///   invalid" for non-existent IDs.
   /// </summary>
   [IntegrationTest]
   public async Task GetAsync_WhenHostnameDoesNotExist_ThrowsBadRequest()
@@ -420,9 +503,9 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
   }
 
   /// <summary>
-  ///   Verifies that attempting to delete a non-existent custom hostname throws a Bad Request exception.
-  ///   Note: Unlike other Cloudflare APIs, the Custom Hostnames API returns 400 (not 404) with error code 1435
-  ///   "The custom hostname ID is invalid" for non-existent IDs.
+  ///   Verifies that attempting to delete a non-existent custom hostname throws a Bad Request exception. Note: Unlike
+  ///   other Cloudflare APIs, the Custom Hostnames API returns 400 (not 404) with error code 1435 "The custom hostname ID is
+  ///   invalid" for non-existent IDs.
   /// </summary>
   [IntegrationTest]
   public async Task DeleteAsync_WhenHostnameDoesNotExist_ThrowsBadRequest()
@@ -452,86 +535,6 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
 
     // Assert
     await action.Should().ThrowAsync<HttpRequestException>();
-  }
-
-  #endregion
-
-
-  #region Tests - Fallback Origin
-
-  /// <summary>Tests the full fallback origin lifecycle: Create (or get existing), Update, Verify, and Restore/Delete.</summary>
-  /// <remarks>
-  ///   <para>
-  ///     This test handles both scenarios: zones with an existing fallback origin and zones without one.
-  ///     If no fallback origin exists, it creates one, tests it, and then deletes it.
-  ///     If one exists, it updates it with a test value and restores the original.
-  ///   </para>
-  ///   <para>
-  ///     The fallback origin is optional in Cloudflare for SaaS - it's only needed when custom hostnames
-  ///     don't specify their own <c>custom_origin_server</c>.
-  ///   </para>
-  /// </remarks>
-  [IntegrationTest]
-  public async Task FallbackOrigin_FullLifecycle()
-  {
-    // Arrange - Check if a fallback origin already exists.
-    string? originalOrigin       = null;
-    var     fallbackOriginExists = false;
-
-    try
-    {
-      var existing = await _sut.GetFallbackOriginAsync(_zoneId);
-      originalOrigin       = existing.Origin;
-      fallbackOriginExists = true;
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-    {
-      // No fallback origin configured - this is fine, we'll create one.
-      fallbackOriginExists = false;
-    }
-
-    // Use a test origin based on the zone's base domain.
-    var testOrigin = $"fallback-test.{_settings.BaseDomain}";
-
-    try
-    {
-      // Act - Create or Update the fallback origin.
-      var updateRequest = new UpdateFallbackOriginRequest(testOrigin);
-      var updateResult  = await _sut.UpdateFallbackOriginAsync(_zoneId, updateRequest);
-
-      // Assert - Update was successful.
-      updateResult.Should().NotBeNull();
-      updateResult.Origin.Should().Be(testOrigin);
-
-      // Act - Verify by getting the fallback origin.
-      var getResult = await _sut.GetFallbackOriginAsync(_zoneId);
-
-      // Assert - Get returns the expected value.
-      getResult.Should().NotBeNull();
-      getResult.Origin.Should().Be(testOrigin);
-    }
-    finally
-    {
-      // Cleanup - Restore original or delete if we created it.
-      try
-      {
-        if (fallbackOriginExists && originalOrigin is not null)
-        {
-          // Restore the original fallback origin.
-          var restoreRequest = new UpdateFallbackOriginRequest(originalOrigin);
-          await _sut.UpdateFallbackOriginAsync(_zoneId, restoreRequest);
-        }
-        else
-        {
-          // We created the fallback origin, so delete it.
-          await _sut.DeleteFallbackOriginAsync(_zoneId);
-        }
-      }
-      catch
-      {
-        // Ignore cleanup errors - manual cleanup may be needed.
-      }
-    }
   }
 
   #endregion

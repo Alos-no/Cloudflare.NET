@@ -1,14 +1,16 @@
-﻿namespace Cloudflare.NET.R2.Logging;
+namespace Cloudflare.NET.R2.Models;
 
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-///   Contains high-performance, source-generated logging definitions for the R2Client. Using the LoggerMessage
-///   pattern avoids boxing and template parsing for hot-path logs.
+///   Contains logging definitions for the R2Client. For .NET 6+, these use source-generated LoggerMessage for high
+///   performance. For .NET Standard 2.1, manual implementations are used.
 /// </summary>
 internal static partial class R2ClientLogs
 {
-  #region Methods
+#if NET6_0_OR_GREATER
+
+  #region Source-Generated Logging (NET6+)
 
   [LoggerMessage(EventId = 1001, Level = LogLevel.Debug, Message = "Successfully uploaded to s3://{Bucket}/{Key} via single PUT.")]
   public static partial void UploadedSinglePart(this ILogger logger, string bucket, string key);
@@ -107,4 +109,185 @@ internal static partial class R2ClientLogs
   public static partial void ListPartsPaginationInconsistency(this ILogger logger, string uploadId);
 
   #endregion
+
+#else
+  #region Manual Logging (NetStandard2.1)
+
+  public static void UploadedSinglePart(this ILogger logger, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Debug))
+      logger.LogDebug("Successfully uploaded to s3://{Bucket}/{Key} via single PUT.", bucket, key);
+  }
+
+  public static void UploadSinglePartFailed(this ILogger logger, Exception ex, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "AWS SDK Error during single-part upload to s3://{Bucket}/{Key}", bucket, key);
+  }
+
+  public static void UploadedMultipart(this ILogger logger, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Debug))
+      logger.LogDebug("Successfully uploaded to s3://{Bucket}/{Key} via multipart.", bucket, key);
+  }
+
+  public static void MultipartFailed(this ILogger logger, Exception ex, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Multipart upload failed for s3://{Bucket}/{Key}. Aborting...", bucket, key);
+  }
+
+  public static void DownloadedObject(this ILogger logger, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Debug))
+      logger.LogDebug("Successfully downloaded s3://{Bucket}/{Key}.", bucket, key);
+  }
+
+  public static void DownloadFailed(this ILogger logger, Exception ex, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "AWS SDK Error during download from s3://{Bucket}/{Key}", bucket, key);
+  }
+
+  public static void DeletedObject(this ILogger logger, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Debug))
+      logger.LogDebug("Successfully deleted s3://{Bucket}/{Key}.", bucket, key);
+  }
+
+  public static void DeleteFailed(this ILogger logger, Exception ex, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "AWS SDK Error during delete of s3://{Bucket}/{Key}", bucket, key);
+  }
+
+  public static void DeletedMultipleObjects(this ILogger logger, int count, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Information))
+      logger.LogInformation("Successfully deleted {Count} objects from bucket {BucketName}.", count, bucketName);
+  }
+
+  public static void ClearingBucket(this ILogger logger, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Information))
+      logger.LogInformation("Attempting to clear all objects from bucket: {BucketName}", bucketName);
+  }
+
+  public static void ClearBucketListFailed(this ILogger logger, Exception ex, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Failed to list objects while clearing bucket {BucketName}", bucketName);
+  }
+
+  public static void ClearedBucket(this ILogger logger, string bucketName, long ops)
+  {
+    if (logger.IsEnabled(LogLevel.Information))
+      logger.LogInformation("Successfully cleared bucket {BucketName}, consuming {Ops} Class A operations.", bucketName, ops);
+  }
+
+  public static void ListedObjects(this ILogger logger, int count, string bucket, string? prefix)
+  {
+    if (logger.IsEnabled(LogLevel.Debug))
+      logger.LogDebug("Successfully listed {Count} objects in s3://{Bucket} with prefix {Prefix}.", count, bucket, prefix);
+  }
+
+  public static void ListObjectsFailed(this ILogger logger, Exception ex, string bucket, string? prefix)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "AWS SDK Error while listing s3://{Bucket}/{Prefix}", bucket, prefix);
+  }
+
+  public static void InitiatedMultipartUpload(this ILogger logger, string bucket, string key, string uploadId)
+  {
+    if (logger.IsEnabled(LogLevel.Debug))
+      logger.LogDebug("Initiated multipart upload for s3://{Bucket}/{Key} with UploadId {UploadId}", bucket, key, uploadId);
+  }
+
+  public static void InitiateMultipartUploadFailed(this ILogger logger, Exception ex, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Failed to initiate multipart upload for s3://{Bucket}/{Key}", bucket, key);
+  }
+
+  public static void CompletedMultipartUpload(this ILogger logger, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Debug))
+      logger.LogDebug("Successfully completed multipart upload for s3://{Bucket}/{Key}", bucket, key);
+  }
+
+  public static void CompleteMultipartUploadFailed(this ILogger logger, Exception ex, string bucket, string key)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Failed to complete multipart upload for s3://{Bucket}/{Key}", bucket, key);
+  }
+
+  public static void AbortedMultipartUpload(this ILogger logger, string uploadId)
+  {
+    if (logger.IsEnabled(LogLevel.Information))
+      logger.LogInformation("Successfully aborted multipart upload {UploadId}", uploadId);
+  }
+
+  public static void AbortMultipartUploadFailed(this ILogger logger, Exception ex, string uploadId)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Failed to abort multipart upload {UploadId}", uploadId);
+  }
+
+  public static void BatchDeleteFailedContinueOnError(this ILogger logger, Exception ex, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Warning))
+      logger.LogWarning(ex, "A batch delete failed for bucket {BucketName}. Adding all keys from batch to failed list.", bucketName);
+  }
+
+  public static void BatchDeleteFailedStopOnError(this ILogger logger, Exception ex, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "A batch delete failed for bucket {BucketName} and continueOnError is false.", bucketName);
+  }
+
+  public static void ClearBucketDeleteBatchFailedFull(this ILogger logger, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Warning))
+      logger.LogWarning(
+        "Unable to delete any objects in the current batch for bucket {BucketName}. Aborting clear operation to prevent an infinite loop.",
+        bucketName);
+  }
+
+  public static void ClearBucketDeleteFailedStopOnError(this ILogger logger, Exception ex, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Failed to delete a batch of objects while clearing bucket {BucketName} and continueOnError is false.", bucketName);
+  }
+
+  public static void ClearBucketDeleteBatchFailedPartial(this ILogger logger, Exception ex, int count, string bucketName)
+  {
+    if (logger.IsEnabled(LogLevel.Warning))
+      logger.LogWarning(ex,
+        "Failed to delete a batch of {Count} objects while clearing bucket {BucketName}. Continuing because continueOnError is true.",
+        count, bucketName);
+  }
+
+  public static void ListPartsFailed(this ILogger logger, Exception ex, string uploadId)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Failed to list parts for upload {UploadId}", uploadId);
+  }
+
+  public static void PresignedUrlGenerationFailed(this ILogger logger, Exception ex, string key, string bucket)
+  {
+    if (logger.IsEnabled(LogLevel.Error))
+      logger.LogError(ex, "Failed to generate a presigned URL for Key={Key} in Bucket={Bucket}", key, bucket);
+  }
+
+  public static void ListPartsPaginationInconsistency(this ILogger logger, string uploadId)
+  {
+    if (logger.IsEnabled(LogLevel.Critical))
+      logger.LogCritical(
+        "Inconsistent pagination from R2 for upload {UploadId}: IsTruncated is true, but NextPartNumberMarker is null. Aborting to prevent infinite loop.",
+        uploadId);
+  }
+
+  #endregion
+
+#endif
 }

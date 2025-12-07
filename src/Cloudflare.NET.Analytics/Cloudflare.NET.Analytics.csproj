@@ -1,27 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Cloudflare.NET.Analytics</RootNamespace>
 
-    <!-- SourceLink -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
-    <!-- NuGet Package Properties -->
+    <!-- NuGet Package Properties (common properties inherited from Directory.Build.props) -->
     <PackageId>Cloudflare.NET.Analytics</PackageId>
-    <Version>1.0.4</Version>
-    <Authors>Alos</Authors>
+    <Version>1.1.0</Version>
     <Description>An extension package for Cloudflare.NET that provides a strongly-typed client for the Cloudflare Analytics GraphQL API.</Description>
     <PackageTags>cloudflare;api;sdk;alos;analytics;graphql</PackageTags>
-    <RepositoryUrl>https://github.com/Alos-no/Cloudflare.NET</RepositoryUrl>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- 
+      Strong naming disabled for this project because GraphQL.Client packages are not strong-named.
+      This is a limitation of the third-party dependency.
+    -->
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

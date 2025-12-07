@@ -1,6 +1,7 @@
 namespace Cloudflare.NET.Tests.Shared.Helpers;
 
 using System.Reflection;
+using Xunit;
 
 /// <summary>
 ///   A custom attribute for integration tests. This attribute automatically skips the test if any required secrets

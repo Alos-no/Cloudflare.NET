@@ -3,6 +3,7 @@ namespace Cloudflare.NET.R2;
 using Amazon.S3;
 using Configuration;
 using Core;
+using Core.Internal;
 using Core.Validation;
 using Exceptions;
 using Microsoft.Extensions.Configuration;
@@ -133,7 +134,7 @@ public static class ServiceCollectionExtensions
     string                  name,
     IConfiguration          configuration)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
     // Bind to the section "R2:{name}" for R2 settings.
     var r2SectionName = $"R2:{name}";
@@ -208,7 +209,7 @@ public static class ServiceCollectionExtensions
                                                          string                  name,
                                                          Action<R2Settings>      configureOptions)
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
     // Configure named R2 options. This allows IOptionsMonitor<R2Settings>.Get(name) to work.
     services.Configure(name, configureOptions);
@@ -224,13 +225,16 @@ public static class ServiceCollectionExtensions
     // Register the factory for named clients. TryAdd ensures we don't replace an existing registration.
     services.TryAddSingleton<IR2ClientFactory, R2ClientFactory>();
 
+#if NET8_0_OR_GREATER
     // Register a keyed service for direct DI injection using [FromKeyedServices("name")].
+    // Keyed services are only available in .NET 8+.
     services.AddKeyedSingleton<IR2Client>(name, (serviceProvider, key) =>
     {
       var factory = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
       return factory.CreateClient((string)key!);
     });
+#endif
 
     return services;
   }

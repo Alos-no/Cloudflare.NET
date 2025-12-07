@@ -1,4 +1,4 @@
-namespace Cloudflare.NET.SampleCoreConsole;
+namespace Cloudflare.NET.Sample;
 
 using Core;
 using Microsoft.Extensions.Configuration;

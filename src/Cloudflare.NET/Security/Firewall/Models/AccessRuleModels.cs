@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Security.Firewall.Models;
+namespace Cloudflare.NET.Security.Firewall.Models;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -65,7 +65,7 @@ public class AccessRuleConfigurationConverter : JsonConverter<AccessRuleConfigur
   #region Methods Impl
 
   /// <inheritdoc />
-  public override AccessRuleConfiguration? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+  public override AccessRuleConfiguration Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
   {
     using var jsonDoc = JsonDocument.ParseValue(ref reader);
     var       root    = jsonDoc.RootElement;
@@ -76,8 +76,11 @@ public class AccessRuleConfigurationConverter : JsonConverter<AccessRuleConfigur
     var targetString = targetElement.GetString();
     var value        = valueElement.GetString() ?? throw new JsonException("Value cannot be null.");
 
-    var namingPolicy = options.PropertyNamingPolicy ?? JsonNamingPolicy.SnakeCaseLower;
+#if NET5_0_OR_GREATER
     var targetEnum = Enum.GetValues<AccessRuleTarget>()
+#else
+    var targetEnum = Enum.GetValues(typeof(AccessRuleTarget)).Cast<AccessRuleTarget>()
+#endif
                          .FirstOrDefault(e =>
                          {
                            var member = typeof(AccessRuleTarget).GetMember(e.ToString()).FirstOrDefault();

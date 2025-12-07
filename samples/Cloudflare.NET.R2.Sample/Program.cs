@@ -1,11 +1,10 @@
-﻿namespace Cloudflare.NET.SampleR2Console;
+﻿namespace Cloudflare.NET.R2.Sample;
 
 using Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using R2;
 
 /// <summary>
 ///   Entry point for the R2 sample. This demonstrates how to: - Build a Generic Host and wire up both the
@@ -42,7 +41,7 @@ public static class Program
     var       accounts   = host.Services.GetRequiredService<ICloudflareApiClient>().Accounts;
     var       r2         = host.Services.GetRequiredService<IR2Client>();
     var       cfOptions  = host.Services.GetRequiredService<IOptions<CloudflareApiOptions>>().Value;
-    var       r2Settings = host.Services.GetRequiredService<IOptions<R2.Configuration.R2Settings>>().Value;
+    var       r2Settings = host.Services.GetRequiredService<IOptions<Configuration.R2Settings>>().Value;
 
     // Validate critical configuration.
     if (string.IsNullOrWhiteSpace(cfOptions.AccountId)

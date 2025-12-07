@@ -314,7 +314,7 @@ public class CloudflareApiOptionsValidatorTests
 
     // Assert
     result.Failed.Should().BeTrue();
-    var errorMessage = result.Failures.First();
+    var errorMessage = result.Failures!.First();
 
     // Should mention Cloudflare dashboard
     errorMessage.Should().Contain("Cloudflare dashboard");
@@ -337,7 +337,7 @@ public class CloudflareApiOptionsValidatorTests
 
     // Assert
     result.Failed.Should().BeTrue();
-    var errorMessage = result.Failures.First();
+    var errorMessage = result.Failures!.First();
 
     // Should mention where to find Account ID
     errorMessage.Should().Contain("Cloudflare dashboard");

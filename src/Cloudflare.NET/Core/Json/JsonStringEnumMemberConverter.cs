@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Core.Json;
+namespace Cloudflare.NET.Core.Json;
 
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -46,13 +46,21 @@ public class JsonStringEnumMemberConverter : JsonConverterFactory
     public EnumMemberConverter()
     {
       var type = typeof(TEnum);
+#if NET5_0_OR_GREATER
       foreach (var memberName in Enum.GetNames<TEnum>())
+#else
+      foreach (var memberName in Enum.GetNames(type))
+#endif
       {
         var enumMember = type.GetMember(memberName).First();
         var attr       = enumMember.GetCustomAttribute<EnumMemberAttribute>();
         var name       = attr?.Value ?? memberName;
 
+#if NET5_0_OR_GREATER
         var value = Enum.Parse<TEnum>(memberName);
+#else
+        var value = (TEnum)Enum.Parse(type, memberName);
+#endif
         _enumToString[value] = name;
         _stringToEnum[name]  = value;
       }
