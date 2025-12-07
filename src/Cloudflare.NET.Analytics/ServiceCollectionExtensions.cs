@@ -30,14 +30,15 @@ public static class ServiceCollectionExtensions
   ///   </para>
   ///   <para>
   ///     Configuration is validated at application startup. If required settings (ApiToken, GraphQlApiUrl) are missing,
-  ///     an <see cref="OptionsValidationException" /> is thrown with a clear error message indicating
-  ///     what configuration is missing and how to fix it.
+  ///     an <see cref="OptionsValidationException" /> is thrown with a clear error message indicating what configuration is
+  ///     missing and how to fix it.
   ///   </para>
   /// </summary>
   /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="OptionsValidationException">
-  ///   Thrown at application startup if required configuration is missing or invalid.
+  ///   Thrown at application startup if required configuration is missing or
+  ///   invalid.
   /// </exception>
   public static IServiceCollection AddCloudflareAnalytics(this IServiceCollection services)
   {
@@ -99,7 +100,8 @@ public static class ServiceCollectionExtensions
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is null or whitespace.</exception>
   /// <exception cref="InvalidOperationException">
-  ///   Thrown when the named client is created if required configuration is missing or invalid.
+  ///   Thrown when the named client is created if required configuration is
+  ///   missing or invalid.
   /// </exception>
   /// <remarks>
   ///   <para>
@@ -109,9 +111,9 @@ public static class ServiceCollectionExtensions
   ///     . The API token and GraphQL URL from those options are used for authentication and endpoint configuration.
   ///   </para>
   ///   <para>
-  ///     Unlike the default client registration, named clients are validated when first created via the factory
-  ///     or keyed services, not at application startup. This is because named configurations may be dynamically
-  ///     added or configured after startup.
+  ///     Unlike the default client registration, named clients are validated when first created via the factory or keyed
+  ///     services, not at application startup. This is because named configurations may be dynamically added or configured
+  ///     after startup.
   ///   </para>
   /// </remarks>
   /// <example>
@@ -188,9 +190,9 @@ public static class ServiceCollectionExtensions
   /// <param name="options">The Cloudflare API options.</param>
   /// <remarks>
   ///   <para>
-  ///     For default clients, validation is performed at startup via <c>ValidateOnStart()</c>.
-  ///     For named clients, validation is performed by <see cref="AnalyticsApiFactory" /> before
-  ///     creating the HttpClient. This method assumes the options have already been validated.
+  ///     For default clients, validation is performed at startup via <c>ValidateOnStart()</c>. For named clients,
+  ///     validation is performed by <see cref="AnalyticsApiFactory" /> before creating the HttpClient. This method assumes
+  ///     the options have already been validated.
   ///   </para>
   /// </remarks>
   private static void ConfigureHttpClient(HttpClient client, CloudflareApiOptions options)

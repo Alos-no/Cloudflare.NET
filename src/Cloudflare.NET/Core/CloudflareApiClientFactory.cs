@@ -79,6 +79,9 @@ public sealed class CloudflareApiClientFactory : ICloudflareApiClientFactory
     return new CloudflareApiClient(httpClient, optionsWrapper, _loggerFactory);
   }
 
+  #endregion
+
+  #region Methods
 
   /// <summary>Validates the configuration for a named Cloudflare API client.</summary>
   /// <param name="name">The name of the client configuration being validated.</param>

@@ -50,7 +50,8 @@ public static class ServiceCollectionExtensions
   /// <param name="configureOptions">An action to configure the <see cref="R2Settings" />.</param>
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="OptionsValidationException">
-  ///   Thrown at application startup if required configuration is missing or invalid.
+  ///   Thrown at application startup if required configuration is missing or
+  ///   invalid.
   /// </exception>
   public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, Action<R2Settings> configureOptions)
   {
@@ -157,7 +158,8 @@ public static class ServiceCollectionExtensions
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is null or whitespace.</exception>
   /// <exception cref="CloudflareR2ConfigurationException">
-  ///   Thrown when the named client is created if required configuration is missing or invalid.
+  ///   Thrown when the named client is created if required configuration
+  ///   is missing or invalid.
   /// </exception>
   /// <remarks>
   ///   <para>
@@ -167,9 +169,9 @@ public static class ServiceCollectionExtensions
   ///     . The Account ID from those options is used to construct the R2 endpoint URL.
   ///   </para>
   ///   <para>
-  ///     Unlike the default client registration, named clients are validated when first created via the factory
-  ///     or keyed services, not at application startup. This is because named configurations may be dynamically
-  ///     added or configured after startup.
+  ///     Unlike the default client registration, named clients are validated when first created via the factory or keyed
+  ///     services, not at application startup. This is because named configurations may be dynamically added or configured
+  ///     after startup.
   ///   </para>
   /// </remarks>
   /// <example>

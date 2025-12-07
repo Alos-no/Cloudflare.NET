@@ -101,7 +101,8 @@ public sealed class AnalyticsApiFactory : IAnalyticsApiFactory, IDisposable
   /// <param name="name">The name of the client configuration.</param>
   /// <returns>A tuple containing the new <see cref="IAnalyticsApi" /> instance and its underlying GraphQL client.</returns>
   /// <exception cref="InvalidOperationException">
-  ///   Thrown when required configuration is missing or invalid for the named client.
+  ///   Thrown when required configuration is missing or invalid for the named
+  ///   client.
   /// </exception>
   private (IAnalyticsApi Api, IGraphQLClient GraphQlClient) CreateClientCore(string name)
   {

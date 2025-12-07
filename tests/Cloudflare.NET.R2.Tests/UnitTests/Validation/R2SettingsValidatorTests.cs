@@ -9,6 +9,126 @@ using NET.Tests.Shared.Fixtures;
 [Trait("Category", TestConstants.TestCategories.Unit)]
 public class R2SettingsValidatorTests
 {
+  #region Methods
+
+  #region SecretAccessKey Validation Tests
+
+  /// <summary>Verifies that validation fails when SecretAccessKey is missing.</summary>
+  [Theory]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("   ")]
+  public void Validate_WithMissingSecretAccessKey_ReturnsFailed(string? secretAccessKey)
+  {
+    // Arrange
+    var validator = new R2SettingsValidator();
+    var options = new R2Settings
+    {
+      AccessKeyId     = "valid-access-key",
+      SecretAccessKey = secretAccessKey!
+    };
+
+    // Act
+    var result = validator.Validate(Options.DefaultName, options);
+
+    // Assert
+    result.Failed.Should().BeTrue();
+    result.Failures.Should().Contain(f => f.Contains("SecretAccessKey is required"));
+  }
+
+  #endregion
+
+
+  #region Region Validation Tests
+
+  /// <summary>Verifies that validation fails when Region is missing (set to empty).</summary>
+  [Theory]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("   ")]
+  public void Validate_WithMissingRegion_ReturnsFailed(string? region)
+  {
+    // Arrange
+    var validator = new R2SettingsValidator();
+    var options = new R2Settings
+    {
+      AccessKeyId     = "valid-access-key",
+      SecretAccessKey = "valid-secret-key",
+      Region          = region!
+    };
+
+    // Act
+    var result = validator.Validate(Options.DefaultName, options);
+
+    // Assert
+    result.Failed.Should().BeTrue();
+    result.Failures.Should().Contain(f => f.Contains("Region is required"));
+  }
+
+  #endregion
+
+
+  #region Multiple Errors Tests
+
+  /// <summary>Verifies that validation reports all errors when multiple fields are missing.</summary>
+  [Fact]
+  public void Validate_WithMultipleMissingFields_ReturnsAllErrors()
+  {
+    // Arrange
+    var validator = new R2SettingsValidator();
+    var options = new R2Settings
+    {
+      AccessKeyId     = "",
+      SecretAccessKey = "",
+      Region          = ""
+    };
+
+    // Act
+    var result = validator.Validate(Options.DefaultName, options);
+
+    // Assert
+    result.Failed.Should().BeTrue();
+    result.Failures.Should().HaveCount(3);
+    result.Failures.Should().Contain(f => f.Contains("AccessKeyId"));
+    result.Failures.Should().Contain(f => f.Contains("SecretAccessKey"));
+    result.Failures.Should().Contain(f => f.Contains("Region"));
+  }
+
+  #endregion
+
+
+  #region Error Message Quality Tests
+
+  /// <summary>Verifies that error messages include helpful guidance about where to find credentials.</summary>
+  [Fact]
+  public void Validate_ErrorMessages_IncludeHelpfulGuidance()
+  {
+    // Arrange
+    var validator = new R2SettingsValidator();
+    var options = new R2Settings
+    {
+      AccessKeyId     = "",
+      SecretAccessKey = "valid-secret"
+    };
+
+    // Act
+    var result = validator.Validate(Options.DefaultName, options);
+
+    // Assert
+    result.Failed.Should().BeTrue();
+    var errorMessage = result.Failures.First();
+
+    // Should mention R2 API tokens
+    errorMessage.Should().Contain("R2 API Tokens");
+
+    // Should mention Cloudflare dashboard
+    errorMessage.Should().Contain("Cloudflare dashboard");
+  }
+
+  #endregion
+
+  #endregion
+
   #region Valid Configuration Tests
 
   /// <summary>Verifies that validation passes when all required fields are provided.</summary>
@@ -129,34 +249,6 @@ public class R2SettingsValidatorTests
   #endregion
 
 
-  #region SecretAccessKey Validation Tests
-
-  /// <summary>Verifies that validation fails when SecretAccessKey is missing.</summary>
-  [Theory]
-  [InlineData(null)]
-  [InlineData("")]
-  [InlineData("   ")]
-  public void Validate_WithMissingSecretAccessKey_ReturnsFailed(string? secretAccessKey)
-  {
-    // Arrange
-    var validator = new R2SettingsValidator();
-    var options = new R2Settings
-    {
-      AccessKeyId     = "valid-access-key",
-      SecretAccessKey = secretAccessKey!
-    };
-
-    // Act
-    var result = validator.Validate(Options.DefaultName, options);
-
-    // Assert
-    result.Failed.Should().BeTrue();
-    result.Failures.Should().Contain(f => f.Contains("SecretAccessKey is required"));
-  }
-
-  #endregion
-
-
   #region EndpointUrl Validation Tests
 
   /// <summary>Verifies that validation fails when EndpointUrl is provided but missing the placeholder.</summary>
@@ -202,95 +294,6 @@ public class R2SettingsValidatorTests
     settings.Region.Should().Be(R2Settings.DefaultRegion);
     settings.EndpointUrl.Should().Be("https://{0}.r2.cloudflarestorage.com");
     settings.Region.Should().Be("auto");
-  }
-
-  #endregion
-
-
-  #region Region Validation Tests
-
-  /// <summary>Verifies that validation fails when Region is missing (set to empty).</summary>
-  [Theory]
-  [InlineData(null)]
-  [InlineData("")]
-  [InlineData("   ")]
-  public void Validate_WithMissingRegion_ReturnsFailed(string? region)
-  {
-    // Arrange
-    var validator = new R2SettingsValidator();
-    var options = new R2Settings
-    {
-      AccessKeyId     = "valid-access-key",
-      SecretAccessKey = "valid-secret-key",
-      Region          = region!
-    };
-
-    // Act
-    var result = validator.Validate(Options.DefaultName, options);
-
-    // Assert
-    result.Failed.Should().BeTrue();
-    result.Failures.Should().Contain(f => f.Contains("Region is required"));
-  }
-
-  #endregion
-
-
-  #region Multiple Errors Tests
-
-  /// <summary>Verifies that validation reports all errors when multiple fields are missing.</summary>
-  [Fact]
-  public void Validate_WithMultipleMissingFields_ReturnsAllErrors()
-  {
-    // Arrange
-    var validator = new R2SettingsValidator();
-    var options = new R2Settings
-    {
-      AccessKeyId     = "",
-      SecretAccessKey = "",
-      Region          = ""
-    };
-
-    // Act
-    var result = validator.Validate(Options.DefaultName, options);
-
-    // Assert
-    result.Failed.Should().BeTrue();
-    result.Failures.Should().HaveCount(3);
-    result.Failures.Should().Contain(f => f.Contains("AccessKeyId"));
-    result.Failures.Should().Contain(f => f.Contains("SecretAccessKey"));
-    result.Failures.Should().Contain(f => f.Contains("Region"));
-  }
-
-  #endregion
-
-
-  #region Error Message Quality Tests
-
-  /// <summary>Verifies that error messages include helpful guidance about where to find credentials.</summary>
-  [Fact]
-  public void Validate_ErrorMessages_IncludeHelpfulGuidance()
-  {
-    // Arrange
-    var validator = new R2SettingsValidator();
-    var options = new R2Settings
-    {
-      AccessKeyId     = "",
-      SecretAccessKey = "valid-secret"
-    };
-
-    // Act
-    var result = validator.Validate(Options.DefaultName, options);
-
-    // Assert
-    result.Failed.Should().BeTrue();
-    var errorMessage = result.Failures.First();
-
-    // Should mention R2 API tokens
-    errorMessage.Should().Contain("R2 API Tokens");
-
-    // Should mention Cloudflare dashboard
-    errorMessage.Should().Contain("Cloudflare dashboard");
   }
 
   #endregion

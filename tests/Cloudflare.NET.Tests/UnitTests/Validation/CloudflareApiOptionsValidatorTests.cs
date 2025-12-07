@@ -1,8 +1,6 @@
 namespace Cloudflare.NET.Tests.UnitTests.Validation;
 
-using Core;
 using Core.Validation;
-using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Shared.Fixtures;
 
@@ -250,9 +248,9 @@ public class CloudflareApiOptionsValidatorTests
     // Arrange - require only AccountId and ApiBaseUrl
     var requirements = new CloudflareValidationRequirements
     {
-      RequireApiToken    = false,
-      RequireAccountId   = true,
-      RequireApiBaseUrl  = true,
+      RequireApiToken      = false,
+      RequireAccountId     = true,
+      RequireApiBaseUrl    = true,
       RequireGraphQlApiUrl = false
     };
 

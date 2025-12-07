@@ -1,9 +1,10 @@
-﻿namespace Cloudflare.NET.Zones;
+namespace Cloudflare.NET.Zones;
 
 using AccessRules;
 using Core;
 using Core.Internal;
 using Core.Models;
+using CustomHostnames;
 using Firewall;
 using Microsoft.Extensions.Logging;
 using Models;
@@ -26,6 +27,9 @@ public class ZonesApi : ApiResource, IZonesApi
   /// <summary>The lazy-initialized User-Agent Rules API resource.</summary>
   private readonly Lazy<IZoneUaRulesApi> _uaRules;
 
+  /// <summary>The lazy-initialized Custom Hostnames API resource.</summary>
+  private readonly Lazy<ICustomHostnamesApi> _customHostnames;
+
   #endregion
 
   #region Constructors
@@ -36,10 +40,11 @@ public class ZonesApi : ApiResource, IZonesApi
   public ZonesApi(HttpClient httpClient, ILoggerFactory loggerFactory)
     : base(httpClient, loggerFactory.CreateLogger<ZonesApi>())
   {
-    _accessRules = new Lazy<IZoneAccessRulesApi>(() => new ZoneAccessRulesApi(httpClient, loggerFactory));
-    _rulesets    = new Lazy<IZoneRulesetsApi>(() => new ZoneRulesetsApi(httpClient, loggerFactory));
-    _lockdown    = new Lazy<IZoneLockdownApi>(() => new ZoneLockdownApi(httpClient, loggerFactory));
-    _uaRules     = new Lazy<IZoneUaRulesApi>(() => new ZoneUaRulesApi(httpClient, loggerFactory));
+    _accessRules     = new Lazy<IZoneAccessRulesApi>(() => new ZoneAccessRulesApi(httpClient, loggerFactory));
+    _rulesets        = new Lazy<IZoneRulesetsApi>(() => new ZoneRulesetsApi(httpClient, loggerFactory));
+    _lockdown        = new Lazy<IZoneLockdownApi>(() => new ZoneLockdownApi(httpClient, loggerFactory));
+    _uaRules         = new Lazy<IZoneUaRulesApi>(() => new ZoneUaRulesApi(httpClient, loggerFactory));
+    _customHostnames = new Lazy<ICustomHostnamesApi>(() => new CustomHostnamesApi(httpClient, loggerFactory));
   }
 
   #endregion
@@ -57,6 +62,9 @@ public class ZonesApi : ApiResource, IZonesApi
 
   /// <inheritdoc />
   public IZoneUaRulesApi UaRules => _uaRules.Value;
+
+  /// <inheritdoc />
+  public ICustomHostnamesApi CustomHostnames => _customHostnames.Value;
 
   #endregion
 

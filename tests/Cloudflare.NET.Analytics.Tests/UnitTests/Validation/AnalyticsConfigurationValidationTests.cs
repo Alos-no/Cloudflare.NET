@@ -1,7 +1,5 @@
 namespace Cloudflare.NET.Analytics.Tests.UnitTests.Validation;
 
-using Core;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -29,11 +27,24 @@ public class AnalyticsConfigurationValidationTests
 
   #endregion
 
+  #region Methods
+
+  /// <summary>Creates a service collection with common test dependencies.</summary>
+  private ServiceCollection CreateServiceCollection()
+  {
+    var services = new ServiceCollection();
+
+    // Add logging that pipes to xUnit test output.
+    services.AddLogging(builder => builder.AddProvider(new XunitTestOutputLoggerProvider { Current = _output }));
+
+    return services;
+  }
+
+  #endregion
+
   #region Default Client Startup Validation Tests
 
-  /// <summary>
-  ///   Verifies that building the service provider with missing ApiToken throws OptionsValidationException.
-  /// </summary>
+  /// <summary>Verifies that building the service provider with missing ApiToken throws OptionsValidationException.</summary>
   [Fact]
   public void AddCloudflareAnalytics_WithMissingApiToken_ThrowsOnStartup()
   {
@@ -65,9 +76,7 @@ public class AnalyticsConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that building the service provider with missing GraphQlApiUrl throws OptionsValidationException.
-  /// </summary>
+  /// <summary>Verifies that building the service provider with missing GraphQlApiUrl throws OptionsValidationException.</summary>
   [Fact]
   public void AddCloudflareAnalytics_WithMissingGraphQlApiUrl_ThrowsOnStartup()
   {
@@ -99,9 +108,7 @@ public class AnalyticsConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that building the service provider with valid options succeeds.
-  /// </summary>
+  /// <summary>Verifies that building the service provider with valid options succeeds.</summary>
   [Fact]
   public void AddCloudflareAnalytics_WithValidOptions_DoesNotThrow()
   {
@@ -130,9 +137,7 @@ public class AnalyticsConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that validation reports multiple errors when multiple fields are missing.
-  /// </summary>
+  /// <summary>Verifies that validation reports multiple errors when multiple fields are missing.</summary>
   [Fact]
   public void AddCloudflareAnalytics_WithMultipleMissingFields_ReportsAllErrors()
   {
@@ -167,9 +172,7 @@ public class AnalyticsConfigurationValidationTests
 
   #region Named Client Validation Tests
 
-  /// <summary>
-  ///   Verifies that named client validation happens at client creation, not at startup.
-  /// </summary>
+  /// <summary>Verifies that named client validation happens at client creation, not at startup.</summary>
   [Fact]
   public void AddCloudflareAnalytics_Named_ValidationHappensOnClientCreation()
   {
@@ -199,9 +202,7 @@ public class AnalyticsConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that named client error message includes the client name.
-  /// </summary>
+  /// <summary>Verifies that named client error message includes the client name.</summary>
   [Fact]
   public void AddCloudflareAnalytics_Named_ErrorMessageIncludesClientName()
   {
@@ -234,9 +235,7 @@ public class AnalyticsConfigurationValidationTests
 
   #region Default Values Tests
 
-  /// <summary>
-  ///   Verifies that CloudflareApiOptions has a default GraphQlApiUrl.
-  /// </summary>
+  /// <summary>Verifies that CloudflareApiOptions has a default GraphQlApiUrl.</summary>
   [Fact]
   public void CloudflareApiOptions_HasDefaultGraphQlApiUrl()
   {
@@ -248,9 +247,7 @@ public class AnalyticsConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that with default GraphQlApiUrl, only ApiToken is required.
-  /// </summary>
+  /// <summary>Verifies that with default GraphQlApiUrl, only ApiToken is required.</summary>
   [Fact]
   public void AddCloudflareAnalytics_WithOnlyApiToken_Succeeds()
   {
@@ -279,9 +276,7 @@ public class AnalyticsConfigurationValidationTests
 
   #region Error Message Quality Tests
 
-  /// <summary>
-  ///   Verifies that validation errors mention "Cloudflare" for clear identification.
-  /// </summary>
+  /// <summary>Verifies that validation errors mention "Cloudflare" for clear identification.</summary>
   [Fact]
   public void AddCloudflareAnalytics_ValidationErrors_MentionCloudflare()
   {
@@ -311,19 +306,14 @@ public class AnalyticsConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that validation errors include configuration path guidance.
-  /// </summary>
+  /// <summary>Verifies that validation errors include configuration path guidance.</summary>
   [Fact]
   public void AddCloudflareAnalytics_ValidationErrors_IncludeConfigPath()
   {
     // Arrange
     var services = CreateServiceCollection();
 
-    services.AddCloudflareApiClient(options =>
-    {
-      options.ApiToken = "";
-    });
+    services.AddCloudflareApiClient(options => { options.ApiToken = ""; });
 
     services.AddCloudflareAnalytics();
 
@@ -339,22 +329,6 @@ public class AnalyticsConfigurationValidationTests
     // Assert
     action.Should().Throw<OptionsValidationException>()
           .WithMessage("*Cloudflare:ApiToken*");
-  }
-
-  #endregion
-
-
-  #region Helper Methods
-
-  /// <summary>Creates a service collection with common test dependencies.</summary>
-  private ServiceCollection CreateServiceCollection()
-  {
-    var services = new ServiceCollection();
-
-    // Add logging that pipes to xUnit test output.
-    services.AddLogging(builder => builder.AddProvider(new XunitTestOutputLoggerProvider { Current = _output }));
-
-    return services;
   }
 
   #endregion

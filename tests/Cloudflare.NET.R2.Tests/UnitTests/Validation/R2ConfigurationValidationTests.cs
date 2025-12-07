@@ -11,8 +11,8 @@ using NET.Tests.Shared.Fixtures;
 using Xunit.Abstractions;
 
 /// <summary>
-///   Contains integration tests for R2 startup configuration validation, verifying that
-///   <c>ValidateOnStart()</c> properly validates R2 options at application startup.
+///   Contains integration tests for R2 startup configuration validation, verifying that <c>ValidateOnStart()</c>
+///   properly validates R2 options at application startup.
 /// </summary>
 [Trait("Category", TestConstants.TestCategories.Unit)]
 public class R2ConfigurationValidationTests
@@ -32,11 +32,61 @@ public class R2ConfigurationValidationTests
 
   #endregion
 
+  #region Methods
+
+  #region Error Message Quality Tests
+
+  /// <summary>Verifies that validation errors mention "Cloudflare R2" for clear identification.</summary>
+  [Fact]
+  public void AddCloudflareR2Client_ValidationErrors_MentionCloudflareR2()
+  {
+    // Arrange
+    var services = CreateServiceCollection();
+
+    services.AddCloudflareApiClient(options =>
+    {
+      options.AccountId = "test-account-id";
+      options.ApiToken  = "test-token";
+    });
+
+    services.AddCloudflareR2Client(options =>
+    {
+      options.AccessKeyId     = "";
+      options.SecretAccessKey = "valid-secret";
+    });
+
+    var serviceProvider = services.BuildServiceProvider();
+
+    // Act
+    var action = () =>
+    {
+      var options = serviceProvider.GetRequiredService<IOptions<R2Settings>>();
+      _ = options.Value;
+    };
+
+    // Assert
+    action.Should().Throw<OptionsValidationException>()
+          .WithMessage("*Cloudflare R2*");
+  }
+
+  #endregion
+
+  /// <summary>Creates a service collection with common test dependencies.</summary>
+  private ServiceCollection CreateServiceCollection()
+  {
+    var services = new ServiceCollection();
+
+    // Add logging that pipes to xUnit test output.
+    services.AddLogging(builder => builder.AddProvider(new XunitTestOutputLoggerProvider { Current = _output }));
+
+    return services;
+  }
+
+  #endregion
+
   #region Default Client Startup Validation Tests
 
-  /// <summary>
-  ///   Verifies that building the service provider with missing R2 credentials throws OptionsValidationException.
-  /// </summary>
+  /// <summary>Verifies that building the service provider with missing R2 credentials throws OptionsValidationException.</summary>
   [Fact]
   public void AddCloudflareR2Client_WithMissingCredentials_ThrowsOnStartup()
   {
@@ -72,9 +122,7 @@ public class R2ConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that building the service provider with missing AccountId throws OptionsValidationException.
-  /// </summary>
+  /// <summary>Verifies that building the service provider with missing AccountId throws OptionsValidationException.</summary>
   [Fact]
   public void AddCloudflareR2Client_WithMissingAccountId_ThrowsOnStartup()
   {
@@ -110,9 +158,7 @@ public class R2ConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that building the service provider with valid options succeeds.
-  /// </summary>
+  /// <summary>Verifies that building the service provider with valid options succeeds.</summary>
   [Fact]
   public void AddCloudflareR2Client_WithValidOptions_DoesNotThrow()
   {
@@ -150,9 +196,7 @@ public class R2ConfigurationValidationTests
 
   #region Default Values Tests
 
-  /// <summary>
-  ///   Verifies that EndpointUrl has a sensible default value.
-  /// </summary>
+  /// <summary>Verifies that EndpointUrl has a sensible default value.</summary>
   [Fact]
   public void R2Settings_HasDefaultEndpointUrl()
   {
@@ -164,9 +208,7 @@ public class R2ConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that Region has a sensible default value.
-  /// </summary>
+  /// <summary>Verifies that Region has a sensible default value.</summary>
   [Fact]
   public void R2Settings_HasDefaultRegion()
   {
@@ -178,9 +220,7 @@ public class R2ConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that only AccessKeyId, SecretAccessKey, and AccountId are required with defaults in place.
-  /// </summary>
+  /// <summary>Verifies that only AccessKeyId, SecretAccessKey, and AccountId are required with defaults in place.</summary>
   [Fact]
   public void AddCloudflareR2Client_WithOnlyRequiredFields_Succeeds()
   {
@@ -214,9 +254,7 @@ public class R2ConfigurationValidationTests
 
   #region Named Client Validation Tests
 
-  /// <summary>
-  ///   Verifies that named client validation happens at client creation, not at startup.
-  /// </summary>
+  /// <summary>Verifies that named client validation happens at client creation, not at startup.</summary>
   [Fact]
   public void AddCloudflareR2Client_Named_ValidationHappensOnClientCreation()
   {
@@ -244,9 +282,7 @@ public class R2ConfigurationValidationTests
   }
 
 
-  /// <summary>
-  ///   Verifies that named client validation includes all missing fields in the error message.
-  /// </summary>
+  /// <summary>Verifies that named client validation includes all missing fields in the error message.</summary>
   [Fact]
   public void AddCloudflareR2Client_Named_WithMultipleMissingFields_ReportsAllErrors()
   {
@@ -274,62 +310,6 @@ public class R2ConfigurationValidationTests
           .Which.Message.Should().Contain("AccessKeyId")
           .And.Contain("SecretAccessKey")
           .And.Contain("AccountId");
-  }
-
-  #endregion
-
-
-  #region Error Message Quality Tests
-
-  /// <summary>
-  ///   Verifies that validation errors mention "Cloudflare R2" for clear identification.
-  /// </summary>
-  [Fact]
-  public void AddCloudflareR2Client_ValidationErrors_MentionCloudflareR2()
-  {
-    // Arrange
-    var services = CreateServiceCollection();
-
-    services.AddCloudflareApiClient(options =>
-    {
-      options.AccountId = "test-account-id";
-      options.ApiToken  = "test-token";
-    });
-
-    services.AddCloudflareR2Client(options =>
-    {
-      options.AccessKeyId     = "";
-      options.SecretAccessKey = "valid-secret";
-    });
-
-    var serviceProvider = services.BuildServiceProvider();
-
-    // Act
-    var action = () =>
-    {
-      var options = serviceProvider.GetRequiredService<IOptions<R2Settings>>();
-      _ = options.Value;
-    };
-
-    // Assert
-    action.Should().Throw<OptionsValidationException>()
-          .WithMessage("*Cloudflare R2*");
-  }
-
-  #endregion
-
-
-  #region Helper Methods
-
-  /// <summary>Creates a service collection with common test dependencies.</summary>
-  private ServiceCollection CreateServiceCollection()
-  {
-    var services = new ServiceCollection();
-
-    // Add logging that pipes to xUnit test output.
-    services.AddLogging(builder => builder.AddProvider(new XunitTestOutputLoggerProvider { Current = _output }));
-
-    return services;
   }
 
   #endregion

@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.SampleCoreConsole;
+namespace Cloudflare.NET.SampleCoreConsole;
 
 using Core;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +42,7 @@ public static class Program
     builder.Services.AddTransient<ZoneSamples>();
     builder.Services.AddTransient<AccountSamples>();
     builder.Services.AddTransient<SecuritySamples>();
+    builder.Services.AddTransient<CustomHostnameSamples>();
 
     using var host          = builder.Build();
     var       logger        = host.Services.GetRequiredService<ILoggerFactory>().CreateLogger("CloudflareSample");
@@ -66,9 +67,10 @@ public static class Program
     }
 
     // Resolve sample runners from DI container.
-    var zoneSamples     = host.Services.GetRequiredService<ZoneSamples>();
-    var accountSamples  = host.Services.GetRequiredService<AccountSamples>();
-    var securitySamples = host.Services.GetRequiredService<SecuritySamples>();
+    var zoneSamples           = host.Services.GetRequiredService<ZoneSamples>();
+    var accountSamples        = host.Services.GetRequiredService<AccountSamples>();
+    var securitySamples       = host.Services.GetRequiredService<SecuritySamples>();
+    var customHostnameSamples = host.Services.GetRequiredService<CustomHostnameSamples>();
 
     logger.LogInformation("Starting Cloudflare.NET SDK Samples...");
     logger.LogInformation("Using AccountId: {AccountId}, ZoneId: {ZoneId}", options.AccountId, zoneId);
@@ -85,6 +87,9 @@ public static class Program
 
     await Runner.RunAsync(logger, "Security/Account Firewall",
                           securitySamples.RunAccountFirewallSamplesAsync);
+
+    await Runner.RunAsync(logger, "Custom Hostnames (Cloudflare for SaaS)",
+                          () => customHostnameSamples.RunCustomHostnameSamplesAsync(zoneId!, baseDomain));
 
     logger.LogInformation("All sample scenarios complete.");
   }

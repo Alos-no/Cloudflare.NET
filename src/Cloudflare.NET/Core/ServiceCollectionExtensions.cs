@@ -56,16 +56,17 @@ public static class ServiceCollectionExtensions
   ///     for rate limiting and transient error handling.
   ///   </para>
   ///   <para>
-  ///     Configuration is validated at application startup. If required settings (ApiToken) are missing,
-  ///     an <see cref="OptionsValidationException" /> is thrown with a clear error message indicating
-  ///     what configuration is missing and how to fix it.
+  ///     Configuration is validated at application startup. If required settings (ApiToken) are missing, an
+  ///     <see cref="OptionsValidationException" /> is thrown with a clear error message indicating what configuration is
+  ///     missing and how to fix it.
   ///   </para>
   /// </summary>
   /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
   /// <param name="configureOptions">An action to configure the <see cref="CloudflareApiOptions" />.</param>
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="OptionsValidationException">
-  ///   Thrown at application startup if required configuration is missing or invalid.
+  ///   Thrown at application startup if required configuration is missing or
+  ///   invalid.
   /// </exception>
   public static IServiceCollection AddCloudflareApiClient(this IServiceCollection      services,
                                                           Action<CloudflareApiOptions> configureOptions)
@@ -153,13 +154,14 @@ public static class ServiceCollectionExtensions
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is null or whitespace.</exception>
   /// <exception cref="InvalidOperationException">
-  ///   Thrown when the named client is created if required configuration is missing or invalid.
+  ///   Thrown when the named client is created if required configuration is
+  ///   missing or invalid.
   /// </exception>
   /// <remarks>
   ///   <para>
-  ///     Unlike the default client registration, named clients are validated when first created via the factory
-  ///     or keyed services, not at application startup. This is because named configurations may be dynamically
-  ///     added or configured after startup.
+  ///     Unlike the default client registration, named clients are validated when first created via the factory or keyed
+  ///     services, not at application startup. This is because named configurations may be dynamically added or configured
+  ///     after startup.
   ///   </para>
   /// </remarks>
   /// <example>

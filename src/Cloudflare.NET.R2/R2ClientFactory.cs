@@ -100,7 +100,8 @@ public sealed class R2ClientFactory : IR2ClientFactory, IDisposable
   /// <param name="name">The name of the client configuration.</param>
   /// <returns>A new <see cref="IR2Client" /> instance.</returns>
   /// <exception cref="CloudflareR2ConfigurationException">
-  ///   Thrown when required configuration is missing or invalid for the named client.
+  ///   Thrown when required configuration is missing or invalid for the
+  ///   named client.
   /// </exception>
   private IR2Client CreateClientCore(string name)
   {
@@ -136,12 +137,10 @@ public sealed class R2ClientFactory : IR2ClientFactory, IDisposable
   /// <param name="name">The name of the client configuration being validated.</param>
   /// <param name="r2Settings">The R2 settings to validate.</param>
   /// <param name="cloudflareSettings">The Cloudflare API settings to validate (for Account ID).</param>
-  /// <exception cref="CloudflareR2ConfigurationException">
-  ///   Thrown when any required configuration is missing or invalid.
-  /// </exception>
+  /// <exception cref="CloudflareR2ConfigurationException">Thrown when any required configuration is missing or invalid.</exception>
   private static void ValidateNamedClientConfiguration(string               name,
-                                                        R2Settings           r2Settings,
-                                                        CloudflareApiOptions cloudflareSettings)
+                                                       R2Settings           r2Settings,
+                                                       CloudflareApiOptions cloudflareSettings)
   {
     var errors = new List<string>();
 

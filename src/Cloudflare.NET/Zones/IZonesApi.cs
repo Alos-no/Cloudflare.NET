@@ -2,6 +2,7 @@ namespace Cloudflare.NET.Zones;
 
 using AccessRules;
 using Core.Models;
+using CustomHostnames;
 using Firewall;
 using Models;
 using Rulesets;
@@ -30,6 +31,10 @@ public interface IZonesApi
   /// <summary>Gets the API for managing User-Agent blocking rules.</summary>
   /// <remarks>Corresponds to the `/zones/{zone_id}/firewall/ua_rules` endpoint.</remarks>
   IZoneUaRulesApi UaRules { get; }
+
+  /// <summary>Gets the API for managing Custom Hostnames (Cloudflare for SaaS).</summary>
+  /// <remarks>Corresponds to the `/zones/{zone_id}/custom_hostnames` endpoint family.</remarks>
+  ICustomHostnamesApi CustomHostnames { get; }
 
   /// <summary>Fetches the details for a specific Zone by its ID.</summary>
   /// <param name="zoneId">The identifier of the Zone.</param>
