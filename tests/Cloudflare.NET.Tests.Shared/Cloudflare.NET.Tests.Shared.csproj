@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- 
+  <!--
     This project inherits multi-targeting from tests/Directory.Build.props.
     No explicit TargetFramework here to ensure it stays in sync with test projects.
-    
+
     This is a shared infrastructure library, not a test project itself.
   -->
   <PropertyGroup>

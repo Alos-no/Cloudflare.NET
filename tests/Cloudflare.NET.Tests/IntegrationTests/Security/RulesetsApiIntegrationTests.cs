@@ -82,14 +82,12 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     var zoneId = _settings.ZoneId;
     var phase  = SecurityConstants.RulesetPhases.HttpRequestFirewallManaged;
 
-    IReadOnlyList<CreateRuleRequest> originalRules = await GetOriginalRulesAsync(zoneId, phase);
-
     // On Free plans, you must deploy the "Cloudflare Free Managed Ruleset".
     // Discover its ID from the account-level rulesets (managed rulesets live at account scope).
     // Ref: Availability matrix + recommended workflow to list then deploy. [Docs]
-    // - Availability: Free includes "Cloudflare Free Managed Ruleset"; OWASP/Cloudflare Managed are Pro+. 
+    // - Availability: Free includes "Cloudflare Free Managed Ruleset"; OWASP/Cloudflare Managed are Pro+.
     // - Workflow: List account rulesets, then add an 'execute' rule at the zone entrypoint.
-    // Sources: WAF Managed Rules (availability), Blog "WAF for everyone", Deploy via API. 
+    // Sources: WAF Managed Rules (availability), Blog "WAF for everyone", Deploy via API.
     var freeManaged =
       await _sut.Accounts.Rulesets
                 .ListAllAsync()
@@ -98,6 +96,13 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     freeManaged.Should().NotBeNull("the account should expose the Cloudflare Free Managed Ruleset on Free plans");
 
     var managedRulesetId = freeManaged.Id;
+
+    // Pre-cleanup: Remove any existing execute rule for this managed ruleset.
+    // Cloudflare rejects duplicate execute rules for the same managed ruleset
+    // (error 20014: "more than one rule is trying to execute the same managed ruleset").
+    // This can happen if a previous test run failed cleanup or if the ruleset was deployed manually.
+    IReadOnlyList<CreateRuleRequest> originalRules = await GetOriginalRulesWithoutManagedRulesetAsync(zoneId, phase, managedRulesetId);
+
     var newRule = new CreateRuleRequest(
       RulesetAction.Execute,
       "true", // This expression means the managed ruleset will run for all requests
@@ -122,8 +127,64 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
     finally
     {
-      // Cleanup
+      // Cleanup: Restore the ruleset to its original state (without the managed ruleset).
       await _sut.Zones.Rulesets.UpdatePhaseEntrypointAsync(zoneId, phase, originalRules);
+    }
+  }
+
+  /// <summary>
+  ///   Gets the original rules for a phase, filtering out any existing execute rule for the specified managed ruleset.
+  ///   This serves as pre-cleanup to avoid duplicate managed ruleset errors.
+  /// </summary>
+  /// <param name="zoneId">The zone ID.</param>
+  /// <param name="phase">The ruleset phase.</param>
+  /// <param name="managedRulesetId">The ID of the managed ruleset to filter out.</param>
+  /// <returns>The list of rules without the managed ruleset execute rule.</returns>
+  private async Task<IReadOnlyList<CreateRuleRequest>> GetOriginalRulesWithoutManagedRulesetAsync(
+    string zoneId,
+    string phase,
+    string managedRulesetId)
+  {
+    try
+    {
+      var ruleset = await _sut.Zones.Rulesets.GetPhaseEntrypointAsync(zoneId, phase);
+
+      if (ruleset.Rules is null)
+        return [];
+
+      // Filter out any execute rule that targets the specified managed ruleset.
+      var filteredRules = ruleset.Rules
+                                 .Where(r =>
+                                 {
+                                   if (r.Action != RulesetAction.Execute || r.ActionParameters is null)
+                                     return true; // Keep non-execute rules
+
+                                   var actionParams = System.Text.Json.JsonSerializer.Deserialize<ExecuteParameters>(
+                                     (System.Text.Json.JsonElement)r.ActionParameters);
+
+                                   return actionParams?.Id != managedRulesetId; // Keep rules that don't target this managed ruleset
+                                 })
+                                 .Select(r => new CreateRuleRequest(
+                                   r.Action,
+                                   r.Expression,
+                                   r.Description,
+                                   r.Enabled,
+                                   r.ActionParameters,
+                                   r.Logging,
+                                   r.Ratelimit))
+                                 .ToList();
+
+      // If we filtered out any rules, update the entrypoint to remove the stale managed ruleset rule.
+      if (filteredRules.Count < ruleset.Rules.Count)
+      {
+        await _sut.Zones.Rulesets.UpdatePhaseEntrypointAsync(zoneId, phase, filteredRules);
+      }
+
+      return filteredRules;
+    }
+    catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+    {
+      return [];
     }
   }
 

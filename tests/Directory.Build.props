@@ -3,9 +3,9 @@
   <!-- Import root Directory.Build.props to inherit common settings (Nullable, ImplicitUsings, etc.) -->
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
-  <!-- 
+  <!--
     Override root Directory.Build.props settings for test projects.
-    
+
     Test projects multi-target to ensure library works across supported frameworks:
     - net8.0:  .NET 8 LTS
     - net10.0: Latest .NET

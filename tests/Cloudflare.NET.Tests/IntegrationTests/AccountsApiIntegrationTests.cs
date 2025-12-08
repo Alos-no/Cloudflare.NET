@@ -135,21 +135,29 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   public async Task ListR2BucketsAsync_CanListSuccessfully()
   {
     // Arrange (bucket is created in InitializeAsync)
-    var filters = new ListR2BucketsFilters { PerPage = 1 };
 
-    // Act
-    var result = await _sut.ListR2BucketsAsync(filters);
+    // Act: Find the specific bucket we created by iterating through all buckets.
+    R2Bucket? testBucket = null;
+
+    await foreach (var bucket in _sut.ListAllR2BucketsAsync())
+    {
+      if (bucket.Name == _bucketName)
+      {
+        testBucket = bucket;
+
+        break;
+      }
+    }
 
     // Assert
-    result.Should().NotBeNull();
-    result.Items.Should().NotBeEmpty();
-    result.Items[0].Name.Should().NotBeNullOrWhiteSpace();
-    result.Items[0].Location.Should().BeNullOrWhiteSpace();
-    result.Items[0].Jurisdiction.Should().BeNullOrWhiteSpace();
-    result.Items[0].StorageClass.Should().BeNullOrWhiteSpace();
+    testBucket.Should().NotBeNull("the bucket created in InitializeAsync should be found in the list");
+    testBucket!.Name.Should().Be(_bucketName);
+    testBucket.Location.Should().BeNullOrWhiteSpace();
+    testBucket.Jurisdiction.Should().BeNullOrWhiteSpace();
+    testBucket.StorageClass.Should().BeNullOrWhiteSpace();
     // The List operation returns a summary object which does not include the location.
-    // Assert that the creation date is recent, within a tolerance, to avoid race conditions.
-    result.Items[0].CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(30));
+    // Assert that the creation date is recent, within a tolerance, to account for test execution time.
+    testBucket.CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
   }
 
   /// <summary>Verifies that the async stream can iterate through all created buckets.</summary>
