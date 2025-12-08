@@ -1,12 +1,12 @@
 # Cloudflare.NET SDK
 
 [![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml)
-[![Documentation](https://img.shields.io/badge/docs-cfnet.alos.no-blue)](https://cfnet.alos.no)
-[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt)
+[![Documentation](https://img.shields.io/badge/docs-cfnet.alos.no-27ae60)](https://cfnet.alos.no)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-27ae60)](https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt)
 
-[![NuGet (Cloudflare.NET.Api)](https://img.shields.io/nuget/v/Cloudflare.NET.Api?label=Cloudflare.NET.Api)](https://www.nuget.org/packages/Cloudflare.NET.Api/)
-[![NuGet (Cloudflare.NET.R2)](https://img.shields.io/nuget/v/Cloudflare.NET.R2?label=Cloudflare.NET.R2)](https://www.nuget.org/packages/Cloudflare.NET.R2/)
-[![NuGet (Cloudflare.NET.Analytics)](https://img.shields.io/nuget/v/Cloudflare.NET.Analytics?label=Cloudflare.NET.Analytics)](https://www.nuget.org/packages/Cloudflare.NET.Analytics/)
+[![NuGet (Cloudflare.NET.Api)](https://img.shields.io/nuget/v/Cloudflare.NET.Api?label=Cloudflare.NET.Api&color=27ae60)](https://www.nuget.org/packages/Cloudflare.NET.Api/)
+[![NuGet (Cloudflare.NET.R2)](https://img.shields.io/nuget/v/Cloudflare.NET.R2?label=Cloudflare.NET.R2&color=27ae60)](https://www.nuget.org/packages/Cloudflare.NET.R2/)
+[![NuGet (Cloudflare.NET.Analytics)](https://img.shields.io/nuget/v/Cloudflare.NET.Analytics?label=Cloudflare.NET.Analytics&color=27ae60)](https://www.nuget.org/packages/Cloudflare.NET.Analytics/)
 
 An unofficial, strongly-typed .NET SDK for the Cloudflare API. Built with testability and maintainability in mind.
 
