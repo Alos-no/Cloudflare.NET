@@ -430,7 +430,10 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
       }
 
       // Act: List all with a small per-page limit to force pagination.
-      var filters      = new ListCustomHostnamesFilters { PerPage = 2 };
+      // Filter by the shortGuid to only list hostnames created by this test run.
+      // This prevents interference from other hostnames in the zone and avoids pagination
+      // instability when concurrent operations modify the hostname list.
+      var filters      = new ListCustomHostnamesFilters { PerPage = 2, Hostname = shortGuid };
       var allHostnames = new List<CustomHostname>();
 
       await foreach (var hostname in _sut.ListAllAsync(_zoneId, filters))
@@ -439,11 +442,9 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
       }
 
       // Assert: All created hostnames should be present.
-      // NOTE: This assertion is reliable because tests in the CustomHostnames collection run sequentially,
-      // preventing other tests from deleting hostnames mid-pagination.
-      allHostnames.Should().NotBeEmpty();
+      allHostnames.Should().HaveCount(hostnamesToCreate);
       var allIds = allHostnames.Select(h => h.Id).ToList();
-      allIds.Should().Contain(createdIds);
+      allIds.Should().BeEquivalentTo(createdIds);
     }
     finally
     {

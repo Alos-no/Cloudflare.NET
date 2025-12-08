@@ -1,12 +1,13 @@
 # GitHub Actions workflow for publishing NuGet packages using Trusted Publishing.
 #
 # This workflow automates the publishing process for Cloudflare.NET packages:
-# 1. Uses the reusable build workflow to compile in Release configuration
-# 2. Creates NuGet packages with `dotnet pack`
+# 1. Triggers only after CI workflow passes on main branch
+# 2. Uses the reusable build workflow to compile in Release configuration
 # 3. Authenticates via OIDC (Trusted Publishing) - no long-lived API keys needed
 # 4. Pushes packages to NuGet.org (skipping already-published versions)
 #
 # Triggers:
+# - Automatically after CI workflow succeeds on main branch
 # - When a GitHub Release is published
 # - Manual workflow dispatch (for testing or re-publishing)
 #
@@ -30,6 +31,12 @@
 name: Publish NuGet Packages
 
 on:
+  # Trigger after CI workflow completes on main branch
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
   release:
     types: [published]
 
@@ -53,14 +60,16 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # First, build the solution using the reusable workflow
+  # Build the solution in Release configuration
   build:
+    # Only run if CI succeeded (for workflow_run trigger) or for other triggers
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     uses: ./.github/workflows/build.yml
     with:
       configuration: Release
       upload_artifacts: true
 
-  # Then, pack and publish using the pre-built artifacts
+  # Pack and publish
   publish:
     needs: build
     runs-on: ubuntu-latest
@@ -83,6 +92,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output-Release
+
+      - name: Restore dependencies
+        run: dotnet restore Cloudflare.NET.sln
 
       - name: Create NuGet packages
         # Pack all projects that produce NuGet packages
