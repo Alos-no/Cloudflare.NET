@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 internal static partial class AuthLogs
 {
 #if NET6_0_OR_GREATER
+
   #region Source-Generated Logging (NET6+)
 
   [LoggerMessage(
@@ -20,7 +21,6 @@ internal static partial class AuthLogs
   #endregion
 
 #else
-
   #region Manual Logging (NetStandard2.1)
 
   public static void AddingAuthHeader(this ILogger logger, Uri? requestUri)

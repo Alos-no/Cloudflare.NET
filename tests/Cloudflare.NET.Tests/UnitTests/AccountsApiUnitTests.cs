@@ -472,9 +472,9 @@ public class AccountsApiUnitTests
     var bucketName = "test-bucket";
 
     var lifecycleRule = new LifecycleRule(
-      Id: "Delete old logs",
-      Enabled: true,
-      Conditions: new LifecycleRuleConditions("logs/"),
+      "Delete old logs",
+      true,
+      new LifecycleRuleConditions("logs/"),
       DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90)),
       AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7)),
       StorageClassTransitions: new[]
@@ -517,22 +517,22 @@ public class AccountsApiUnitTests
       {
         // Rule to delete objects after 90 days
         new LifecycleRule(
-          Id: "Delete old objects",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions("temp/"),
+          "Delete old objects",
+          true,
+          new LifecycleRuleConditions("temp/"),
           DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90))
         ),
         // Rule to abort incomplete multipart uploads after 7 days
         new LifecycleRule(
-          Id: "Cleanup multipart",
-          Enabled: true,
+          "Cleanup multipart",
+          true,
           AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7))
         ),
         // Rule to transition to Infrequent Access after 30 days
         new LifecycleRule(
-          Id: "Archive old data",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions("archive/"),
+          "Archive old data",
+          true,
+          new LifecycleRuleConditions("archive/"),
           StorageClassTransitions: new[]
           {
             new StorageClassTransition(LifecycleCondition.AfterDays(30), R2StorageClass.InfrequentAccess)
@@ -541,9 +541,9 @@ public class AccountsApiUnitTests
       }
     );
 
-    var                 successResponse   = HttpFixtures.CreateSuccessResponse<object?>(null);
-    HttpRequestMessage? capturedRequest   = null;
-    string?             capturedJsonBody  = null;
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
     var mockHandler =
       HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
       {
@@ -570,8 +570,8 @@ public class AccountsApiUnitTests
 
   /// <summary>Verifies that DeleteBucketLifecycleAsync sends a PUT request with an empty rules array.</summary>
   /// <remarks>
-  ///   Cloudflare R2 does not have a dedicated DELETE endpoint for lifecycle policies.
-  ///   Instead, the policy is removed by setting an empty rules array via PUT.
+  ///   Cloudflare R2 does not have a dedicated DELETE endpoint for lifecycle policies. Instead, the policy is removed
+  ///   by setting an empty rules array via PUT.
   /// </remarks>
   [Fact]
   public async Task DeleteBucketLifecycleAsync_SendsCorrectRequest()
@@ -580,9 +580,9 @@ public class AccountsApiUnitTests
     var accountId  = "test-account-id";
     var bucketName = "test-bucket";
 
-    var                 successResponse   = HttpFixtures.CreateSuccessResponse<object?>(null);
-    HttpRequestMessage? capturedRequest   = null;
-    string?             capturedJsonBody  = null;
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
     var mockHandler =
       HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
       {

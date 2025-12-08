@@ -1,7 +1,6 @@
 ﻿namespace Cloudflare.NET.Tests.IntegrationTests.Security;
 
 using System.Net;
-using Cloudflare.NET.Tests.IntegrationTests;
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using NET.Security.Firewall.Models;
@@ -10,9 +9,8 @@ using Shared.Helpers;
 using Xunit.Abstractions;
 
 /// <summary>
-///   Contains integration tests for account and zone access rules APIs.
-///   Tests are grouped in a collection to run sequentially, preventing conflicts when multiple tests
-///   attempt to create rules with the same reserved IP addresses.
+///   Contains integration tests for account and zone access rules APIs. Tests are grouped in a collection to run
+///   sequentially, preventing conflicts when multiple tests attempt to create rules with the same reserved IP addresses.
 /// </summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
 [Collection(TestCollections.AccessRules)]
@@ -54,9 +52,7 @@ public class AccessRulesApiIntegrationTests : IClassFixture<CloudflareApiTestFix
                                   .ToListAsync();
 
     foreach (var staleRule in existingRules)
-    {
       await _sut.Accounts.AccessRules.DeleteAsync(staleRule.Id);
-    }
 
     try
     {
@@ -110,9 +106,7 @@ public class AccessRulesApiIntegrationTests : IClassFixture<CloudflareApiTestFix
                                   .ToListAsync();
 
     foreach (var staleRule in existingRules)
-    {
       await _sut.Zones.AccessRules.DeleteAsync(_settings.ZoneId, staleRule.Id);
-    }
 
     try
     {

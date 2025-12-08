@@ -1,5 +1,4 @@
 #if !NET8_0_OR_GREATER
-
 namespace Cloudflare.NET.Core.Json;
 
 using System.Buffers;
@@ -57,12 +56,12 @@ internal sealed class SnakeCaseNamingPolicy : JsonNamingPolicy
 
     try
     {
-      var bufferIndex      = 0;
+      var bufferIndex = 0;
       var previousCategory = CharCategory.Boundary;
 
       for (var i = 0; i < name.Length; i++)
       {
-        var current         = name[i];
+        var current = name[i];
         var currentCategory = GetCharCategory(current);
 
         // Determine if we need to insert an underscore before this character.
@@ -104,7 +103,7 @@ internal sealed class SnakeCaseNamingPolicy : JsonNamingPolicy
         }
 
         buffer[bufferIndex++] = char.ToLowerInvariant(current);
-        previousCategory      = currentCategory;
+        previousCategory = currentCategory;
       }
 
       return new string(buffer, 0, bufferIndex);

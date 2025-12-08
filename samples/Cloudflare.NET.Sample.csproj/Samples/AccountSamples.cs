@@ -87,24 +87,24 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
         // Rule for local development
         new CorsRule(
           new CorsAllowed(
-            Methods: new[] { "GET", "PUT", "POST", "DELETE" },
-            Origins: new[] { "http://localhost:3000", "http://localhost:5173" },
-            Headers: new[] { "Content-Type", "Authorization" }
+            new[] { "GET", "PUT", "POST", "DELETE" },
+            new[] { "http://localhost:3000", "http://localhost:5173" },
+            new[] { "Content-Type", "Authorization" }
           ),
-          Id: "Local Development",
-          ExposeHeaders: new[] { "ETag", "Content-Length" },
-          MaxAgeSeconds: 3600
+          "Local Development",
+          new[] { "ETag", "Content-Length" },
+          3600
         ),
         // Rule for production
         new CorsRule(
           new CorsAllowed(
-            Methods: new[] { "GET", "HEAD" },
-            Origins: new[] { "https://example.com" },
-            Headers: new[] { "Content-Type" }
+            new[] { "GET", "HEAD" },
+            new[] { "https://example.com" },
+            new[] { "Content-Type" }
           ),
-          Id: "Production",
-          ExposeHeaders: new[] { "ETag" },
-          MaxAgeSeconds: 7200
+          "Production",
+          new[] { "ETag" },
+          7200
         )
       }
     );
@@ -132,11 +132,11 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
       {
         new CorsRule(
           new CorsAllowed(
-            Methods: new[] { "GET" },
-            Origins: new[] { "*" },
-            Headers: new[] { "Content-Type" }
+            new[] { "GET" },
+            new[] { "*" },
+            new[] { "Content-Type" }
           ),
-          Id: "Public Read",
+          "Public Read",
           MaxAgeSeconds: 86400
         )
       }
@@ -162,22 +162,22 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
       {
         // Rule to delete old log files after 90 days
         new LifecycleRule(
-          Id: "Delete old logs",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions("logs/"),
+          "Delete old logs",
+          true,
+          new LifecycleRuleConditions("logs/"),
           DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90))
         ),
         // Rule to abort incomplete multipart uploads after 7 days
         new LifecycleRule(
-          Id: "Cleanup incomplete uploads",
-          Enabled: true,
+          "Cleanup incomplete uploads",
+          true,
           AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7))
         ),
         // Rule to transition archived data to Infrequent Access storage class after 30 days
         new LifecycleRule(
-          Id: "Archive to Infrequent Access",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions("archive/"),
+          "Archive to Infrequent Access",
+          true,
+          new LifecycleRuleConditions("archive/"),
           StorageClassTransitions: new[]
           {
             new StorageClassTransition(LifecycleCondition.AfterDays(30), R2StorageClass.InfrequentAccess)
@@ -185,9 +185,9 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
         ),
         // Combined rule: transition to IA then delete (for temp files)
         new LifecycleRule(
-          Id: "Temp file lifecycle",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions("temp/"),
+          "Temp file lifecycle",
+          true,
+          new LifecycleRuleConditions("temp/"),
           StorageClassTransitions: new[]
           {
             new StorageClassTransition(LifecycleCondition.AfterDays(14), R2StorageClass.InfrequentAccess)
@@ -220,7 +220,8 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
 
       if (rule.StorageClassTransitions != null)
         foreach (var transition in rule.StorageClassTransitions)
-          logger.LogInformation("    Transition to {StorageClass} after: {Days} days", transition.StorageClass, transition.Condition.MaxAge);
+          logger.LogInformation("    Transition to {StorageClass} after: {Days} days", transition.StorageClass,
+                                transition.Condition.MaxAge);
     }
 
     // 3. Update Lifecycle Policy (simpler configuration)
@@ -230,8 +231,8 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
       {
         // Single rule: delete all objects after 365 days
         new LifecycleRule(
-          Id: "Annual cleanup",
-          Enabled: true,
+          "Annual cleanup",
+          true,
           DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(365))
         )
       }
