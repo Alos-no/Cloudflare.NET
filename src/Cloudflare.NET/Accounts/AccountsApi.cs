@@ -180,11 +180,8 @@ public class AccountsApi : ApiResource, IAccountsApi
       DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
     };
     var jsonContent = System.Text.Json.JsonSerializer.Serialize(lifecyclePolicy, lifecycleSerializerOptions);
-    var content     = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
-    var response = await HttpClient.PutAsync(endpoint, content, cancellationToken);
 
-    // Ensure successful response
-    response.EnsureSuccessStatusCode();
+    await PutJsonAsync<object?>(endpoint, jsonContent, cancellationToken);
   }
 
   /// <inheritdoc />
