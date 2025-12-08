@@ -44,3 +44,39 @@ public record ListR2BucketsResponse(
   [property: JsonPropertyName("buckets")]
   IReadOnlyList<R2Bucket> Buckets
 );
+
+/// <summary>Defines the allowed HTTP methods, origins, and headers for a CORS rule.</summary>
+/// <param name="Methods">The HTTP methods allowed for CORS requests (e.g., GET, PUT, POST, DELETE, HEAD).</param>
+/// <param name="Origins">The origins allowed to make CORS requests (e.g., "https://example.com", "*").</param>
+/// <param name="Headers">The headers that are allowed in CORS requests (e.g., "Content-Type", "Authorization").</param>
+public record CorsAllowed(
+  [property: JsonPropertyName("methods")]
+  IReadOnlyList<string> Methods,
+  [property: JsonPropertyName("origins")]
+  IReadOnlyList<string> Origins,
+  [property: JsonPropertyName("headers")]
+  IReadOnlyList<string>? Headers = null
+);
+
+/// <summary>Represents a single CORS rule for an R2 bucket.</summary>
+/// <param name="Allowed">The allowed methods, origins, and headers for this rule.</param>
+/// <param name="Id">An optional identifier for this CORS rule.</param>
+/// <param name="ExposeHeaders">Headers that browsers are allowed to access in the response.</param>
+/// <param name="MaxAgeSeconds">How long the browser should cache the preflight response, in seconds.</param>
+public record CorsRule(
+  [property: JsonPropertyName("allowed")]
+  CorsAllowed Allowed,
+  [property: JsonPropertyName("id")]
+  string? Id = null,
+  [property: JsonPropertyName("exposeHeaders")]
+  IReadOnlyList<string>? ExposeHeaders = null,
+  [property: JsonPropertyName("maxAgeSeconds")]
+  int? MaxAgeSeconds = null
+);
+
+/// <summary>Represents the CORS policy for an R2 bucket.</summary>
+/// <param name="Rules">The list of CORS rules applied to the bucket.</param>
+public record BucketCorsPolicy(
+  [property: JsonPropertyName("rules")]
+  IReadOnlyList<CorsRule> Rules
+);

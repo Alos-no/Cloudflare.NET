@@ -42,6 +42,9 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
     // 3. R2 Custom Domain Lifecycle
     await RunCustomDomainLifecycleAsync(bucketName, zoneId, baseDomain, cleanupActions);
 
+    // 4. R2 CORS Configuration
+    await RunCorsConfigurationAsync(bucketName);
+
     return cleanupActions;
   }
 
@@ -67,6 +70,82 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
     logger.LogInformation("Getting status for custom domain: {Hostname}", hostname);
     var statusResult = await cf.Accounts.GetCustomDomainStatusAsync(bucketName, hostname);
     logger.LogInformation("Got status. Domain: {Domain}, Status: {Status}", statusResult.Domain, statusResult.Status);
+  }
+
+  private async Task RunCorsConfigurationAsync(string bucketName)
+  {
+    logger.LogInformation("--- Running CORS Configuration for bucket {BucketName} ---", bucketName);
+
+    // 1. Set CORS Policy with multiple rules
+    logger.LogInformation("Setting CORS policy for bucket {BucketName}", bucketName);
+    var corsPolicy = new BucketCorsPolicy(
+      new[]
+      {
+        // Rule for local development
+        new CorsRule(
+          new CorsAllowed(
+            Methods: new[] { "GET", "PUT", "POST", "DELETE" },
+            Origins: new[] { "http://localhost:3000", "http://localhost:5173" },
+            Headers: new[] { "Content-Type", "Authorization" }
+          ),
+          Id: "Local Development",
+          ExposeHeaders: new[] { "ETag", "Content-Length" },
+          MaxAgeSeconds: 3600
+        ),
+        // Rule for production
+        new CorsRule(
+          new CorsAllowed(
+            Methods: new[] { "GET", "HEAD" },
+            Origins: new[] { "https://example.com" },
+            Headers: new[] { "Content-Type" }
+          ),
+          Id: "Production",
+          ExposeHeaders: new[] { "ETag" },
+          MaxAgeSeconds: 7200
+        )
+      }
+    );
+
+    await cf.Accounts.SetBucketCorsAsync(bucketName, corsPolicy);
+    logger.LogInformation("CORS policy set successfully with {RuleCount} rules", corsPolicy.Rules.Count);
+
+    // 2. Get CORS Policy
+    logger.LogInformation("Retrieving CORS policy for bucket {BucketName}", bucketName);
+    var retrievedPolicy = await cf.Accounts.GetBucketCorsAsync(bucketName);
+    logger.LogInformation("Retrieved CORS policy with {RuleCount} rules:", retrievedPolicy.Rules.Count);
+
+    foreach (var rule in retrievedPolicy.Rules)
+    {
+      logger.LogInformation("  Rule: {Id}", rule.Id ?? "Unnamed");
+      logger.LogInformation("    Methods: {Methods}", string.Join(", ", rule.Allowed.Methods));
+      logger.LogInformation("    Origins: {Origins}", string.Join(", ", rule.Allowed.Origins));
+      logger.LogInformation("    Max Age: {MaxAge}s", rule.MaxAgeSeconds);
+    }
+
+    // 3. Update CORS Policy (simpler policy)
+    logger.LogInformation("Updating CORS policy to a simpler configuration");
+    var simpleCorsPolicy = new BucketCorsPolicy(
+      new[]
+      {
+        new CorsRule(
+          new CorsAllowed(
+            Methods: new[] { "GET" },
+            Origins: new[] { "*" },
+            Headers: new[] { "Content-Type" }
+          ),
+          Id: "Public Read",
+          MaxAgeSeconds: 86400
+        )
+      }
+    );
+
+    await cf.Accounts.SetBucketCorsAsync(bucketName, simpleCorsPolicy);
+    logger.LogInformation("CORS policy updated to public read-only access");
+
+    // 4. Delete CORS Policy
+    logger.LogInformation("Deleting CORS policy from bucket {BucketName}", bucketName);
+    await cf.Accounts.DeleteBucketCorsAsync(bucketName);
+    logger.LogInformation("CORS policy deleted successfully");
   }
 
   #endregion

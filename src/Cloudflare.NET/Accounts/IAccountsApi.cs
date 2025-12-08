@@ -88,4 +88,29 @@ public interface IAccountsApi
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   Task DeleteR2BucketAsync(string bucketName, CancellationToken cancellationToken = default);
+
+  /// <summary>Gets the CORS policy for an R2 bucket.</summary>
+  /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>
+  ///   A task that represents the asynchronous operation. The task result contains the
+  ///   <see cref="BucketCorsPolicy" /> with the current CORS rules.
+  /// </returns>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/get/" />
+  Task<BucketCorsPolicy> GetBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default);
+
+  /// <summary>Sets or updates the CORS policy for an R2 bucket.</summary>
+  /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="corsPolicy">The CORS policy to apply to the bucket.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A task that represents the asynchronous operation.</returns>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/update/" />
+  Task SetBucketCorsAsync(string bucketName, BucketCorsPolicy corsPolicy, CancellationToken cancellationToken = default);
+
+  /// <summary>Deletes the CORS policy for an R2 bucket, removing all CORS rules.</summary>
+  /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A task that represents the asynchronous operation.</returns>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/delete/" />
+  Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default);
 }

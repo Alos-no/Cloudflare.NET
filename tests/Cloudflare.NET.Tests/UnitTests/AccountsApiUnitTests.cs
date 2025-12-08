@@ -351,5 +351,117 @@ public class AccountsApiUnitTests
                    .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/domains/custom/{hostname}");
   }
 
+  /// <summary>Verifies that GetBucketCorsAsync sends a correctly formatted GET request.</summary>
+  [Fact]
+  public async Task GetBucketCorsAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var corsRule = new CorsRule(
+      new CorsAllowed(
+        new[] { "GET", "PUT" },
+        new[] { "https://example.com" },
+        new[] { "Content-Type" }
+      ),
+      "Allow Example",
+      new[] { "ETag" },
+      3600
+    );
+
+    var                 expectedResult  = new BucketCorsPolicy(new[] { corsRule });
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.GetBucketCorsAsync(bucketName);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Get);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/cors");
+  }
+
+  /// <summary>Verifies that SetBucketCorsAsync sends a correctly formatted PUT request.</summary>
+  [Fact]
+  public async Task SetBucketCorsAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var corsPolicy = new BucketCorsPolicy(
+      new[]
+      {
+        new CorsRule(
+          new CorsAllowed(
+            new[] { "GET", "PUT", "POST" },
+            new[] { "https://example.com", "https://app.example.com" },
+            new[] { "Content-Type", "Authorization" }
+          ),
+          "Production CORS",
+          new[] { "ETag", "Content-Length" },
+          7200
+        )
+      }
+    );
+
+    var                 successResponse = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    await sut.SetBucketCorsAsync(bucketName, corsPolicy);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Put);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/cors");
+    var content = await capturedRequest.Content!.ReadFromJsonAsync<BucketCorsPolicy>();
+    content.Should().BeEquivalentTo(corsPolicy);
+  }
+
+  /// <summary>Verifies that DeleteBucketCorsAsync sends a correctly formatted DELETE request.</summary>
+  [Fact]
+  public async Task DeleteBucketCorsAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var                 successResponse = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    await sut.DeleteBucketCorsAsync(bucketName);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Delete);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/cors");
+  }
+
   #endregion
 }

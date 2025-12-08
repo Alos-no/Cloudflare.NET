@@ -136,5 +136,28 @@ public class AccountsApi : ApiResource, IAccountsApi
     return await PostAsync<R2Bucket>(endpoint, requestBody, cancellationToken);
   }
 
+  /// <inheritdoc />
+  public async Task<BucketCorsPolicy> GetBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
+    return await GetAsync<BucketCorsPolicy>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task SetBucketCorsAsync(string            bucketName,
+                                       BucketCorsPolicy  corsPolicy,
+                                       CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
+    await PutAsync<object>(endpoint, corsPolicy, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
+    await DeleteAsync<object>(endpoint, cancellationToken);
+  }
+
   #endregion
 }

@@ -204,5 +204,105 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
   }
 
+  /// <summary>Tests the full lifecycle of CORS configuration: set, get, update, and delete.</summary>
+  [IntegrationTest]
+  public async Task CanManageCorsLifecycle()
+  {
+    // Arrange
+    var corsPolicy = new BucketCorsPolicy(
+      new[]
+      {
+        new CorsRule(
+          new CorsAllowed(
+            Methods: new[] { "GET", "PUT", "POST" },
+            Origins: new[] { "https://example.com", "https://app.example.com" },
+            Headers: new[] { "Content-Type", "Authorization" }
+          ),
+          Id: "Integration Test Rule",
+          ExposeHeaders: new[] { "ETag", "Content-Length" },
+          MaxAgeSeconds: 3600
+        )
+      }
+    );
+
+    try
+    {
+      // Act & Assert
+
+      // 1. Set CORS Policy
+      var setAction = async () => await _sut.SetBucketCorsAsync(_bucketName, corsPolicy);
+      await setAction.Should().NotThrowAsync("setting CORS policy should succeed");
+
+      // 2. Get CORS Policy and verify it matches
+      var retrievedPolicy = await _sut.GetBucketCorsAsync(_bucketName);
+      retrievedPolicy.Should().NotBeNull();
+      retrievedPolicy.Rules.Should().HaveCount(1);
+
+      var retrievedRule = retrievedPolicy.Rules[0];
+      retrievedRule.Id.Should().Be("Integration Test Rule");
+      retrievedRule.Allowed.Methods.Should().BeEquivalentTo(new[] { "GET", "PUT", "POST" });
+      retrievedRule.Allowed.Origins.Should().BeEquivalentTo(new[] { "https://example.com", "https://app.example.com" });
+      retrievedRule.Allowed.Headers.Should().BeEquivalentTo(new[] { "Content-Type", "Authorization" });
+      retrievedRule.ExposeHeaders.Should().BeEquivalentTo(new[] { "ETag", "Content-Length" });
+      retrievedRule.MaxAgeSeconds.Should().Be(3600);
+
+      // 3. Update CORS Policy with a different configuration
+      var updatedPolicy = new BucketCorsPolicy(
+        new[]
+        {
+          new CorsRule(
+            new CorsAllowed(
+              Methods: new[] { "GET" },
+              Origins: new[] { "*" },
+              Headers: null
+            ),
+            Id: "Updated Rule",
+            MaxAgeSeconds: 86400
+          )
+        }
+      );
+
+      await _sut.SetBucketCorsAsync(_bucketName, updatedPolicy);
+
+      // 4. Verify the update
+      var verifyUpdatedPolicy = await _sut.GetBucketCorsAsync(_bucketName);
+      verifyUpdatedPolicy.Rules.Should().HaveCount(1);
+      verifyUpdatedPolicy.Rules[0].Id.Should().Be("Updated Rule");
+      verifyUpdatedPolicy.Rules[0].Allowed.Methods.Should().BeEquivalentTo(new[] { "GET" });
+      verifyUpdatedPolicy.Rules[0].Allowed.Origins.Should().BeEquivalentTo(new[] { "*" });
+      verifyUpdatedPolicy.Rules[0].MaxAgeSeconds.Should().Be(86400);
+    }
+    finally
+    {
+      // 5. Delete CORS Policy (Cleanup)
+      var deleteAction = async () => await _sut.DeleteBucketCorsAsync(_bucketName);
+      await deleteAction.Should().NotThrowAsync("the CORS policy should be cleaned up successfully");
+    }
+  }
+
+  /// <summary>Verifies that getting CORS from a bucket with no CORS policy throws a 404 HttpRequestException.</summary>
+  [IntegrationTest]
+  public async Task GetBucketCorsAsync_ThrowsWhenNoPolicyExists()
+  {
+    // Arrange - Create a fresh bucket with no CORS policy
+    var bucketName = $"cfnet-nocors-bucket-{Guid.NewGuid():N}";
+    await _sut.CreateR2BucketAsync(bucketName);
+
+    try
+    {
+      // Act
+      var action = async () => await _sut.GetBucketCorsAsync(bucketName);
+
+      // Assert - When no CORS is configured, the API returns 404 with error code 10059
+      var exception = await action.Should().ThrowAsync<HttpRequestException>();
+      exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DeleteR2BucketAsync(bucketName);
+    }
+  }
+
   #endregion
 }
