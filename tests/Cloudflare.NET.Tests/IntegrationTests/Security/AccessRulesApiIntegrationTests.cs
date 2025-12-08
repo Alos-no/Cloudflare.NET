@@ -1,6 +1,7 @@
 ﻿namespace Cloudflare.NET.Tests.IntegrationTests.Security;
 
 using System.Net;
+using Cloudflare.NET.Tests.IntegrationTests;
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using NET.Security.Firewall.Models;
@@ -8,7 +9,13 @@ using Shared.Fixtures;
 using Shared.Helpers;
 using Xunit.Abstractions;
 
+/// <summary>
+///   Contains integration tests for account and zone access rules APIs.
+///   Tests are grouped in a collection to run sequentially, preventing conflicts when multiple tests
+///   attempt to create rules with the same reserved IP addresses.
+/// </summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
+[Collection(TestCollections.AccessRules)]
 public class AccessRulesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>
 {
   #region Properties & Fields - Non-Public
@@ -39,6 +46,17 @@ public class AccessRulesApiIntegrationTests : IClassFixture<CloudflareApiTestFix
     var testIp = "192.0.2.1";
     var createRequest = new CreateAccessRuleRequest(AccessRuleMode.Challenge, new IpConfiguration(testIp), "cfnet-test-account-rule");
     AccessRule? createdRule = null;
+
+    // Pre-cleanup: Remove any stale rules from previous failed test runs.
+    // This prevents "duplicate_of_existing" errors when the test is re-run after a failure.
+    var existingRules = await _sut.Accounts.AccessRules
+                                  .ListAllAsync(new ListAccessRulesFilters { ConfigurationValue = testIp })
+                                  .ToListAsync();
+
+    foreach (var staleRule in existingRules)
+    {
+      await _sut.Accounts.AccessRules.DeleteAsync(staleRule.Id);
+    }
 
     try
     {
@@ -84,6 +102,17 @@ public class AccessRulesApiIntegrationTests : IClassFixture<CloudflareApiTestFix
     var         testIp        = "192.0.2.2";
     var         createRequest = new CreateAccessRuleRequest(AccessRuleMode.Block, new IpConfiguration(testIp), "cfnet-test-zone-rule");
     AccessRule? createdRule   = null;
+
+    // Pre-cleanup: Remove any stale rules from previous failed test runs.
+    // This prevents "duplicate_of_existing" errors when the test is re-run after a failure.
+    var existingRules = await _sut.Zones.AccessRules
+                                  .ListAllAsync(_settings.ZoneId, new ListAccessRulesFilters { ConfigurationValue = testIp })
+                                  .ToListAsync();
+
+    foreach (var staleRule in existingRules)
+    {
+      await _sut.Zones.AccessRules.DeleteAsync(_settings.ZoneId, staleRule.Id);
+    }
 
     try
     {

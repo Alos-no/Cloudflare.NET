@@ -28,6 +28,12 @@ public static class TestCollections
   ///   These tests share the same phase entrypoints and must run sequentially to avoid version conflicts.
   /// </summary>
   public const string ZoneRulesets = "ZoneRulesets";
+
+  /// <summary>
+  ///   Collection for tests that create access rules using reserved IP addresses.
+  ///   These tests must run sequentially because Cloudflare rejects duplicate rules for the same IP.
+  /// </summary>
+  public const string AccessRules = "AccessRules";
 }
 
 
@@ -38,3 +44,7 @@ public class CustomHostnamesCollection;
 /// <summary>Marker class for the ZoneRulesets test collection.</summary>
 [CollectionDefinition(TestCollections.ZoneRulesets)]
 public class ZoneRulesetsCollection;
+
+/// <summary>Marker class for the AccessRules test collection.</summary>
+[CollectionDefinition(TestCollections.AccessRules)]
+public class AccessRulesCollection;

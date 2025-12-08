@@ -261,7 +261,7 @@ title: Cloudflare.NET SDK
   <p class="tagline">An unofficial, strongly-typed .NET SDK for the Cloudflare API. Built with testability and maintainability in mind.</p>
 
   <div class="badges">
-    <a href="https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml"><img src="https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml/badge.svg" alt="Build Status"></a>
+    <a href="https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml"><img src="https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml/badge.svg" alt="Build Status"></a>
     <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License"></a>
   </div>
 

@@ -1,6 +1,6 @@
 # Cloudflare.NET SDK
 
-[![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/dotnet.yml)
+[![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt)
 
 [![NuGet (Cloudflare.NET.Api)](https://img.shields.io/nuget/v/Cloudflare.NET.Api?label=Cloudflare.NET.Api)](https://www.nuget.org/packages/Cloudflare.NET.Api/)
