@@ -20,10 +20,12 @@ using Zones.CustomHostnames.Models;
 ///   </para>
 ///   <para>
 ///     <strong>Test Isolation:</strong> Each test creates unique hostnames using GUIDs to avoid collisions between
-///     concurrent test runs.
+///     concurrent test runs. Tests are grouped in a collection to run sequentially, preventing race conditions
+///     during pagination when other tests' cleanup deletes hostnames mid-iteration.
 ///   </para>
 /// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
+[Collection(TestCollections.CustomHostnames)]
 public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IAsyncLifetime
 {
   #region Constants & Statics
@@ -428,9 +430,6 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
       }
 
       // Act: List all with a small per-page limit to force pagination.
-      // NOTE: We filter by the first created hostname to verify pagination mechanics work.
-      // We cannot reliably assert that ALL created hostnames appear in an unfiltered listing because
-      // other parallel tests may delete hostnames between pages, causing race conditions.
       var filters      = new ListCustomHostnamesFilters { PerPage = 2 };
       var allHostnames = new List<CustomHostname>();
 
@@ -439,17 +438,12 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
         allHostnames.Add(hostname);
       }
 
-      // Assert: Verify pagination worked by checking we received results.
-      // We verify that we found at least one of our created hostnames. We don't assert all
-      // are present because parallel test cleanup can delete hostnames mid-pagination.
-      allHostnames.Should().NotBeEmpty("pagination should return at least some hostnames");
-      var allIds = allHostnames.Select(h => h.Id).ToHashSet();
-
-      // At minimum, the first hostname we created should still exist (cleanup hasn't run yet).
-      // This validates the pagination mechanism works while being resilient to parallel test interference.
-      var foundCount = createdIds.Count(id => allIds.Contains(id));
-      foundCount.Should().BeGreaterThan(0,
-        "at least one of the created hostnames should be found before cleanup runs");
+      // Assert: All created hostnames should be present.
+      // NOTE: This assertion is reliable because tests in the CustomHostnames collection run sequentially,
+      // preventing other tests from deleting hostnames mid-pagination.
+      allHostnames.Should().NotBeEmpty();
+      var allIds = allHostnames.Select(h => h.Id).ToList();
+      allIds.Should().Contain(createdIds);
     }
     finally
     {

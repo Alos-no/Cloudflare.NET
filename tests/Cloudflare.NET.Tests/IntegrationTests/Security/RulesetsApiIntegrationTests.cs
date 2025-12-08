@@ -1,6 +1,7 @@
 ﻿namespace Cloudflare.NET.Tests.IntegrationTests.Security;
 
 using System.Net;
+using Cloudflare.NET.Tests.IntegrationTests;
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using NET.Security;
@@ -9,7 +10,13 @@ using Shared.Fixtures;
 using Shared.Helpers;
 using Xunit.Abstractions;
 
+/// <summary>
+///   Contains integration tests for zone and account rulesets APIs (WAF custom rules, managed rules).
+///   Tests are grouped in a collection to run sequentially, preventing version conflicts when multiple
+///   tests modify the same phase entrypoint concurrently.
+/// </summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
+[Collection(TestCollections.ZoneRulesets)]
 public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>
 {
   #region Properties & Fields - Non-Public
