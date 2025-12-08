@@ -351,5 +351,262 @@ public class AccountsApiUnitTests
                    .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/domains/custom/{hostname}");
   }
 
+  /// <summary>Verifies that GetBucketCorsAsync sends a correctly formatted GET request.</summary>
+  [Fact]
+  public async Task GetBucketCorsAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var corsRule = new CorsRule(
+      new CorsAllowed(
+        new[] { "GET", "PUT" },
+        new[] { "https://example.com" },
+        new[] { "Content-Type" }
+      ),
+      "Allow Example",
+      new[] { "ETag" },
+      3600
+    );
+
+    var                 expectedResult  = new BucketCorsPolicy(new[] { corsRule });
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.GetBucketCorsAsync(bucketName);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Get);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/cors");
+  }
+
+  /// <summary>Verifies that SetBucketCorsAsync sends a correctly formatted PUT request.</summary>
+  [Fact]
+  public async Task SetBucketCorsAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var corsPolicy = new BucketCorsPolicy(
+      new[]
+      {
+        new CorsRule(
+          new CorsAllowed(
+            new[] { "GET", "PUT", "POST" },
+            new[] { "https://example.com", "https://app.example.com" },
+            new[] { "Content-Type", "Authorization" }
+          ),
+          "Production CORS",
+          new[] { "ETag", "Content-Length" },
+          7200
+        )
+      }
+    );
+
+    var                 successResponse = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    await sut.SetBucketCorsAsync(bucketName, corsPolicy);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Put);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/cors");
+    var content = await capturedRequest.Content!.ReadFromJsonAsync<BucketCorsPolicy>();
+    content.Should().BeEquivalentTo(corsPolicy);
+  }
+
+  /// <summary>Verifies that DeleteBucketCorsAsync sends a correctly formatted DELETE request.</summary>
+  [Fact]
+  public async Task DeleteBucketCorsAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var                 successResponse = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    await sut.DeleteBucketCorsAsync(bucketName);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Delete);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/cors");
+  }
+
+  /// <summary>Verifies that GetBucketLifecycleAsync sends a correctly formatted GET request.</summary>
+  [Fact]
+  public async Task GetBucketLifecycleAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var lifecycleRule = new LifecycleRule(
+      Id: "Delete old logs",
+      Enabled: true,
+      Conditions: new LifecycleRuleConditions("logs/"),
+      DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90)),
+      AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7)),
+      StorageClassTransitions: new[]
+      {
+        new StorageClassTransition(LifecycleCondition.AfterDays(30), R2StorageClass.InfrequentAccess)
+      }
+    );
+
+    var                 expectedResult  = new BucketLifecyclePolicy(new[] { lifecycleRule });
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.GetBucketLifecycleAsync(bucketName);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Get);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/lifecycle");
+  }
+
+  /// <summary>Verifies that SetBucketLifecycleAsync sends a correctly formatted PUT request.</summary>
+  [Fact]
+  public async Task SetBucketLifecycleAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var lifecyclePolicy = new BucketLifecyclePolicy(
+      new[]
+      {
+        // Rule to delete objects after 90 days
+        new LifecycleRule(
+          Id: "Delete old objects",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions("temp/"),
+          DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90))
+        ),
+        // Rule to abort incomplete multipart uploads after 7 days
+        new LifecycleRule(
+          Id: "Cleanup multipart",
+          Enabled: true,
+          AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7))
+        ),
+        // Rule to transition to Infrequent Access after 30 days
+        new LifecycleRule(
+          Id: "Archive old data",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions("archive/"),
+          StorageClassTransitions: new[]
+          {
+            new StorageClassTransition(LifecycleCondition.AfterDays(30), R2StorageClass.InfrequentAccess)
+          }
+        )
+      }
+    );
+
+    var                 successResponse   = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest   = null;
+    string?             capturedJsonBody  = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+      {
+        capturedRequest  = req;
+        capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+      });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    await sut.SetBucketLifecycleAsync(bucketName, lifecyclePolicy);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Put);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/lifecycle");
+    capturedJsonBody.Should().NotBeNullOrEmpty();
+    var content = JsonSerializer.Deserialize<BucketLifecyclePolicy>(capturedJsonBody!);
+    content.Should().BeEquivalentTo(lifecyclePolicy);
+  }
+
+  /// <summary>Verifies that DeleteBucketLifecycleAsync sends a PUT request with an empty rules array.</summary>
+  /// <remarks>
+  ///   Cloudflare R2 does not have a dedicated DELETE endpoint for lifecycle policies.
+  ///   Instead, the policy is removed by setting an empty rules array via PUT.
+  /// </remarks>
+  [Fact]
+  public async Task DeleteBucketLifecycleAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "test-bucket";
+
+    var                 successResponse   = HttpFixtures.CreateSuccessResponse<object?>(null);
+    HttpRequestMessage? capturedRequest   = null;
+    string?             capturedJsonBody  = null;
+    var mockHandler =
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+      {
+        capturedRequest  = req;
+        capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+      });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    await sut.DeleteBucketLifecycleAsync(bucketName);
+
+    // Assert - Cloudflare R2 uses PUT with empty rules array to clear lifecycle policy
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Put);
+    capturedRequest.RequestUri!.ToString().Should()
+                   .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/lifecycle");
+    capturedJsonBody.Should().NotBeNullOrEmpty();
+    var content = JsonSerializer.Deserialize<BucketLifecyclePolicy>(capturedJsonBody!);
+    content.Should().NotBeNull();
+    content!.Rules.Should().BeEmpty();
+  }
+
   #endregion
 }

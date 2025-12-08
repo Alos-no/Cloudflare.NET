@@ -94,6 +94,48 @@ public abstract class ApiResource
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
+  /// <summary>Sends a POST request with a pre-serialized JSON string to the specified URI.</summary>
+  /// <remarks>
+  ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case).
+  ///   The caller is responsible for serializing the payload to JSON.
+  /// </remarks>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="jsonContent">The pre-serialized JSON string to send as the request body.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> PostJsonAsync<TResult>(string            requestUri,
+                                                       string            jsonContent,
+                                                       CancellationToken cancellationToken = default)
+  {
+    using var scope   = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
+    Logger.SendingRequest("POST", requestUri);
+    var content  = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+    var response = await HttpClient.PostAsync(requestUri, content, cancellationToken);
+    return await ProcessResponse<TResult>(response, cancellationToken);
+  }
+
+  /// <summary>Sends a PUT request with a pre-serialized JSON string to the specified URI.</summary>
+  /// <remarks>
+  ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case).
+  ///   The caller is responsible for serializing the payload to JSON.
+  /// </remarks>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="jsonContent">The pre-serialized JSON string to send as the request body.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> PutJsonAsync<TResult>(string            requestUri,
+                                                      string            jsonContent,
+                                                      CancellationToken cancellationToken = default)
+  {
+    using var scope   = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
+    Logger.SendingRequest("PUT", requestUri);
+    var content  = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+    var response = await HttpClient.PutAsync(requestUri, content, cancellationToken);
+    return await ProcessResponse<TResult>(response, cancellationToken);
+  }
+
   /// <summary>Sends a PATCH request with a JSON payload to the specified URI.</summary>
   /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
   /// <param name="requestUri">The URI to send the request to.</param>
@@ -385,7 +427,7 @@ public abstract class ApiResource
   ///   Thrown if the API returns a success status code but the response indicates
   ///   failure (e.g., `success: false`).
   /// </exception>
-  private async Task<T> ProcessResponse<T>(HttpResponseMessage response, CancellationToken cancellationToken)
+  protected async Task<T> ProcessResponse<T>(HttpResponseMessage response, CancellationToken cancellationToken)
   {
     var apiResponse = await ProcessAndDeserializeAsync<T>(response, cancellationToken);
 

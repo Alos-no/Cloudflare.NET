@@ -136,5 +136,62 @@ public class AccountsApi : ApiResource, IAccountsApi
     return await PostAsync<R2Bucket>(endpoint, requestBody, cancellationToken);
   }
 
+  /// <inheritdoc />
+  public async Task<BucketCorsPolicy> GetBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
+    return await GetAsync<BucketCorsPolicy>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task SetBucketCorsAsync(string            bucketName,
+                                       BucketCorsPolicy  corsPolicy,
+                                       CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
+    await PutAsync<object>(endpoint, corsPolicy, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
+    await DeleteAsync<object>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<BucketLifecyclePolicy> GetBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/lifecycle";
+    return await GetAsync<BucketLifecyclePolicy>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task SetBucketLifecycleAsync(string                bucketName,
+                                            BucketLifecyclePolicy lifecyclePolicy,
+                                            CancellationToken     cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/lifecycle";
+
+    // Use custom serialization options that match Cloudflare R2 lifecycle API expectations (camelCase for lifecycle)
+    // Note: The R2 lifecycle API uses camelCase property names, unlike most Cloudflare APIs which use snake_case
+    var lifecycleSerializerOptions = new System.Text.Json.JsonSerializerOptions
+    {
+      DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+    };
+    var jsonContent = System.Text.Json.JsonSerializer.Serialize(lifecyclePolicy, lifecycleSerializerOptions);
+
+    await PutJsonAsync<object?>(endpoint, jsonContent, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DeleteBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    // Cloudflare R2 does not have a DELETE endpoint for lifecycle policies.
+    // To remove the lifecycle policy, we PUT an empty rules array.
+    var emptyPolicy = new BucketLifecyclePolicy(Array.Empty<LifecycleRule>());
+    await SetBucketLifecycleAsync(bucketName, emptyPolicy, cancellationToken);
+  }
+
   #endregion
 }
