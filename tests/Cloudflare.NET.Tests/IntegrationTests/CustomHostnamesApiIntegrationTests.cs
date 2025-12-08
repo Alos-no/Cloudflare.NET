@@ -20,10 +20,12 @@ using Zones.CustomHostnames.Models;
 ///   </para>
 ///   <para>
 ///     <strong>Test Isolation:</strong> Each test creates unique hostnames using GUIDs to avoid collisions between
-///     concurrent test runs.
+///     concurrent test runs. Tests are grouped in a collection to run sequentially, preventing race conditions
+///     during pagination when other tests' cleanup deletes hostnames mid-iteration.
 ///   </para>
 /// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
+[Collection(TestCollections.CustomHostnames)]
 public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IAsyncLifetime
 {
   #region Constants & Statics
@@ -437,6 +439,8 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
       }
 
       // Assert: All created hostnames should be present.
+      // NOTE: This assertion is reliable because tests in the CustomHostnames collection run sequentially,
+      // preventing other tests from deleting hostnames mid-pagination.
       allHostnames.Should().NotBeEmpty();
       var allIds = allHostnames.Select(h => h.Id).ToList();
       allIds.Should().Contain(createdIds);

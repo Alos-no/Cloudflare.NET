@@ -1,6 +1,7 @@
 ﻿namespace Cloudflare.NET.Tests.IntegrationTests.Security;
 
 using System.Net;
+using Cloudflare.NET.Tests.IntegrationTests;
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using NET.Security;
@@ -9,7 +10,13 @@ using Shared.Fixtures;
 using Shared.Helpers;
 using Xunit.Abstractions;
 
+/// <summary>
+///   Contains integration tests for zone and account rulesets APIs (WAF custom rules, managed rules).
+///   Tests are grouped in a collection to run sequentially, preventing version conflicts when multiple
+///   tests modify the same phase entrypoint concurrently.
+/// </summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
+[Collection(TestCollections.ZoneRulesets)]
 public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>
 {
   #region Properties & Fields - Non-Public
@@ -174,10 +181,13 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       // Assert
       versionsResult.Should().NotBeNull();
       versionsResult.Items.Should().NotBeEmpty();
-      // Check that the new version is present. This is more robust than checking the count.
+
+      // Verify that the version we created exists in the version history.
+      // NOTE: We do NOT assert that our version is the "latest" because other tests
+      // (e.g., WafCustomRule_CanCreateAndCleanup) may run in parallel against the same
+      // zone and phase, creating additional versions. This would cause a race condition
+      // where MaxBy(LastUpdated) returns a different test's version.
       versionsResult.Items.Should().Contain(v => v.Version == updatedRuleset.Version);
-      var latestVersion = versionsResult.Items.MaxBy(v => v.LastUpdated);
-      latestVersion!.Version.Should().Be(updatedRuleset.Version);
     }
     finally
     {

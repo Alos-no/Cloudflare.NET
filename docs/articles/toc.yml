@@ -1,0 +1,85 @@
+# Documentation table of contents
+
+- name: Get Started
+- name: Getting Started
+  href: getting-started.md
+- name: Configuration
+  href: configuration.md
+- name: API Token Permissions
+  href: permissions.md
+- name: SDK Conventions
+  href: conventions.md
+
+- name: REST API
+- name: Zones API
+  href: zones/index.md
+  items:
+    - name: Overview
+      href: zones/index.md
+    - name: DNS Records
+      href: zones/dns-records.md
+    - name: Cache Purge
+      href: zones/cache-purge.md
+    - name: Custom Hostnames (SaaS)
+      href: zones/custom-hostnames.md
+    - name: Security
+      items:
+        - name: Access Rules
+          href: zones/security/access-rules.md
+        - name: WAF Rulesets
+          href: zones/security/rulesets.md
+        - name: Zone Lockdown
+          href: zones/security/lockdown.md
+        - name: User-Agent Rules
+          href: zones/security/ua-rules.md
+- name: Accounts API
+  href: accounts/index.md
+  items:
+    - name: Overview
+      href: accounts/index.md
+    - name: R2 Buckets
+      items:
+        - name: Bucket Management
+          href: accounts/r2/buckets.md
+        - name: Custom Domains
+          href: accounts/r2/custom-domains.md
+        - name: CORS Configuration
+          href: accounts/r2/cors.md
+        - name: Lifecycle Policies
+          href: accounts/r2/lifecycle.md
+    - name: Security
+      items:
+        - name: Access Rules
+          href: accounts/security/access-rules.md
+        - name: WAF Rulesets
+          href: accounts/security/rulesets.md
+
+- name: Extension Packages
+- name: R2 Object Storage
+  href: r2/index.md
+  items:
+    - name: Overview
+      href: r2/index.md
+    - name: Uploading Objects
+      href: r2/uploads.md
+    - name: Downloading Objects
+      href: r2/downloads.md
+    - name: Deleting Objects
+      href: r2/deletes.md
+    - name: Listing Objects
+      href: r2/listing.md
+    - name: Multipart Uploads
+      href: r2/multipart.md
+    - name: Presigned URLs
+      href: r2/presigned-urls.md
+- name: Analytics API
+  href: analytics/index.md
+  items:
+    - name: Overview
+      href: analytics/index.md
+    - name: GraphQL Queries
+      href: analytics/graphql.md
+
+- name: Reference
+- name: API Coverage
+  href: api-coverage.md

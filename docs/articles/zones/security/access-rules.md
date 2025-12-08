@@ -1,0 +1,222 @@
+# Zone Access Rules
+
+IP Access Rules allow you to block, challenge, or whitelist traffic based on IP address, IP range, ASN, or country at the zone level.
+
+## Overview
+
+Access the Zone Access Rules API through `cf.Zones.AccessRules`:
+
+```csharp
+public class FirewallService(ICloudflareApiClient cf)
+{
+    public async Task BlockIpAsync(string zoneId, string ipAddress)
+    {
+        await cf.Zones.AccessRules.CreateAsync(zoneId,
+            new CreateAccessRuleRequest(
+                Mode: AccessRuleMode.Block,
+                Configuration: new IpConfiguration(ipAddress),
+                Notes: "Blocked by automation"
+            ));
+    }
+}
+```
+
+## Creating Access Rules
+
+### Block an IP Address
+
+```csharp
+var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Block,
+        Configuration: new IpConfiguration("192.168.1.1"),
+        Notes: "Malicious actor"
+    ));
+```
+
+### Challenge an IP Range
+
+```csharp
+var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Challenge,
+        Configuration: new CidrConfiguration("10.0.0.0/8"),
+        Notes: "Suspicious network"
+    ));
+```
+
+### Block by ASN
+
+```csharp
+var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Block,
+        Configuration: new AsnConfiguration("AS12345"),
+        Notes: "Known bad ASN"
+    ));
+```
+
+### Block by Country
+
+```csharp
+var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Block,
+        Configuration: new CountryConfiguration("XX"),
+        Notes: "Geo-blocking"
+    ));
+```
+
+### Whitelist an IP
+
+```csharp
+var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Whitelist,
+        Configuration: new IpConfiguration("10.0.0.1"),
+        Notes: "Office IP - bypass all security"
+    ));
+```
+
+## Listing Access Rules
+
+### List with Pagination
+
+```csharp
+var page = await cf.Zones.AccessRules.ListAsync(zoneId,
+    new ListAccessRulesFilters
+    {
+        Mode = AccessRuleMode.Block,
+        Page = 1,
+        PerPage = 50
+    });
+
+foreach (var rule in page.Items)
+{
+    Console.WriteLine($"{rule.Configuration.Value}: {rule.Mode}");
+}
+```
+
+### List All Rules
+
+```csharp
+await foreach (var rule in cf.Zones.AccessRules.ListAllAsync(zoneId))
+{
+    Console.WriteLine($"{rule.Id}: {rule.Configuration.Target} = {rule.Configuration.Value}");
+}
+```
+
+### Filter by Configuration
+
+```csharp
+var filters = new ListAccessRulesFilters
+{
+    ConfigurationTarget = AccessRuleTarget.Ip,
+    ConfigurationValue = "192.168.1.1"
+};
+
+await foreach (var rule in cf.Zones.AccessRules.ListAllAsync(zoneId, filters))
+{
+    // Process matching rules
+}
+```
+
+## Getting a Specific Rule
+
+```csharp
+var rule = await cf.Zones.AccessRules.GetAsync(zoneId, ruleId);
+Console.WriteLine($"Mode: {rule.Mode}, Created: {rule.CreatedOn}");
+```
+
+## Updating Access Rules
+
+```csharp
+var updated = await cf.Zones.AccessRules.UpdateAsync(zoneId, ruleId,
+    new UpdateAccessRuleRequest(
+        Mode: AccessRuleMode.Challenge,
+        Notes: "Changed from block to challenge"
+    ));
+```
+
+## Deleting Access Rules
+
+```csharp
+await cf.Zones.AccessRules.DeleteAsync(zoneId, ruleId);
+```
+
+## Models Reference
+
+### AccessRuleMode
+
+| Value | Description |
+|-------|-------------|
+| `Block` | Block all requests |
+| `Challenge` | Present CAPTCHA challenge |
+| `JsChallenge` | Present JavaScript challenge |
+| `ManagedChallenge` | Let Cloudflare decide challenge type |
+| `Whitelist` | Allow requests, bypass other rules |
+
+### Configuration Types
+
+| Type | Target | Example Value |
+|------|--------|---------------|
+| `IpConfiguration` | Single IP | `192.168.1.1` |
+| `CidrConfiguration` | IP range | `10.0.0.0/8` |
+| `AsnConfiguration` | ASN | `AS12345` |
+| `CountryConfiguration` | Country code | `US` |
+
+### AccessRule
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Id` | `string` | Unique identifier |
+| `Mode` | `AccessRuleMode` | Action to take |
+| `Configuration` | `AccessRuleConfiguration` | Match target |
+| `Notes` | `string?` | Optional notes |
+| `AllowedModes` | `IReadOnlyList<AccessRuleMode>` | Available modes |
+| `Scope` | `Scope` | Rule scope (zone/account) |
+| `CreatedOn` | `DateTimeOffset?` | Creation timestamp |
+| `ModifiedOn` | `DateTimeOffset?` | Last modification |
+
+## Common Patterns
+
+### Bulk Block IPs
+
+```csharp
+public async Task BlockIpsAsync(string zoneId, IEnumerable<string> ips, string reason)
+{
+    foreach (var ip in ips)
+    {
+        await cf.Zones.AccessRules.CreateAsync(zoneId,
+            new CreateAccessRuleRequest(
+                Mode: AccessRuleMode.Block,
+                Configuration: new IpConfiguration(ip),
+                Notes: reason
+            ));
+    }
+}
+```
+
+### Find and Remove Rule
+
+```csharp
+public async Task UnblockIpAsync(string zoneId, string ip)
+{
+    var filters = new ListAccessRulesFilters
+    {
+        ConfigurationTarget = AccessRuleTarget.Ip,
+        ConfigurationValue = ip
+    };
+
+    await foreach (var rule in cf.Zones.AccessRules.ListAllAsync(zoneId, filters))
+    {
+        await cf.Zones.AccessRules.DeleteAsync(zoneId, rule.Id);
+    }
+}
+```
+
+## Required Permissions
+
+| Permission | Scope | Level |
+|------------|-------|-------|
+| Firewall Services | Zone | Write |
