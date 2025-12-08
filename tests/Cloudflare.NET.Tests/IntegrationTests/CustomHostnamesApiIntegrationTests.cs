@@ -436,17 +436,32 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
       var filters      = new ListCustomHostnamesFilters { PerPage = 2 };
       var allHostnames = new List<CustomHostname>();
 
-      await foreach (var hostname in _sut.ListAllAsync(_zoneId, filters))
+      // Retry listing until we find all expected hostnames or timeout.
+      // Cloudflare's listing API may not immediately reflect newly created hostnames.
+      const int maxRetries = 10;
+
+      for (var attempt = 0; attempt < maxRetries; attempt++)
       {
-        // Only include hostnames from this specific test run (matching the shortGuid).
-        if (hostname.Hostname.Contains(shortGuid))
+        allHostnames.Clear();
+
+        await foreach (var hostname in _sut.ListAllAsync(_zoneId, filters))
         {
-          allHostnames.Add(hostname);
+          // Only include hostnames from this specific test run (matching the shortGuid).
+          if (hostname.Hostname.Contains(shortGuid))
+          {
+            allHostnames.Add(hostname);
+          }
         }
+
+        if (allHostnames.Count >= hostnamesToCreate)
+          break;
+
+        await Task.Delay(TimeSpan.FromSeconds(1));
       }
 
       // Assert: All created hostnames should be present.
-      allHostnames.Should().HaveCount(hostnamesToCreate);
+      allHostnames.Should().HaveCount(hostnamesToCreate,
+        $"expected all {hostnamesToCreate} hostnames to be found after {maxRetries} retries");
       var allIds = allHostnames.Select(h => h.Id).ToList();
       allIds.Should().BeEquivalentTo(createdIds);
     }
