@@ -67,26 +67,109 @@ public enum CustomHostnameStatus
 [JsonConverter(typeof(JsonStringEnumMemberConverter))]
 public enum SslStatus
 {
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Initialization States
+  // ─────────────────────────────────────────────────────────────────────────────
+
   /// <summary>The certificate is being initialized.</summary>
   [EnumMember(Value = "initializing")] Initializing,
+
+  /// <summary>The certificate initialization timed out.</summary>
+  [EnumMember(Value = "initializing_timed_out")]
+  InitializingTimedOut,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Validation States
+  // ─────────────────────────────────────────────────────────────────────────────
 
   /// <summary>The certificate is pending domain control validation.</summary>
   [EnumMember(Value = "pending_validation")]
   PendingValidation,
 
+  /// <summary>The certificate domain control validation timed out.</summary>
+  [EnumMember(Value = "validation_timed_out")]
+  ValidationTimedOut,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Issuance States
+  // ─────────────────────────────────────────────────────────────────────────────
+
   /// <summary>The certificate is pending issuance from the CA.</summary>
   [EnumMember(Value = "pending_issuance")]
   PendingIssuance,
+
+  /// <summary>The certificate issuance timed out.</summary>
+  [EnumMember(Value = "issuance_timed_out")]
+  IssuanceTimedOut,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Deployment States
+  // ─────────────────────────────────────────────────────────────────────────────
 
   /// <summary>The certificate is pending deployment to the edge.</summary>
   [EnumMember(Value = "pending_deployment")]
   PendingDeployment,
 
+  /// <summary>The certificate deployment timed out.</summary>
+  [EnumMember(Value = "deployment_timed_out")]
+  DeploymentTimedOut,
+
+  /// <summary>The certificate is being deployed to staging environment.</summary>
+  [EnumMember(Value = "staging_deployment")]
+  StagingDeployment,
+
+  /// <summary>The certificate is active in staging environment.</summary>
+  [EnumMember(Value = "staging_active")]
+  StagingActive,
+
+  /// <summary>The certificate deployment is being held.</summary>
+  [EnumMember(Value = "holding_deployment")]
+  HoldingDeployment,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Active States
+  // ─────────────────────────────────────────────────────────────────────────────
+
   /// <summary>The certificate is active and serving traffic.</summary>
   [EnumMember(Value = "active")] Active,
 
+  /// <summary>A backup certificate has been issued.</summary>
+  [EnumMember(Value = "backup_issued")]
+  BackupIssued,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Expiration States
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  /// <summary>The certificate is pending expiration and renewal.</summary>
+  [EnumMember(Value = "pending_expiration")]
+  PendingExpiration,
+
   /// <summary>The certificate has expired.</summary>
   [EnumMember(Value = "expired")] Expired,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Deactivation and Deletion States
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  /// <summary>The certificate is being deactivated.</summary>
+  [EnumMember(Value = "deactivating")]
+  Deactivating,
+
+  /// <summary>The certificate is inactive.</summary>
+  [EnumMember(Value = "inactive")] Inactive,
+
+  /// <summary>The certificate is pending deletion along with its custom hostname.</summary>
+  [EnumMember(Value = "pending_deletion")]
+  PendingDeletion,
+
+  /// <summary>The certificate deletion timed out.</summary>
+  [EnumMember(Value = "deletion_timed_out")]
+  DeletionTimedOut,
+
+  /// <summary>The certificate is pending cleanup after deletion.</summary>
+  [EnumMember(Value = "pending_cleanup")]
+  PendingCleanup,
 
   /// <summary>The certificate has been deleted.</summary>
   [EnumMember(Value = "deleted")] Deleted
