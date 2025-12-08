@@ -38,6 +38,18 @@ jobs:
         with:
           name: build-output-Debug
 
+      - name: Restore dependencies
+        # Restore is required even with --no-build so the test runner can locate packages
+        run: dotnet restore Cloudflare.NET.sln
+
+      - name: Verify build artifacts
+        # Debug step to verify artifacts are in the correct location
+        run: |
+          echo "=== Test project bin directories ==="
+          find tests -name "*.dll" -path "*/bin/Debug/*" | head -20
+          echo "=== Checking for test assemblies ==="
+          find . -name "*Tests.dll" -path "*/bin/*" | head -10
+
       - name: Run All Tests on Main/Develop Branch (Unit and Integration)
         # Runs the full test suite, including live integration tests.
         # This step REQUIRES the secrets to be configured in the repository.
