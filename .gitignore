@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+README-tests.md
 AGENTS.md
 CLAUDE.md
 .cursorignore
