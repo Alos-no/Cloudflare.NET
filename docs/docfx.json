@@ -1,0 +1,97 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/Cloudflare.NET/Cloudflare.NET.csproj",
+            "src/Cloudflare.NET.R2/Cloudflare.NET.R2.csproj",
+            "src/Cloudflare.NET.Analytics/Cloudflare.NET.Analytics.csproj"
+          ],
+          "src": ".."
+        }
+      ],
+      "dest": "api",
+      "includePrivateMembers": false,
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false,
+      "properties": {
+        "TargetFramework": "net9.0"
+      }
+    }
+  ],
+
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/index.md"
+        ]
+      },
+      {
+        "files": [
+          "articles/**.md",
+          "articles/**/toc.yml",
+          "toc.yml",
+          "*.md"
+        ],
+        "exclude": [
+          "Cloudflare.NET-*.md"
+        ]
+      }
+    ],
+
+    "resource": [
+      {
+        "files": [
+          "images/**",
+          "CNAME"
+        ]
+      }
+    ],
+
+    "template": [
+      "default",
+      "modern",
+      "template"
+    ],
+
+    "globalMetadata": {
+      "_appTitle": "Cloudflare.NET",
+      "_appName": "Cloudflare.NET",
+      "_appLogoPath": "images/logo.svg",
+      "_appFaviconPath": "images/favicon.ico",
+      "_enableSearch": true,
+      "_enableNewTab": true,
+      "_disableContribution": false,
+      "_gitContribute": {
+        "repo": "https://github.com/Alos-no/Cloudflare.NET",
+        "branch": "main",
+        "apiSpecFolder": "docs/api"
+      },
+      "_gitUrlPattern": "github",
+      "_appFooter": "Built and maintained by <a href=\"https://alos.no\" target=\"_blank\" rel=\"noopener\">Alos Engineering</a> · Licensed under <a href=\"https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt\" target=\"_blank\" rel=\"noopener\">Apache 2.0</a>"
+    },
+
+    "sitemap": {
+      "baseUrl": "https://cfnet.alos.no",
+      "priority": 0.5,
+      "changefreq": "weekly"
+    },
+
+    "markdownEngineProperties": {
+      "markdigExtensions": [
+        "attributes",
+        "customcontainers"
+      ]
+    },
+
+    "xref": [],
+
+    "dest": "_site",
+    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
+  }
+}

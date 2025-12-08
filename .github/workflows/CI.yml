@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+# Restrict default permissions for security
+permissions:
+  contents: read
+
+jobs:
+  # First, build the solution using the reusable workflow
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      configuration: Debug
+      upload_artifacts: true
+
+  # Then, run tests using the pre-built artifacts
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+          cache: true
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output-Debug
+
+      - name: Run All Tests on Main/Develop Branch (Unit and Integration)
+        # Runs the full test suite, including live integration tests.
+        # This step REQUIRES the secrets to be configured in the repository.
+        if: github.ref_name == 'main' || github.ref_name == 'develop'
+        run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal --logger trx --results-directory ./test-results
+        env:
+          # These secrets must be configured in the GitHub repository settings.
+          # The double underscore `__` is the standard convention for mapping
+          # environment variables to nested JSON configuration keys.
+          Cloudflare__ApiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          Cloudflare__AccountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          Cloudflare__ZoneId: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          Cloudflare__BaseDomain: ${{ secrets.CLOUDFLARE_BASE_DOMAIN }}
+          R2__AccessKeyId: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2__SecretAccessKey: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+      - name: Run Unit Tests Only (Pull Requests)
+        # On pull requests from forks or non-protected branches, run only unit tests
+        # since integration test secrets are not available.
+        if: github.ref_name != 'main' && github.ref_name != 'develop'
+        run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal --filter "Category!=Integration" --logger trx --results-directory ./test-results
+
+      - name: Upload test results
+        # Upload test results even if tests fail for debugging purposes
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: ./test-results
+          retention-days: 7
