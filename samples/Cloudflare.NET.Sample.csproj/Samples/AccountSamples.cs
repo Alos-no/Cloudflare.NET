@@ -45,6 +45,9 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
     // 4. R2 CORS Configuration
     await RunCorsConfigurationAsync(bucketName);
 
+    // 5. R2 Lifecycle Configuration
+    await RunLifecycleConfigurationAsync(bucketName);
+
     return cleanupActions;
   }
 
@@ -146,6 +149,101 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
     logger.LogInformation("Deleting CORS policy from bucket {BucketName}", bucketName);
     await cf.Accounts.DeleteBucketCorsAsync(bucketName);
     logger.LogInformation("CORS policy deleted successfully");
+  }
+
+  private async Task RunLifecycleConfigurationAsync(string bucketName)
+  {
+    logger.LogInformation("--- Running Lifecycle Configuration for bucket {BucketName} ---", bucketName);
+
+    // 1. Set Lifecycle Policy with multiple rules demonstrating all capabilities
+    logger.LogInformation("Setting lifecycle policy for bucket {BucketName}", bucketName);
+    var lifecyclePolicy = new BucketLifecyclePolicy(
+      new[]
+      {
+        // Rule to delete old log files after 90 days
+        new LifecycleRule(
+          Id: "Delete old logs",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions("logs/"),
+          DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90))
+        ),
+        // Rule to abort incomplete multipart uploads after 7 days
+        new LifecycleRule(
+          Id: "Cleanup incomplete uploads",
+          Enabled: true,
+          AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7))
+        ),
+        // Rule to transition archived data to Infrequent Access storage class after 30 days
+        new LifecycleRule(
+          Id: "Archive to Infrequent Access",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions("archive/"),
+          StorageClassTransitions: new[]
+          {
+            new StorageClassTransition(LifecycleCondition.AfterDays(30), R2StorageClass.InfrequentAccess)
+          }
+        ),
+        // Combined rule: transition to IA then delete (for temp files)
+        new LifecycleRule(
+          Id: "Temp file lifecycle",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions("temp/"),
+          StorageClassTransitions: new[]
+          {
+            new StorageClassTransition(LifecycleCondition.AfterDays(14), R2StorageClass.InfrequentAccess)
+          },
+          DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(60))
+        )
+      }
+    );
+
+    await cf.Accounts.SetBucketLifecycleAsync(bucketName, lifecyclePolicy);
+    logger.LogInformation("Lifecycle policy set successfully with {RuleCount} rules", lifecyclePolicy.Rules.Count);
+
+    // 2. Get Lifecycle Policy
+    logger.LogInformation("Retrieving lifecycle policy for bucket {BucketName}", bucketName);
+    var retrievedPolicy = await cf.Accounts.GetBucketLifecycleAsync(bucketName);
+    logger.LogInformation("Retrieved lifecycle policy with {RuleCount} rules:", retrievedPolicy.Rules.Count);
+
+    foreach (var rule in retrievedPolicy.Rules)
+    {
+      logger.LogInformation("  Rule: {Id} (Enabled: {Enabled})", rule.Id ?? "Unnamed", rule.Enabled);
+
+      if (rule.Conditions?.Prefix != null)
+        logger.LogInformation("    Prefix filter: {Prefix}", rule.Conditions.Prefix);
+
+      if (rule.DeleteObjectsTransition != null)
+        logger.LogInformation("    Delete after: {Days} days", rule.DeleteObjectsTransition.Condition.MaxAge);
+
+      if (rule.AbortMultipartUploadsTransition != null)
+        logger.LogInformation("    Abort multipart after: {Days} days", rule.AbortMultipartUploadsTransition.Condition.MaxAge);
+
+      if (rule.StorageClassTransitions != null)
+        foreach (var transition in rule.StorageClassTransitions)
+          logger.LogInformation("    Transition to {StorageClass} after: {Days} days", transition.StorageClass, transition.Condition.MaxAge);
+    }
+
+    // 3. Update Lifecycle Policy (simpler configuration)
+    logger.LogInformation("Updating lifecycle policy to a simpler configuration");
+    var simpleLifecyclePolicy = new BucketLifecyclePolicy(
+      new[]
+      {
+        // Single rule: delete all objects after 365 days
+        new LifecycleRule(
+          Id: "Annual cleanup",
+          Enabled: true,
+          DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(365))
+        )
+      }
+    );
+
+    await cf.Accounts.SetBucketLifecycleAsync(bucketName, simpleLifecyclePolicy);
+    logger.LogInformation("Lifecycle policy updated to annual cleanup rule");
+
+    // 4. Delete Lifecycle Policy
+    logger.LogInformation("Deleting lifecycle policy from bucket {BucketName}", bucketName);
+    await cf.Accounts.DeleteBucketLifecycleAsync(bucketName);
+    logger.LogInformation("Lifecycle policy deleted successfully");
   }
 
   #endregion

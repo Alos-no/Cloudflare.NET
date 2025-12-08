@@ -304,5 +304,151 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
   }
 
+  /// <summary>Tests the full lifecycle of object lifecycle rules: set, get, update, and delete.</summary>
+  /// <remarks>
+  ///   This test verifies all three lifecycle rule types:
+  ///   - DeleteObjectsTransition: Delete objects after a certain age
+  ///   - AbortMultipartUploadsTransition: Abort incomplete multipart uploads after a certain age
+  ///   - StorageClassTransitions: Transition objects to Infrequent Access storage class
+  /// </remarks>
+  [IntegrationTest]
+  public async Task CanManageLifecycleRulesLifecycle()
+  {
+    // Arrange - Create a comprehensive lifecycle policy with all three rule types
+    var lifecyclePolicy = new BucketLifecyclePolicy(
+      new[]
+      {
+        // Rule to delete old logs after 90 days
+        new LifecycleRule(
+          Id: "Delete old logs",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions("logs/"),
+          DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90))
+        ),
+        // Rule to abort incomplete multipart uploads after 7 days
+        new LifecycleRule(
+          Id: "Cleanup multipart uploads",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions(),
+          AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7))
+        ),
+        // Rule to transition to Infrequent Access after 30 days
+        new LifecycleRule(
+          Id: "Archive old data",
+          Enabled: true,
+          Conditions: new LifecycleRuleConditions("archive/"),
+          StorageClassTransitions: new[]
+          {
+            new StorageClassTransition(LifecycleCondition.AfterDays(30), R2StorageClass.InfrequentAccess)
+          }
+        )
+      }
+    );
+
+    try
+    {
+      // Act & Assert
+
+      // 1. Set Lifecycle Policy
+      var setAction = async () => await _sut.SetBucketLifecycleAsync(_bucketName, lifecyclePolicy);
+      await setAction.Should().NotThrowAsync("setting lifecycle policy should succeed");
+
+      // 2. Get Lifecycle Policy and verify it matches
+      var retrievedPolicy = await _sut.GetBucketLifecycleAsync(_bucketName);
+      retrievedPolicy.Should().NotBeNull();
+      retrievedPolicy.Rules.Should().HaveCount(3);
+
+      // Verify the delete objects rule
+      var deleteRule = retrievedPolicy.Rules.FirstOrDefault(r => r.Id == "Delete old logs");
+      deleteRule.Should().NotBeNull("the delete logs rule should exist");
+      deleteRule!.Enabled.Should().BeTrue();
+      deleteRule.Conditions?.Prefix.Should().Be("logs/");
+      deleteRule.DeleteObjectsTransition.Should().NotBeNull();
+      deleteRule.DeleteObjectsTransition!.Condition.Type.Should().Be(LifecycleConditionType.Age);
+      deleteRule.DeleteObjectsTransition.Condition.MaxAge.Should().Be(90 * 86400); // 90 days in seconds
+
+      // Verify the abort multipart uploads rule
+      var abortRule = retrievedPolicy.Rules.FirstOrDefault(r => r.Id == "Cleanup multipart uploads");
+      abortRule.Should().NotBeNull("the abort multipart rule should exist");
+      abortRule!.Enabled.Should().BeTrue();
+      abortRule.AbortMultipartUploadsTransition.Should().NotBeNull();
+      abortRule.AbortMultipartUploadsTransition!.Condition.Type.Should().Be(LifecycleConditionType.Age);
+      abortRule.AbortMultipartUploadsTransition.Condition.MaxAge.Should().Be(7 * 86400); // 7 days in seconds
+
+      // Verify the storage class transition rule
+      var archiveRule = retrievedPolicy.Rules.FirstOrDefault(r => r.Id == "Archive old data");
+      archiveRule.Should().NotBeNull("the archive rule should exist");
+      archiveRule!.Enabled.Should().BeTrue();
+      archiveRule.Conditions?.Prefix.Should().Be("archive/");
+      archiveRule.StorageClassTransitions.Should().HaveCount(1);
+      archiveRule.StorageClassTransitions![0].StorageClass.Should().Be(R2StorageClass.InfrequentAccess);
+      archiveRule.StorageClassTransitions[0].Condition.Type.Should().Be(LifecycleConditionType.Age);
+      archiveRule.StorageClassTransitions[0].Condition.MaxAge.Should().Be(30 * 86400); // 30 days in seconds
+
+      // 3. Update Lifecycle Policy with a different configuration
+      var updatedPolicy = new BucketLifecyclePolicy(
+        new[]
+        {
+          new LifecycleRule(
+            Id: "Delete old logs - updated",
+            Enabled: true,
+            Conditions: new LifecycleRuleConditions("logs/v2/"),
+            DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(365))
+          )
+        }
+      );
+
+      await _sut.SetBucketLifecycleAsync(_bucketName, updatedPolicy);
+
+      // 4. Verify the update replaced all rules
+      var verifyUpdatedPolicy = await _sut.GetBucketLifecycleAsync(_bucketName);
+      verifyUpdatedPolicy.Rules.Should().HaveCount(1);
+      verifyUpdatedPolicy.Rules[0].Id.Should().Be("Delete old logs - updated");
+      verifyUpdatedPolicy.Rules[0].Conditions?.Prefix.Should().Be("logs/v2/");
+      verifyUpdatedPolicy.Rules[0].DeleteObjectsTransition!.Condition.MaxAge.Should().Be(365 * 86400); // 365 days in seconds
+    }
+    finally
+    {
+      // 5. Delete Lifecycle Policy (Cleanup)
+      var deleteAction = async () => await _sut.DeleteBucketLifecycleAsync(_bucketName);
+      await deleteAction.Should().NotThrowAsync("the lifecycle policy should be cleaned up successfully");
+    }
+  }
+
+  /// <summary>Verifies that getting lifecycle from a new bucket returns the default lifecycle policy.</summary>
+  /// <remarks>
+  ///   R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts
+  ///   incomplete multipart uploads after 7 days (604800 seconds).
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetBucketLifecycleAsync_ReturnsDefaultPolicyForNewBucket()
+  {
+    // Arrange - Create a fresh bucket
+    var bucketName = $"cfnet-nolifecycle-bucket-{Guid.NewGuid():N}";
+    await _sut.CreateR2BucketAsync(bucketName);
+
+    try
+    {
+      // Act
+      var result = await _sut.GetBucketLifecycleAsync(bucketName);
+
+      // Assert - R2 automatically creates a default multipart abort rule for new buckets
+      result.Should().NotBeNull();
+      result.Rules.Should().HaveCount(1);
+
+      var defaultRule = result.Rules[0];
+      defaultRule.Id.Should().Be("Default Multipart Abort Rule");
+      defaultRule.Enabled.Should().BeTrue();
+      defaultRule.AbortMultipartUploadsTransition.Should().NotBeNull();
+      defaultRule.AbortMultipartUploadsTransition!.Condition.Type.Should().Be(LifecycleConditionType.Age);
+      defaultRule.AbortMultipartUploadsTransition.Condition.MaxAge.Should().Be(7 * 86400); // 7 days in seconds
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DeleteR2BucketAsync(bucketName);
+    }
+  }
+
   #endregion
 }

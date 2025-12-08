@@ -113,4 +113,46 @@ public interface IAccountsApi
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/delete/" />
   Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default);
+
+  /// <summary>Gets the lifecycle policy for an R2 bucket.</summary>
+  /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>
+  ///   A task that represents the asynchronous operation. The task result contains the
+  ///   <see cref="BucketLifecyclePolicy" /> with the current lifecycle rules.
+  /// </returns>
+  /// <remarks>
+  ///   Lifecycle rules determine object retention, automatic deletion, storage class transitions,
+  ///   and cleanup of incomplete multipart uploads. A bucket can have up to 1000 lifecycle rules.
+  /// </remarks>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/get/" />
+  Task<BucketLifecyclePolicy> GetBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default);
+
+  /// <summary>Sets or updates the lifecycle policy for an R2 bucket.</summary>
+  /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="lifecyclePolicy">The lifecycle policy to apply to the bucket.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A task that represents the asynchronous operation.</returns>
+  /// <remarks>
+  ///   <para>Lifecycle rules can perform the following actions:</para>
+  ///   <list type="bullet">
+  ///     <item><description>Delete objects after a specified age or on a specific date</description></item>
+  ///     <item><description>Abort incomplete multipart uploads after a specified age</description></item>
+  ///     <item><description>Transition objects to Infrequent Access storage class</description></item>
+  ///   </list>
+  ///   <para>Rules are processed within 24 hours of being set. Maximum of 1000 rules per bucket.</para>
+  /// </remarks>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/update/" />
+  Task SetBucketLifecycleAsync(string bucketName, BucketLifecyclePolicy lifecyclePolicy, CancellationToken cancellationToken = default);
+
+  /// <summary>Deletes the lifecycle policy for an R2 bucket, removing all lifecycle rules.</summary>
+  /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A task that represents the asynchronous operation.</returns>
+  /// <remarks>
+  ///   Cloudflare R2 does not have a dedicated DELETE endpoint for lifecycle policies.
+  ///   This method removes the policy by setting an empty rules array.
+  /// </remarks>
+  /// <seealso href="https://developers.cloudflare.com/r2/buckets/object-lifecycles/" />
+  Task DeleteBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default);
 }
