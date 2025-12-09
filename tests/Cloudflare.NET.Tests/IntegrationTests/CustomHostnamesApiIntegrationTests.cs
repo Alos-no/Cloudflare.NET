@@ -20,8 +20,8 @@ using Zones.CustomHostnames.Models;
 ///   </para>
 ///   <para>
 ///     <strong>Test Isolation:</strong> Each test creates unique hostnames using GUIDs to avoid collisions between
-///     concurrent test runs. Tests are grouped in a collection to run sequentially, preventing race conditions
-///     during pagination when other tests' cleanup deletes hostnames mid-iteration.
+///     concurrent test runs. Tests are grouped in a collection to run sequentially, preventing race conditions during
+///     pagination when other tests' cleanup deletes hostnames mid-iteration.
 ///   </para>
 /// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
@@ -433,22 +433,38 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
       // We don't use the hostname filter because Cloudflare validates it as a hostname
       // and our test prefix ends with '-' which is invalid. Instead, we filter client-side
       // for hostnames from this specific test run (matching the unique shortGuid).
+      // Note: The SDK's ListAllAsync method handles deduplication internally, so we can
+      // safely use a simple list here.
       var filters      = new ListCustomHostnamesFilters { PerPage = 2 };
       var allHostnames = new List<CustomHostname>();
 
-      await foreach (var hostname in _sut.ListAllAsync(_zoneId, filters))
+      // Retry listing until we find all expected hostnames or timeout.
+      // Cloudflare's listing API may not immediately reflect newly created hostnames.
+      const int maxRetries = 10;
+
+      for (var attempt = 0; attempt < maxRetries; attempt++)
       {
-        // Only include hostnames from this specific test run (matching the shortGuid).
-        if (hostname.Hostname.Contains(shortGuid))
+        allHostnames.Clear();
+
+        await foreach (var hostname in _sut.ListAllAsync(_zoneId, filters))
         {
-          allHostnames.Add(hostname);
+          // Only include hostnames from this specific test run (matching the shortGuid).
+          if (hostname.Hostname.Contains(shortGuid))
+          {
+            allHostnames.Add(hostname);
+          }
         }
+
+        if (allHostnames.Count >= hostnamesToCreate)
+          break;
+
+        await Task.Delay(TimeSpan.FromSeconds(1));
       }
 
       // Assert: All created hostnames should be present.
-      allHostnames.Should().HaveCount(hostnamesToCreate);
-      var allIds = allHostnames.Select(h => h.Id).ToList();
-      allIds.Should().BeEquivalentTo(createdIds);
+      allHostnames.Should().HaveCount(hostnamesToCreate,
+                                      $"expected all {hostnamesToCreate} hostnames to be found after {maxRetries} retries");
+      allHostnames.Select(h => h.Id).Should().BeEquivalentTo(createdIds);
     }
     finally
     {

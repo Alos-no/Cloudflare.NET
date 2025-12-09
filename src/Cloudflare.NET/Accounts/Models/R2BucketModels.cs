@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Core.Json;
 
-
 #region Bucket Models
 
 /// <summary>Defines the request payload for creating an R2 bucket.</summary>
@@ -52,7 +51,6 @@ public record ListR2BucketsResponse(
 
 #endregion
 
-
 #region CORS Models
 
 /// <summary>Defines the allowed HTTP methods, origins, and headers for a CORS rule.</summary>
@@ -93,7 +91,6 @@ public record BucketCorsPolicy(
 
 #endregion
 
-
 #region Lifecycle Models
 
 /// <summary>Defines the condition type for lifecycle rule transitions.</summary>
@@ -101,12 +98,10 @@ public record BucketCorsPolicy(
 public enum LifecycleConditionType
 {
   /// <summary>Condition based on object age in days.</summary>
-  [EnumMember(Value = "Age")]
-  Age,
+  [EnumMember(Value = "Age")] Age,
 
   /// <summary>Condition based on a specific date.</summary>
-  [EnumMember(Value = "Date")]
-  Date
+  [EnumMember(Value = "Date")] Date
 }
 
 /// <summary>Represents a condition that triggers a lifecycle transition.</summary>
@@ -129,13 +124,13 @@ public record LifecycleCondition(
   /// <param name="days">The number of days after object creation.</param>
   /// <returns>A new <see cref="LifecycleCondition" /> with Age type and MaxAge in seconds.</returns>
   public static LifecycleCondition AfterDays(int days) =>
-    new(LifecycleConditionType.Age, MaxAge: days * SecondsPerDay);
+    new(LifecycleConditionType.Age, days * SecondsPerDay);
 
   /// <summary>Creates an age-based lifecycle condition using seconds.</summary>
   /// <param name="seconds">The number of seconds after object creation.</param>
   /// <returns>A new <see cref="LifecycleCondition" /> with Age type and MaxAge in seconds.</returns>
   public static LifecycleCondition AfterSeconds(int seconds) =>
-    new(LifecycleConditionType.Age, MaxAge: seconds);
+    new(LifecycleConditionType.Age, seconds);
 
   /// <summary>Creates a date-based lifecycle condition.</summary>
   /// <param name="date">The date on which the transition should occur.</param>
@@ -145,7 +140,10 @@ public record LifecycleCondition(
 }
 
 /// <summary>Represents the filtering conditions for which objects a lifecycle rule applies to.</summary>
-/// <param name="Prefix">The object key prefix to filter objects. Only objects with keys starting with this prefix are affected.</param>
+/// <param name="Prefix">
+///   The object key prefix to filter objects. Only objects with keys starting with this prefix are
+///   affected.
+/// </param>
 public record LifecycleRuleConditions(
   [property: JsonPropertyName("prefix")]
   string? Prefix = null
@@ -168,11 +166,15 @@ public record DeleteObjectsTransition(
 /// <summary>Defines the available R2 storage classes for lifecycle transitions.</summary>
 public static class R2StorageClass
 {
+  #region Constants & Statics
+
   /// <summary>Standard storage class for frequently accessed data.</summary>
   public const string Standard = "Standard";
 
   /// <summary>Infrequent Access storage class for less frequently accessed data with lower storage costs.</summary>
   public const string InfrequentAccess = "InfrequentAccess";
+
+  #endregion
 }
 
 /// <summary>Represents a transition to change the storage class of objects.</summary>

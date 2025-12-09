@@ -96,8 +96,8 @@ public abstract class ApiResource
 
   /// <summary>Sends a POST request with a pre-serialized JSON string to the specified URI.</summary>
   /// <remarks>
-  ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case).
-  ///   The caller is responsible for serializing the payload to JSON.
+  ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case). The caller is
+  ///   responsible for serializing the payload to JSON.
   /// </remarks>
   /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
   /// <param name="requestUri">The URI to send the request to.</param>
@@ -108,7 +108,7 @@ public abstract class ApiResource
                                                        string            jsonContent,
                                                        CancellationToken cancellationToken = default)
   {
-    using var scope   = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
+    using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("POST", requestUri);
     var content  = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
     var response = await HttpClient.PostAsync(requestUri, content, cancellationToken);
@@ -117,8 +117,8 @@ public abstract class ApiResource
 
   /// <summary>Sends a PUT request with a pre-serialized JSON string to the specified URI.</summary>
   /// <remarks>
-  ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case).
-  ///   The caller is responsible for serializing the payload to JSON.
+  ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case). The caller is
+  ///   responsible for serializing the payload to JSON.
   /// </remarks>
   /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
   /// <param name="requestUri">The URI to send the request to.</param>
@@ -129,7 +129,7 @@ public abstract class ApiResource
                                                       string            jsonContent,
                                                       CancellationToken cancellationToken = default)
   {
-    using var scope   = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
+    using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("PUT", requestUri);
     var content  = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
     var response = await HttpClient.PutAsync(requestUri, content, cancellationToken);

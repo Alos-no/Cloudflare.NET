@@ -1,5 +1,6 @@
 namespace Cloudflare.NET.Zones.CustomHostnames;
 
+using System.Runtime.CompilerServices;
 using Core;
 using Core.Models;
 using Microsoft.Extensions.Logging;
@@ -64,9 +65,10 @@ public class CustomHostnamesApi(HttpClient httpClient, ILoggerFactory loggerFact
   }
 
   /// <inheritdoc />
-  public IAsyncEnumerable<CustomHostname> ListAllAsync(string                      zoneId,
-                                                       ListCustomHostnamesFilters? filters           = null,
-                                                       CancellationToken           cancellationToken = default)
+  public async IAsyncEnumerable<CustomHostname> ListAllAsync(
+    string                                     zoneId,
+    ListCustomHostnamesFilters?                filters           = null,
+    [EnumeratorCancellation] CancellationToken cancellationToken = default)
   {
     // Create a new filter object for the query builder, ensuring pagination parameters are not included.
     var listFilters = filters is not null
@@ -76,8 +78,16 @@ public class CustomHostnamesApi(HttpClient httpClient, ILoggerFactory loggerFact
     var queryString = CustomHostnameQueryBuilder.Build(listFilters);
     var endpoint    = $"zones/{zoneId}/custom_hostnames{queryString}";
 
+    // Track seen IDs to deduplicate. Cloudflare's pagination can return the same item
+    // on multiple pages when data is being modified concurrently.
+    var seenIds = new HashSet<string>();
+
     // Use the base class helper to handle the pagination loop, passing the original per_page value.
-    return GetPaginatedAsync<CustomHostname>(endpoint, filters?.PerPage, cancellationToken);
+    // We wrap the enumeration to deduplicate by ID before yielding.
+    await foreach (var hostname in GetPaginatedAsync<CustomHostname>(endpoint, filters?.PerPage, cancellationToken))
+      // Only yield items we haven't seen before.
+      if (seenIds.Add(hostname.Id))
+        yield return hostname;
   }
 
   /// <inheritdoc />

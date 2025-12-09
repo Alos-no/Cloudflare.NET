@@ -73,7 +73,8 @@
         "apiSpecFolder": "docs/api"
       },
       "_gitUrlPattern": "github",
-      "_appFooter": "Built and maintained by <a href=\"https://alos.no\" target=\"_blank\" rel=\"noopener\">Alos Engineering</a> · Licensed under <a href=\"https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt\" target=\"_blank\" rel=\"noopener\">Apache 2.0</a>"
+      "_appFooter": "Built and maintained by <a href=\"https://alos.no\" target=\"_blank\" rel=\"noopener\">Alos Engineering</a> · Licensed under <a href=\"https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt\" target=\"_blank\" rel=\"noopener\">Apache 2.0</a>",
+      "_googleAnalyticsTagId": "G-J3X1J125E2"
     },
 
     "sitemap": {

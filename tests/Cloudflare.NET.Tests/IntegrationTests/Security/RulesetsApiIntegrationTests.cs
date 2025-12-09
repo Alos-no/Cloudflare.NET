@@ -1,7 +1,6 @@
 ﻿namespace Cloudflare.NET.Tests.IntegrationTests.Security;
 
 using System.Net;
-using Cloudflare.NET.Tests.IntegrationTests;
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using NET.Security;
@@ -11,9 +10,9 @@ using Shared.Helpers;
 using Xunit.Abstractions;
 
 /// <summary>
-///   Contains integration tests for zone and account rulesets APIs (WAF custom rules, managed rules).
-///   Tests are grouped in a collection to run sequentially, preventing version conflicts when multiple
-///   tests modify the same phase entrypoint concurrently.
+///   Contains integration tests for zone and account rulesets APIs (WAF custom rules, managed rules). Tests are
+///   grouped in a collection to run sequentially, preventing version conflicts when multiple tests modify the same phase
+///   entrypoint concurrently.
 /// </summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
 [Collection(TestCollections.ZoneRulesets)]
@@ -133,8 +132,8 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   }
 
   /// <summary>
-  ///   Gets the original rules for a phase, filtering out any existing execute rule for the specified managed ruleset.
-  ///   This serves as pre-cleanup to avoid duplicate managed ruleset errors.
+  ///   Gets the original rules for a phase, filtering out any existing execute rule for the specified managed
+  ///   ruleset. This serves as pre-cleanup to avoid duplicate managed ruleset errors.
   /// </summary>
   /// <param name="zoneId">The zone ID.</param>
   /// <param name="phase">The ruleset phase.</param>
@@ -165,20 +164,18 @@ public class RulesetsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
                                    return actionParams?.Id != managedRulesetId; // Keep rules that don't target this managed ruleset
                                  })
                                  .Select(r => new CreateRuleRequest(
-                                   r.Action,
-                                   r.Expression,
-                                   r.Description,
-                                   r.Enabled,
-                                   r.ActionParameters,
-                                   r.Logging,
-                                   r.Ratelimit))
+                                           r.Action,
+                                           r.Expression,
+                                           r.Description,
+                                           r.Enabled,
+                                           r.ActionParameters,
+                                           r.Logging,
+                                           r.Ratelimit))
                                  .ToList();
 
       // If we filtered out any rules, update the entrypoint to remove the stale managed ruleset rule.
       if (filteredRules.Count < ruleset.Rules.Count)
-      {
         await _sut.Zones.Rulesets.UpdatePhaseEntrypointAsync(zoneId, phase, filteredRules);
-      }
 
       return filteredRules;
     }

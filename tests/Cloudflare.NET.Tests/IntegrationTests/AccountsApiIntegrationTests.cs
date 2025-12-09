@@ -140,14 +140,12 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     R2Bucket? testBucket = null;
 
     await foreach (var bucket in _sut.ListAllR2BucketsAsync())
-    {
       if (bucket.Name == _bucketName)
       {
         testBucket = bucket;
 
         break;
       }
-    }
 
     // Assert
     testBucket.Should().NotBeNull("the bucket created in InitializeAsync should be found in the list");
@@ -222,13 +220,13 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       {
         new CorsRule(
           new CorsAllowed(
-            Methods: new[] { "GET", "PUT", "POST" },
-            Origins: new[] { "https://example.com", "https://app.example.com" },
-            Headers: new[] { "Content-Type", "Authorization" }
+            new[] { "GET", "PUT", "POST" },
+            new[] { "https://example.com", "https://app.example.com" },
+            new[] { "Content-Type", "Authorization" }
           ),
-          Id: "Integration Test Rule",
-          ExposeHeaders: new[] { "ETag", "Content-Length" },
-          MaxAgeSeconds: 3600
+          "Integration Test Rule",
+          new[] { "ETag", "Content-Length" },
+          3600
         )
       }
     );
@@ -260,11 +258,11 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
         {
           new CorsRule(
             new CorsAllowed(
-              Methods: new[] { "GET" },
-              Origins: new[] { "*" },
-              Headers: null
+              new[] { "GET" },
+              new[] { "*" },
+              null
             ),
-            Id: "Updated Rule",
+            "Updated Rule",
             MaxAgeSeconds: 86400
           )
         }
@@ -314,10 +312,9 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
 
   /// <summary>Tests the full lifecycle of object lifecycle rules: set, get, update, and delete.</summary>
   /// <remarks>
-  ///   This test verifies all three lifecycle rule types:
-  ///   - DeleteObjectsTransition: Delete objects after a certain age
-  ///   - AbortMultipartUploadsTransition: Abort incomplete multipart uploads after a certain age
-  ///   - StorageClassTransitions: Transition objects to Infrequent Access storage class
+  ///   This test verifies all three lifecycle rule types: - DeleteObjectsTransition: Delete objects after a certain
+  ///   age - AbortMultipartUploadsTransition: Abort incomplete multipart uploads after a certain age -
+  ///   StorageClassTransitions: Transition objects to Infrequent Access storage class
   /// </remarks>
   [IntegrationTest]
   public async Task CanManageLifecycleRulesLifecycle()
@@ -328,23 +325,23 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       {
         // Rule to delete old logs after 90 days
         new LifecycleRule(
-          Id: "Delete old logs",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions("logs/"),
+          "Delete old logs",
+          true,
+          new LifecycleRuleConditions("logs/"),
           DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(90))
         ),
         // Rule to abort incomplete multipart uploads after 7 days
         new LifecycleRule(
-          Id: "Cleanup multipart uploads",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions(),
-          AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7))
+          "Cleanup multipart uploads",
+          true,
+          new LifecycleRuleConditions(),
+          new AbortMultipartUploadsTransition(LifecycleCondition.AfterDays(7))
         ),
         // Rule to transition to Infrequent Access after 30 days
         new LifecycleRule(
-          Id: "Archive old data",
-          Enabled: true,
-          Conditions: new LifecycleRuleConditions("archive/"),
+          "Archive old data",
+          true,
+          new LifecycleRuleConditions("archive/"),
           StorageClassTransitions: new[]
           {
             new StorageClassTransition(LifecycleCondition.AfterDays(30), R2StorageClass.InfrequentAccess)
@@ -398,9 +395,9 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
         new[]
         {
           new LifecycleRule(
-            Id: "Delete old logs - updated",
-            Enabled: true,
-            Conditions: new LifecycleRuleConditions("logs/v2/"),
+            "Delete old logs - updated",
+            true,
+            new LifecycleRuleConditions("logs/v2/"),
             DeleteObjectsTransition: new DeleteObjectsTransition(LifecycleCondition.AfterDays(365))
           )
         }
@@ -425,8 +422,8 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
 
   /// <summary>Verifies that getting lifecycle from a new bucket returns the default lifecycle policy.</summary>
   /// <remarks>
-  ///   R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts
-  ///   incomplete multipart uploads after 7 days (604800 seconds).
+  ///   R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts incomplete multipart
+  ///   uploads after 7 days (604800 seconds).
   /// </remarks>
   [IntegrationTest]
   public async Task GetBucketLifecycleAsync_ReturnsDefaultPolicyForNewBucket()

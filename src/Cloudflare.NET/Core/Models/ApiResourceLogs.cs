@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 internal static partial class ApiResourceLogs
 {
 #if NET6_0_OR_GREATER
+
   #region Source-Generated Logging (NET6+)
 
   [LoggerMessage(
@@ -67,7 +68,6 @@ internal static partial class ApiResourceLogs
   #endregion
 
 #else
-
   #region Manual Logging (NetStandard2.1)
 
   public static void SendingRequest(this ILogger logger, string method, string requestUri)

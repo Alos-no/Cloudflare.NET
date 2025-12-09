@@ -119,8 +119,7 @@ public enum SslStatus
   StagingDeployment,
 
   /// <summary>The certificate is active in staging environment.</summary>
-  [EnumMember(Value = "staging_active")]
-  StagingActive,
+  [EnumMember(Value = "staging_active")] StagingActive,
 
   /// <summary>The certificate deployment is being held.</summary>
   [EnumMember(Value = "holding_deployment")]
@@ -134,8 +133,7 @@ public enum SslStatus
   [EnumMember(Value = "active")] Active,
 
   /// <summary>A backup certificate has been issued.</summary>
-  [EnumMember(Value = "backup_issued")]
-  BackupIssued,
+  [EnumMember(Value = "backup_issued")] BackupIssued,
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Expiration States
@@ -153,8 +151,7 @@ public enum SslStatus
   // ─────────────────────────────────────────────────────────────────────────────
 
   /// <summary>The certificate is being deactivated.</summary>
-  [EnumMember(Value = "deactivating")]
-  Deactivating,
+  [EnumMember(Value = "deactivating")] Deactivating,
 
   /// <summary>The certificate is inactive.</summary>
   [EnumMember(Value = "inactive")] Inactive,
