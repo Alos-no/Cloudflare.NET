@@ -1,6 +1,7 @@
 namespace Cloudflare.NET.Tests.IntegrationTests;
 
 using System.Net;
+using Core.Models;
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Fixtures;
@@ -395,12 +396,24 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
     // Filter by the exact hostname.
     var filters = new ListCustomHostnamesFilters { Hostname = _testHostname };
 
-    // Act
-    var result = await _sut.ListAsync(_zoneId, filters);
+    // Act - Retry to handle eventual consistency. The Cloudflare listing API
+    // may not immediately reflect newly created hostnames.
+    const int maxRetries = 10;
+    PagePaginatedResult<CustomHostname>? result = null;
+
+    for (var attempt = 0; attempt < maxRetries; attempt++)
+    {
+      result = await _sut.ListAsync(_zoneId, filters);
+
+      if (result.Items.Count >= 1)
+        break;
+
+      await Task.Delay(TimeSpan.FromSeconds(1));
+    }
 
     // Assert
     result.Should().NotBeNull();
-    result.Items.Should().HaveCount(1);
+    result!.Items.Should().HaveCount(1, $"expected 1 hostname after {maxRetries} retries for eventual consistency");
     result.Items[0].Id.Should().Be(_customHostnameId);
     result.Items[0].Hostname.Should().Be(_testHostname);
   }
