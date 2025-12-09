@@ -16,6 +16,8 @@ public class BucketService(ICloudflareApiClient cf)
 
 ## Creating Buckets
 
+### Basic Creation
+
 ```csharp
 var bucket = await cf.Accounts.CreateR2BucketAsync("my-new-bucket");
 
@@ -23,6 +25,47 @@ Console.WriteLine($"Name: {bucket.Name}");
 Console.WriteLine($"Created: {bucket.CreationDate}");
 Console.WriteLine($"Location: {bucket.Location}");
 Console.WriteLine($"Storage Class: {bucket.StorageClass}");
+```
+
+### With Location Hint
+
+Suggest a geographic region for bucket placement using [extensible enums](#r2locationhint-extensible-enum):
+
+```csharp
+// Create bucket in Western Europe
+var bucket = await cf.Accounts.CreateR2BucketAsync(
+    "eu-data-bucket",
+    R2LocationHint.WestEurope
+);
+```
+
+### With Jurisdiction (Data Residency)
+
+Enforce data residency within a specific boundary:
+
+```csharp
+// Create EU-jurisdictional bucket for GDPR compliance
+var bucket = await cf.Accounts.CreateR2BucketAsync(
+    "gdpr-compliant-bucket",
+    locationHint: R2LocationHint.WestEurope,
+    jurisdiction: R2Jurisdiction.EuropeanUnion
+);
+
+// Access via jurisdictional S3 endpoint:
+// https://{account_id}.eu.r2.cloudflarestorage.com
+```
+
+### With Storage Class
+
+Set the default storage class for new objects:
+
+```csharp
+// Create bucket optimized for infrequent access
+var bucket = await cf.Accounts.CreateR2BucketAsync(
+    "archive-bucket",
+    locationHint: R2LocationHint.EastNorthAmerica,
+    storageClass: R2StorageClass.InfrequentAccess
+);
 ```
 
 ### Bucket Naming Rules
@@ -95,9 +138,68 @@ await cf.Accounts.DisableDevUrlAsync("my-bucket");
 |----------|------|-------------|
 | `Name` | `string` | Bucket name |
 | `CreationDate` | `DateTime` | When the bucket was created |
-| `Location` | `string?` | Location hint (e.g., `wnam`, `enam`, `weur`, `eeur`, `apac`) |
-| `Jurisdiction` | `string?` | Data jurisdiction (e.g., `eu`) |
-| `StorageClass` | `string?` | Storage class (`Standard` or `InfrequentAccess`) |
+| `Location` | `R2LocationHint?` | Location hint for bucket placement |
+| `Jurisdiction` | `R2Jurisdiction?` | Data residency jurisdiction |
+| `StorageClass` | `R2StorageClass?` | Default storage class for new objects |
+
+### R2LocationHint (Extensible Enum)
+
+Location hints suggest where bucket data should be stored. These are **extensible enums** that provide IntelliSense for known values while allowing custom values for new regions.
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `WestNorthAmerica` | `wnam` | Western North America |
+| `EastNorthAmerica` | `enam` | Eastern North America |
+| `WestEurope` | `weur` | Western Europe |
+| `EastEurope` | `eeur` | Eastern Europe |
+| `AsiaPacific` | `apac` | Asia-Pacific region |
+| `Oceania` | `oc` | Australia & New Zealand |
+
+```csharp
+// Using known values with IntelliSense
+var location = R2LocationHint.EastNorthAmerica;
+
+// Using custom values for new regions
+R2LocationHint customRegion = "new-region-2025";
+
+// Comparison
+if (bucket.Location == R2LocationHint.WestEurope) { ... }
+```
+
+### R2Jurisdiction (Extensible Enum)
+
+Jurisdictions guarantee data residency within specific geographic or regulatory boundaries.
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `Default` | `default` | No restriction (global) |
+| `EuropeanUnion` | `eu` | EU data residency (GDPR compliance) |
+| `FedRamp` | `fedramp` | US federal compliance (Enterprise only) |
+
+```csharp
+// EU jurisdiction for GDPR compliance
+var jurisdiction = R2Jurisdiction.EuropeanUnion;
+
+// S3 endpoint for jurisdictional buckets:
+// https://{account_id}.eu.r2.cloudflarestorage.com
+```
+
+### R2StorageClass (Extensible Enum)
+
+Storage classes determine cost and access characteristics.
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `Standard` | `Standard` | Frequently accessed data (default) |
+| `InfrequentAccess` | `InfrequentAccess` | Lower cost, retrieval fees apply |
+
+```csharp
+// Using in lifecycle transitions
+new StorageClassTransition(
+    LifecycleCondition.AfterDays(30),
+    R2StorageClass.InfrequentAccess
+);
+```
 
 ### ListR2BucketsFilters
 

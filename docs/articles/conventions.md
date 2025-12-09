@@ -221,6 +221,72 @@ catch (HttpRequestException ex)
 }
 ```
 
+## Extensible Enums
+
+The SDK uses **extensible enums** for values that may be extended by Cloudflare in the future. This pattern provides:
+
+- **Strong typing** with IntelliSense for known values
+- **Forward compatibility** by accepting unknown string values
+- **Graceful degradation** when new API values are returned
+
+### Usage
+
+Extensible enums can be used like regular enums with static properties:
+
+```csharp
+// Use predefined constants with IntelliSense
+var location = R2LocationHint.EastNorthAmerica;
+var jurisdiction = R2Jurisdiction.EuropeanUnion;
+var storageClass = R2StorageClass.InfrequentAccess;
+```
+
+They also support implicit conversion from strings for custom or new values:
+
+```csharp
+// Future-proof: accept values not yet defined in SDK
+R2LocationHint futureRegion = "new-region-2025";
+R2Jurisdiction customJurisdiction = "custom-jurisdiction";
+```
+
+### Comparison
+
+Extensible enums support equality comparison:
+
+```csharp
+if (bucket.Location == R2LocationHint.WestEurope)
+{
+    Console.WriteLine("Bucket is in Western Europe");
+}
+
+// Pattern matching works too
+if (bucket.StorageClass is { } sc && sc == R2StorageClass.InfrequentAccess)
+{
+    Console.WriteLine("Using infrequent access storage");
+}
+```
+
+### Available Extensible Enums
+
+| Type | Purpose | Known Values |
+|------|---------|--------------|
+| `R2LocationHint` | Bucket placement hint | `wnam`, `enam`, `weur`, `eeur`, `apac`, `oc` |
+| `R2Jurisdiction` | Data residency | `default`, `eu`, `fedramp` |
+| `R2StorageClass` | Storage tier | `Standard`, `InfrequentAccess` |
+
+### Why Extensible Enums?
+
+Traditional C# enums would fail to deserialize when Cloudflare adds new values:
+
+```csharp
+// Traditional enum - BREAKS if API returns "new-value"
+public enum StorageClass { Standard, InfrequentAccess }
+
+// Extensible enum - gracefully handles unknown values
+R2StorageClass unknownClass = "new-storage-class-2025"; // Works!
+```
+
+This pattern is commonly used by cloud SDKs (Azure SDK, AWS SDK) to handle API evolution gracefully.
+
 ## Related
 
 - [Getting Started](getting-started.md) - Quick start guide

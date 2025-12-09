@@ -129,11 +129,25 @@ public class AccountsApi : ApiResource, IAccountsApi
   }
 
   /// <inheritdoc />
-  public async Task<R2Bucket> CreateR2BucketAsync(string bucketName, CancellationToken cancellationToken = default)
+  public async Task<R2Bucket> CreateR2BucketAsync(
+    string            bucketName,
+    R2LocationHint?   locationHint      = null,
+    R2Jurisdiction?   jurisdiction      = null,
+    R2StorageClass?   storageClass      = null,
+    CancellationToken cancellationToken = default)
   {
-    var requestBody = new CreateBucketRequest(bucketName);
+    var requestBody = new CreateBucketRequest(bucketName, locationHint, storageClass);
     var endpoint    = $"accounts/{_accountId}/r2/buckets";
-    return await PostAsync<R2Bucket>(endpoint, requestBody, cancellationToken);
+
+    // Jurisdiction must be passed as an HTTP header (cf-r2-jurisdiction) per Cloudflare API spec
+    IEnumerable<KeyValuePair<string, string>>? headers = null;
+
+    if (jurisdiction is { } j)
+    {
+      headers = [new KeyValuePair<string, string>("cf-r2-jurisdiction", j.Value)];
+    }
+
+    return await PostAsync<R2Bucket>(endpoint, requestBody, headers, cancellationToken);
   }
 
   /// <inheritdoc />

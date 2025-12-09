@@ -22,15 +22,32 @@ public interface IAccountsApi
   /// <remarks>Corresponds to the `/accounts/{account_id}/rulesets` endpoint family.</remarks>
   IAccountRulesetsApi Rulesets { get; }
 
-  /// <summary>Creates a new R2 bucket within the configured account.</summary>
+  /// <summary>Creates a new R2 bucket within the configured account with optional location and storage settings.</summary>
   /// <param name="bucketName">The desired name for the new bucket. Must be unique.</param>
+  /// <param name="locationHint">
+  ///   Optional location hint suggesting where the bucket's data should be stored.
+  ///   Use <see cref="R2LocationHint" /> constants (e.g., <see cref="R2LocationHint.EastNorthAmerica" />).
+  /// </param>
+  /// <param name="jurisdiction">
+  ///   Optional jurisdictional restriction guaranteeing data residency.
+  ///   Use <see cref="R2Jurisdiction" /> constants (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
+  /// <param name="storageClass">
+  ///   Optional default storage class for new objects.
+  ///   Use <see cref="R2StorageClass" /> constants (e.g., <see cref="R2StorageClass.InfrequentAccess" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the <see cref="R2Bucket" /> from
   ///   the Cloudflare API, detailing the created bucket.
   /// </returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/create/" />
-  Task<R2Bucket> CreateR2BucketAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task<R2Bucket> CreateR2BucketAsync(
+    string            bucketName,
+    R2LocationHint?   locationHint      = null,
+    R2Jurisdiction?   jurisdiction      = null,
+    R2StorageClass?   storageClass      = null,
+    CancellationToken cancellationToken = default);
 
   /// <summary>Lists R2 buckets in the account, allowing for manual pagination control.</summary>
   /// <param name="filters">Optional filters for pagination.</param>
