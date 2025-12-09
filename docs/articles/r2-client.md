@@ -198,19 +198,32 @@ Bucket operations are available through the REST API client:
 ```csharp
 public class BucketService(ICloudflareApiClient cf)
 {
-    public async Task<R2Bucket> CreateBucketAsync(string name, string? locationHint = null)
+    // Basic bucket creation
+    public async Task<R2Bucket> CreateBucketAsync(string name)
     {
-        return await cf.Accounts.CreateR2BucketAsync(new CreateBucketParameters
-        {
-            Name = name,
-            LocationHint = locationHint
-        });
+        return await cf.Accounts.CreateR2BucketAsync(name);
+    }
+
+    // Create with location hint and jurisdiction
+    public async Task<R2Bucket> CreateEuBucketAsync(string name)
+    {
+        return await cf.Accounts.CreateR2BucketAsync(
+            name,
+            locationHint: R2LocationHint.WestEurope,
+            jurisdiction: R2Jurisdiction.EuropeanUnion
+        );
     }
 
     public async IAsyncEnumerable<R2Bucket> ListBucketsAsync()
     {
         await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
         {
+            // Access extensible enum properties with IntelliSense
+            if (bucket.Location == R2LocationHint.WestEurope)
+            {
+                Console.WriteLine($"EU bucket: {bucket.Name}");
+            }
+
             yield return bucket;
         }
     }
@@ -221,3 +234,5 @@ public class BucketService(ICloudflareApiClient cf)
     }
 }
 ```
+
+The `R2Bucket` model uses **extensible enums** for `Location`, `Jurisdiction`, and `StorageClass` properties. See [SDK Conventions](conventions.md#extensible-enums) for details.

@@ -94,6 +94,40 @@ public abstract class ApiResource
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
+  /// <summary>Sends a POST request with a JSON payload and optional custom headers to the specified URI.</summary>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="payload">The object to serialize as the JSON request body.</param>
+  /// <param name="headers">Optional custom headers to include in the request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> PostAsync<TResult>(
+    string                              requestUri,
+    object?                             payload,
+    IEnumerable<KeyValuePair<string, string>>? headers,
+    CancellationToken                   cancellationToken = default)
+  {
+    using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
+    Logger.SendingRequest("POST", requestUri);
+
+    var jsonContent = System.Text.Json.JsonSerializer.Serialize(payload, _serializerOptions);
+    var content     = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+    using var request = new HttpRequestMessage(HttpMethod.Post, requestUri) { Content = content };
+
+    if (headers is not null)
+    {
+      foreach (var header in headers)
+      {
+        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+      }
+    }
+
+    var response = await HttpClient.SendAsync(request, cancellationToken);
+
+    return await ProcessResponse<TResult>(response, cancellationToken);
+  }
+
   /// <summary>Sends a POST request with a pre-serialized JSON string to the specified URI.</summary>
   /// <remarks>
   ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case). The caller is

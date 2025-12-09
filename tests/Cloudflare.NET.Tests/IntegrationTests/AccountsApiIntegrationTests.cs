@@ -211,6 +211,169 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
   }
 
+  /// <summary>Verifies that an R2 bucket can be created with a location hint and the hint is reflected in the response.</summary>
+  [IntegrationTest]
+  public async Task CanCreateR2BucketWithLocationHint()
+  {
+    // Arrange
+    var bucketName   = $"cfnet-location-bucket-{Guid.NewGuid():N}";
+    var locationHint = R2LocationHint.EastNorthAmerica;
+
+    try
+    {
+      // Act
+      var createResult = await _sut.CreateR2BucketAsync(
+        bucketName,
+        locationHint: locationHint
+      );
+
+      // Assert - Verify the response contains the bucket details
+      createResult.Should().NotBeNull();
+      createResult.Name.Should().Be(bucketName);
+      createResult.CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
+
+      // The location hint should be reflected in the response.
+      // Note: Cloudflare may honor the hint or place data in a nearby region.
+      // The response should show the actual location assigned.
+      createResult.Location.Should().NotBeNull(
+        "the API response should include the location when a location hint was provided");
+      createResult.Location!.Value.Value.Should().NotBeNullOrEmpty(
+        "the location value should not be empty");
+    }
+    finally
+    {
+      // Cleanup
+      var deleteAction = async () => await _sut.DeleteR2BucketAsync(bucketName);
+      await deleteAction.Should().NotThrowAsync("the bucket should be cleaned up successfully");
+    }
+  }
+
+  /// <summary>Verifies that an R2 bucket can be created with a storage class and it is reflected in the response.</summary>
+  [IntegrationTest]
+  public async Task CanCreateR2BucketWithStorageClass()
+  {
+    // Arrange
+    var bucketName   = $"cfnet-storage-bucket-{Guid.NewGuid():N}";
+    var storageClass = R2StorageClass.Standard;
+
+    try
+    {
+      // Act
+      var createResult = await _sut.CreateR2BucketAsync(
+        bucketName,
+        locationHint: R2LocationHint.WestEurope,
+        storageClass: storageClass
+      );
+
+      // Assert - Verify the storage class is reflected in the response
+      createResult.Should().NotBeNull();
+      createResult.Name.Should().Be(bucketName);
+      createResult.CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
+
+      // Verify the storage class was applied
+      createResult.StorageClass.Should().NotBeNull(
+        "the API response should include the storage class when specified");
+      createResult.StorageClass!.Value.Should().Be(storageClass,
+        "the storage class should match what was requested");
+
+      // Verify location was also applied
+      createResult.Location.Should().NotBeNull(
+        "the API response should include the location when a location hint was provided");
+    }
+    finally
+    {
+      // Cleanup
+      var deleteAction = async () => await _sut.DeleteR2BucketAsync(bucketName);
+      await deleteAction.Should().NotThrowAsync("the bucket should be cleaned up successfully");
+    }
+  }
+
+  /// <summary>Verifies that an R2 bucket can be created with Infrequent Access storage class.</summary>
+  [IntegrationTest]
+  public async Task CanCreateR2BucketWithInfrequentAccessStorageClass()
+  {
+    // Arrange
+    var bucketName   = $"cfnet-ia-bucket-{Guid.NewGuid():N}";
+    var storageClass = R2StorageClass.InfrequentAccess;
+
+    try
+    {
+      // Act
+      var createResult = await _sut.CreateR2BucketAsync(
+        bucketName,
+        locationHint: R2LocationHint.AsiaPacific,
+        storageClass: storageClass
+      );
+
+      // Assert - Verify the Infrequent Access storage class is applied
+      createResult.Should().NotBeNull();
+      createResult.Name.Should().Be(bucketName);
+      createResult.StorageClass.Should().NotBeNull(
+        "the API response should include the storage class");
+      createResult.StorageClass!.Value.Should().Be(R2StorageClass.InfrequentAccess,
+        "the storage class should be InfrequentAccess as requested");
+    }
+    finally
+    {
+      // Cleanup
+      var deleteAction = async () => await _sut.DeleteR2BucketAsync(bucketName);
+      await deleteAction.Should().NotThrowAsync("the bucket should be cleaned up successfully");
+    }
+  }
+
+  /// <summary>Verifies that an R2 bucket can be created with all optional parameters and they are properly applied.</summary>
+  /// <remarks>
+  ///   Note: Jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />) requires specific account configuration
+  ///   and may not be available on all accounts. This test uses a location hint and storage class only.
+  ///   To test jurisdiction, ensure your Cloudflare account has the appropriate jurisdiction enabled.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task CanCreateR2BucketWithAllOptions()
+  {
+    // Arrange
+    var bucketName   = $"cfnet-allopts-bucket-{Guid.NewGuid():N}";
+    var locationHint = R2LocationHint.WestEurope;
+    var storageClass = R2StorageClass.InfrequentAccess;
+
+    try
+    {
+      // Act - Create bucket with location hint and storage class
+      // Jurisdiction is not tested here as it requires specific account configuration
+      var createResult = await _sut.CreateR2BucketAsync(
+        bucketName,
+        locationHint: locationHint,
+        jurisdiction: null, // Set to R2Jurisdiction.EuropeanUnion if your account supports it
+        storageClass: storageClass
+      );
+
+      // Assert - Verify all parameters were applied
+      createResult.Should().NotBeNull();
+      createResult.Name.Should().Be(bucketName);
+      createResult.CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
+
+      // Verify location was applied (may be the hint or a nearby region)
+      createResult.Location.Should().NotBeNull(
+        "the API response should include the location when a location hint was provided");
+      createResult.Location!.Value.Value.Should().NotBeNullOrEmpty(
+        "the location value should not be empty");
+
+      // Verify storage class was applied
+      createResult.StorageClass.Should().NotBeNull(
+        "the API response should include the storage class when specified");
+      createResult.StorageClass!.Value.Should().Be(storageClass,
+        "the storage class should match what was requested");
+
+      // Jurisdiction should be null since we didn't specify one
+      // (or would need EU-enabled account to test)
+    }
+    finally
+    {
+      // Cleanup
+      var deleteAction = async () => await _sut.DeleteR2BucketAsync(bucketName);
+      await deleteAction.Should().NotThrowAsync("the bucket should be cleaned up successfully");
+    }
+  }
+
   /// <summary>Tests the full lifecycle of CORS configuration: set, get, update, and delete.</summary>
   [IntegrationTest]
   public async Task CanManageCorsLifecycle()

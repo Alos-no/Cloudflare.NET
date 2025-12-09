@@ -8,9 +8,25 @@ using Core.Json;
 
 /// <summary>Defines the request payload for creating an R2 bucket.</summary>
 /// <param name="Name">The name of the bucket to create.</param>
+/// <param name="LocationHint">
+///   Optional location hint suggesting where the bucket's data should be stored.
+///   Cloudflare will attempt to honor this hint, but data may be placed in a nearby region if unavailable.
+/// </param>
+/// <param name="StorageClass">
+///   Optional default storage class for new objects in the bucket.
+///   If not specified, defaults to <see cref="R2StorageClass.Standard" />.
+/// </param>
+/// <remarks>
+///   The jurisdiction parameter is not included in this request body because it must be passed
+///   as an HTTP header (<c>cf-r2-jurisdiction</c>) according to the Cloudflare API specification.
+/// </remarks>
 public record CreateBucketRequest(
   [property: JsonPropertyName("name")]
-  string Name
+  string Name,
+  [property: JsonPropertyName("locationHint")]
+  R2LocationHint? LocationHint = null,
+  [property: JsonPropertyName("storageClass")]
+  R2StorageClass? StorageClass = null
 );
 
 /// <summary>Represents an R2 bucket returned by the Cloudflare API.</summary>

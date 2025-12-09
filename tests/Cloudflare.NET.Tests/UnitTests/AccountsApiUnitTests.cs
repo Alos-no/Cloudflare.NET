@@ -44,10 +44,14 @@ public class AccountsApiUnitTests
 
     var expectedResult =
       new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "wnam", "eu", "Standard");
-    var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
-    HttpRequestMessage? capturedRequest = null;
-    var mockHandler =
-      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
 
     var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
     var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
@@ -61,9 +65,311 @@ public class AccountsApiUnitTests
     capturedRequest.Should().NotBeNull();
     capturedRequest!.Method.Should().Be(HttpMethod.Post);
     capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets");
-    var content = await capturedRequest.Content!.ReadFromJsonAsync<CreateBucketRequest>();
-    content.Should().NotBeNull();
-    content.Name.Should().Be(bucketName);
+
+    // Verify JSON body contains only the bucket name
+    capturedJsonBody.Should().NotBeNull();
+    using var doc = JsonDocument.Parse(capturedJsonBody!);
+    doc.RootElement.GetProperty("name").GetString().Should().Be(bucketName);
+  }
+
+  /// <summary>Verifies that CreateR2BucketAsync with location hint sends a correctly formatted POST request.</summary>
+  [Fact]
+  public async Task CreateR2BucketAsync_WithLocationHint_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "eu-bucket";
+
+    var expectedResult = new R2Bucket(
+      bucketName,
+      DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(),
+      R2LocationHint.WestEurope,
+      null,
+      R2StorageClass.Standard
+    );
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.CreateR2BucketAsync(bucketName, R2LocationHint.WestEurope);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Post);
+    capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets");
+
+    // Verify JSON contains the location hint
+    capturedJsonBody.Should().NotBeNull();
+    using var doc = JsonDocument.Parse(capturedJsonBody!);
+    doc.RootElement.GetProperty("name").GetString().Should().Be(bucketName);
+    doc.RootElement.GetProperty("locationHint").GetString().Should().Be("weur");
+  }
+
+  /// <summary>Verifies that CreateR2BucketAsync with all options sends a correctly formatted POST request.</summary>
+  [Fact]
+  public async Task CreateR2BucketAsync_WithAllOptions_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "gdpr-bucket";
+
+    var expectedResult = new R2Bucket(
+      bucketName,
+      DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(),
+      R2LocationHint.WestEurope,
+      R2Jurisdiction.EuropeanUnion,
+      R2StorageClass.InfrequentAccess
+    );
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.CreateR2BucketAsync(
+      bucketName,
+      locationHint: R2LocationHint.WestEurope,
+      jurisdiction: R2Jurisdiction.EuropeanUnion,
+      storageClass: R2StorageClass.InfrequentAccess
+    );
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Post);
+
+    // Verify JSON body contains locationHint and storageClass (NOT jurisdiction - it's a header)
+    capturedJsonBody.Should().NotBeNull();
+    using var doc = JsonDocument.Parse(capturedJsonBody!);
+    doc.RootElement.GetProperty("name").GetString().Should().Be(bucketName);
+    doc.RootElement.GetProperty("locationHint").GetString().Should().Be("weur");
+    doc.RootElement.GetProperty("storageClass").GetString().Should().Be("InfrequentAccess");
+
+    // Jurisdiction is NOT in the body - verify it's absent
+    doc.RootElement.TryGetProperty("jurisdiction", out _).Should().BeFalse(
+      "jurisdiction should be passed as HTTP header, not in request body");
+
+    // Verify jurisdiction is passed as HTTP header (cf-r2-jurisdiction)
+    capturedRequest.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue(
+      "jurisdiction should be passed as 'cf-r2-jurisdiction' HTTP header");
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
+  }
+
+  /// <summary>Verifies that CreateR2BucketAsync without jurisdiction does NOT send the header.</summary>
+  [Fact]
+  public async Task CreateR2BucketAsync_WithoutJurisdiction_DoesNotSendHeader()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "simple-bucket";
+
+    var expectedResult = new R2Bucket(
+      bucketName,
+      DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(),
+      R2LocationHint.EastNorthAmerica,
+      null,
+      R2StorageClass.Standard
+    );
+    var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest = null;
+    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+    {
+      capturedRequest = req;
+    });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.CreateR2BucketAsync(
+      bucketName,
+      locationHint: R2LocationHint.EastNorthAmerica
+    );
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+
+    // Verify jurisdiction header is NOT present when jurisdiction is null
+    capturedRequest!.Headers.TryGetValues("cf-r2-jurisdiction", out _).Should().BeFalse(
+      "jurisdiction header should not be sent when jurisdiction is null");
+  }
+
+  /// <summary>Verifies that CreateR2BucketAsync handles custom/unknown extensible enum values.</summary>
+  [Fact]
+  public async Task CreateR2BucketAsync_WithCustomExtensibleEnumValues_SendsCorrectRequest()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "future-bucket";
+
+    // Simulate using future values that the API might support before the SDK is updated
+    R2LocationHint customLocation    = "mars-colony-alpha";
+    R2Jurisdiction customJurisdiction = "space-treaty-2050";
+    R2StorageClass customStorageClass = "CryogenicStorage";
+
+    var expectedResult = new R2Bucket(
+      bucketName,
+      DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(),
+      customLocation,
+      customJurisdiction,
+      customStorageClass
+    );
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.CreateR2BucketAsync(
+      bucketName,
+      locationHint: customLocation,
+      jurisdiction: customJurisdiction,
+      storageClass: customStorageClass
+    );
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+
+    // Verify custom location hint and storage class are serialized correctly in body
+    capturedJsonBody.Should().NotBeNull();
+    using var doc = JsonDocument.Parse(capturedJsonBody!);
+    doc.RootElement.GetProperty("name").GetString().Should().Be(bucketName);
+    doc.RootElement.GetProperty("locationHint").GetString().Should().Be("mars-colony-alpha");
+    doc.RootElement.GetProperty("storageClass").GetString().Should().Be("CryogenicStorage");
+
+    // Verify custom jurisdiction is passed as HTTP header
+    capturedRequest!.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue();
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("space-treaty-2050");
+  }
+
+  /// <summary>Verifies that CreateR2BucketAsync with only location hint (no jurisdiction) sends correct request.</summary>
+  [Fact]
+  public async Task CreateR2BucketAsync_WithOnlyLocationHint_OmitsStorageClassFromBody()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "location-only-bucket";
+
+    var expectedResult = new R2Bucket(
+      bucketName,
+      DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(),
+      R2LocationHint.AsiaPacific,
+      null,
+      null
+    );
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.CreateR2BucketAsync(
+      bucketName,
+      locationHint: R2LocationHint.AsiaPacific
+    );
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+
+    // Verify JSON body contains only name and locationHint (null values omitted)
+    capturedJsonBody.Should().NotBeNull();
+    using var doc = JsonDocument.Parse(capturedJsonBody!);
+    doc.RootElement.GetProperty("name").GetString().Should().Be(bucketName);
+    doc.RootElement.GetProperty("locationHint").GetString().Should().Be("apac");
+    doc.RootElement.TryGetProperty("storageClass", out _).Should().BeFalse(
+      "storageClass should be omitted when null");
+
+    // Verify no jurisdiction header
+    capturedRequest!.Headers.TryGetValues("cf-r2-jurisdiction", out _).Should().BeFalse();
+  }
+
+  /// <summary>Verifies that CreateR2BucketAsync with only storage class sends correct request.</summary>
+  [Fact]
+  public async Task CreateR2BucketAsync_WithOnlyStorageClass_OmitsLocationHintFromBody()
+  {
+    // Arrange
+    var accountId  = "test-account-id";
+    var bucketName = "storage-only-bucket";
+
+    var expectedResult = new R2Bucket(
+      bucketName,
+      DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(),
+      null,
+      null,
+      R2StorageClass.InfrequentAccess
+    );
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
+    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var result = await sut.CreateR2BucketAsync(
+      bucketName,
+      locationHint: null,
+      jurisdiction: null,
+      storageClass: R2StorageClass.InfrequentAccess
+    );
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+
+    // Verify JSON body contains only name and storageClass (null values omitted)
+    capturedJsonBody.Should().NotBeNull();
+    using var doc = JsonDocument.Parse(capturedJsonBody!);
+    doc.RootElement.GetProperty("name").GetString().Should().Be(bucketName);
+    doc.RootElement.GetProperty("storageClass").GetString().Should().Be("InfrequentAccess");
+    doc.RootElement.TryGetProperty("locationHint", out _).Should().BeFalse(
+      "locationHint should be omitted when null");
+
+    // Verify no jurisdiction header
+    capturedRequest!.Headers.TryGetValues("cf-r2-jurisdiction", out _).Should().BeFalse();
   }
 
   /// <summary>Verifies that DeleteR2BucketAsync sends a correctly formatted DELETE request.</summary>

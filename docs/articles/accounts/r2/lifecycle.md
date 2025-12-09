@@ -193,12 +193,25 @@ await cf.Accounts.DeleteBucketLifecycleAsync("my-bucket");
 | `Age` | Based on object age |
 | `Date` | Based on specific date |
 
-### R2StorageClass
+### R2StorageClass (Extensible Enum)
 
-| Constant | Description |
-|----------|-------------|
-| `Standard` | Frequently accessed data |
-| `InfrequentAccess` | Lower cost for infrequent access |
+Storage class determines cost and access characteristics. This is an **extensible enum** that accepts both known constants and custom string values.
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `Standard` | `Standard` | Frequently accessed data (default) |
+| `InfrequentAccess` | `InfrequentAccess` | Lower cost, retrieval fees apply |
+
+```csharp
+// Using known constants
+var standard = R2StorageClass.Standard;
+var ia = R2StorageClass.InfrequentAccess;
+
+// Using custom values for future storage classes
+R2StorageClass future = "ArchiveStorage";
+```
+
+See [SDK Conventions](../../conventions.md#extensible-enums) for more on extensible enums.
 
 ## Common Patterns
 
