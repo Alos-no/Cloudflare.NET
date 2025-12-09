@@ -6,13 +6,23 @@ on:
   pull_request:
     branches: [ "main", "develop" ]
 
+# Cancel in-progress runs when a new run is triggered for the same branch/PR.
+# This prevents resource conflicts during integration tests and saves CI minutes.
+# Reference: https://docs.github.com/en/actions/using-jobs/using-concurrency
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # Restrict default permissions for security
 permissions:
   contents: read
 
 jobs:
-  # First, build the solution using the reusable workflow
+  # First, build the solution using the reusable workflow.
+  # Skip for PRs from develop→main since the code was already tested on push to develop.
+  # Reference: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
   build:
+    if: ${{ !(github.event_name == 'pull_request' && github.head_ref == 'develop' && github.base_ref == 'main') }}
     uses: ./.github/workflows/build.yml
     with:
       configuration: Debug
