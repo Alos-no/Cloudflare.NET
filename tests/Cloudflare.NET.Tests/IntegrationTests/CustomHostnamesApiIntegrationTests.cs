@@ -356,6 +356,59 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
     }
   }
 
+  /// <summary>
+  ///   Verifies that a custom hostname can be created with minimal SslConfiguration (null Settings, null BundleMethod, etc).
+  ///   This tests that nullable properties in SslConfiguration are handled correctly by the API.
+  /// </summary>
+  [IntegrationTest]
+  public async Task CreateAsync_MinimalSslConfiguration_Succeeds()
+  {
+    // Arrange - Create a unique hostname for this test
+    var shortGuid = Guid.NewGuid().ToString("N")[..8];
+    var hostname = $"{TestHostnamePrefix}min-{shortGuid}.customer-test.net";
+
+    // Minimal SslConfiguration - only Method and Type, all optional properties null
+    var sslConfig = new SslConfiguration(
+      DcvMethod.Txt,
+      CertificateType.Dv
+      // Settings: null (default)
+      // BundleMethod: null (default)
+      // Wildcard: null (default)
+      // CertificateAuthority: null (default)
+    );
+    var request = new CreateCustomHostnameRequest(hostname, sslConfig);
+    string? createdId = null;
+
+    try
+    {
+      // Act - This should succeed with minimal SslConfiguration
+      var result = await _sut.CreateAsync(_zoneId, request);
+      createdId = result.Id;
+
+      // Assert
+      result.Should().NotBeNull();
+      result.Hostname.Should().Be(hostname);
+      result.Ssl.Should().NotBeNull();
+      result.Ssl.Method.Should().Be(DcvMethod.Txt);
+      result.Ssl.Type.Should().Be(CertificateType.Dv);
+    }
+    finally
+    {
+      // Cleanup
+      if (createdId is not null)
+      {
+        try
+        {
+          await _sut.DeleteAsync(_zoneId, createdId);
+        }
+        catch
+        {
+          // Ignore cleanup errors.
+        }
+      }
+    }
+  }
+
   #endregion
 
 
