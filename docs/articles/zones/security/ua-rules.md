@@ -126,14 +126,27 @@ await cf.Zones.UaRules.DeleteAsync(zoneId, ruleId);
 | `Paused` | `bool` | Whether the rule is paused |
 | `Description` | `string?` | Optional description |
 
-### UaRuleMode
+### UaRuleMode (Extensible Enum)
 
-| Value | Description |
-|-------|-------------|
+The action to take when a User-Agent rule matches. This is an [extensible enum](../../conventions.md#extensible-enums) that supports custom values for forward compatibility.
+
+| Known Value | Description |
+|-------------|-------------|
 | `Block` | Block the request |
 | `Challenge` | Present CAPTCHA challenge |
 | `JsChallenge` | Present JavaScript challenge |
 | `ManagedChallenge` | Cloudflare-managed challenge |
+
+```csharp
+// Using known values
+UaRuleMode.Block
+UaRuleMode.Challenge
+UaRuleMode.JsChallenge
+UaRuleMode.ManagedChallenge
+
+// Future-proof: accepts unknown values from API
+UaRuleMode customMode = "new-mode";
+```
 
 ### UaRuleConfiguration
 

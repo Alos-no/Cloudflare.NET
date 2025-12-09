@@ -146,24 +146,39 @@ await cf.Zones.AccessRules.DeleteAsync(zoneId, ruleId);
 
 ## Models Reference
 
-### AccessRuleMode
+### AccessRuleMode (Extensible Enum)
 
-| Value | Description |
-|-------|-------------|
+The action to take when an access rule matches. This is an [extensible enum](../../conventions.md#extensible-enums) that supports custom values for forward compatibility.
+
+| Known Value | Description |
+|-------------|-------------|
 | `Block` | Block all requests |
 | `Challenge` | Present CAPTCHA challenge |
 | `JsChallenge` | Present JavaScript challenge |
 | `ManagedChallenge` | Let Cloudflare decide challenge type |
 | `Whitelist` | Allow requests, bypass other rules |
 
+### AccessRuleTarget (Extensible Enum)
+
+The target type for access rule configuration. This is an [extensible enum](../../conventions.md#extensible-enums) used in `ListAccessRulesFilters`.
+
+| Known Value | Description |
+|-------------|-------------|
+| `Ip` | Single IPv4 or IPv6 address |
+| `IpRange` | CIDR notation range |
+| `Asn` | Autonomous System Number |
+| `Country` | Two-letter country code |
+
 ### Configuration Types
 
-| Type | Target | Example Value |
-|------|--------|---------------|
-| `IpConfiguration` | Single IP | `192.168.1.1` |
-| `CidrConfiguration` | IP range | `10.0.0.0/8` |
-| `AsnConfiguration` | ASN | `AS12345` |
-| `CountryConfiguration` | Country code | `US` |
+Use polymorphic configuration types to create rules for different targets:
+
+| Type | Target | Example |
+|------|--------|---------|
+| `IpConfiguration` | Single IP | `new IpConfiguration("192.168.1.1")` |
+| `CidrConfiguration` | IP range | `new CidrConfiguration("10.0.0.0/8")` |
+| `AsnConfiguration` | ASN | `new AsnConfiguration("AS12345")` |
+| `CountryConfiguration` | Country code | `new CountryConfiguration("US")` |
 
 ### AccessRule
 

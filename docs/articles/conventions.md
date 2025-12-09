@@ -267,11 +267,31 @@ if (bucket.StorageClass is { } sc && sc == R2StorageClass.InfrequentAccess)
 
 ### Available Extensible Enums
 
+#### R2 Storage
+
 | Type | Purpose | Known Values |
 |------|---------|--------------|
 | `R2LocationHint` | Bucket placement hint | `wnam`, `enam`, `weur`, `eeur`, `apac`, `oc` |
 | `R2Jurisdiction` | Data residency | `default`, `eu`, `fedramp` |
 | `R2StorageClass` | Storage tier | `Standard`, `InfrequentAccess` |
+
+#### DNS & Zones
+
+| Type | Purpose | Known Values |
+|------|---------|--------------|
+| `DnsRecordType` | DNS record type | `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `NS`, `SOA`, `PTR`, `SRV`, `HTTPS`, `SVCB`, `CAA`, `DS`, `DNSKEY`, etc. |
+| `ZoneStatus` | Zone activation status | `active`, `pending`, `initializing`, `moved`, `deleted`, `deactivated` |
+
+#### Security & Firewall
+
+| Type | Purpose | Known Values |
+|------|---------|--------------|
+| `AccessRuleMode` | IP access rule action | `block`, `challenge`, `js_challenge`, `managed_challenge`, `whitelist` |
+| `AccessRuleTarget` | Access rule target type | `ip`, `ip_range`, `asn`, `country` |
+| `UaRuleMode` | User-agent rule action | `block`, `challenge`, `js_challenge`, `managed_challenge` |
+| `LockdownTarget` | Zone lockdown target type | `ip`, `ip_range` |
+| `RulesetAction` | WAF ruleset action | `block`, `challenge`, `js_challenge`, `managed_challenge`, `log`, `skip`, `execute`, `rewrite`, `redirect`, `route`, `score`, `serve_error`, `compress_response`, `set_cache_settings`, `set_config` |
+| `ManagedWafOverrideAction` | Managed WAF override | `block`, `challenge`, `js_challenge`, `managed_challenge`, `log`, `default` |
 
 ### Why Extensible Enums?
 

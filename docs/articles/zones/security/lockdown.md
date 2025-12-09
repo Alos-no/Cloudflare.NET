@@ -152,15 +152,26 @@ await cf.Zones.Lockdown.DeleteAsync(zoneId, lockdownId);
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `Target` | `LockdownTarget` | `Ip` or `IpRange` |
+| `Target` | `LockdownTarget` | Target type (extensible enum) |
 | `Value` | `string` | IP address or CIDR range |
 
-### LockdownTarget
+### LockdownTarget (Extensible Enum)
 
-| Value | Description |
-|-------|-------------|
-| `Ip` | Single IP address |
+The target type for zone lockdown configurations. This is an [extensible enum](../../conventions.md#extensible-enums) that supports custom values for forward compatibility.
+
+| Known Value | Description |
+|-------------|-------------|
+| `Ip` | Single IPv4 or IPv6 address |
 | `IpRange` | CIDR notation range |
+
+```csharp
+// Using known values
+new LockdownConfiguration(LockdownTarget.Ip, "192.0.2.1")
+new LockdownConfiguration(LockdownTarget.IpRange, "10.0.0.0/8")
+
+// Future-proof: accepts unknown values from API
+LockdownTarget customTarget = "new-target-type";
+```
 
 ## URL Pattern Syntax
 

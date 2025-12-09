@@ -32,7 +32,7 @@ Use `ListDnsRecordsAsync` for manual pagination control:
 ```csharp
 var page = await cf.Zones.ListDnsRecordsAsync(zoneId, new ListDnsRecordsFilters
 {
-    Type = "CNAME",
+    Type = DnsRecordType.CNAME,
     Page = 1,
     PerPage = 50
 });
@@ -63,7 +63,7 @@ Filter by type, name, content, or proxied status:
 ```csharp
 var filters = new ListDnsRecordsFilters
 {
-    Type = "A",                        // Filter by record type
+    Type = DnsRecordType.A,            // Filter by record type
     Name = "api.example.com",          // Filter by exact name
     Proxied = true,                    // Only proxied records
     Order = "name",                    // Sort by name
@@ -152,7 +152,26 @@ Represents a DNS record returned by the API.
 |----------|------|-------------|
 | `Id` | `string` | Unique identifier of the DNS record |
 | `Name` | `string` | Record name (e.g., `api.example.com`) |
-| `Type` | `string` | Record type (`A`, `AAAA`, `CNAME`, `TXT`, etc.) |
+| `Type` | `DnsRecordType` | Record type (extensible enum: `A`, `AAAA`, `CNAME`, `TXT`, etc.) |
+
+### DnsRecordType
+
+An [extensible enum](../conventions.md#extensible-enums) representing DNS record types. Supports all standard record types while gracefully handling new types added by Cloudflare.
+
+| Known Value | Description |
+|-------------|-------------|
+| `A` | IPv4 address record |
+| `AAAA` | IPv6 address record |
+| `CNAME` | Canonical name (alias) |
+| `MX` | Mail exchange |
+| `TXT` | Text record |
+| `NS` | Nameserver |
+| `SOA` | Start of authority |
+| `SRV` | Service record |
+| `CAA` | Certificate authority authorization |
+| `PTR` | Pointer record |
+| `HTTPS` | HTTPS service binding |
+| `SVCB` | Service binding |
 
 ### ListDnsRecordsFilters
 
@@ -160,7 +179,7 @@ Filtering and pagination options for listing DNS records.
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `Type` | `string?` | Filter by record type (e.g., `A`, `CNAME`) |
+| `Type` | `DnsRecordType?` | Filter by record type (e.g., `DnsRecordType.A`, `DnsRecordType.CNAME`) |
 | `Name` | `string?` | Filter by exact record name |
 | `Content` | `string?` | Filter by record content |
 | `Proxied` | `bool?` | Filter by proxied status |
@@ -207,7 +226,7 @@ public async Task MigrateDnsAsync(string sourceZoneId, string targetZoneId)
 ```csharp
 public async Task CleanupCnamesAsync(string zoneId, string pattern)
 {
-    var filters = new ListDnsRecordsFilters { Type = "CNAME" };
+    var filters = new ListDnsRecordsFilters { Type = DnsRecordType.CNAME };
 
     await foreach (var record in cf.Zones.ListAllDnsRecordsAsync(zoneId, filters))
     {

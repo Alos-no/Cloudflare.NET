@@ -105,40 +105,28 @@ public class FirewallService(ICloudflareApiClient cf)
     // Block an IP address
     public async Task<AccessRule> BlockIpAsync(string zoneId, string ipAddress, string note)
     {
-        var request = new CreateAccessRuleRequest
-        {
-            Mode = AccessRuleMode.Block,
-            Configuration = new AccessRuleConfiguration
-            {
-                Target = ConfigurationTarget.Ip,
-                Value = ipAddress
-            },
-            Notes = note
-        };
-
-        return await cf.Zones.AccessRules.CreateAccessRuleAsync(zoneId, request);
+        return await cf.Zones.AccessRules.CreateAsync(zoneId,
+            new CreateAccessRuleRequest(
+                Mode: AccessRuleMode.Block,
+                Configuration: new IpConfiguration(ipAddress),
+                Notes: note
+            ));
     }
 
     // Challenge an IP range
     public async Task<AccessRule> ChallengeIpRangeAsync(string zoneId, string cidr)
     {
-        var request = new CreateAccessRuleRequest
-        {
-            Mode = AccessRuleMode.Challenge,
-            Configuration = new AccessRuleConfiguration
-            {
-                Target = ConfigurationTarget.IpRange,
-                Value = cidr
-            }
-        };
-
-        return await cf.Zones.AccessRules.CreateAccessRuleAsync(zoneId, request);
+        return await cf.Zones.AccessRules.CreateAsync(zoneId,
+            new CreateAccessRuleRequest(
+                Mode: AccessRuleMode.Challenge,
+                Configuration: new CidrConfiguration(cidr)
+            ));
     }
 
     // List all access rules
     public async IAsyncEnumerable<AccessRule> ListAccessRulesAsync(string zoneId)
     {
-        await foreach (var rule in cf.Zones.AccessRules.ListAllAccessRulesAsync(zoneId))
+        await foreach (var rule in cf.Zones.AccessRules.ListAllAsync(zoneId))
         {
             yield return rule;
         }
@@ -146,47 +134,57 @@ public class FirewallService(ICloudflareApiClient cf)
 }
 ```
 
-### Access Rule Modes
+### AccessRuleMode (Extensible Enum)
 
-| Mode | Description |
-|------|-------------|
+The action to take when an IP access rule matches. This is an [extensible enum](conventions.md#extensible-enums).
+
+| Known Value | Description |
+|-------------|-------------|
 | `Block` | Block all requests from the target |
 | `Challenge` | Present a CAPTCHA challenge |
 | `JsChallenge` | Present a JavaScript challenge |
 | `ManagedChallenge` | Let Cloudflare decide the challenge type |
 | `Whitelist` | Allow requests, bypassing other rules |
 
-### Configuration Targets
+### Configuration Types
 
-| Target | Description | Example Value |
-|--------|-------------|---------------|
-| `Ip` | Single IP address | `192.168.1.1` |
-| `IpRange` | CIDR range | `192.168.1.0/24` |
-| `Asn` | Autonomous System Number | `AS13335` |
-| `Country` | Country code | `US` |
+Use the appropriate configuration type for your target:
+
+| Type | Target | Example |
+|------|--------|---------|
+| `IpConfiguration` | Single IP address | `new IpConfiguration("192.168.1.1")` |
+| `CidrConfiguration` | CIDR range | `new CidrConfiguration("192.168.1.0/24")` |
+| `AsnConfiguration` | ASN | `new AsnConfiguration("AS13335")` |
+| `CountryConfiguration` | Country code | `new CountryConfiguration("US")` |
 
 ## Zone Lockdown
 
 Restrict access to specific URLs to whitelisted IPs:
 
 ```csharp
-public async Task<ZoneLockdown> CreateLockdownAsync(
+public async Task<Lockdown> CreateLockdownAsync(
     string zoneId,
     IEnumerable<string> urls,
     IEnumerable<string> allowedIps)
 {
-    return await cf.Zones.Lockdown.CreateLockdownAsync(zoneId, new ZoneLockdown
-    {
-        Urls = urls.ToList(),
-        Configurations = allowedIps.Select(ip => new LockdownConfiguration
-        {
-            Target = "ip",
-            Value = ip
-        }).ToList(),
-        Description = "Admin panel lockdown"
-    });
+    return await cf.Zones.Lockdown.CreateAsync(zoneId,
+        new CreateLockdownRequest(
+            Urls: urls.ToList(),
+            Configurations: allowedIps.Select(ip =>
+                new LockdownConfiguration(LockdownTarget.Ip, ip)).ToList(),
+            Description: "Admin panel lockdown"
+        ));
 }
 ```
+
+### LockdownTarget (Extensible Enum)
+
+The target type for zone lockdown rules. This is an [extensible enum](conventions.md#extensible-enums).
+
+| Known Value | Description |
+|-------------|-------------|
+| `Ip` | Single IP address |
+| `IpRange` | CIDR notation range |
 
 ## User-Agent Rules
 
@@ -195,18 +193,25 @@ Block or challenge requests based on User-Agent:
 ```csharp
 public async Task<UaRule> BlockBadBotAsync(string zoneId, string userAgentPattern)
 {
-    return await cf.Zones.UaRules.CreateUaRuleAsync(zoneId, new UaRule
-    {
-        Mode = "block",
-        Configuration = new UaRuleConfiguration
-        {
-            Target = "ua",
-            Value = userAgentPattern
-        },
-        Description = "Block known bad bot"
-    });
+    return await cf.Zones.UaRules.CreateAsync(zoneId,
+        new CreateUaRuleRequest(
+            Mode: UaRuleMode.Block,
+            Configuration: new UaRuleConfiguration("ua", userAgentPattern),
+            Description: "Block known bad bot"
+        ));
 }
 ```
+
+### UaRuleMode (Extensible Enum)
+
+The action to take when a User-Agent rule matches. This is an [extensible enum](conventions.md#extensible-enums).
+
+| Known Value | Description |
+|-------------|-------------|
+| `Block` | Block the request |
+| `Challenge` | Present a CAPTCHA challenge |
+| `JsChallenge` | Present a JavaScript challenge |
+| `ManagedChallenge` | Cloudflare-managed challenge |
 
 ## Account-Level Rules
 
