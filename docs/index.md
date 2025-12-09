@@ -332,12 +332,12 @@ public class MyService(ICloudflareApiClient cf)
       <div class="feature-header">
         <div class="feature-icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
         </div>
-        <h4>Dependency Injection</h4>
+        <h4>CI/CD Pipeline</h4>
       </div>
-      <p>First-class support for Microsoft.Extensions.DependencyInjection with <code>IHttpClientFactory</code> integration. Register clients with a single line and inject them anywhere in your application.</p>
+      <p>Every commit triggers automated builds and tests. Releases are published automatically to NuGet.</p>
     </div>
     <div class="feature-item">
       <div class="feature-header">
@@ -381,7 +381,7 @@ public class MyService(ICloudflareApiClient cf)
         </div>
         <h4>Testable by Design</h4>
       </div>
-      <p>Every API is exposed through interfaces for easy mocking in unit tests. Built with test-driven development practices and includes comprehensive test coverage with xUnit and Verify.Xunit.</p>
+      <p>Developed test-first with integration tests running against real Cloudflare APIs and unit tests validating request/response handling. All tests execute on every commit via CI.</p>
     </div>
   </div>
 </div>
