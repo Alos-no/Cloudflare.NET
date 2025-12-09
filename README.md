@@ -43,12 +43,19 @@ public class MyService(ICloudflareApiClient cf)
 
 ## Features
 
-- **Strongly-typed API** — Full IntelliSense with comprehensive XML documentation and proper nullability annotations
-- **Dependency Injection** — First-class support for `Microsoft.Extensions.DependencyInjection` with `IHttpClientFactory`
-- **Resilience Built-in** — Automatic retries, circuit breaker, rate limiting, and configurable timeouts via Polly
-- **Multi-account Support** — Named clients and keyed services for managing multiple Cloudflare accounts
-- **S3-Compatible R2** — Intelligent multipart uploads, presigned URLs, and automatic retry handling
-- **Testable by Design** — All APIs exposed through interfaces for easy mocking
+- **Strongly-typed API** · Full IntelliSense with comprehensive XML documentation and proper nullability annotations
+
+- **CI/CD Pipeline** · Every commit triggers automated builds and tests; releases published automatically to NuGet
+
+- **Resilience Built-in** · Automatic retries, circuit breaker, rate limiting, and configurable timeouts via Polly
+
+- **Multi-account Support** · Named clients and keyed services for managing multiple Cloudflare accounts
+
+- **Dependency Injection** · First-class support for `Microsoft.Extensions.DependencyInjection` with `IHttpClientFactory`
+
+- **S3-Compatible R2** · Intelligent multipart uploads, presigned URLs, and automatic retry handling
+
+- **Testable by Design** · Integration tests against real Cloudflare APIs and unit tests for request/response validation
 
 ## Get Started
 
