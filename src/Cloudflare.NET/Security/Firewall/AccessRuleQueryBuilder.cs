@@ -25,13 +25,13 @@ internal static class AccessRuleQueryBuilder
       queryParams.Add($"notes={Uri.EscapeDataString(filters.Notes)}");
 
     if (filters.Mode.HasValue)
-      queryParams.Add($"mode={EnumHelper.GetEnumMemberValue(filters.Mode.Value)}");
+      queryParams.Add($"mode={Uri.EscapeDataString(filters.Mode.Value.Value)}");
 
     if (filters.Match.HasValue)
       queryParams.Add($"match={EnumHelper.GetEnumMemberValue(filters.Match.Value)}");
 
     if (filters.ConfigurationTarget.HasValue)
-      queryParams.Add($"configuration.target={EnumHelper.GetEnumMemberValue(filters.ConfigurationTarget.Value)}");
+      queryParams.Add($"configuration.target={Uri.EscapeDataString(filters.ConfigurationTarget.Value.Value)}");
 
     if (!string.IsNullOrWhiteSpace(filters.ConfigurationValue))
       queryParams.Add($"configuration.value={Uri.EscapeDataString(filters.ConfigurationValue)}");

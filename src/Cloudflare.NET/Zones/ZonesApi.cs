@@ -90,7 +90,7 @@ public class ZonesApi : ApiResource, IZonesApi
                                                       string            cnameTarget,
                                                       CancellationToken cancellationToken = default)
   {
-    var requestBody = new CreateDnsRecordRequest("CNAME", hostname, cnameTarget, 300, true);
+    var requestBody = new CreateDnsRecordRequest(DnsRecordType.CNAME, hostname, cnameTarget, 300, true);
     var endpoint    = $"zones/{zoneId}/dns_records";
     return await PostAsync<DnsRecord>(endpoint, requestBody, cancellationToken);
   }
@@ -169,8 +169,8 @@ public class ZonesApi : ApiResource, IZonesApi
 
     var queryParams = new List<string>();
 
-    if (!string.IsNullOrWhiteSpace(filters.Type))
-      queryParams.Add($"type={Uri.EscapeDataString(filters.Type)}");
+    if (filters.Type.HasValue)
+      queryParams.Add($"type={Uri.EscapeDataString(filters.Type.Value.Value)}");
     if (!string.IsNullOrWhiteSpace(filters.Name))
       queryParams.Add($"name={Uri.EscapeDataString(filters.Name)}");
     if (!string.IsNullOrWhiteSpace(filters.Content))

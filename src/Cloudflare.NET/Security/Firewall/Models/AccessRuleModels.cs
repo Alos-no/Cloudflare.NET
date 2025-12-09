@@ -59,6 +59,13 @@ public record AsnConfiguration(string Value) : AccessRuleConfiguration(AccessRul
 /// <summary>An access rule configuration that targets a two-letter country code.</summary>
 public record CountryConfiguration(string Value) : AccessRuleConfiguration(AccessRuleTarget.Country, Value);
 
+/// <summary>A generic access rule configuration for unknown or future target types.</summary>
+/// <remarks>
+///   This configuration is used when the API returns a target type not yet defined in the SDK,
+///   maintaining forward compatibility with new target types added by Cloudflare.
+/// </remarks>
+public record GenericConfiguration(AccessRuleTarget Target, string Value) : AccessRuleConfiguration(Target, Value);
+
 /// <summary>Custom JSON converter for deserializing the polymorphic <see cref="AccessRuleConfiguration" />.</summary>
 public class AccessRuleConfigurationConverter : JsonConverter<AccessRuleConfiguration>
 {
@@ -73,31 +80,24 @@ public class AccessRuleConfigurationConverter : JsonConverter<AccessRuleConfigur
     if (!root.TryGetProperty("target", out var targetElement) || !root.TryGetProperty("value", out var valueElement))
       throw new JsonException("AccessRuleConfiguration must have 'target' and 'value' properties.");
 
-    var targetString = targetElement.GetString();
+    var targetString = targetElement.GetString() ?? throw new JsonException("Target cannot be null.");
     var value        = valueElement.GetString() ?? throw new JsonException("Value cannot be null.");
+    var target       = new AccessRuleTarget(targetString);
 
-#if NET5_0_OR_GREATER
-    var targetEnum = Enum.GetValues<AccessRuleTarget>()
-#else
-    var targetEnum = Enum.GetValues(typeof(AccessRuleTarget)).Cast<AccessRuleTarget>()
-#endif
-                         .FirstOrDefault(e =>
-                         {
-                           var member = typeof(AccessRuleTarget).GetMember(e.ToString()).FirstOrDefault();
-                           var enumMemberAttr = member?.GetCustomAttributes(typeof(System.Runtime.Serialization.EnumMemberAttribute), false)
-                                                      .Cast<System.Runtime.Serialization.EnumMemberAttribute>()
-                                                      .FirstOrDefault();
-                           return string.Equals(enumMemberAttr?.Value, targetString, StringComparison.OrdinalIgnoreCase);
-                         });
+    // Match against known target types for polymorphic deserialization.
+    // For unknown targets, create a generic configuration.
+    if (target == AccessRuleTarget.Ip)
+      return new IpConfiguration(value);
+    if (target == AccessRuleTarget.IpRange)
+      return new CidrConfiguration(value);
+    if (target == AccessRuleTarget.Asn)
+      return new AsnConfiguration(value);
+    if (target == AccessRuleTarget.Country)
+      return new CountryConfiguration(value);
 
-    return targetEnum switch
-    {
-      AccessRuleTarget.Ip => new IpConfiguration(value),
-      AccessRuleTarget.IpRange => new CidrConfiguration(value),
-      AccessRuleTarget.Asn => new AsnConfiguration(value),
-      AccessRuleTarget.Country => new CountryConfiguration(value),
-      _ => throw new JsonException($"Unknown AccessRuleConfiguration target: {targetString}")
-    };
+    // For future/unknown target types, create a generic configuration.
+    // This maintains forward compatibility with new target types added by Cloudflare.
+    return new GenericConfiguration(target, value);
   }
 
   /// <inheritdoc />

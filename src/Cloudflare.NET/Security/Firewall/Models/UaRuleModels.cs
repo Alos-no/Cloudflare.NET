@@ -1,19 +1,6 @@
 ﻿namespace Cloudflare.NET.Security.Firewall.Models;
 
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Core.Json;
-
-/// <summary>Defines the action to take for a User-Agent blocking rule.</summary>
-[JsonConverter(typeof(JsonStringEnumMemberConverter))]
-public enum UaRuleMode
-{
-  [EnumMember(Value = "block")]        Block,
-  [EnumMember(Value = "challenge")]    Challenge,
-  [EnumMember(Value = "js_challenge")] JsChallenge,
-  [EnumMember(Value = "managed_challenge")]
-  ManagedChallenge
-}
 
 /// <summary>Represents the configuration for a User-Agent blocking rule.</summary>
 /// <param name="Target">The target of the configuration, always "ua".</param>

@@ -1,19 +1,9 @@
 ﻿namespace Cloudflare.NET.Security.Firewall.Models;
 
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Core.Json;
-
-/// <summary>Defines the configuration target for a Zone Lockdown rule.</summary>
-[JsonConverter(typeof(JsonStringEnumMemberConverter))]
-public enum LockdownTarget
-{
-  [EnumMember(Value = "ip")]       Ip,
-  [EnumMember(Value = "ip_range")] IpRange
-}
 
 /// <summary>Represents a single IP configuration within a Zone Lockdown rule.</summary>
-/// <param name="Target">The type of target, either "ip" or "ip_range".</param>
+/// <param name="Target">The type of target (e.g., <see cref="LockdownTarget.Ip" />, <see cref="LockdownTarget.IpRange" />).</param>
 /// <param name="Value">The IP address or CIDR range.</param>
 public record LockdownConfiguration(
   [property: JsonPropertyName("target")]

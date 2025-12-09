@@ -19,6 +19,17 @@
     <!-- Test projects are not packaged -->
     <IsPackable>false</IsPackable>
 
+    <!--
+      Disable parallel test execution across target frameworks.
+
+      Integration tests create/modify shared resources in the Cloudflare account (access rules,
+      DNS records, etc.). Running net8.0 and net10.0 tests simultaneously causes race conditions
+      like "duplicate_of_existing" errors when both try to create the same resource.
+
+      These properties ensure frameworks run sequentially (net8.0 completes, then net10.0 starts).
+    -->
+    <TestTfmsInParallel>false</TestTfmsInParallel>
+
     <!-- Disable trim/AOT analysis for test projects -->
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
     <IsTrimmable>false</IsTrimmable>

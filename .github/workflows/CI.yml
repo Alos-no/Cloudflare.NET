@@ -55,8 +55,9 @@ jobs:
       - name: Run All Tests on Main/Develop Branch (Unit and Integration)
         # Runs the full test suite, including live integration tests.
         # This step REQUIRES the secrets to be configured in the repository.
+        # Uses runsettings file to ensure frameworks run sequentially (prevents race conditions in integration tests).
         if: github.ref_name == 'main' || github.ref_name == 'develop'
-        run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal --logger trx --results-directory ./test-results
+        run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal --settings tests/test.runsettings --logger trx --results-directory ./test-results
         env:
           # These secrets must be configured in the GitHub repository settings.
           # The double underscore `__` is the standard convention for mapping
@@ -71,8 +72,9 @@ jobs:
       - name: Run Unit Tests Only (Pull Requests)
         # On pull requests from forks or non-protected branches, run only unit tests
         # since integration test secrets are not available.
+        # Uses runsettings file to ensure frameworks run sequentially.
         if: github.ref_name != 'main' && github.ref_name != 'develop'
-        run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal --filter "Category!=Integration" --logger trx --results-directory ./test-results
+        run: dotnet test Cloudflare.NET.sln --no-build --verbosity normal --settings tests/test.runsettings --filter "Category!=Integration" --logger trx --results-directory ./test-results
 
       - name: Upload test results
         # Upload test results even if tests fail for debugging purposes
