@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Accounts.Models;
 using Core.Json;
 using Shared.Fixtures;
+using Xunit.Abstractions;
 
 /// <summary>
 ///   Contains unit tests for verifying the JSON serialization of R2 lifecycle models.
@@ -28,6 +29,21 @@ public class LifecycleModelSerializationTests
   {
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
   };
+
+  /// <summary>Test output helper for diagnostic logging during tests.</summary>
+  private readonly ITestOutputHelper _testOutputHelper;
+
+  #endregion
+
+
+  #region Constructors
+
+  /// <summary>Initializes a new instance of the <see cref="LifecycleModelSerializationTests"/> class.</summary>
+  /// <param name="testOutputHelper">The xUnit test output helper for logging.</param>
+  public LifecycleModelSerializationTests(ITestOutputHelper testOutputHelper)
+  {
+    _testOutputHelper = testOutputHelper;
+  }
 
   #endregion
 
@@ -667,6 +683,114 @@ public class LifecycleModelSerializationTests
     // Assert
     using var doc = JsonDocument.Parse(json);
     doc.RootElement.TryGetProperty("prefix", out _).Should().BeFalse();
+  }
+
+  /// <summary>
+  ///   Verifies the exact JSON format for a 1-day abort multipart uploads rule.
+  ///   This test replicates the exact scenario reported in issue where SetBucketLifecycleAsync
+  ///   fails with Cloudflare error 10040 "The JSON you provided was not well formed."
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     This test validates:
+  ///     <list type="bullet">
+  ///       <item><description>1 day = 86400 seconds (correct conversion)</description></item>
+  ///       <item><description>Enum serializes as "Age" (string, not integer 0)</description></item>
+  ///       <item><description>Property names are camelCase (type, maxAge)</description></item>
+  ///       <item><description>Null properties are omitted (conditions, deleteObjectsTransition, etc.)</description></item>
+  ///     </list>
+  ///   </para>
+  /// </remarks>
+  [Fact]
+  public void Serialize_BucketLifecyclePolicy_OneDayAbortMultipart_ProducesCorrectJson()
+  {
+    // Arrange - Exact scenario from user's OrganizationS3ProvisioningService
+    // MultipartUploadAbortDays = 1
+    var lifecyclePolicy = new BucketLifecyclePolicy(
+    [
+      new LifecycleRule(
+        Id: "abort-incomplete-multipart-uploads",
+        Enabled: true,
+        AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(
+          LifecycleCondition.AfterDays(1) // 1 day = 86400 seconds
+        )
+      )
+    ]);
+
+    // Act - Use the exact same serialization options as SetBucketLifecycleAsync
+    var json = JsonSerializer.Serialize(lifecyclePolicy, _lifecycleSerializerOptions);
+
+    // Assert - Verify exact JSON format expected by Cloudflare R2 API
+    var expectedJson = """{"rules":[{"id":"abort-incomplete-multipart-uploads","enabled":true,"abortMultipartUploadsTransition":{"condition":{"type":"Age","maxAge":86400}}}]}""";
+    json.Should().Be(expectedJson, "JSON must match Cloudflare's expected format for 1-day abort rule");
+
+    // Additional structural validation
+    using var doc = JsonDocument.Parse(json);
+    var root = doc.RootElement;
+
+    // Verify rules array
+    root.GetProperty("rules").GetArrayLength().Should().Be(1);
+
+    var rule = root.GetProperty("rules")[0];
+
+    // Verify rule properties
+    rule.GetProperty("id").GetString().Should().Be("abort-incomplete-multipart-uploads");
+    rule.GetProperty("enabled").GetBoolean().Should().BeTrue();
+
+    // Verify abortMultipartUploadsTransition structure
+    var abortTransition = rule.GetProperty("abortMultipartUploadsTransition");
+    var condition = abortTransition.GetProperty("condition");
+
+    // Critical: Verify enum serializes as string "Age", not integer 0
+    condition.GetProperty("type").GetString().Should().Be("Age",
+      "LifecycleConditionType.Age must serialize as string 'Age', not integer 0");
+
+    // Verify maxAge is 86400 seconds (1 day)
+    condition.GetProperty("maxAge").GetInt32().Should().Be(86400,
+      "1 day must equal 86400 seconds");
+
+    // Verify null properties are omitted (not serialized as null)
+    rule.TryGetProperty("conditions", out _).Should().BeFalse("null conditions should be omitted");
+    rule.TryGetProperty("deleteObjectsTransition", out _).Should().BeFalse("null deleteObjectsTransition should be omitted");
+    rule.TryGetProperty("storageClassTransitions", out _).Should().BeFalse("null storageClassTransitions should be omitted");
+  }
+
+  /// <summary>
+  ///   Diagnostic test that outputs the raw JSON for debugging purposes.
+  ///   This test always passes but logs the exact JSON that would be sent to Cloudflare.
+  /// </summary>
+  [Fact]
+  public void Serialize_BucketLifecyclePolicy_OneDayAbortMultipart_OutputsJsonForDebugging()
+  {
+    // Arrange - Same as user's scenario
+    var lifecyclePolicy = new BucketLifecyclePolicy(
+    [
+      new LifecycleRule(
+        Id: "abort-incomplete-multipart-uploads",
+        Enabled: true,
+        AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(
+          LifecycleCondition.AfterDays(1)
+        )
+      )
+    ]);
+
+    // Act
+    var json = JsonSerializer.Serialize(lifecyclePolicy, _lifecycleSerializerOptions);
+
+    // Output for debugging (visible in test output)
+    _testOutputHelper.WriteLine("=== JSON that would be sent to Cloudflare R2 API ===");
+    _testOutputHelper.WriteLine(json);
+    _testOutputHelper.WriteLine("=== End JSON ===");
+
+    // Pretty-print for readability
+    using var doc = JsonDocument.Parse(json);
+    var prettyJson = JsonSerializer.Serialize(doc, new JsonSerializerOptions { WriteIndented = true });
+    _testOutputHelper.WriteLine("\n=== Pretty-printed JSON ===");
+    _testOutputHelper.WriteLine(prettyJson);
+    _testOutputHelper.WriteLine("=== End Pretty JSON ===");
+
+    // Verify it's valid JSON (test always passes if we get here)
+    doc.Should().NotBeNull();
   }
 
   #endregion

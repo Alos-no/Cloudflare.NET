@@ -870,8 +870,27 @@ public class AccountsApiUnitTests
     capturedRequest.RequestUri!.ToString().Should()
                    .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/lifecycle");
     capturedJsonBody.Should().NotBeNullOrEmpty();
+
+    // The SDK normalizes null Conditions to empty LifecycleRuleConditions objects to satisfy the Cloudflare R2 API
+    // requirement that the 'conditions' field be present in each rule, even if empty.
     var content = JsonSerializer.Deserialize<BucketLifecyclePolicy>(capturedJsonBody!);
-    content.Should().BeEquivalentTo(lifecyclePolicy);
+    content.Should().NotBeNull();
+    content!.Rules.Should().HaveCount(3);
+
+    // First rule: has explicit conditions with prefix
+    content.Rules[0].Id.Should().Be("Delete old objects");
+    content.Rules[0].Conditions.Should().NotBeNull();
+    content.Rules[0].Conditions!.Prefix.Should().Be("temp/");
+
+    // Second rule: had null conditions, now normalized to empty LifecycleRuleConditions
+    content.Rules[1].Id.Should().Be("Cleanup multipart");
+    content.Rules[1].Conditions.Should().NotBeNull("SDK normalizes null conditions to empty conditions");
+    content.Rules[1].Conditions!.Prefix.Should().BeNull();
+
+    // Third rule: has explicit conditions with prefix
+    content.Rules[2].Id.Should().Be("Archive old data");
+    content.Rules[2].Conditions.Should().NotBeNull();
+    content.Rules[2].Conditions!.Prefix.Should().Be("archive/");
   }
 
   /// <summary>Verifies that DeleteBucketLifecycleAsync sends a PUT request with an empty rules array.</summary>

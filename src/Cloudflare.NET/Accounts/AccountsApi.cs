@@ -187,13 +187,24 @@ public class AccountsApi : ApiResource, IAccountsApi
   {
     var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/lifecycle";
 
+    // Cloudflare R2 API requires the 'conditions' field to be present in each rule, even if empty.
+    // If conditions is null, we normalize it to an empty LifecycleRuleConditions object.
+    // Without this normalization, the API returns error 10040 "The JSON you provided was not well formed."
+    var normalizedRules = lifecyclePolicy.Rules.Select(rule =>
+      rule.Conditions is null
+        ? rule with { Conditions = new LifecycleRuleConditions() }
+        : rule
+    ).ToArray();
+
+    var normalizedPolicy = new BucketLifecyclePolicy(normalizedRules);
+
     // Use custom serialization options that match Cloudflare R2 lifecycle API expectations (camelCase for lifecycle)
     // Note: The R2 lifecycle API uses camelCase property names, unlike most Cloudflare APIs which use snake_case
     var lifecycleSerializerOptions = new System.Text.Json.JsonSerializerOptions
     {
       DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
     };
-    var jsonContent = System.Text.Json.JsonSerializer.Serialize(lifecyclePolicy, lifecycleSerializerOptions);
+    var jsonContent = System.Text.Json.JsonSerializer.Serialize(normalizedPolicy, lifecycleSerializerOptions);
 
     await PutJsonAsync<object?>(endpoint, jsonContent, cancellationToken);
   }
