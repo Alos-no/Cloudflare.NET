@@ -110,20 +110,23 @@ jobs:
       - name: NuGet Trusted Publishing Login
         # Exchange GitHub OIDC token for a short-lived NuGet API key
         # This eliminates the need for long-lived API key secrets
+        # Reference: https://github.com/NuGet/login
         if: ${{ github.event.inputs.dry_run != 'true' }}
+        id: nuget-login
         uses: nuget/login@v1
         with:
-          owner: ${{ secrets.NUGET_USER }}
+          user: ${{ secrets.NUGET_USER }}
 
       - name: Push packages to NuGet.org
         # Push all packages to NuGet.org
         # --skip-duplicate ensures idempotency - already published versions are skipped
-        # No --api-key needed - the login action configures authentication automatically
+        # The API key is obtained from the login step's output (valid for ~1 hour)
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
           for package in ./artifacts/*.nupkg; do
             echo "Pushing: $package"
             dotnet nuget push "$package" \
+              --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
               --source https://api.nuget.org/v3/index.json \
               --skip-duplicate
           done
