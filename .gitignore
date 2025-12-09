@@ -13,6 +13,7 @@ README-tests.md
 AGENTS.md
 CLAUDE.md
 .cursorignore
+.claude/
 
 docs/internal
 docs/_site

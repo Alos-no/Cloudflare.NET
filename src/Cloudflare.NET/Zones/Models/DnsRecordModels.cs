@@ -4,14 +4,14 @@ using System.Text.Json.Serialization;
 using Security.Firewall.Models;
 
 /// <summary>Defines the request payload for creating a DNS record.</summary>
-/// <param name="Type">The type of DNS record (e.g., "CNAME").</param>
+/// <param name="Type">The type of DNS record (e.g., <see cref="DnsRecordType.CNAME" />).</param>
 /// <param name="Name">The record name (e.g., "cdn.example.com").</param>
 /// <param name="Content">The record content (the target).</param>
 /// <param name="Ttl">Time to live, in seconds.</param>
 /// <param name="Proxied">Whether the record is proxied by Cloudflare.</param>
 public record CreateDnsRecordRequest(
   [property: JsonPropertyName("type")]
-  string Type,
+  DnsRecordType Type,
   [property: JsonPropertyName("name")]
   string Name,
   [property: JsonPropertyName("content")]
@@ -32,7 +32,7 @@ public record DnsRecord(
   [property: JsonPropertyName("name")]
   string Name,
   [property: JsonPropertyName("type")]
-  string Type
+  DnsRecordType Type
 );
 
 /// <summary>Represents the result of a bulk DNS record import operation.</summary>
@@ -49,7 +49,7 @@ public record DnsImportResult(
 );
 
 /// <summary>Defines the filtering and pagination options for listing DNS records.</summary>
-/// <param name="Type">The type of DNS record to filter by (e.g., A, CNAME).</param>
+/// <param name="Type">The type of DNS record to filter by (e.g., <see cref="DnsRecordType.A" />, <see cref="DnsRecordType.CNAME" />).</param>
 /// <param name="Name">The exact name of the DNS record to filter by.</param>
 /// <param name="Content">The content of the DNS record to filter by.</param>
 /// <param name="Proxied">Whether to filter by proxied status.</param>
@@ -58,7 +58,7 @@ public record DnsImportResult(
 /// <param name="Order">The field to order the results by.</param>
 /// <param name="Direction">The direction to sort the results.</param>
 public record ListDnsRecordsFilters(
-  string?             Type      = null,
+  DnsRecordType?      Type      = null,
   string?             Name      = null,
   string?             Content   = null,
   bool?               Proxied   = null,
@@ -71,12 +71,12 @@ public record ListDnsRecordsFilters(
 /// <summary>Represents the detailed information for a Cloudflare Zone.</summary>
 /// <param name="Id">The Zone identifier tag.</param>
 /// <param name="Name">The domain name.</param>
-/// <param name="Status">The current status of the zone.</param>
+/// <param name="Status">The current status of the zone (e.g., <see cref="ZoneStatus.Active" />, <see cref="ZoneStatus.Pending" />).</param>
 public record Zone(
   [property: JsonPropertyName("id")]
   string Id,
   [property: JsonPropertyName("name")]
   string Name,
   [property: JsonPropertyName("status")]
-  string Status
+  ZoneStatus Status
 );

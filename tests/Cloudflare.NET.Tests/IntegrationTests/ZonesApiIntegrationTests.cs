@@ -6,6 +6,7 @@ using Shared.Fixtures;
 using Shared.Helpers;
 using Xunit.Abstractions;
 using Zones;
+using Zones.Models;
 
 /// <summary>Contains integration tests for the <see cref="ZonesApi" /> class.</summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
@@ -89,7 +90,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     // Assert
     records.Should().HaveCount(1);
     records[0].Name.Should().Be(_hostname);
-    records[0].Type.Should().Be("CNAME");
+    records[0].Type.Should().Be(DnsRecordType.CNAME);
   }
 
   /// <summary>Tests that DNS records can be exported, deleted, and then re-imported.</summary>
@@ -213,7 +214,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     findResult.Should().NotBeNull();
     findResult.Id.Should().Be(_recordId);
     findResult.Name.Should().Be(_hostname);
-    findResult.Type.Should().Be("CNAME");
+    findResult.Type.Should().Be(DnsRecordType.CNAME);
   }
 
   /// <summary>Verifies that attempting to delete a non-existent resource correctly throws a 404 Not Found exception.</summary>
@@ -248,7 +249,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     // The BaseDomain is inferred from the zone details in the fixture, so this confirms consistency.
     zoneDetails.Name.Should().Be(_settings.BaseDomain);
     // A zone used for testing should be active.
-    zoneDetails.Status.Should().Be("active");
+    zoneDetails.Status.Should().Be(ZoneStatus.Active);
   }
 
   #endregion
