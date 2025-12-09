@@ -179,24 +179,51 @@ await cf.Accounts.AccessRules.DeleteAsync(ruleId);
 
 ## Models Reference
 
-### AccessRuleMode
+### AccessRuleMode (Extensible Enum)
 
-| Value | Description |
-|-------|-------------|
+The action to take when an access rule matches. This is an [extensible enum](../../conventions.md#extensible-enums) that supports custom values for forward compatibility.
+
+| Known Value | Description |
+|-------------|-------------|
 | `Block` | Block all requests from this source |
 | `Challenge` | Present CAPTCHA challenge |
 | `JsChallenge` | Present JavaScript challenge |
 | `ManagedChallenge` | Let Cloudflare decide challenge type |
 | `Whitelist` | Allow requests, bypass other security rules |
 
+```csharp
+// Using known values
+AccessRuleMode.Block
+AccessRuleMode.Challenge
+AccessRuleMode.JsChallenge
+AccessRuleMode.ManagedChallenge
+AccessRuleMode.Whitelist
+
+// Future-proof: accepts unknown values from API
+AccessRuleMode customMode = "new-mode";
+```
+
+### AccessRuleTarget (Extensible Enum)
+
+The target type for access rule configurations. This is an [extensible enum](../../conventions.md#extensible-enums) that supports custom values for forward compatibility.
+
+| Known Value | Description |
+|-------------|-------------|
+| `Ip` | Single IP address |
+| `IpRange` | CIDR notation range |
+| `Asn` | Autonomous System Number |
+| `Country` | ISO country code |
+
 ### Configuration Types
 
-| Type | Target | Example Value |
-|------|--------|---------------|
-| `IpConfiguration` | Single IP address | `192.168.1.1` |
-| `CidrConfiguration` | IP range (CIDR) | `10.0.0.0/8` |
-| `AsnConfiguration` | ASN identifier | `AS12345` |
-| `CountryConfiguration` | ISO country code | `US`, `GB`, `DE` |
+Use the appropriate configuration class for your target type:
+
+| Type | Target | Example |
+|------|--------|---------|
+| `IpConfiguration` | Single IP address | `new IpConfiguration("192.168.1.1")` |
+| `CidrConfiguration` | IP range (CIDR) | `new CidrConfiguration("10.0.0.0/8")` |
+| `AsnConfiguration` | ASN identifier | `new AsnConfiguration("AS12345")` |
+| `CountryConfiguration` | ISO country code | `new CountryConfiguration("US")` |
 
 ### AccessRule
 
