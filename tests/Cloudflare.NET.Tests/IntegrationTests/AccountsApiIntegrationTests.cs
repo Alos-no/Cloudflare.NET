@@ -584,6 +584,60 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
   }
 
+  /// <summary>
+  ///   Tests the exact scenario reported in GitHub issue: 1-day abort multipart uploads with hyphenated ID.
+  ///   This replicates the OrganizationS3ProvisioningService.ConfigureBucketLifecycleAsync pattern.
+  /// </summary>
+  /// <remarks>
+  ///   This test validates that the Cloudflare API accepts:
+  ///   <list type="bullet">
+  ///     <item><description>Hyphenated rule IDs (e.g., "abort-incomplete-multipart-uploads")</description></item>
+  ///     <item><description>1-day (86400 seconds) abort multipart uploads transition</description></item>
+  ///     <item><description>Minimal rule with only abortMultipartUploadsTransition (no conditions, no other transitions)</description></item>
+  ///   </list>
+  /// </remarks>
+  [IntegrationTest]
+  public async Task SetBucketLifecycleAsync_OneDayAbortMultipartWithHyphenatedId_Succeeds()
+  {
+    // Arrange - Test with NULL conditions (the SDK should normalize this to empty conditions)
+    // This replicates the exact user scenario where Conditions is not specified
+    var lifecyclePolicy = new BucketLifecyclePolicy(
+    [
+      new LifecycleRule(
+        Id: "abort-incomplete-multipart-uploads", // Hyphenated ID as used in production
+        Enabled: true,
+        // Conditions intentionally omitted (null) - SDK should normalize to empty object
+        AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(
+          LifecycleCondition.AfterDays(1) // 1 day = 86400 seconds
+        )
+      )
+    ]);
+
+    try
+    {
+      // Act - This should succeed
+      var setAction = async () => await _sut.SetBucketLifecycleAsync(_bucketName, lifecyclePolicy);
+      await setAction.Should().NotThrowAsync("setting 1-day abort multipart lifecycle with hyphenated ID should succeed");
+
+      // Verify the policy was set correctly
+      var retrievedPolicy = await _sut.GetBucketLifecycleAsync(_bucketName);
+      retrievedPolicy.Should().NotBeNull();
+      retrievedPolicy.Rules.Should().HaveCount(1);
+
+      var rule = retrievedPolicy.Rules[0];
+      rule.Id.Should().Be("abort-incomplete-multipart-uploads");
+      rule.Enabled.Should().BeTrue();
+      rule.AbortMultipartUploadsTransition.Should().NotBeNull();
+      rule.AbortMultipartUploadsTransition!.Condition.Type.Should().Be(LifecycleConditionType.Age);
+      rule.AbortMultipartUploadsTransition.Condition.MaxAge.Should().Be(86400); // 1 day in seconds
+    }
+    finally
+    {
+      // Cleanup - Reset to empty lifecycle
+      await _sut.DeleteBucketLifecycleAsync(_bucketName);
+    }
+  }
+
   /// <summary>Verifies that getting lifecycle from a new bucket returns the default lifecycle policy.</summary>
   /// <remarks>
   ///   R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts incomplete multipart
