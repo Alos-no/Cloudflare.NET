@@ -1,8 +1,0 @@
-﻿{
-  capturedRequest: https://api.cloudflare.com/client/v4/accounts/test-account-id/r2/buckets/test-bucket/domains/custom/r2.example.com,
-  result: {
-    Domain: r2.example.com,
-    EdgeHostname: r2.example.com.cdn.cloudflare.net,
-    Status: active
-  }
-}

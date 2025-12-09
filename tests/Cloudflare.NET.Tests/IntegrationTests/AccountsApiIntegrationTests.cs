@@ -150,10 +150,11 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     // Assert
     testBucket.Should().NotBeNull("the bucket created in InitializeAsync should be found in the list");
     testBucket!.Name.Should().Be(_bucketName);
-    testBucket.Location.Should().BeNullOrWhiteSpace();
-    testBucket.Jurisdiction.Should().BeNullOrWhiteSpace();
-    testBucket.StorageClass.Should().BeNullOrWhiteSpace();
-    // The List operation returns a summary object which does not include the location.
+    // The List operation returns a summary object which does not include location details.
+    // These properties may be null or have empty values depending on bucket configuration.
+    testBucket.Location?.Value.Should().BeNullOrWhiteSpace();
+    testBucket.Jurisdiction?.Value.Should().BeNullOrWhiteSpace();
+    testBucket.StorageClass?.Value.Should().BeNullOrWhiteSpace();
     // Assert that the creation date is recent, within a tolerance, to account for test execution time.
     testBucket.CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
   }

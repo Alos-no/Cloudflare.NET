@@ -16,20 +16,20 @@ public record CreateBucketRequest(
 /// <summary>Represents an R2 bucket returned by the Cloudflare API.</summary>
 /// <param name="Name">The name of the created bucket.</param>
 /// <param name="CreationDate">The date and time the bucket was created.</param>
-/// <param name="Location">The location hint for the bucket.</param>
-/// <param name="Jurisdiction">The jurisdiction of the bucket.</param>
-/// <param name="StorageClass">The storage class of the bucket.</param>
+/// <param name="Location">The location hint for the bucket indicating geographic placement.</param>
+/// <param name="Jurisdiction">The jurisdiction of the bucket guaranteeing data residency.</param>
+/// <param name="StorageClass">The default storage class for new objects in the bucket.</param>
 public record R2Bucket(
   [property: JsonPropertyName("name")]
   string Name,
   [property: JsonPropertyName("creation_date")]
   DateTime CreationDate,
   [property: JsonPropertyName("location")]
-  string? Location,
+  R2LocationHint? Location,
   [property: JsonPropertyName("jurisdiction")]
-  string? Jurisdiction,
+  R2Jurisdiction? Jurisdiction,
   [property: JsonPropertyName("storage_class")]
-  string? StorageClass
+  R2StorageClass? StorageClass
 );
 
 /// <summary>Defines the filtering and pagination options for listing R2 Buckets.</summary>
@@ -163,28 +163,14 @@ public record DeleteObjectsTransition(
   LifecycleCondition Condition
 );
 
-/// <summary>Defines the available R2 storage classes for lifecycle transitions.</summary>
-public static class R2StorageClass
-{
-  #region Constants & Statics
-
-  /// <summary>Standard storage class for frequently accessed data.</summary>
-  public const string Standard = "Standard";
-
-  /// <summary>Infrequent Access storage class for less frequently accessed data with lower storage costs.</summary>
-  public const string InfrequentAccess = "InfrequentAccess";
-
-  #endregion
-}
-
 /// <summary>Represents a transition to change the storage class of objects.</summary>
 /// <param name="Condition">The condition that triggers the storage class transition.</param>
-/// <param name="StorageClass">The target storage class (e.g., "InfrequentAccess").</param>
+/// <param name="StorageClass">The target storage class (e.g., <see cref="R2StorageClass.InfrequentAccess" />).</param>
 public record StorageClassTransition(
   [property: JsonPropertyName("condition")]
   LifecycleCondition Condition,
   [property: JsonPropertyName("storageClass")]
-  string StorageClass
+  R2StorageClass StorageClass
 );
 
 /// <summary>Represents a single lifecycle rule for an R2 bucket.</summary>
