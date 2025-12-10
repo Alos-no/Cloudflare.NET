@@ -5,6 +5,7 @@
 # 2. Uses the reusable build workflow to compile in Release configuration
 # 3. Authenticates via OIDC (Trusted Publishing) - no long-lived API keys needed
 # 4. Pushes packages to NuGet.org (skipping already-published versions)
+# 5. Creates Git tags for each published package (api-x.x.x, r2-x.x.x, analytics-x.x.x)
 #
 # Triggers:
 # - Automatically after CI workflow succeeds on main branch
@@ -51,7 +52,7 @@ on:
 
 # Restrict default permissions for security
 permissions:
-  contents: read
+  contents: write  # Required for creating Git tags
   id-token: write  # Required for OIDC Trusted Publishing
 
 # Allow only one concurrent publish to prevent race conditions
@@ -76,7 +77,7 @@ jobs:
     timeout-minutes: 15
 
     permissions:
-      contents: read
+      contents: write  # Required for creating Git tags
       id-token: write  # Required for OIDC Trusted Publishing
 
     steps:
@@ -129,6 +130,51 @@ jobs:
               --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
               --source https://api.nuget.org/v3/index.json \
               --skip-duplicate
+          done
+
+      - name: Create Git tags for published packages
+        # Create and push Git tags for each successfully published package
+        # Tag format: api-x.x.x, r2-x.x.x, analytics-x.x.x
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          # Configure Git for tagging
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Process each package and create corresponding tags
+          for package in ./artifacts/*.nupkg; do
+            # Extract filename without path (e.g., "Cloudflare.NET.Api.1.5.1.nupkg")
+            filename=$(basename "$package")
+
+            # Remove .nupkg extension
+            name_version="${filename%.nupkg}"
+
+            # Determine tag prefix based on package name
+            if [[ "$name_version" == Cloudflare.NET.Api.* ]]; then
+              version="${name_version#Cloudflare.NET.Api.}"
+              tag="api-${version}"
+            elif [[ "$name_version" == Cloudflare.NET.R2.* ]]; then
+              version="${name_version#Cloudflare.NET.R2.}"
+              tag="r2-${version}"
+            elif [[ "$name_version" == Cloudflare.NET.Analytics.* ]]; then
+              version="${name_version#Cloudflare.NET.Analytics.}"
+              tag="analytics-${version}"
+            else
+              echo "Skipping unknown package: $filename"
+              continue
+            fi
+
+            # Check if tag already exists (locally or remotely)
+            if git rev-parse "refs/tags/$tag" >/dev/null 2>&1; then
+              echo "Tag $tag already exists locally, skipping"
+            elif git ls-remote --tags origin "refs/tags/$tag" | grep -q "$tag"; then
+              echo "Tag $tag already exists on remote, skipping"
+            else
+              echo "Creating tag: $tag"
+              git tag -a "$tag" -m "Release $tag"
+              git push origin "$tag"
+              echo "Successfully created and pushed tag: $tag"
+            fi
           done
 
       - name: Upload packages as artifacts
