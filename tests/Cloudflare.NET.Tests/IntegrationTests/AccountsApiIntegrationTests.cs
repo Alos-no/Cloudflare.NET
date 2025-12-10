@@ -638,6 +638,77 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
   }
 
+  /// <summary>
+  ///   Verifies that CORS can be set with minimal CorsRule (null Headers, null ExposeHeaders, null MaxAgeSeconds).
+  ///   This tests that nullable properties in CorsRule are handled correctly by the API.
+  /// </summary>
+  [IntegrationTest]
+  public async Task SetBucketCorsAsync_MinimalCorsRule_Succeeds()
+  {
+    // Arrange - CORS rule with only required properties (Allowed), all optional properties null
+    var corsPolicy = new BucketCorsPolicy([
+      new CorsRule(
+        Allowed: new CorsAllowed(
+          Methods: ["GET"],
+          Origins: ["*"]
+          // Headers is null - testing nullable property omission
+        )
+        // Id, ExposeHeaders, MaxAgeSeconds are all null
+      )
+    ]);
+
+    try
+    {
+      // Act - This should succeed even with minimal properties
+      var setAction = async () => await _sut.SetBucketCorsAsync(_bucketName, corsPolicy);
+      await setAction.Should().NotThrowAsync("setting CORS with minimal properties should succeed");
+
+      // Verify the policy was set
+      var retrievedPolicy = await _sut.GetBucketCorsAsync(_bucketName);
+      retrievedPolicy.Should().NotBeNull();
+      retrievedPolicy.Rules.Should().HaveCount(1);
+      retrievedPolicy.Rules[0].Allowed.Methods.Should().BeEquivalentTo(["GET"]);
+      retrievedPolicy.Rules[0].Allowed.Origins.Should().BeEquivalentTo(["*"]);
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DeleteBucketCorsAsync(_bucketName);
+    }
+  }
+
+  /// <summary>
+  ///   Verifies that an R2 bucket can be created with no optional parameters (null LocationHint, null StorageClass).
+  ///   This tests that nullable properties in CreateBucketRequest are handled correctly.
+  /// </summary>
+  [IntegrationTest]
+  public async Task CreateR2BucketAsync_MinimalParameters_Succeeds()
+  {
+    // Arrange - Create bucket with only the required name
+    var bucketName = $"cfnet-minimal-bucket-{Guid.NewGuid():N}";
+
+    try
+    {
+      // Act - This should succeed with all optional parameters null
+      var result = await _sut.CreateR2BucketAsync(
+        bucketName
+        // locationHint: null (default)
+        // jurisdiction: null (default)
+        // storageClass: null (default)
+      );
+
+      // Assert
+      result.Should().NotBeNull();
+      result.Name.Should().Be(bucketName);
+      result.CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DeleteR2BucketAsync(bucketName);
+    }
+  }
+
   /// <summary>Verifies that getting lifecycle from a new bucket returns the default lifecycle policy.</summary>
   /// <remarks>
   ///   R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts incomplete multipart
