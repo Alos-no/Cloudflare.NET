@@ -2,6 +2,7 @@
 
 using AccessRules;
 using Core;
+using Core.Internal;
 using Core.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -216,6 +217,95 @@ public class AccountsApi : ApiResource, IAccountsApi
     // To remove the lifecycle policy, we PUT an empty rules array.
     var emptyPolicy = new BucketLifecyclePolicy(Array.Empty<LifecycleRule>());
     await SetBucketLifecycleAsync(bucketName, emptyPolicy, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region Account Management
+
+  /// <inheritdoc />
+  public async Task<PagePaginatedResult<Account>> ListAccountsAsync(
+    ListAccountsFilters? filters = null,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = BuildAccountsListQueryString(filters);
+
+    return await GetPagePaginatedResultAsync<Account>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public IAsyncEnumerable<Account> ListAllAccountsAsync(
+    ListAccountsFilters? filters = null,
+    CancellationToken cancellationToken = default)
+  {
+    // Build the base query string without page parameters (pagination is handled by GetPaginatedAsync).
+    var baseFilters = filters is not null ? filters with { Page = null, PerPage = null } : null;
+    var endpoint = BuildAccountsListQueryString(baseFilters);
+
+    return GetPaginatedAsync<Account>(endpoint, filters?.PerPage, cancellationToken);
+  }
+
+  /// <summary>
+  ///   Builds the query string for the accounts list endpoint.
+  /// </summary>
+  /// <param name="filters">Optional filters to apply.</param>
+  /// <returns>The endpoint with query string.</returns>
+  private static string BuildAccountsListQueryString(ListAccountsFilters? filters)
+  {
+    var queryParams = new List<string>();
+
+    if (filters?.Name is not null)
+      queryParams.Add($"name={Uri.EscapeDataString(filters.Name)}");
+    if (filters?.Page is not null)
+      queryParams.Add($"page={filters.Page}");
+    if (filters?.PerPage is not null)
+      queryParams.Add($"per_page={filters.PerPage}");
+    if (filters?.Direction is not null)
+      queryParams.Add($"direction={EnumHelper.GetEnumMemberValue(filters.Direction.Value)}");
+
+    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
+
+    return $"accounts{queryString}";
+  }
+
+  /// <inheritdoc />
+  public async Task<Account> GetAccountAsync(
+    string accountId,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{Uri.EscapeDataString(accountId)}";
+
+    return await GetAsync<Account>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<Account> CreateAccountAsync(
+    CreateAccountRequest request,
+    CancellationToken cancellationToken = default)
+  {
+    return await PostAsync<Account>("accounts", request, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<Account> UpdateAccountAsync(
+    string accountId,
+    UpdateAccountRequest request,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{Uri.EscapeDataString(accountId)}";
+
+    return await PutAsync<Account>(endpoint, request, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<DeleteAccountResult> DeleteAccountAsync(
+    string accountId,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{Uri.EscapeDataString(accountId)}";
+
+    return await DeleteAsync<DeleteAccountResult>(endpoint, cancellationToken);
   }
 
   #endregion

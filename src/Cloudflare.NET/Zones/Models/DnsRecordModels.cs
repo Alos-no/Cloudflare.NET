@@ -68,15 +68,4 @@ public record ListDnsRecordsFilters(
   ListOrderDirection? Direction = null
 );
 
-/// <summary>Represents the detailed information for a Cloudflare Zone.</summary>
-/// <param name="Id">The Zone identifier tag.</param>
-/// <param name="Name">The domain name.</param>
-/// <param name="Status">The current status of the zone (e.g., <see cref="ZoneStatus.Active" />, <see cref="ZoneStatus.Pending" />).</param>
-public record Zone(
-  [property: JsonPropertyName("id")]
-  string Id,
-  [property: JsonPropertyName("name")]
-  string Name,
-  [property: JsonPropertyName("status")]
-  ZoneStatus Status
-);
+// NOTE: The Zone record has been moved to ZoneModels.cs with a full model containing all properties.

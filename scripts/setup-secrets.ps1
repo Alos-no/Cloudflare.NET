@@ -20,12 +20,13 @@ $projects = @(
 # Define the secrets required, with user-friendly prompts.
 # Using [ordered] ensures that the prompts appear in the exact order they are defined here.
 $secrets = [ordered]@{
-    "Cloudflare:AccountId"   = "Enter your Cloudflare Account ID:";
-    "Cloudflare:ZoneId"      = "Enter the Cloudflare Zone ID to use for integration tests:";
-    "Cloudflare:BaseDomain"  = "Enter the Base Domain associated with the Zone ID (e.g., example.com):";
-    "Cloudflare:ApiToken"    = "Enter your Cloudflare API Token (needs R2:Read/Write, DNS:Read/Write permissions):";
-    "R2:AccessKeyId"         = "Enter your Cloudflare R2 Access Key ID:";
-    "R2:SecretAccessKey"     = "Enter your Cloudflare R2 Secret Access Key:";
+    "Cloudflare:AccountId"    = "Enter your Cloudflare Account ID:";
+    "Cloudflare:ZoneId"       = "Enter the Cloudflare Zone ID to use for integration tests:";
+    "Cloudflare:BaseDomain"   = "Enter the Base Domain associated with the Zone ID (e.g., example.com):";
+    "Cloudflare:ApiToken"     = "Enter your Cloudflare API Token";
+    "Cloudflare:UserApiToken" = "Enter your Cloudflare User API Token (for user-scoped tests):";
+    "R2:AccessKeyId"          = "Enter your Cloudflare R2 Access Key ID:";
+    "R2:SecretAccessKey"      = "Enter your Cloudflare R2 Secret Access Key:";
 }
 
 # --- Script Body ---

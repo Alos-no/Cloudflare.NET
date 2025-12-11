@@ -285,7 +285,30 @@ public class ZoneStatusTests
   public void Serialize_Zone_ProducesCorrectJson()
   {
     // Arrange
-    var zone = new Zone("zone-123", "example.com", ZoneStatus.Pending);
+    var zone = new Zone(
+      Id: "zone-123",
+      Name: "example.com",
+      Status: ZoneStatus.Pending,
+      Account: new ZoneAccount("acct-1", "Test Account"),
+      ActivatedOn: null,
+      CreatedOn: DateTime.UtcNow,
+      ModifiedOn: DateTime.UtcNow,
+      DevelopmentMode: 0,
+      NameServers: ["ns1.example.com"],
+      OriginalNameServers: null,
+      OriginalRegistrar: null,
+      OriginalDnsHost: null,
+      Owner: new ZoneOwner(null, null, null),
+      Plan: new ZonePlan("free", "Free", 0, "USD", null, true, true, null, false, false),
+      Meta: null,
+      Paused: false,
+      Permissions: null,
+      Type: ZoneType.Full,
+      VanityNameServers: null,
+      CnameSuffix: null,
+      VerificationKey: null,
+      Tenant: null,
+      TenantUnit: null);
 
     // Act
     var json = JsonSerializer.Serialize(zone, _serializerOptions);

@@ -1,10 +1,19 @@
 ﻿namespace Cloudflare.NET.Tests.Fixtures;
 
 using Accounts;
+using ApiTokens;
+using AuditLogs;
+using Dns;
+using Members;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Roles;
 using Shared.Fixtures;
+using Subscriptions;
+using Turnstile;
+using User;
+using Workers;
 using Zones;
 
 /// <summary>
@@ -86,8 +95,35 @@ public class CloudflareApiTestFixture : IAsyncLifetime
   /// <summary>Gets the fully configured Accounts API client from the DI container.</summary>
   public IAccountsApi AccountsApi => _apiClient.Accounts;
 
+  /// <summary>Gets the fully configured User API client from the DI container.</summary>
+  public IUserApi UserApi => _apiClient.User;
+
   /// <summary>Gets the fully configured Zones API client from the DI container.</summary>
   public IZonesApi ZonesApi => _apiClient.Zones;
+
+  /// <summary>Gets the fully configured DNS API client from the DI container.</summary>
+  public IDnsApi DnsApi => _apiClient.Dns;
+
+  /// <summary>Gets the fully configured Audit Logs API client from the DI container.</summary>
+  public IAuditLogsApi AuditLogsApi => _apiClient.AuditLogs;
+
+  /// <summary>Gets the fully configured API Tokens API client from the DI container.</summary>
+  public IApiTokensApi ApiTokensApi => _apiClient.ApiTokens;
+
+  /// <summary>Gets the fully configured Roles API client from the DI container.</summary>
+  public IRolesApi RolesApi => _apiClient.Roles;
+
+  /// <summary>Gets the fully configured Members API client from the DI container.</summary>
+  public IMembersApi MembersApi => _apiClient.Members;
+
+  /// <summary>Gets the fully configured Subscriptions API client from the DI container.</summary>
+  public ISubscriptionsApi SubscriptionsApi => _apiClient.Subscriptions;
+
+  /// <summary>Gets the fully configured Workers API client from the DI container.</summary>
+  public IWorkersApi WorkersApi => _apiClient.Workers;
+
+  /// <summary>Gets the fully configured Turnstile API client from the DI container.</summary>
+  public ITurnstileApi TurnstileApi => _apiClient.Turnstile;
 
   #endregion
 
