@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Bucket Management | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Bucket Management | Cloudflare.NET ">
+      
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/buckets.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-bucket-management">R2 Bucket Management</h1>
+
+<p>Manage R2 buckets through the Cloudflare REST API. This covers bucket creation, listing, and deletion. For object operations (upload, download, delete), see the <a href="../../r2/index.html">R2 Object Storage</a> section.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class BucketService(ICloudflareApiClient cf)
+{
+    public async Task&lt;R2Bucket&gt; CreateBucketAsync(string name)
+    {
+        return await cf.Accounts.CreateR2BucketAsync(name);
+    }
+}
+</code></pre>
+<h2 id="creating-buckets">Creating Buckets</h2>
+<h3 id="basic-creation">Basic Creation</h3>
+<pre><code class="lang-csharp">var bucket = await cf.Accounts.CreateR2BucketAsync(&quot;my-new-bucket&quot;);
+
+Console.WriteLine($&quot;Name: {bucket.Name}&quot;);
+Console.WriteLine($&quot;Created: {bucket.CreationDate}&quot;);
+Console.WriteLine($&quot;Location: {bucket.Location}&quot;);
+Console.WriteLine($&quot;Storage Class: {bucket.StorageClass}&quot;);
+</code></pre>
+<h3 id="with-location-hint">With Location Hint</h3>
+<p>Suggest a geographic region for bucket placement using <a href="#r2locationhint-extensible-enum">extensible enums</a>:</p>
+<pre><code class="lang-csharp">// Create bucket in Western Europe
+var bucket = await cf.Accounts.CreateR2BucketAsync(
+    &quot;eu-data-bucket&quot;,
+    R2LocationHint.WestEurope
+);
+</code></pre>
+<h3 id="with-jurisdiction-data-residency">With Jurisdiction (Data Residency)</h3>
+<p>Enforce data residency within a specific boundary:</p>
+<pre><code class="lang-csharp">// Create EU-jurisdictional bucket for GDPR compliance
+var bucket = await cf.Accounts.CreateR2BucketAsync(
+    &quot;gdpr-compliant-bucket&quot;,
+    locationHint: R2LocationHint.WestEurope,
+    jurisdiction: R2Jurisdiction.EuropeanUnion
+);
+
+// Access via jurisdictional S3 endpoint:
+// https://{account_id}.eu.r2.cloudflarestorage.com
+</code></pre>
+<h3 id="with-storage-class">With Storage Class</h3>
+<p>Set the default storage class for new objects:</p>
+<pre><code class="lang-csharp">// Create bucket optimized for infrequent access
+var bucket = await cf.Accounts.CreateR2BucketAsync(
+    &quot;archive-bucket&quot;,
+    locationHint: R2LocationHint.EastNorthAmerica,
+    storageClass: R2StorageClass.InfrequentAccess
+);
+</code></pre>
+<h3 id="bucket-naming-rules">Bucket Naming Rules</h3>
+<ul>
+<li>Must be 3-63 characters long</li>
+<li>Can contain lowercase letters, numbers, and hyphens</li>
+<li>Must start and end with a letter or number</li>
+<li>Must be unique within your account</li>
+</ul>
+<h2 id="listing-buckets">Listing Buckets</h2>
+<h3 id="list-all-buckets">List All Buckets</h3>
+<pre><code class="lang-csharp">await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+{
+    Console.WriteLine($&quot;{bucket.Name} - {bucket.Location ?? &quot;default&quot;}&quot;);
+}
+</code></pre>
+<h3 id="list-with-pagination">List with Pagination</h3>
+<pre><code class="lang-csharp">var page = await cf.Accounts.ListR2BucketsAsync(new ListR2BucketsFilters
+{
+    PerPage = 50
+});
+
+foreach (var bucket in page.Items)
+{
+    Console.WriteLine(bucket.Name);
+}
+
+// Get next page using cursor
+if (page.CursorInfo.Cursor is not null)
+{
+    var nextPage = await cf.Accounts.ListR2BucketsAsync(new ListR2BucketsFilters
+    {
+        Cursor = page.CursorInfo.Cursor
+    });
+}
+</code></pre>
+<h2 id="deleting-buckets">Deleting Buckets</h2>
+<pre><code class="lang-csharp">await cf.Accounts.DeleteR2BucketAsync(&quot;my-bucket&quot;);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>The bucket must be empty before deletion. Use the R2 Client to clear the bucket first:</p>
+<pre><code class="lang-csharp">await r2.ClearBucketAsync(&quot;my-bucket&quot;);
+await cf.Accounts.DeleteR2BucketAsync(&quot;my-bucket&quot;);
+</code></pre>
+</div>
+<h2 id="disabling-dev-url">Disabling Dev URL</h2>
+<p>Disable the public <code>r2.dev</code> URL for a bucket:</p>
+<pre><code class="lang-csharp">await cf.Accounts.DisableDevUrlAsync(&quot;my-bucket&quot;);
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="r2bucket">R2Bucket</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Bucket name</td>
+</tr>
+<tr>
+<td><code>CreationDate</code></td>
+<td><code>DateTime</code></td>
+<td>When the bucket was created</td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td><code>R2LocationHint?</code></td>
+<td>Location hint for bucket placement</td>
+</tr>
+<tr>
+<td><code>Jurisdiction</code></td>
+<td><code>R2Jurisdiction?</code></td>
+<td>Data residency jurisdiction</td>
+</tr>
+<tr>
+<td><code>StorageClass</code></td>
+<td><code>R2StorageClass?</code></td>
+<td>Default storage class for new objects</td>
+</tr>
+</tbody>
+</table>
+<h3 id="r2locationhint-extensible-enum">R2LocationHint (Extensible Enum)</h3>
+<p>Location hints suggest where bucket data should be stored. These are <strong>extensible enums</strong> that provide IntelliSense for known values while allowing custom values for new regions.</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WestNorthAmerica</code></td>
+<td><code>wnam</code></td>
+<td>Western North America</td>
+</tr>
+<tr>
+<td><code>EastNorthAmerica</code></td>
+<td><code>enam</code></td>
+<td>Eastern North America</td>
+</tr>
+<tr>
+<td><code>WestEurope</code></td>
+<td><code>weur</code></td>
+<td>Western Europe</td>
+</tr>
+<tr>
+<td><code>EastEurope</code></td>
+<td><code>eeur</code></td>
+<td>Eastern Europe</td>
+</tr>
+<tr>
+<td><code>AsiaPacific</code></td>
+<td><code>apac</code></td>
+<td>Asia-Pacific region</td>
+</tr>
+<tr>
+<td><code>Oceania</code></td>
+<td><code>oc</code></td>
+<td>Australia &amp; New Zealand</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// Using known values with IntelliSense
+var location = R2LocationHint.EastNorthAmerica;
+
+// Using custom values for new regions
+R2LocationHint customRegion = &quot;new-region-2025&quot;;
+
+// Comparison
+if (bucket.Location == R2LocationHint.WestEurope) { ... }
+</code></pre>
+<h3 id="r2jurisdiction-extensible-enum">R2Jurisdiction (Extensible Enum)</h3>
+<p>Jurisdictions guarantee data residency within specific geographic or regulatory boundaries.</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Default</code></td>
+<td><code>default</code></td>
+<td>No restriction (global)</td>
+</tr>
+<tr>
+<td><code>EuropeanUnion</code></td>
+<td><code>eu</code></td>
+<td>EU data residency (GDPR compliance)</td>
+</tr>
+<tr>
+<td><code>FedRamp</code></td>
+<td><code>fedramp</code></td>
+<td>US federal compliance (Enterprise only)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// EU jurisdiction for GDPR compliance
+var jurisdiction = R2Jurisdiction.EuropeanUnion;
+
+// S3 endpoint for jurisdictional buckets:
+// https://{account_id}.eu.r2.cloudflarestorage.com
+</code></pre>
+<h3 id="r2storageclass-extensible-enum">R2StorageClass (Extensible Enum)</h3>
+<p>Storage classes determine cost and access characteristics.</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Standard</code></td>
+<td><code>Standard</code></td>
+<td>Frequently accessed data (default)</td>
+</tr>
+<tr>
+<td><code>InfrequentAccess</code></td>
+<td><code>InfrequentAccess</code></td>
+<td>Lower cost, retrieval fees apply</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// Using in lifecycle transitions
+new StorageClassTransition(
+    LifecycleCondition.AfterDays(30),
+    R2StorageClass.InfrequentAccess
+);
+</code></pre>
+<h3 id="listr2bucketsfilters">ListR2BucketsFilters</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PerPage</code></td>
+<td><code>int?</code></td>
+<td>Number of buckets per page</td>
+</tr>
+<tr>
+<td><code>Cursor</code></td>
+<td><code>string?</code></td>
+<td>Cursor for next page</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="create-bucket-with-validation">Create Bucket with Validation</h3>
+<pre><code class="lang-csharp">public async Task&lt;R2Bucket?&gt; CreateBucketIfNotExistsAsync(string name)
+{
+    // Check if bucket exists
+    await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+    {
+        if (bucket.Name == name)
+        {
+            return bucket;
+        }
+    }
+
+    // Create new bucket
+    return await cf.Accounts.CreateR2BucketAsync(name);
+}
+</code></pre>
+<h3 id="list-buckets-by-location">List Buckets by Location</h3>
+<pre><code class="lang-csharp">public async Task&lt;List&lt;R2Bucket&gt;&gt; GetBucketsByLocationAsync(string location)
+{
+    var buckets = new List&lt;R2Bucket&gt;();
+
+    await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+    {
+        if (bucket.Location == location)
+        {
+            buckets.Add(bucket);
+        }
+    }
+
+    return buckets;
+}
+</code></pre>
+<h3 id="safe-bucket-deletion">Safe Bucket Deletion</h3>
+<pre><code class="lang-csharp">public async Task SafeDeleteBucketAsync(string name, IR2Client r2)
+{
+    // Clear all objects first
+    await r2.ClearBucketAsync(name);
+
+    // Then delete the bucket
+    await cf.Accounts.DeleteR2BucketAsync(name);
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers R2 Storage</td>
+<td>Account</td>
+<td>Read (for listing)</td>
+</tr>
+<tr>
+<td>Workers R2 Storage</td>
+<td>Account</td>
+<td>Write (for create/delete)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="custom-domains.html">Custom Domains</a> - Attach custom hostnames</li>
+<li><a href="cors.html">CORS Configuration</a> - Configure cross-origin access</li>
+<li><a href="lifecycle.html">Lifecycle Policies</a> - Automatic object management</li>
+<li><a href="../../r2/index.html">R2 Object Storage</a> - Upload, download, and manage objects</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/buckets.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
