@@ -52,5 +52,28 @@ public static class Runner
     }
   }
 
+  /// <summary>Executes a sample scenario that does not require cleanup.</summary>
+  /// <param name="logger">The logger to use for the scenario.</param>
+  /// <param name="scenarioName">The name of the scenario for logging.</param>
+  /// <param name="scenarioAction">An async func that contains the sample logic.</param>
+  public static async Task RunAsync(
+    ILogger    logger,
+    string     scenarioName,
+    Func<Task> scenarioAction)
+  {
+    logger.LogInformation("--- Running Scenario: {ScenarioName} ---", scenarioName);
+
+    try
+    {
+      await scenarioAction();
+    }
+    catch (Exception ex)
+    {
+      logger.LogError(ex, "An error occurred during the '{ScenarioName}' scenario.", scenarioName);
+    }
+
+    logger.LogInformation("--- Scenario Complete: {ScenarioName} ---", scenarioName);
+  }
+
   #endregion
 }

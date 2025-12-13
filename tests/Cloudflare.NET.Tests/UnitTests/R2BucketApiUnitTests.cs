@@ -1,18 +1,24 @@
-﻿namespace Cloudflare.NET.Tests.UnitTests;
+namespace Cloudflare.NET.Tests.UnitTests;
 
 using System.Net;
 using System.Text.Json;
 using Accounts;
 using Accounts.Models;
+using Cloudflare.NET.Core.Exceptions;
+using Cloudflare.NET.Security.Firewall.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq.Protected;
 using Shared.Fixtures;
 using Xunit.Abstractions;
 
-/// <summary>Contains unit tests for the <see cref="AccountsApi" /> class.</summary>
+/// <summary>Contains unit tests for the R2 bucket operations in the <see cref="AccountsApi" /> class.</summary>
+/// <remarks>
+///   This test class covers R2 bucket CRUD operations, custom domains, CORS policies, and lifecycle rules.
+///   Account management operations are tested separately in <see cref="AccountManagementApiUnitTests" />.
+/// </remarks>
 [Trait("Category", TestConstants.TestCategories.Unit)]
-public class AccountsApiUnitTests
+public class R2BucketApiUnitTests
 {
   #region Properties & Fields - Non-Public
 
@@ -24,7 +30,7 @@ public class AccountsApiUnitTests
 
   #region Constructors
 
-  public AccountsApiUnitTests(ITestOutputHelper output)
+  public R2BucketApiUnitTests(ITestOutputHelper output)
   {
     var loggerProvider = new XunitTestOutputLoggerProvider { Current = output };
     _loggerFactory = new LoggerFactory([loggerProvider]);
@@ -32,7 +38,7 @@ public class AccountsApiUnitTests
 
   #endregion
 
-  #region Methods
+  #region R2 Bucket Operations
 
   /// <summary>Verifies that CreateR2BucketAsync sends a correctly formatted POST request.</summary>
   [Fact]
@@ -521,6 +527,11 @@ public class AccountsApiUnitTests
     allBuckets.Select(b => b.Name).Should().ContainInOrder("bucket1", "bucket2");
   }
 
+  #endregion
+
+
+  #region Custom Domain Operations
+
   /// <summary>Verifies that AttachCustomDomainAsync sends a correctly formatted POST request.</summary>
   [Fact]
   public async Task AttachCustomDomainAsync_SendsCorrectRequest()
@@ -657,6 +668,11 @@ public class AccountsApiUnitTests
                    .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/domains/custom/{hostname}");
   }
 
+  #endregion
+
+
+  #region CORS Policy Operations
+
   /// <summary>Verifies that GetBucketCorsAsync sends a correctly formatted GET request.</summary>
   [Fact]
   public async Task GetBucketCorsAsync_SendsCorrectRequest()
@@ -768,6 +784,11 @@ public class AccountsApiUnitTests
     capturedRequest.RequestUri!.ToString().Should()
                    .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/cors");
   }
+
+  #endregion
+
+
+  #region Lifecycle Policy Operations
 
   /// <summary>Verifies that GetBucketLifecycleAsync sends a correctly formatted GET request.</summary>
   [Fact]

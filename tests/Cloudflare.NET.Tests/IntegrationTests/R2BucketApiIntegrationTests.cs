@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Tests.IntegrationTests;
+namespace Cloudflare.NET.Tests.IntegrationTests;
 
 using System.Net;
 using Accounts;
@@ -10,11 +10,22 @@ using Shared.Helpers;
 using Xunit.Abstractions;
 
 /// <summary>
-///   Contains integration tests for the <see cref="AccountsApi" /> class. These tests interact with the live
-///   Cloudflare API and require credentials.
+///   Contains integration tests for the R2 bucket operations of <see cref="AccountsApi" />. These tests interact with the
+///   live Cloudflare API and require credentials.
 /// </summary>
+/// <remarks>
+///   This test class focuses on R2 bucket operations including:
+///   <list type="bullet">
+///     <item><description>R2 bucket create, list, delete operations</description></item>
+///     <item><description>Custom domain management</description></item>
+///     <item><description>CORS policy management</description></item>
+///     <item><description>Lifecycle policy management</description></item>
+///   </list>
+///   For Account Management integration tests (list accounts, get account, update account),
+///   see <see cref="AccountManagementApiIntegrationTests" />.
+/// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
-public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IAsyncLifetime
+public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IAsyncLifetime
 {
   #region Properties & Fields - Non-Public
 
@@ -27,18 +38,22 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
 
+  /// <summary>The xUnit test output helper for writing warnings.</summary>
+  private readonly ITestOutputHelper _output;
+
   #endregion
 
   #region Constructors
 
-  /// <summary>Initializes a new instance of the <see cref="AccountsApiIntegrationTests" /> class.</summary>
+  /// <summary>Initializes a new instance of the <see cref="R2BucketApiIntegrationTests" /> class.</summary>
   /// <param name="fixture">The shared test fixture that provides configured API clients.</param>
   /// <param name="output">The xUnit test output helper.</param>
-  public AccountsApiIntegrationTests(CloudflareApiTestFixture fixture, ITestOutputHelper output)
+  public R2BucketApiIntegrationTests(CloudflareApiTestFixture fixture, ITestOutputHelper output)
   {
     // The SUT is resolved via the fixture's pre-configured DI container.
     _sut      = fixture.AccountsApi;
     _settings = TestConfiguration.CloudflareSettings;
+    _output   = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -711,8 +726,14 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
 
   /// <summary>Verifies that getting lifecycle from a new bucket returns the default lifecycle policy.</summary>
   /// <remarks>
-  ///   R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts incomplete multipart
-  ///   uploads after 7 days (604800 seconds).
+  ///   <para>
+  ///     R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts incomplete multipart
+  ///     uploads after 7 days (604800 seconds).
+  ///   </para>
+  ///   <para>
+  ///     <b>Note:</b> If this test fails with 5xx errors, it indicates a transient Cloudflare API issue.
+  ///     Per testing guidelines, 5xx errors should cause test failure (not be silently ignored) to reveal real issues.
+  ///   </para>
   /// </remarks>
   [IntegrationTest]
   public async Task GetBucketLifecycleAsync_ReturnsDefaultPolicyForNewBucket()
@@ -739,8 +760,15 @@ public class AccountsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
     finally
     {
-      // Cleanup
-      await _sut.DeleteR2BucketAsync(bucketName);
+      // Cleanup (best effort - ignore errors during cleanup only)
+      try
+      {
+        await _sut.DeleteR2BucketAsync(bucketName);
+      }
+      catch (HttpRequestException)
+      {
+        // Cleanup may fail - that's OK for cleanup only
+      }
     }
   }
 

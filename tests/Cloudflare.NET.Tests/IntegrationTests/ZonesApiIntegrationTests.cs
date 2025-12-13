@@ -1,4 +1,4 @@
-﻿namespace Cloudflare.NET.Tests.IntegrationTests;
+namespace Cloudflare.NET.Tests.IntegrationTests;
 
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,9 +8,25 @@ using Xunit.Abstractions;
 using Zones;
 using Zones.Models;
 
-/// <summary>Contains integration tests for the <see cref="ZonesApi" /> class.</summary>
+/// <summary>
+///   Contains integration tests for the Zone CRUD operations of <see cref="ZonesApi" />.
+///   These tests interact with the live Cloudflare API and require credentials.
+/// </summary>
+/// <remarks>
+///   This test class focuses on Zone-level operations including:
+///   <list type="bullet">
+///     <item><description>ListZonesAsync / ListAllZonesAsync - Zone listing and pagination</description></item>
+///     <item><description>GetZoneDetailsAsync - Fetching zone details</description></item>
+///     <item><description>TriggerActivationCheckAsync - Zone activation checks</description></item>
+///     <item><description>SetZonePausedAsync - Pausing/unpausing zones</description></item>
+///   </list>
+///   For DNS operations via IZonesApi, see <see cref="ZonesApiDnsIntegrationTests" />.
+///   For the dedicated DNS API tests, see <see cref="DnsApiIntegrationTests" />.
+///   For Zone Hold tests, see <see cref="ZoneHoldsApiIntegrationTests" />.
+///   For Zone Settings tests, see <see cref="ZoneSettingsApiIntegrationTests" />.
+/// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
-public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IAsyncLifetime
+public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>
 {
   #region Properties & Fields - Non-Public
 
@@ -20,16 +36,11 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
   /// <summary>The ID of the test zone from configuration.</summary>
   private readonly string _zoneId;
 
-  /// <summary>A unique hostname for the test CNAME record.</summary>
-  private readonly string _hostname;
-
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
 
-  /// <summary>The ID of the DNS record created for the test run.</summary>
-  private string? _recordId;
-
   #endregion
+
 
   #region Constructors
 
@@ -41,9 +52,7 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     // Resolve the SUT and settings from the fixture and configuration.
     _sut      = fixture.ZonesApi;
     _settings = TestConfiguration.CloudflareSettings;
-
     _zoneId   = _settings.ZoneId;
-    _hostname = $"_cfnet-test-{Guid.NewGuid():N}.{_settings.BaseDomain}";
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -52,185 +61,8 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
 
   #endregion
 
-  #region Methods Impl
 
-  /// <summary>Asynchronously creates the DNS record required for the tests. This runs once before any tests in the class.</summary>
-  public async Task InitializeAsync()
-  {
-    var cnameTarget  = "localhost";
-    var createResult = await _sut.CreateCnameRecordAsync(_zoneId, _hostname, cnameTarget);
-
-    _recordId = createResult.Id;
-  }
-
-  /// <summary>Asynchronously deletes the DNS record after all tests in the class have run, ensuring a clean state.</summary>
-  public async Task DisposeAsync()
-  {
-    if (_recordId is not null)
-      await _sut.DeleteDnsRecordAsync(_zoneId, _recordId);
-  }
-
-  #endregion
-
-  #region Methods
-
-  /// <summary>Tests the lifecycle of listing DNS records.</summary>
-  [IntegrationTest]
-  public async Task DnsRecordListing_Lifecycle()
-  {
-    // Arrange
-    // Record is created in InitializeAsync.
-    var filters = new Zones.Models.ListDnsRecordsFilters { Name = _hostname };
-
-    // Act
-    var records = new List<Zones.Models.DnsRecord>();
-    await foreach (var record in _sut.ListAllDnsRecordsAsync(_zoneId, filters))
-      records.Add(record);
-
-    // Assert
-    records.Should().HaveCount(1);
-    records[0].Name.Should().Be(_hostname);
-    records[0].Type.Should().Be(DnsRecordType.CNAME);
-  }
-
-  /// <summary>Tests that DNS records can be exported, deleted, and then re-imported.</summary>
-  [IntegrationTest]
-  public async Task DnsRecord_ImportExport_CanRoundtrip()
-  {
-    // Arrange
-    var    tempRecordName = $"_cfnet-roundtrip-{Guid.NewGuid():N}.{_settings.BaseDomain}";
-    var    tempRecord     = await _sut.CreateCnameRecordAsync(_zoneId, tempRecordName, "localhost");
-    string bindContent;
-
-    try
-    {
-      // 1. Export
-      bindContent = await _sut.ExportDnsRecordsAsync(_zoneId);
-      bindContent.Should().Contain(tempRecordName);
-
-      // 2. Delete
-      await _sut.DeleteDnsRecordAsync(_zoneId, tempRecord.Id);
-      var deletedRecord = await _sut.FindDnsRecordByNameAsync(_zoneId, tempRecordName);
-      deletedRecord.Should().BeNull();
-
-      // Act
-      // 3. Import
-      using var stream       = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(bindContent));
-      var       importResult = await _sut.ImportDnsRecordsAsync(_zoneId, stream, true, false);
-
-      // Assert
-      importResult.Should().NotBeNull();
-      importResult.RecordsAdded.Should().BeGreaterThan(0);
-
-      var reimportedRecord = await _sut.FindDnsRecordByNameAsync(_zoneId, tempRecordName);
-      reimportedRecord.Should().NotBeNull();
-      // The 'finally' block handles the cleanup of the re-imported record.
-      // Do not assign its ID to the instance field '_recordId' to avoid a double-delete in DisposeAsync.
-    }
-    finally
-    {
-      // Cleanup
-      var finalRecord = await _sut.FindDnsRecordByNameAsync(_zoneId, tempRecordName);
-      if (finalRecord is not null)
-        await _sut.DeleteDnsRecordAsync(_zoneId, finalRecord.Id);
-    }
-  }
-
-  /// <summary>
-  ///   Verifies that the ListAllDnsRecordsAsync method correctly handles multiple pages of results from the live API.
-  ///   It creates enough records to span across pages and asserts that the total count is correct. The `IAsyncEnumerable`
-  ///   pattern is used here to abstract away the underlying pagination mechanism, providing a simpler development
-  ///   experience. [1, 5, 7]
-  /// </summary>
-  [IntegrationTest]
-  public async Task ListAllDnsRecordsAsync_HandlesMultiplePages()
-  {
-    // Arrange: Create enough records to guarantee pagination
-    var recordsToCreate  = 3;
-    var createdRecordIds = new List<string>();
-    var baseHostname     = $"_cfnet-pagination-test-{Guid.NewGuid():N}";
-    // Use a unique CNAME target for this test run to allow for efficient filtering. The 'name'
-    // parameter is an exact match, so filtering by a unique 'content' is the correct way to
-    // isolate records for this test. [1, 2]
-    var cnameTarget = $"{Guid.NewGuid():N}.test-target.com";
-
-    try
-    {
-      for (var i = 0; i < recordsToCreate; i++)
-      {
-        var hostname = $"{baseHostname}-{i}.{_settings.BaseDomain}";
-        var record   = await _sut.CreateCnameRecordAsync(_zoneId, hostname, cnameTarget);
-        createdRecordIds.Add(record.Id);
-      }
-
-      // Act: List records with a small per-page limit to force pagination.
-      // We filter by the unique content to ensure we only get records from this test run.
-      var filters    = new Zones.Models.ListDnsRecordsFilters { Content = cnameTarget, PerPage = 2 };
-      var allRecords = new List<Zones.Models.DnsRecord>();
-
-      // Using a small PerPage value forces the pagination logic to be exercised.
-      await foreach (var record in _sut.ListAllDnsRecordsAsync(_zoneId, filters))
-        allRecords.Add(record);
-
-      // Assert
-      allRecords.Should().HaveCount(recordsToCreate);
-      allRecords.Select(r => r.Id).Should().BeEquivalentTo(createdRecordIds);
-    }
-    finally
-    {
-      // Cleanup
-      foreach (var recordId in createdRecordIds)
-        await _sut.DeleteDnsRecordAsync(_zoneId, recordId);
-    }
-  }
-
-  /// <summary>Verifies that the cache for a zone can be purged completely.</summary>
-  [IntegrationTest]
-  public async Task PurgeCacheAsync_CanPurgeEverything()
-  {
-    // Arrange
-    var request = new Zones.Models.PurgeCacheRequest(true);
-
-    // Act
-    var result = await _sut.PurgeCacheAsync(_zoneId, request);
-
-    // Assert
-    result.Should().NotBeNull();
-    result.Id.Should().Be(_zoneId);
-  }
-
-  /// <summary>Tests that a DNS record can be found by its name after being created.</summary>
-  [IntegrationTest]
-  public async Task CanFindDnsRecordByName()
-  {
-    // Arrange
-    // The record is created in InitializeAsync. This test just needs to verify it can be found.
-    _recordId.Should().NotBeNullOrWhiteSpace("the DNS record should have been created in InitializeAsync");
-
-    // Act
-    var findResult = await _sut.FindDnsRecordByNameAsync(_zoneId, _hostname);
-
-    // Assert
-    findResult.Should().NotBeNull();
-    findResult.Id.Should().Be(_recordId);
-    findResult.Name.Should().Be(_hostname);
-    findResult.Type.Should().Be(DnsRecordType.CNAME);
-  }
-
-  /// <summary>Verifies that attempting to delete a non-existent resource correctly throws a 404 Not Found exception.</summary>
-  [IntegrationTest]
-  public async Task DeleteDnsRecordAsync_WhenRecordDoesNotExist_ThrowsNotFound()
-  {
-    // Arrange
-    var nonExistentId = "00000000000000000000000000000000";
-
-    // Act
-    var action = async () => await _sut.DeleteDnsRecordAsync(_zoneId, nonExistentId);
-
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
-  }
+  #region Zone Details Tests
 
   /// <summary>Verifies that the details for a specific zone can be fetched successfully.</summary>
   [IntegrationTest]
@@ -250,6 +82,269 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>,
     zoneDetails.Name.Should().Be(_settings.BaseDomain);
     // A zone used for testing should be active.
     zoneDetails.Status.Should().Be(ZoneStatus.Active);
+  }
+
+  /// <summary>Verifies that zone details include all expected nested objects.</summary>
+  [IntegrationTest]
+  public async Task GetZoneDetailsAsync_IncludesNestedObjects()
+  {
+    // Act
+    var zone = await _sut.GetZoneDetailsAsync(_zoneId);
+
+    // Assert - Account information
+    zone.Account.Should().NotBeNull();
+    zone.Account.Id.Should().NotBeNullOrWhiteSpace();
+    zone.Account.Name.Should().NotBeNullOrWhiteSpace();
+
+    // Assert - Owner information
+    zone.Owner.Should().NotBeNull();
+
+    // Assert - Plan information
+    zone.Plan.Should().NotBeNull();
+    zone.Plan.Id.Should().NotBeNullOrWhiteSpace();
+    zone.Plan.Name.Should().NotBeNullOrWhiteSpace();
+
+    // Assert - Name servers
+    zone.NameServers.Should().NotBeNullOrEmpty();
+    zone.NameServers.Should().OnlyContain(ns => !string.IsNullOrWhiteSpace(ns));
+
+    // Assert - Timestamps
+    zone.CreatedOn.Should().NotBe(default(DateTime));
+    zone.ModifiedOn.Should().NotBe(default(DateTime));
+  }
+
+  #endregion
+
+
+  #region Zone Listing Tests
+
+  /// <summary>Verifies that zones can be listed for the authenticated account.</summary>
+  [IntegrationTest]
+  public async Task ListZonesAsync_ReturnsZonesForAccount()
+  {
+    // Arrange
+    // Filter by the configured zone name to ensure we get at least our test zone.
+    var filters = new ListZonesFilters(Name: _settings.BaseDomain);
+
+    // Act
+    var result = await _sut.ListZonesAsync(filters);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty();
+    result.Items.Should().Contain(z => z.Id == _zoneId);
+    result.PageInfo.Should().NotBeNull();
+    result.PageInfo!.TotalCount.Should().BeGreaterThanOrEqualTo(1);
+  }
+
+  /// <summary>Verifies that ListAllZonesAsync correctly iterates through zones.</summary>
+  [IntegrationTest]
+  public async Task ListAllZonesAsync_CanIterateZones()
+  {
+    // Arrange
+    var zones = new List<Zone>();
+
+    // Act - Using small page size to exercise pagination if multiple zones exist
+    var filters = new ListZonesFilters(PerPage: 2);
+    await foreach (var zone in _sut.ListAllZonesAsync(filters))
+    {
+      zones.Add(zone);
+      // Safety limit to avoid long-running test if account has many zones
+      if (zones.Count >= 10) break;
+    }
+
+    // Assert
+    zones.Should().NotBeEmpty();
+    zones.Should().Contain(z => z.Id == _zoneId);
+    zones.Should().OnlyContain(z => !string.IsNullOrWhiteSpace(z.Id));
+    zones.Should().OnlyContain(z => !string.IsNullOrWhiteSpace(z.Name));
+  }
+
+  /// <summary>
+  ///   Verifies that zones can be listed with status filter.
+  ///   Since our test zone is active, filtering for active status should return it.
+  /// </summary>
+  [IntegrationTest]
+  public async Task ListZonesAsync_WithStatusFilter_ReturnsActiveZones()
+  {
+    // Arrange
+    var filters = new ListZonesFilters(Status: ZoneStatus.Active, PerPage: 5);
+
+    // Act
+    var result = await _sut.ListZonesAsync(filters);
+
+    // Assert
+    result.Items.Should().NotBeEmpty();
+    result.Items.Should().OnlyContain(z => z.Status == ZoneStatus.Active);
+    result.Items.Should().Contain(z => z.Id == _zoneId);
+  }
+
+  #endregion
+
+
+  #region Zone Activation Tests
+
+  /// <summary>
+  ///   Verifies that triggering an activation check on an already-active zone succeeds.
+  ///   This is a safe mutation test since activation check is idempotent.
+  /// </summary>
+  [IntegrationTest]
+  public async Task TriggerActivationCheckAsync_OnActiveZone_Succeeds()
+  {
+    // Arrange
+    // Verify zone is active before triggering check.
+    var zone = await _sut.GetZoneDetailsAsync(_zoneId);
+    zone.Status.Should().Be(ZoneStatus.Active, "activation check test requires an active zone");
+
+    // Act
+    var result = await _sut.TriggerActivationCheckAsync(_zoneId);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().Be(_zoneId);
+  }
+
+  #endregion
+
+
+  #region Zone Pause/Unpause Tests
+
+  /// <summary>
+  ///   Verifies that zone pause state can be toggled and reverted.
+  /// </summary>
+  [IntegrationTest]
+  public async Task SetZonePausedAsync_CanToggleAndRevert()
+  {
+    // Arrange - Get current pause state.
+    var originalZone    = await _sut.GetZoneDetailsAsync(_zoneId);
+    var originalPaused  = originalZone.Paused;
+    var testPausedState = !originalPaused; // Toggle to opposite state
+
+    // Act - Toggle to different state.
+    var toggledZone = await _sut.SetZonePausedAsync(_zoneId, testPausedState);
+
+    // Assert - Verify the toggle worked.
+    toggledZone.Paused.Should().Be(testPausedState, "zone paused state should be toggled");
+
+    // Cleanup - Revert to original state.
+    await _sut.SetZonePausedAsync(_zoneId, originalPaused);
+
+    // Verify revert succeeded.
+    var revertedZone = await _sut.GetZoneDetailsAsync(_zoneId);
+    revertedZone.Paused.Should().Be(originalPaused, "zone should be reverted to original paused state");
+  }
+
+  #endregion
+
+
+  #region Zone Create/Edit/Delete Tests (Skipped - Dangerous Operations)
+
+  /// <summary>
+  ///   Verifies that a zone can be created successfully.
+  ///   This test creates a new zone and then deletes it as cleanup.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/zones/methods/create/</item>
+  ///     <item>Full setup: https://developers.cloudflare.com/dns/zone-setups/full-setup/setup/</item>
+  ///     <item>Zone requires nameserver delegation at domain registrar</item>
+  ///     <item>Domain must be valid TLD from Public Suffix List (PSL)</item>
+  ///     <item>Zone remains "pending" until nameservers are delegated</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Prerequisites:</b> To run this test, you need:
+  ///     <list type="bullet">
+  ///       <item><description>A domain you own that is not already in Cloudflare</description></item>
+  ///       <item><description>An API token with Zone:Edit permission</description></item>
+  ///       <item><description>Ability to delegate nameservers at registrar</description></item>
+  ///     </list>
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable test domain + nameserver delegation at registrar - Consider Dev account or WireMock")]
+  public async Task CreateZoneAsync_ReturnsCreatedZone()
+  {
+    // Arrange
+    // Note: Replace with a test domain you own
+    var request = new CreateZoneRequest(
+      Name: "test-domain-for-sdk.example",
+      Type: ZoneType.Full,
+      Account: new ZoneAccountReference(_settings.AccountId));
+
+    // Act
+    var result = await _sut.CreateZoneAsync(request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().NotBeNullOrEmpty();
+    result.Name.Should().Be(request.Name);
+    result.Status.Should().BeOneOf(ZoneStatus.Pending, ZoneStatus.Active);
+
+    // Cleanup - Delete the zone
+    // await _sut.DeleteZoneAsync(result.Id);
+  }
+
+  /// <summary>Verifies that a zone can be edited successfully.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/zones/methods/edit/</item>
+  ///     <item>Can modify: paused, plan, type, vanity_name_servers</item>
+  ///     <item>Plan changes have billing implications</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Coverage Note:</b> SetZonePausedAsync_CanToggleAndRevert tests the EditZoneAsync method
+  ///     with the paused field, providing integration test coverage for the edit endpoint.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable test domain - Consider Dev account or WireMock")]
+  public async Task EditZoneAsync_ReturnsUpdatedZone()
+  {
+    // Arrange
+    var zone = await _sut.GetZoneDetailsAsync(_zoneId);
+    var request = new EditZoneRequest(
+      Paused: !zone.Paused,
+      VanityNameServers: zone.VanityNameServers);
+
+    // Act
+    var result = await _sut.EditZoneAsync(_zoneId, request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().Be(_zoneId);
+    result.Paused.Should().Be(!zone.Paused);
+
+    // Cleanup - Revert the change
+    var revertRequest = new EditZoneRequest(Paused: zone.Paused);
+    await _sut.EditZoneAsync(_zoneId, revertRequest);
+  }
+
+  /// <summary>Verifies that a zone can be deleted successfully.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/zones/methods/delete/</item>
+  ///     <item>Zone deletion is IRREVERSIBLE</item>
+  ///     <item>All DNS records, settings, configs permanently lost</item>
+  ///     <item>Requires disposable test zone with domain ownership</item>
+  ///   </list>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable test domain - Zone deletion is DESTRUCTIVE/IRREVERSIBLE - Consider Dev account or WireMock")]
+  public async Task DeleteZoneAsync_ReturnsDeleteResult()
+  {
+    // Arrange
+    // First create a zone to delete (requires domain ownership)
+    // var createRequest = new CreateZoneRequest(Name: "delete-test.example", Type: ZoneType.Full, Account: new ZoneAccountReference(_settings.AccountId));
+    // var zone = await _sut.CreateZoneAsync(createRequest);
+    var zoneIdToDelete = "zone-id-from-created-zone";
+
+    // Act
+    await _sut.DeleteZoneAsync(zoneIdToDelete);
+
+    // Assert - Verify deletion by trying to get the zone (should throw 404)
+    var action = async () => await _sut.GetZoneDetailsAsync(zoneIdToDelete);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
   #endregion

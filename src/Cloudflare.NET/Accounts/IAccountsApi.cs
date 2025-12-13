@@ -182,4 +182,156 @@ public interface IAccountsApi
   /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/r2/buckets/object-lifecycles/" />
   Task DeleteBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default);
+
+
+  #region Account Management
+
+  /// <summary>
+  ///   Lists all accounts the authenticated user has access to.
+  ///   <para>
+  ///     Returns a single page of results with pagination information for manual pagination control.
+  ///   </para>
+  /// </summary>
+  /// <param name="filters">Optional filtering and pagination options.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A page of accounts with pagination information.</returns>
+  /// <example>
+  ///   <code>
+  ///   var accounts = await client.Accounts.ListAccountsAsync(
+  ///     new ListAccountsFilters(PerPage: 50));
+  ///
+  ///   foreach (var account in accounts.Items)
+  ///   {
+  ///     Console.WriteLine($"{account.Name} ({account.Type})");
+  ///   }
+  ///   </code>
+  /// </example>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/accounts/methods/list/" />
+  Task<PagePaginatedResult<Account>> ListAccountsAsync(
+    ListAccountsFilters? filters = null,
+    CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Lists all accounts the authenticated user has access to, automatically handling pagination.
+  ///   <para>
+  ///     This method returns an <see cref="IAsyncEnumerable{T}" /> that automatically fetches additional
+  ///     pages as you iterate, yielding all accounts without manual pagination handling.
+  ///   </para>
+  /// </summary>
+  /// <param name="filters">Optional filtering options. Pagination parameters (Page) are ignored.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An async enumerable of all accessible accounts.</returns>
+  /// <example>
+  ///   <code>
+  ///   await foreach (var account in client.Accounts.ListAllAccountsAsync())
+  ///   {
+  ///     Console.WriteLine($"{account.Id}: {account.Name}");
+  ///   }
+  ///   </code>
+  /// </example>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/accounts/methods/list/" />
+  IAsyncEnumerable<Account> ListAllAccountsAsync(
+    ListAccountsFilters? filters = null,
+    CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Gets details for a specific account.
+  ///   <para>
+  ///     Returns the full account object including settings and managed_by information.
+  ///   </para>
+  /// </summary>
+  /// <param name="accountId">The account identifier (32 hexadecimal characters).</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The account details.</returns>
+  /// <example>
+  ///   <code>
+  ///   var account = await client.Accounts.GetAccountAsync(accountId);
+  ///   Console.WriteLine($"Account: {account.Name}");
+  ///   Console.WriteLine($"2FA Enforced: {account.Settings?.EnforceTwofactor}");
+  ///   </code>
+  /// </example>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/accounts/methods/get/" />
+  Task<Account> GetAccountAsync(
+    string accountId,
+    CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Creates a new Cloudflare account.
+  ///   <para>
+  ///     <b>Note:</b> This operation is only available to tenant administrators.
+  ///     Standard users will receive a permission error.
+  ///   </para>
+  /// </summary>
+  /// <param name="request">The account creation parameters.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The newly created account.</returns>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  ///   <para>
+  ///     This endpoint requires tenant admin privileges. Most users should use the
+  ///     Cloudflare dashboard to create accounts.
+  ///   </para>
+  /// </remarks>
+  /// <exception cref="Core.Exceptions.CloudflareApiException">
+  ///   Thrown when the user lacks tenant admin privileges or the request is invalid.
+  /// </exception>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/accounts/methods/create/" />
+  Task<Account> CreateAccountAsync(
+    CreateAccountRequest request,
+    CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Updates an existing account's name and/or settings.
+  ///   <para>
+  ///     Both the name and settings can be updated in a single request.
+  ///   </para>
+  /// </summary>
+  /// <param name="accountId">The account identifier.</param>
+  /// <param name="request">The update parameters.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The updated account.</returns>
+  /// <example>
+  ///   <code>
+  ///   var updated = await client.Accounts.UpdateAccountAsync(accountId,
+  ///     new UpdateAccountRequest(
+  ///       Name: "My Company Production",
+  ///       Settings: new AccountSettings(EnforceTwofactor: true)));
+  ///   </code>
+  /// </example>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/accounts/methods/update/" />
+  Task<Account> UpdateAccountAsync(
+    string accountId,
+    UpdateAccountRequest request,
+    CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Permanently deletes an account and all associated resources.
+  ///   <para>
+  ///     <b>Warning:</b> This is a destructive operation that cannot be undone.
+  ///     All zones, Workers, R2 buckets, and other resources under the account
+  ///     will be permanently deleted.
+  ///   </para>
+  ///   <para>
+  ///     <b>Note:</b> This operation is only available to tenant administrators.
+  ///   </para>
+  /// </summary>
+  /// <param name="accountId">The account identifier.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deletion result containing the deleted account's ID.</returns>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  ///   <para>
+  ///     This endpoint requires tenant admin privileges. The operation is permanent
+  ///     and will remove all zones and resources under the account.
+  ///   </para>
+  /// </remarks>
+  /// <exception cref="Core.Exceptions.CloudflareApiException">
+  ///   Thrown when the user lacks tenant admin privileges.
+  /// </exception>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/accounts/methods/delete/" />
+  Task<DeleteAccountResult> DeleteAccountAsync(
+    string accountId,
+    CancellationToken cancellationToken = default);
+
+  #endregion
 }

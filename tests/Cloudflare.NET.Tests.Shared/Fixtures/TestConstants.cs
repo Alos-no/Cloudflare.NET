@@ -3,6 +3,14 @@
 /// <summary>Provides constant values used across the test suite.</summary>
 public static class TestConstants
 {
+  #region Constants & Statics
+
+  /// <summary>The base URL for the Cloudflare API used in unit tests.</summary>
+  public const string CloudflareApiBaseUrl = "https://api.cloudflare.com/client/v4";
+
+  #endregion
+
+
   /// <summary>Contains the different categories of tests for filtering with `dotnet test`.</summary>
   public static class TestCategories
   {

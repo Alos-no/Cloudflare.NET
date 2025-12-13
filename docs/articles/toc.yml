@@ -16,8 +16,18 @@
   items:
     - name: Overview
       href: zones/index.md
+    - name: Zone Management
+      href: zones/zone-management.md
+    - name: Zone Holds
+      href: zones/zone-holds.md
+    - name: Zone Settings
+      href: zones/zone-settings.md
     - name: DNS Records
       href: zones/dns-records.md
+    - name: DNS Scanning
+      href: zones/dns-scanning.md
+    - name: Worker Routes
+      href: zones/worker-routes.md
     - name: Cache Purge
       href: zones/cache-purge.md
     - name: Custom Hostnames (SaaS)
@@ -32,11 +42,25 @@
           href: zones/security/lockdown.md
         - name: User-Agent Rules
           href: zones/security/ua-rules.md
+    - name: Subscriptions
+      href: subscriptions.md
 - name: Accounts API
   href: accounts/index.md
   items:
     - name: Overview
       href: accounts/index.md
+    - name: Account Management
+      href: accounts/account-management.md
+    - name: Members
+      href: accounts/members.md
+    - name: Roles
+      href: accounts/roles.md
+    - name: API Tokens
+      href: accounts/api-tokens.md
+    - name: Audit Logs
+      href: accounts/audit-logs.md
+    - name: Turnstile
+      href: accounts/turnstile.md
     - name: R2 Buckets
       items:
         - name: Bucket Management
@@ -53,6 +77,25 @@
           href: accounts/security/access-rules.md
         - name: WAF Rulesets
           href: accounts/security/rulesets.md
+    - name: Subscriptions
+      href: subscriptions.md
+- name: User API
+  href: user/index.md
+  items:
+    - name: Overview
+      href: user/index.md
+    - name: Profile
+      href: user/profile.md
+    - name: Memberships
+      href: user/memberships.md
+    - name: Invitations
+      href: user/invitations.md
+    - name: API Tokens
+      href: user/api-tokens.md
+    - name: Audit Logs
+      href: user/audit-logs.md
+    - name: Subscriptions
+      href: subscriptions.md
 
 - name: Extension Packages
 - name: R2 Object Storage

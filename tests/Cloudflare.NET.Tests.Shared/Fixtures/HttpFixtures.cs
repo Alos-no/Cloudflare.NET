@@ -84,5 +84,34 @@ public static class HttpFixtures
   public static Mock<HttpMessageHandler> GetMockHttpMessageHandler(string responseContent, HttpStatusCode statusCode) =>
     GetMockHttpMessageHandler(responseContent, statusCode, null);
 
+
+  /// <summary>Creates a successful paginated Cloudflare API JSON response string.</summary>
+  /// <typeparam name="T">The type of items in the result.</typeparam>
+  /// <param name="result">The result items to embed in the response.</param>
+  /// <param name="page">The current page number.</param>
+  /// <param name="perPage">The number of items per page.</param>
+  /// <param name="totalCount">The total number of items across all pages.</param>
+  /// <returns>A JSON string representing a successful paginated API response.</returns>
+  public static string CreatePaginatedResponse<T>(T[] result, int page, int perPage, int totalCount)
+  {
+    var totalPages = totalCount == 0 ? 0 : (int)Math.Ceiling((double)totalCount / perPage);
+    var response = new
+    {
+      success     = true,
+      errors      = Array.Empty<object>(),
+      messages    = Array.Empty<object>(),
+      result,
+      result_info = new
+      {
+        page,
+        per_page    = perPage,
+        count       = result.Length,
+        total_count = totalCount,
+        total_pages = totalPages
+      }
+    };
+    return JsonSerializer.Serialize(response, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower });
+  }
+
   #endregion
 }

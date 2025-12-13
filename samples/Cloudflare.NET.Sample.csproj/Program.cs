@@ -43,6 +43,10 @@ public static class Program
     builder.Services.AddTransient<AccountSamples>();
     builder.Services.AddTransient<SecuritySamples>();
     builder.Services.AddTransient<CustomHostnameSamples>();
+    builder.Services.AddTransient<UserSamples>();
+    builder.Services.AddTransient<WorkerSamples>();
+    builder.Services.AddTransient<TurnstileSamples>();
+    builder.Services.AddTransient<SubscriptionSamples>();
 
     using var host          = builder.Build();
     var       logger        = host.Services.GetRequiredService<ILoggerFactory>().CreateLogger("CloudflareSample");
@@ -71,16 +75,129 @@ public static class Program
     var accountSamples        = host.Services.GetRequiredService<AccountSamples>();
     var securitySamples       = host.Services.GetRequiredService<SecuritySamples>();
     var customHostnameSamples = host.Services.GetRequiredService<CustomHostnameSamples>();
+    var userSamples           = host.Services.GetRequiredService<UserSamples>();
+    var workerSamples         = host.Services.GetRequiredService<WorkerSamples>();
+    var turnstileSamples      = host.Services.GetRequiredService<TurnstileSamples>();
+    var subscriptionSamples   = host.Services.GetRequiredService<SubscriptionSamples>();
 
     logger.LogInformation("Starting Cloudflare.NET SDK Samples...");
     logger.LogInformation("Using AccountId: {AccountId}, ZoneId: {ZoneId}", options.AccountId, zoneId);
 
-    // Run all scenarios.
+    // ========================================================================
+    // ZONE OPERATIONS (F01-F05)
+    // ========================================================================
+
+    // F01: Zone CRUD (list, get, create, edit, delete, activation check).
+    await Runner.RunAsync(logger, "F01: Zone CRUD",
+                          () => zoneSamples.RunZoneCrudSamplesAsync(zoneId!));
+
+    // F02: Zone Holds (get, create, update, remove).
+    await Runner.RunAsync(logger, "F02: Zone Holds",
+                          () => zoneSamples.RunZoneHoldSamplesAsync(zoneId!));
+
+    // F03: Zone Settings (get, set).
+    await Runner.RunAsync(logger, "F03: Zone Settings",
+                          () => zoneSamples.RunZoneSettingsSamplesAsync(zoneId!));
+
+    // F04: DNS Record CRUD via IDnsApi (create, get, list, update, patch, delete, batch, import/export).
+    await Runner.RunAsync(logger, "F04: DNS Record CRUD",
+                          () => zoneSamples.RunDnsRecordCrudSamplesAsync(zoneId!));
+
+    // F05: DNS Record Scanning (trigger, review, submit).
+    await Runner.RunAsync(logger, "F05: DNS Record Scanning",
+                          () => zoneSamples.RunDnsRecordScanningSamplesAsync(zoneId!));
+
+    // Legacy combined DNS samples (for backwards compatibility).
     await Runner.RunAsync(logger, "Zone/DNS Management",
                           () => zoneSamples.RunDnsSamplesAsync(zoneId!));
 
+    // ========================================================================
+    // ACCOUNT OPERATIONS (F06-F10)
+    // ========================================================================
+
+    // F06: Account Management (list, get, update accounts).
+    await Runner.RunAsync(logger, "F06: Account Management",
+                          () => accountSamples.RunAccountManagementSamplesAsync(options.AccountId!));
+
+    // F07: Account Audit Logs (list, filter audit logs).
+    await Runner.RunAsync(logger, "F07: Account Audit Logs",
+                          () => accountSamples.RunAccountAuditLogsSamplesAsync(options.AccountId!));
+
+    // F08: Account API Tokens (CRUD, verify, roll, permission groups).
+    await Runner.RunAsync(logger, "F08: Account API Tokens",
+                          () => accountSamples.RunAccountApiTokensSamplesAsync(options.AccountId!));
+
+    // F09: Account Members (list, get, create, update, delete members).
+    await Runner.RunAsync(logger, "F09: Account Members",
+                          () => accountSamples.RunAccountMembersSamplesAsync(options.AccountId!));
+
+    // F10: Account Roles (list, get roles).
+    await Runner.RunAsync(logger, "F10: Account Roles",
+                          () => accountSamples.RunAccountRolesSamplesAsync(options.AccountId!));
+
+    // R2 Bucket operations (existing sample).
     await Runner.RunAsync(logger, "Account/R2 Management",
                           () => accountSamples.RunR2SamplesAsync(zoneId!, baseDomain));
+
+    // ========================================================================
+    // USER OPERATIONS (F11, F14-F17)
+    // ========================================================================
+
+    // F14: User Management (get, edit user profile).
+    await Runner.RunAsync(logger, "F14: User Management",
+                          userSamples.RunUserManagementSamplesAsync);
+
+    // F11: User Memberships (list, get, update, delete memberships).
+    await Runner.RunAsync(logger, "F11: User Memberships",
+                          userSamples.RunUserMembershipsSamplesAsync);
+
+    // F15: User Audit Logs (list user audit logs).
+    await Runner.RunAsync(logger, "F15: User Audit Logs",
+                          userSamples.RunUserAuditLogsSamplesAsync);
+
+    // F16: User Invitations (list, get, respond to invitations).
+    await Runner.RunAsync(logger, "F16: User Invitations",
+                          userSamples.RunUserInvitationsSamplesAsync);
+
+    // F17: User API Tokens (CRUD, verify, roll, permission groups).
+    await Runner.RunAsync(logger, "F17: User API Tokens",
+                          userSamples.RunUserApiTokensSamplesAsync);
+
+    // ========================================================================
+    // WORKERS (F12)
+    // ========================================================================
+
+    // F12: Worker Routes (list, get, create, update, delete routes).
+    await Runner.RunAsync(logger, "F12: Worker Routes",
+                          () => workerSamples.RunWorkerRoutesSamplesAsync(zoneId!, baseDomain));
+
+    // ========================================================================
+    // TURNSTILE (F13)
+    // ========================================================================
+
+    // F13: Turnstile Widgets (CRUD, secret rotation).
+    await Runner.RunAsync(logger, "F13: Turnstile Widgets",
+                          () => turnstileSamples.RunTurnstileWidgetsSamplesAsync(options.AccountId!));
+
+    // ========================================================================
+    // SUBSCRIPTIONS (F18-F20)
+    // ========================================================================
+
+    // F18: Account Subscriptions (list, create, update, delete).
+    await Runner.RunAsync(logger, "F18: Account Subscriptions",
+                          () => subscriptionSamples.RunAccountSubscriptionsSamplesAsync(options.AccountId!));
+
+    // F19: User Subscriptions (list, update, delete).
+    await Runner.RunAsync(logger, "F19: User Subscriptions",
+                          subscriptionSamples.RunUserSubscriptionsSamplesAsync);
+
+    // F20: Zone Subscriptions (get, create, update, list rate plans).
+    await Runner.RunAsync(logger, "F20: Zone Subscriptions",
+                          () => subscriptionSamples.RunZoneSubscriptionsSamplesAsync(zoneId!));
+
+    // ========================================================================
+    // SECURITY OPERATIONS (existing samples)
+    // ========================================================================
 
     await Runner.RunAsync(logger, "Security/Zone Firewall",
                           () => securitySamples.RunZoneFirewallSamplesAsync(zoneId!));

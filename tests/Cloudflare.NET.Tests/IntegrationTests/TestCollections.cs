@@ -20,6 +20,19 @@ public static class TestCollections
   #region Constants & Statics
 
   /// <summary>
+  ///   Permission validation tests that MUST run before any other integration tests.
+  ///   This collection validates that the configured API tokens have all required permissions.
+  ///   If any permission is missing, these tests will fail immediately with a clear error message.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     This collection name starts with '!' to ensure it sorts first alphabetically.
+  ///     The <see cref="Shared.IntegrationTestCollectionOrderer" /> prioritizes collections starting with '!'.
+  ///   </para>
+  /// </remarks>
+  public const string PermissionValidation = "!PermissionValidation";
+
+  /// <summary>
   ///   Collection for tests that create, modify, or delete custom hostnames in a shared zone. These tests must run
   ///   sequentially to avoid race conditions during pagination and cleanup.
   /// </summary>
@@ -37,6 +50,73 @@ public static class TestCollections
   /// </summary>
   public const string AccessRules = "AccessRules";
 
+  /// <summary>
+  ///   Collection for tests that modify the authenticated user's profile. These tests must run sequentially
+  ///   to ensure profile state is properly managed and restored.
+  /// </summary>
+  public const string UserProfile = "UserProfile";
+
+  /// <summary>
+  ///   Collection for tests that create, modify, or delete DNS records in a shared zone. These tests must run
+  ///   sequentially to avoid race conditions during batch operations and cleanup.
+  /// </summary>
+  public const string DnsOperations = "DnsOperations";
+
+  /// <summary>
+  ///   Collection for tests that trigger DNS record scanning and manage scan review queue.
+  ///   These tests must run sequentially because scanning is async and affects zone state.
+  /// </summary>
+  public const string DnsScan = "DnsScan";
+
+  /// <summary>
+  ///   Collection for tests that create, modify, or delete API tokens using account-scoped authentication.
+  ///   These tests must run sequentially to avoid race conditions during token lifecycle operations.
+  /// </summary>
+  public const string ApiTokens = "ApiTokens";
+
+  /// <summary>
+  ///   Collection for tests that create, modify, or delete API tokens using user-scoped authentication.
+  ///   These tests require a user-level API token (not account-scoped) and must run sequentially
+  ///   to avoid race conditions during token lifecycle operations.
+  /// </summary>
+  public const string UserApiTokens = "UserApiTokens";
+
+  /// <summary>
+  ///   Collection for tests that interact with user invitations. These tests must run
+  ///   sequentially because responding to invitations is a one-time operation.
+  /// </summary>
+  public const string UserInvitations = "UserInvitations";
+
+  /// <summary>
+  ///   Collection for tests that interact with user memberships. These tests must run
+  ///   sequentially because membership operations (accept/reject/delete) can affect state.
+  /// </summary>
+  public const string UserMemberships = "UserMemberships";
+
+  /// <summary>
+  ///   Collection for tests that create, modify, or delete Worker routes in a zone.
+  ///   These tests must run sequentially to avoid race conditions during route operations.
+  /// </summary>
+  public const string WorkerRoutes = "WorkerRoutes";
+
+  /// <summary>
+  ///   Collection for tests that create, modify, or delete Turnstile widgets in an account.
+  ///   These tests must run sequentially to avoid race conditions during widget operations.
+  /// </summary>
+  public const string TurnstileWidgets = "TurnstileWidgets";
+
+  /// <summary>
+  ///   Collection for tests that interact with user subscriptions.
+  ///   These tests must run sequentially to avoid race conditions during subscription operations.
+  /// </summary>
+  public const string UserSubscriptions = "UserSubscriptions";
+
+  /// <summary>
+  ///   Collection for tests that interact with zone subscriptions.
+  ///   These tests must run sequentially to avoid race conditions during subscription operations.
+  /// </summary>
+  public const string ZoneSubscriptions = "ZoneSubscriptions";
+
   #endregion
 }
 
@@ -51,3 +131,51 @@ public class ZoneRulesetsCollection;
 /// <summary>Marker class for the AccessRules test collection.</summary>
 [CollectionDefinition(TestCollections.AccessRules)]
 public class AccessRulesCollection;
+
+/// <summary>Marker class for the UserProfile test collection.</summary>
+[CollectionDefinition(TestCollections.UserProfile)]
+public class UserProfileCollection;
+
+/// <summary>Marker class for the DnsOperations test collection.</summary>
+[CollectionDefinition(TestCollections.DnsOperations)]
+public class DnsOperationsCollection;
+
+/// <summary>Marker class for the DnsScan test collection.</summary>
+[CollectionDefinition(TestCollections.DnsScan)]
+public class DnsScanCollection;
+
+/// <summary>Marker class for the ApiTokens test collection (account-scoped).</summary>
+[CollectionDefinition(TestCollections.ApiTokens)]
+public class ApiTokensCollection;
+
+/// <summary>Marker class for the UserApiTokens test collection (user-scoped).</summary>
+[CollectionDefinition(TestCollections.UserApiTokens)]
+public class UserApiTokensCollection;
+
+/// <summary>Marker class for the UserInvitations test collection.</summary>
+[CollectionDefinition(TestCollections.UserInvitations)]
+public class UserInvitationsCollection;
+
+/// <summary>Marker class for the UserMemberships test collection.</summary>
+[CollectionDefinition(TestCollections.UserMemberships)]
+public class UserMembershipsCollection;
+
+/// <summary>Marker class for the WorkerRoutes test collection.</summary>
+[CollectionDefinition(TestCollections.WorkerRoutes)]
+public class WorkerRoutesCollection;
+
+/// <summary>Marker class for the TurnstileWidgets test collection.</summary>
+[CollectionDefinition(TestCollections.TurnstileWidgets)]
+public class TurnstileWidgetsCollection;
+
+/// <summary>Marker class for the UserSubscriptions test collection.</summary>
+[CollectionDefinition(TestCollections.UserSubscriptions)]
+public class UserSubscriptionsCollection;
+
+/// <summary>Marker class for the ZoneSubscriptions test collection.</summary>
+[CollectionDefinition(TestCollections.ZoneSubscriptions)]
+public class ZoneSubscriptionsCollection;
+
+/// <summary>Marker class for the PermissionValidation test collection - must run first.</summary>
+[CollectionDefinition(TestCollections.PermissionValidation)]
+public class PermissionValidationCollection;

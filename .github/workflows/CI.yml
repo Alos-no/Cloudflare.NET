@@ -52,6 +52,44 @@ jobs:
         # Restore is required even with --no-build so the test runner can locate packages
         run: dotnet restore Cloudflare.NET.sln
 
+      - name: Validate Required Secrets for Integration Tests
+        # Fail early if any required secrets are missing on main/develop branches.
+        # This prevents tests from running with missing credentials which would cause
+        # confusing failures or, worse, tests that silently skip.
+        if: github.ref_name == 'main' || github.ref_name == 'develop'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_BASE_DOMAIN: ${{ secrets.CLOUDFLARE_BASE_DOMAIN }}
+          CLOUDFLARE_USER_API_TOKEN: ${{ secrets.CLOUDFLARE_USER_API_TOKEN }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          missing_secrets=()
+
+          [ -z "$CLOUDFLARE_API_TOKEN" ] && missing_secrets+=("CLOUDFLARE_API_TOKEN")
+          [ -z "$CLOUDFLARE_ACCOUNT_ID" ] && missing_secrets+=("CLOUDFLARE_ACCOUNT_ID")
+          [ -z "$CLOUDFLARE_ZONE_ID" ] && missing_secrets+=("CLOUDFLARE_ZONE_ID")
+          [ -z "$CLOUDFLARE_BASE_DOMAIN" ] && missing_secrets+=("CLOUDFLARE_BASE_DOMAIN")
+          [ -z "$CLOUDFLARE_USER_API_TOKEN" ] && missing_secrets+=("CLOUDFLARE_USER_API_TOKEN")
+          [ -z "$R2_ACCESS_KEY_ID" ] && missing_secrets+=("R2_ACCESS_KEY_ID")
+          [ -z "$R2_SECRET_ACCESS_KEY" ] && missing_secrets+=("R2_SECRET_ACCESS_KEY")
+
+          if [ ${#missing_secrets[@]} -ne 0 ]; then
+            echo "::error::Missing required secrets for integration tests: ${missing_secrets[*]}"
+            echo ""
+            echo "The following secrets must be configured in GitHub repository settings:"
+            for secret in "${missing_secrets[@]}"; do
+              echo "  - $secret"
+            done
+            echo ""
+            echo "See README.md for instructions on configuring test credentials."
+            exit 1
+          fi
+
+          echo "✓ All required secrets are configured"
+
       - name: Run All Tests on Main/Develop Branch (Unit and Integration)
         # Runs the full test suite, including live integration tests.
         # This step REQUIRES the secrets to be configured in the repository.
@@ -66,6 +104,7 @@ jobs:
           Cloudflare__AccountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           Cloudflare__ZoneId: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           Cloudflare__BaseDomain: ${{ secrets.CLOUDFLARE_BASE_DOMAIN }}
+          Cloudflare__UserApiToken: ${{ secrets.CLOUDFLARE_USER_API_TOKEN }}
           R2__AccessKeyId: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2__SecretAccessKey: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 

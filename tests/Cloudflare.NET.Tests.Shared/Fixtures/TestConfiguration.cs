@@ -64,5 +64,14 @@ public class TestCloudflareSettings : CloudflareApiOptions
   /// <summary>The base domain associated with the test zone.</summary>
   public string BaseDomain { get; set; } = string.Empty;
 
+  /// <summary>
+  ///   A user-scoped API token with User:Edit permission for user profile integration tests.
+  ///   <para>
+  ///     This is separate from <see cref="CloudflareApiOptions.ApiToken" /> because user-level API calls
+  ///     require a user-scoped token, not an account-scoped token.
+  ///   </para>
+  /// </summary>
+  public string UserApiToken { get; set; } = string.Empty;
+
   #endregion
 }

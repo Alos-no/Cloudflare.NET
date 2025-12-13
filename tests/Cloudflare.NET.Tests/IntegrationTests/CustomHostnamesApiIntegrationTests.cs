@@ -97,16 +97,8 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
       sslConfig
     );
 
-    try
-    {
-      var result = await _sut.CreateAsync(_zoneId, request);
-      _customHostnameId = result.Id;
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
-    {
-      // Zone might not have Cloudflare for SaaS enabled. The tests will be skipped.
-      // This is expected for non-Enterprise zones.
-    }
+    var result = await _sut.CreateAsync(_zoneId, request);
+    _customHostnameId = result.Id;
   }
 
   /// <summary>Asynchronously deletes the custom hostname after all tests in the class have run, ensuring a clean state.</summary>
@@ -420,7 +412,8 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
   {
     // Arrange
     _customHostnameId.Should().NotBeNullOrWhiteSpace(
-      "the custom hostname should have been created in InitializeAsync");
+      "the custom hostname should have been created in InitializeAsync. " +
+      "Ensure the zone has Cloudflare for SaaS enabled.");
 
     var filters = new ListCustomHostnamesFilters { PerPage = 50 };
 
@@ -444,7 +437,8 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
   {
     // Arrange
     _customHostnameId.Should().NotBeNullOrWhiteSpace(
-      "the custom hostname should have been created in InitializeAsync");
+      "the custom hostname should have been created in InitializeAsync. " +
+      "Ensure the zone has Cloudflare for SaaS enabled.");
 
     // Filter by the exact hostname.
     var filters = new ListCustomHostnamesFilters { Hostname = _testHostname };
@@ -555,7 +549,8 @@ public class CustomHostnamesApiIntegrationTests : IClassFixture<CloudflareApiTes
   {
     // Arrange
     _customHostnameId.Should().NotBeNullOrWhiteSpace(
-      "the custom hostname should have been created in InitializeAsync");
+      "the custom hostname should have been created in InitializeAsync. " +
+      "Ensure the zone has Cloudflare for SaaS enabled.");
 
     // Filter by SSL status - newly created hostnames are typically pending validation.
     var filters = new ListCustomHostnamesFilters { Ssl = SslStatus.PendingValidation };
