@@ -90,13 +90,17 @@ Console.WriteLine($"Secret: {widget.Secret}");
 
 ### Widget Modes
 
-| Mode | Description |
-|------|-------------|
-| `Managed` | Cloudflare decides when to show challenges |
-| `NonInteractive` | Never shows visible challenges to users |
-| `Invisible` | Completely invisible to users |
+<xref:Cloudflare.NET.Turnstile.Models.WidgetMode> is an extensible enum controlling user interaction level:
+
+| Mode | API Value | Description |
+|------|-----------|-------------|
+| `Managed` | `managed` | Cloudflare dynamically decides when to show challenges |
+| `NonInteractive` | `non-interactive` | Challenge runs without visible interaction |
+| `Invisible` | `invisible` | Completely invisible - automatic verification |
 
 ```csharp
+using Cloudflare.NET.Turnstile.Models;
+
 // Invisible widget for seamless UX
 var invisible = await cf.Turnstile.CreateWidgetAsync(accountId,
     new CreateTurnstileWidgetRequest(
@@ -104,6 +108,9 @@ var invisible = await cf.Turnstile.CreateWidgetAsync(accountId,
         Domains: new[] { "example.com" },
         Mode: WidgetMode.Invisible
     ));
+
+// Extensible for future modes
+WidgetMode customMode = "future-mode";
 ```
 
 ### With Bot Fight Mode
@@ -214,11 +221,24 @@ Console.WriteLine("Old secret is now invalid");
 
 ### WidgetMode (Extensible Enum)
 
-| Known Value | Description |
-|-------------|-------------|
-| `Managed` | Cloudflare decides when to challenge |
-| `NonInteractive` | Never shows visible challenges |
-| `Invisible` | Completely invisible |
+<xref:Cloudflare.NET.Turnstile.Models.WidgetMode> controls user interaction level:
+
+| Known Value | API Value | Description |
+|-------------|-----------|-------------|
+| `Managed` | `managed` | Cloudflare decides when to challenge |
+| `NonInteractive` | `non-interactive` | Challenge runs without visible interaction |
+| `Invisible` | `invisible` | Completely invisible |
+
+### ClearanceLevel (Extensible Enum)
+
+<xref:Cloudflare.NET.Turnstile.Models.ClearanceLevel> controls challenge difficulty:
+
+| Known Value | API Value | Description |
+|-------------|-----------|-------------|
+| `NoClearance` | `no_clearance` | No challenge - only monitors for bot patterns |
+| `JsChallenge` | `jschallenge` | JavaScript challenge execution |
+| `Managed` | `managed` | Cloudflare manages difficulty based on risk |
+| `Interactive` | `interactive` | Always requires explicit user interaction |
 
 ### CreateTurnstileWidgetRequest
 

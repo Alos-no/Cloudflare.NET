@@ -181,25 +181,23 @@ await cf.Accounts.AccessRules.DeleteAsync(ruleId);
 
 ### AccessRuleMode (Extensible Enum)
 
-The action to take when an access rule matches. This is an [extensible enum](../../conventions.md#extensible-enums) that supports custom values for forward compatibility.
+<xref:Cloudflare.NET.Security.Firewall.Models.AccessRuleMode> defines the action to take when an access rule matches:
 
-| Known Value | Description |
-|-------------|-------------|
-| `Block` | Block all requests from this source |
-| `Challenge` | Present CAPTCHA challenge |
-| `JsChallenge` | Present JavaScript challenge |
-| `ManagedChallenge` | Let Cloudflare decide challenge type |
-| `Whitelist` | Allow requests, bypass other security rules |
+| Known Value | API Value | Description |
+|-------------|-----------|-------------|
+| `Block` | `block` | Block all requests (returns 403) |
+| `Challenge` | `challenge` | Present interactive CAPTCHA challenge |
+| `JsChallenge` | `js_challenge` | Present JavaScript challenge |
+| `ManagedChallenge` | `managed_challenge` | Cloudflare dynamically chooses challenge type |
+| `Whitelist` | `whitelist` | Allow requests, bypass all security checks |
 
 ```csharp
-// Using known values
-AccessRuleMode.Block
-AccessRuleMode.Challenge
-AccessRuleMode.JsChallenge
-AccessRuleMode.ManagedChallenge
-AccessRuleMode.Whitelist
+using Cloudflare.NET.Security.Firewall.Models;
 
-// Future-proof: accepts unknown values from API
+// Use static properties for IntelliSense support
+var mode = AccessRuleMode.Block;
+
+// Extensible for future modes
 AccessRuleMode customMode = "new-mode";
 ```
 

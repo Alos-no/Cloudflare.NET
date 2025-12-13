@@ -70,7 +70,7 @@ await cf.Zones.SetZoneSettingAsync(zoneId, ZoneSettingIds.DevelopmentMode, "off"
 
 ## Available Settings
 
-Use the `ZoneSettingIds` constants for type-safe setting identifiers.
+Use <xref:Cloudflare.NET.Zones.ZoneSettingIds> constants for type-safe setting identifiers.
 
 ### Security Settings
 

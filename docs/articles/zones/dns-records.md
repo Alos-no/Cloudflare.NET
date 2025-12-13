@@ -294,17 +294,53 @@ Console.WriteLine($"Added: {result.RecordsAdded}");
 
 ### DnsRecordType (Extensible Enum)
 
-| Known Value | Description |
-|-------------|-------------|
-| `A` | IPv4 address |
-| `AAAA` | IPv6 address |
-| `CNAME` | Canonical name (alias) |
-| `MX` | Mail exchange |
-| `TXT` | Text record |
-| `NS` | Nameserver |
-| `SRV` | Service locator |
-| `CAA` | Certificate authority authorization |
-| `PTR` | Pointer record |
+<xref:Cloudflare.NET.Dns.Models.DnsRecordType> is an extensible enum supporting all Cloudflare DNS record types.
+
+#### Common Record Types
+
+| Value | Description |
+|-------|-------------|
+| `A` | Maps hostname to IPv4 address |
+| `AAAA` | Maps hostname to IPv6 address |
+| `CNAME` | Canonical name (alias to another hostname) |
+| `MX` | Mail exchange server |
+| `TXT` | Text record (SPF, DKIM, DMARC, verification) |
+| `NS` | Nameserver delegation |
+| `SOA` | Start of Authority (zone metadata) |
+| `PTR` | Pointer record (reverse DNS) |
+
+#### Service Record Types
+
+| Value | Description |
+|-------|-------------|
+| `SRV` | Service locator (host and port) |
+| `HTTPS` | HTTPS service binding |
+| `SVCB` | Generic service binding |
+| `URI` | URI mapping |
+| `NAPTR` | Naming authority pointer (ENUM, SIP) |
+
+#### Security Record Types
+
+| Value | Description |
+|-------|-------------|
+| `CAA` | Certificate Authority Authorization |
+| `DS` | Delegation Signer (DNSSEC) |
+| `DNSKEY` | DNSSEC public key |
+| `TLSA` | DANE certificate association |
+| `SSHFP` | SSH public key fingerprint |
+| `CERT` | Certificate storage |
+| `SMIMEA` | S/MIME certificate association |
+
+```csharp
+using Cloudflare.NET.Dns.Models;
+
+// Use static properties for IntelliSense
+var type = DnsRecordType.A;
+var cname = DnsRecordType.CNAME;
+
+// Extensible - custom values work for new record types
+DnsRecordType customType = "NEW_TYPE";
+```
 
 See [conventions](../conventions.md#extensible-enums) for handling unknown values.
 

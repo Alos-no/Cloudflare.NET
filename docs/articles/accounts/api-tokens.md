@@ -259,11 +259,26 @@ await foreach (var group in cf.ApiTokens.GetAllAccountPermissionGroupsAsync(acco
 
 ### TokenStatus (Extensible Enum)
 
-| Known Value | Description |
-|-------------|-------------|
-| `Active` | Token is active and can be used |
-| `Disabled` | Token is disabled |
-| `Expired` | Token has expired |
+<xref:Cloudflare.NET.ApiTokens.Models.TokenStatus> represents the current state of an API token:
+
+| Known Value | API Value | Description |
+|-------------|-----------|-------------|
+| `Active` | `active` | Token is active and can be used for API requests |
+| `Disabled` | `disabled` | Token has been manually disabled |
+| `Expired` | `expired` | Token has passed its expiration date |
+
+```csharp
+using Cloudflare.NET.ApiTokens.Models;
+
+// Check token status
+if (token.Status == TokenStatus.Active)
+{
+    Console.WriteLine("Token is ready to use");
+}
+
+// Extensible for future status values
+TokenStatus customStatus = "pending";
+```
 
 ### CreateApiTokenResult
 
