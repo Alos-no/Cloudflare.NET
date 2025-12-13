@@ -312,7 +312,7 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     var accountId = _settings.AccountId;
     var originalAccount = await _sut.GetAccountAsync(accountId);
     var comboTestName = $"{originalAccount.Name} - Combo Test";
-    var testName = comboTestName.Substring(0, Math.Min(100, comboTestName.Length));
+    var testName = comboTestName.Substring(0, Math.Min(50, comboTestName.Length));
 
     // Act - Attempt to update both name and settings (settings causes the failure)
     var newSettings = new AccountSettings(AbuseContactEmail: "thisisatest@email.com");
