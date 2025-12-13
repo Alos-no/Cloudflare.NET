@@ -87,6 +87,9 @@ public interface ISubscriptionsApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="request"/> is null.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API request fails (403 if no billing permission).</exception>
   /// <exception cref="CloudflareApiException">Thrown when the rate plan is invalid or subscription cannot be created.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   var request = new CreateAccountSubscriptionRequest(
@@ -121,6 +124,9 @@ public interface ISubscriptionsApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="request"/> is null.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API request fails (404 if not found, 403 if no permission).</exception>
   /// <exception cref="CloudflareApiException">Thrown when the subscription is externally managed or update fails.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   // Change to yearly billing
@@ -153,6 +159,9 @@ public interface ISubscriptionsApi
   /// <exception cref="ArgumentException">Thrown when <paramref name="accountId"/> or <paramref name="subscriptionId"/> is null or whitespace.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API request fails (404 if not found, 403 if no permission).</exception>
   /// <exception cref="CloudflareApiException">Thrown when the subscription is externally managed or deletion fails.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   await cf.Subscriptions.DeleteAccountSubscriptionAsync(accountId, subscriptionId);
@@ -209,6 +218,9 @@ public interface ISubscriptionsApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="request"/> is null.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API request fails (404 if not found, 403 if no permission).</exception>
   /// <exception cref="CloudflareApiException">Thrown when the subscription is externally managed or update fails.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   // Change to yearly billing
@@ -239,6 +251,9 @@ public interface ISubscriptionsApi
   /// <exception cref="ArgumentException">Thrown when <paramref name="subscriptionId"/> is null or whitespace.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API request fails (404 if not found, 403 if no permission).</exception>
   /// <exception cref="CloudflareApiException">Thrown when the subscription is externally managed or deletion fails.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   var result = await cf.Subscriptions.DeleteUserSubscriptionAsync(subscriptionId);
@@ -294,6 +309,9 @@ public interface ISubscriptionsApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="request"/> is null.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API request fails (404 if zone not found, 403 if no billing permission).</exception>
   /// <exception cref="CloudflareApiException">Thrown when the rate plan is invalid or subscription cannot be created.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   // Upgrade to Pro plan
@@ -326,6 +344,9 @@ public interface ISubscriptionsApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="request"/> is null.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API request fails (404 if zone not found, 403 if no billing permission).</exception>
   /// <exception cref="CloudflareApiException">Thrown when the rate plan is invalid or update fails.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   // Downgrade to Pro from Business

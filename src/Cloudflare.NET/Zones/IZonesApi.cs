@@ -102,6 +102,7 @@ public interface IZonesApi
   /// <returns>The newly created zone.</returns>
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="request" /> is null.</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>The zone will initially have a status of <see cref="ZoneStatus.Pending" /> until nameserver verification completes.</para>
   ///   <para>Use <see cref="TriggerActivationCheckAsync" /> to manually trigger verification.</para>
   /// </remarks>
@@ -128,6 +129,7 @@ public interface IZonesApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId" /> or <paramref name="request" /> is null.</exception>
   /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId" /> is empty or whitespace.</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>
   ///     <strong>Important:</strong> Only one property can be changed per API call.
   ///     Use the convenience methods (<see cref="SetZonePausedAsync" />, <see cref="SetZoneTypeAsync" />,
@@ -154,6 +156,7 @@ public interface IZonesApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId" /> is null.</exception>
   /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId" /> is empty or whitespace.</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>
   ///     <strong>Warning:</strong> This operation is irreversible. All DNS records, settings,
   ///     and configuration for the zone will be permanently deleted.
@@ -287,6 +290,9 @@ public interface IZonesApi
   /// <returns>The created zone hold.</returns>
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId" /> is null.</exception>
   /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId" /> is empty or whitespace.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   // Create a basic hold
@@ -310,6 +316,7 @@ public interface IZonesApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId" /> or <paramref name="request" /> is null.</exception>
   /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId" /> is empty or whitespace.</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>
   ///     Both <see cref="UpdateZoneHoldRequest.HoldAfter" /> and <see cref="UpdateZoneHoldRequest.IncludeSubdomains" />
   ///     are optional. Only the provided fields will be updated.

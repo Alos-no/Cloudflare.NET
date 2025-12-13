@@ -266,8 +266,11 @@ public interface IAccountsApi
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The newly created account.</returns>
   /// <remarks>
-  ///   This endpoint requires tenant admin privileges. Most users should use the
-  ///   Cloudflare dashboard to create accounts.
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  ///   <para>
+  ///     This endpoint requires tenant admin privileges. Most users should use the
+  ///     Cloudflare dashboard to create accounts.
+  ///   </para>
   /// </remarks>
   /// <exception cref="Core.Exceptions.CloudflareApiException">
   ///   Thrown when the user lacks tenant admin privileges or the request is invalid.
@@ -316,8 +319,11 @@ public interface IAccountsApi
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The deletion result containing the deleted account's ID.</returns>
   /// <remarks>
-  ///   This endpoint requires tenant admin privileges. The operation is permanent
-  ///   and will remove all zones and resources under the account.
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  ///   <para>
+  ///     This endpoint requires tenant admin privileges. The operation is permanent
+  ///     and will remove all zones and resources under the account.
+  ///   </para>
   /// </remarks>
   /// <exception cref="Core.Exceptions.CloudflareApiException">
   ///   Thrown when the user lacks tenant admin privileges.

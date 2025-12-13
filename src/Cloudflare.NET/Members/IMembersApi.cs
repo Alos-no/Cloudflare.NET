@@ -127,6 +127,7 @@ public interface IMembersApi
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="accountId"/> or <paramref name="request"/> is null.</exception>
   /// <exception cref="ArgumentException">Thrown when <paramref name="accountId"/> is empty or whitespace.</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>
   ///     The email address must not already be associated with an existing member.
   ///     At least one role must be specified.
@@ -162,6 +163,9 @@ public interface IMembersApi
   /// <exception cref="ArgumentNullException">Thrown when any parameter is null.</exception>
   /// <exception cref="ArgumentException">Thrown when <paramref name="accountId"/> or <paramref name="memberId"/> is empty or whitespace.</exception>
   /// <exception cref="HttpRequestException">Thrown when the member is not found (HTTP 404).</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   var request = new UpdateAccountMemberRequest(
@@ -191,6 +195,7 @@ public interface IMembersApi
   /// <exception cref="ArgumentException">Thrown when <paramref name="accountId"/> or <paramref name="memberId"/> is empty or whitespace.</exception>
   /// <exception cref="HttpRequestException">Thrown when the member is not found (HTTP 404).</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>
   ///     <b>Warning:</b> You cannot remove yourself from an account. Attempting to do so
   ///     will result in an error.

@@ -96,6 +96,9 @@ public interface IUserApi
   /// <returns>All invitations for the authenticated user.</returns>
   /// <exception cref="HttpRequestException">Thrown when the API returns an HTTP error status code.</exception>
   /// <exception cref="Core.Exceptions.CloudflareApiException">Thrown when the API returns a non-success response.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   var invitations = await client.User.ListInvitationsAsync();
@@ -121,6 +124,9 @@ public interface IUserApi
   /// <exception cref="ArgumentException">Thrown when <paramref name="invitationId"/> is null or whitespace.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API returns an HTTP error status code (404 if not found).</exception>
   /// <exception cref="Core.Exceptions.CloudflareApiException">Thrown when the API returns a non-success response.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   var invitation = await client.User.GetInvitationAsync(invitationId);
@@ -150,6 +156,7 @@ public interface IUserApi
   /// <exception cref="HttpRequestException">Thrown when the API returns an HTTP error status code (404 if not found).</exception>
   /// <exception cref="Core.Exceptions.CloudflareApiException">Thrown when the invitation is expired, already responded to, or other API error.</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>
   ///     <b>Accepting:</b> Upon acceptance, the user becomes a member of the account with the roles
   ///     specified in the invitation. The new membership will appear in both the User Memberships API
@@ -273,6 +280,7 @@ public interface IUserApi
   /// <exception cref="HttpRequestException">Thrown when the API returns an HTTP error status code (404 if not found).</exception>
   /// <exception cref="Core.Exceptions.CloudflareApiException">Thrown when the API returns a non-success response.</exception>
   /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
   ///   <para>
   ///     <b>Accepting:</b> Upon acceptance, the user gains access to the account
   ///     with the permissions defined in the membership.
@@ -313,6 +321,9 @@ public interface IUserApi
   /// <exception cref="ArgumentException">Thrown when <paramref name="membershipId"/> is null or whitespace.</exception>
   /// <exception cref="HttpRequestException">Thrown when the API returns an HTTP error status code (404 if not found).</exception>
   /// <exception cref="Core.Exceptions.CloudflareApiException">Thrown when the API returns a non-success response.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   // Leave an account

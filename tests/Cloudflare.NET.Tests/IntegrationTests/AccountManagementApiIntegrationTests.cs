@@ -224,8 +224,10 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     var originalAccount = await _sut.GetAccountAsync(accountId);
 
     var originalName = originalAccount.Name;
+    // Cloudflare account names have a character limit lower than 100 chars (API error 1001).
+    // Truncate to 50 chars to stay safely within the limit.
     var updateTestName = $"{originalName} - Test Update {Guid.NewGuid():N}";
-    var testName = updateTestName.Substring(0, Math.Min(100, updateTestName.Length));
+    var testName = updateTestName[..Math.Min(50, updateTestName.Length)];
 
     try
     {

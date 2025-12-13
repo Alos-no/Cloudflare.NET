@@ -1,69 +1,72 @@
 # Accounts API
 
-The Accounts API provides access to account-level resources in Cloudflare, including R2 bucket management and account-wide security rules.
+The Accounts API provides access to account-level resources in Cloudflare, including account management, members, roles, tokens, and R2 storage.
 
 ## Overview
 
-Access the Accounts API through the `ICloudflareApiClient.Accounts` property:
+Access the Accounts API through `ICloudflareApiClient`:
 
 ```csharp
 public class AccountService(ICloudflareApiClient cf)
 {
-    public async Task ListBucketsAsync()
+    public async Task GetAccountInfoAsync(string accountId)
     {
-        await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
-        {
-            Console.WriteLine($"Bucket: {bucket.Name}");
-        }
+        var account = await cf.Accounts.GetAccountDetailsAsync(accountId);
+        Console.WriteLine($"Account: {account.Name}, Type: {account.Type}");
     }
 }
 ```
 
 ## Available APIs
 
-The Accounts API is organized into the following areas:
+| API | Property | Description |
+|-----|----------|-------------|
+| [Account Management](account-management.md) | `cf.Accounts` | Create, list, edit, delete accounts |
+| [Members](members.md) | `cf.Members` | Invite and manage account members |
+| [Roles](roles.md) | `cf.Roles` | View available permission roles |
+| [API Tokens](api-tokens.md) | `cf.ApiTokens` | Manage account-scoped API tokens |
+| [Audit Logs](audit-logs.md) | `cf.AuditLogs` | View account activity logs |
+| [Turnstile](turnstile.md) | `cf.Turnstile` | Manage Turnstile widgets |
+| [R2 Buckets](r2/buckets.md) | `cf.Accounts` | Create and manage R2 buckets |
+| [Access Rules](security/access-rules.md) | `cf.Accounts.AccessRules` | Account-level IP access control |
+| [Rulesets](security/rulesets.md) | `cf.Accounts.Rulesets` | Account-level WAF rules |
 
-| API | Property/Method | Description |
-|-----|-----------------|-------------|
-| **R2 Buckets** | Direct methods | Create, list, delete buckets |
-| **R2 Custom Domains** | Direct methods | Attach/detach custom domains |
-| **R2 CORS** | Direct methods | Configure CORS policies |
-| **R2 Lifecycle** | Direct methods | Configure object lifecycle rules |
-| **Access Rules** | `cf.Accounts.AccessRules` | Account-level IP access control |
-| **Rulesets** | `cf.Accounts.Rulesets` | Account-level WAF rules |
+## Account Management
 
-## R2 Bucket Management
-
-### Create a Bucket
-
-```csharp
-var bucket = await cf.Accounts.CreateR2BucketAsync("my-bucket");
-Console.WriteLine($"Created: {bucket.Name} in {bucket.Location}");
-```
-
-### List Buckets
+### List Accounts
 
 ```csharp
-await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+await foreach (var account in cf.Accounts.ListAllAccountsAsync())
 {
-    Console.WriteLine($"{bucket.Name}: {bucket.StorageClass}");
+    Console.WriteLine($"{account.Name}: {account.Type}");
 }
 ```
 
-### Delete a Bucket
+### Get Account Details
 
 ```csharp
-// Bucket must be empty first
-await cf.Accounts.DeleteR2BucketAsync("my-bucket");
+var account = await cf.Accounts.GetAccountDetailsAsync(accountId);
+Console.WriteLine($"Name: {account.Name}");
+Console.WriteLine($"2FA Required: {account.Settings?.EnforceTwofactor}");
 ```
 
 ## Quick Links
+
+### Account Operations
+- [Account Management](account-management.md) - CRUD operations for accounts
+- [Members](members.md) - Invite and manage team members
+- [Roles](roles.md) - View available permission roles
+
+### Authentication & Security
+- [API Tokens](api-tokens.md) - Create and manage API tokens
+- [Audit Logs](audit-logs.md) - View security and activity logs
+- [Turnstile](turnstile.md) - Bot protection widgets
 
 ### R2 Storage
 - [Bucket Management](r2/buckets.md) - Create, list, and delete buckets
 - [Custom Domains](r2/custom-domains.md) - Attach custom hostnames to buckets
 - [CORS Configuration](r2/cors.md) - Configure cross-origin access
-- [Lifecycle Policies](r2/lifecycle.md) - Automatic object expiration and transitions
+- [Lifecycle Policies](r2/lifecycle.md) - Automatic object expiration
 
 ### Security
 - [Access Rules](security/access-rules.md) - Account-level IP firewall rules
@@ -73,9 +76,15 @@ await cf.Accounts.DeleteR2BucketAsync("my-bucket");
 
 | Feature | Permission | Level |
 |---------|------------|-------|
-| R2 Buckets | Workers R2 Storage | Account: Read/Write |
-| Access Rules | Account Firewall Access Rules | Account: Read/Write |
-| Rulesets | Account Rulesets | Account: Read/Write |
+| Account Management | Account Settings | Read/Write |
+| Members | Account Members | Read/Write |
+| Roles | Account Members | Read |
+| API Tokens | API Tokens | Read/Write |
+| Audit Logs | Audit Logs | Read |
+| Turnstile | Turnstile | Read/Write |
+| R2 Buckets | Workers R2 Storage | Read/Write |
+| Access Rules | Account Firewall Access Rules | Read/Write |
+| Rulesets | Account Rulesets | Read/Write |
 
 ## Account vs Zone Level
 
@@ -85,6 +94,13 @@ Many security features are available at both account and zone levels:
 |---------|---------------|------------|
 | Access Rules | Applies to all zones | Applies to specific zone |
 | Rulesets | Shared across zones | Zone-specific |
-| Scope | Broader | Targeted |
+| API Tokens | Access multiple zones | Zone-scoped access |
+| Audit Logs | All account activity | (use account logs) |
 
-Use account-level rules for policies that should apply across all zones. Use zone-level rules for zone-specific policies.
+Use account-level features for policies that should apply across all zones. Use zone-level features for zone-specific policies.
+
+## Related
+
+- [Zone API](../zones/index.md) - Zone-level operations
+- [User API](../user/index.md) - User profile and memberships
+- [Subscriptions](../subscriptions.md) - Account subscription management

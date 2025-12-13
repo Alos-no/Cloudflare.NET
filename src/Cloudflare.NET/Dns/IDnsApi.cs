@@ -419,6 +419,9 @@ public interface IDnsApi
   /// <returns>Counts of accepted and rejected records.</returns>
   /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId"/> or <paramref name="request"/> is null.</exception>
   /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId"/> is empty or whitespace.</exception>
+  /// <remarks>
+  ///   <para><b>Preview:</b> This operation has limited test coverage.</para>
+  /// </remarks>
   /// <example>
   ///   <code>
   ///   // Get pending records from scan review queue
