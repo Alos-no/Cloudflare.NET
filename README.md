@@ -73,10 +73,15 @@ public class MyService(ICloudflareApiClient cf)
 
 | API Family | Features |
 |------------|----------|
-| **Zones** | DNS Records, Bulk Import/Export, Cache Purge, Zone Details, Custom Hostnames (SaaS) |
+| **Zones** | CRUD, Holds, Settings, Subscriptions, Cache Purge, Custom Hostnames (SaaS) |
+| **DNS** | Record CRUD, Batch Operations, Import/Export, Record Scanning |
 | **Zone Security** | IP Access Rules, Zone Lockdown, User-Agent Rules, WAF Rulesets |
-| **Accounts** | R2 Buckets, R2 Custom Domains, R2 CORS, R2 Lifecycle Policies |
+| **Accounts** | Management, Members, Roles, Audit Logs, API Tokens, Subscriptions |
+| **Account Storage** | R2 Buckets, R2 Custom Domains, R2 CORS, R2 Lifecycle Policies |
 | **Account Security** | IP Access Rules, WAF Rulesets |
+| **Users** | Profile Management, Memberships, Invitations, Audit Logs, API Tokens, Subscriptions |
+| **Workers** | Routes (zone-scoped) |
+| **Turnstile** | Widget CRUD, Secret Rotation |
 | **R2 Client** | Upload, Download, Multipart, Presigned URLs, Batch Delete |
 | **Analytics** | GraphQL queries for traffic, security, and R2 metrics |
 
