@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Inherits multi-targeting from tests/Directory.Build.props -->
+  <!-- Inherits target framework from tests/Directory.Build.props -->
   <PropertyGroup>
     <UserSecretsId>595f0707-156c-4a26-a044-ed1d71f66b96</UserSecretsId>
-    
-    <!-- 
+
+    <!--
       Strong naming disabled because this project references Cloudflare.NET.Analytics,
       which is unsigned due to its GraphQL.Client dependency.
     -->

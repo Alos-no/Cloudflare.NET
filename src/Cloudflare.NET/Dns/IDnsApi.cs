@@ -2,7 +2,6 @@ namespace Cloudflare.NET.Dns;
 
 using Core.Models;
 using Models;
-using DnsRecordType = Zones.Models.DnsRecordType;
 
 /// <summary>
 ///   Defines the contract for DNS record operations.
@@ -422,13 +421,12 @@ public interface IDnsApi
   /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId"/> is empty or whitespace.</exception>
   /// <example>
   ///   <code>
-  ///   // Get pending records
+  ///   // Get pending records from scan review queue
   ///   var pending = await dns.GetDnsRecordScanReviewAsync(zoneId);
   ///
-  ///   // Accept A and AAAA records, reject others
+  ///   // Accept A and AAAA records (pass full record objects), reject others (pass just IDs)
   ///   var accepts = pending
   ///     .Where(r => r.Type == DnsRecordType.A || r.Type == DnsRecordType.AAAA)
-  ///     .Select(r => r.Id)
   ///     .ToList();
   ///
   ///   var rejects = pending
@@ -437,7 +435,7 @@ public interface IDnsApi
   ///     .ToList();
   ///
   ///   var result = await dns.SubmitDnsRecordScanReviewAsync(zoneId,
-  ///     new DnsScanReviewRequest(Accepts: accepts, Rejects: rejects));
+  ///     new DnsScanReviewRequest { Accepts = accepts, Rejects = rejects });
   ///
   ///   Console.WriteLine($"Accepted: {result.Accepts}, Rejected: {result.Rejects}");
   ///   </code>

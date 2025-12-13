@@ -76,6 +76,7 @@ public abstract class ApiResource
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("POST", requestUri);
+
     var response = await HttpClient.PostAsJsonAsync(requestUri, payload, _serializerOptions, cancellationToken);
     return await ProcessResponse<TResult>(response, cancellationToken);
   }

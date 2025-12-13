@@ -384,9 +384,12 @@ public class ZoneHoldsApiUnitTests
     result.HoldAfter!.Value.Should().BeAfter(DateTime.UtcNow);
   }
 
-  /// <summary>U13: Verifies that include_subdomains as string deserializes correctly.</summary>
+  /// <summary>U13: Verifies that include_subdomains as boolean deserializes correctly.</summary>
+  /// <remarks>
+  ///   The Cloudflare API returns include_subdomains as a boolean value.
+  /// </remarks>
   [Fact]
-  public async Task GetZoneHoldAsync_IncludeSubdomainsString_DeserializesCorrectly()
+  public async Task GetZoneHoldAsync_IncludeSubdomainsTrue_DeserializesCorrectly()
   {
     // Arrange
     const string zoneId = "zone-123";

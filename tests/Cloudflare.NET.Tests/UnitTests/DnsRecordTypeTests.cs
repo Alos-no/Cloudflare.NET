@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Tests.UnitTests;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cloudflare.NET.Core.Json;
+using Cloudflare.NET.Dns.Models;
 using Cloudflare.NET.Zones.Models;
 using Shared.Fixtures;
 
@@ -347,7 +348,17 @@ public class DnsRecordTypeTests
   public void Serialize_DnsRecord_ProducesCorrectJson()
   {
     // Arrange
-    var record = new DnsRecord("dns-123", "api.example.com", DnsRecordType.AAAA);
+    var record = new DnsRecord(
+      Id: "dns-123",
+      Name: "api.example.com",
+      Type: DnsRecordType.AAAA,
+      Content: "2001:db8::1",
+      Proxied: false,
+      Proxiable: true,
+      Ttl: 1,
+      CreatedOn: DateTime.UtcNow,
+      ModifiedOn: DateTime.UtcNow
+    );
 
     // Act
     var json = JsonSerializer.Serialize(record, _serializerOptions);

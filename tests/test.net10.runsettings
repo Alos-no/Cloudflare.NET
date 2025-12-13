@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Test run settings for Cloudflare.NET test projects - .NET 10 only.
+
+  Use this runsettings file for faster test runs during development when you only
+  need to verify behavior on the latest .NET version.
+
+  Usage:
+    dotnet test -s tests/test.net10.runsettings
+
+  For full compatibility testing across all target frameworks, use test.runsettings instead.
+-->
+<RunSettings>
+  <RunConfiguration>
+    <!--
+      Target only .NET 10 for faster test execution.
+      This skips net8.0 tests entirely.
+    -->
+    <TargetFramework>net10.0</TargetFramework>
+
+    <!--
+      Parallelization settings (same as main runsettings).
+    -->
+    <DisableParallelization>false</DisableParallelization>
+    <MaxCpuCount>1</MaxCpuCount>
+  </RunConfiguration>
+  <xUnit>
+    <!--
+      xUnit-specific settings.
+      ParallelizeAssembly: false = don't run multiple test assemblies in parallel
+      ParallelizeTestCollections: true = allow parallel within a single assembly (unit tests)
+    -->
+    <ParallelizeAssembly>false</ParallelizeAssembly>
+    <ParallelizeTestCollections>true</ParallelizeTestCollections>
+  </xUnit>
+</RunSettings>

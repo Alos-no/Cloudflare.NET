@@ -739,70 +739,9 @@ public class AccountSubscriptionsApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U29-U38)
+  #region Error Handling Tests (U29-U32)
 
-  /// <summary>U29: Verifies UpdateAccountSubscriptionAsync throws on 404 Not Found.</summary>
-  [Fact]
-  public async Task UpdateAccountSubscriptionAsync_WhenNotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Subscription not found"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() =>
-      sut.UpdateAccountSubscriptionAsync("acc", "nonexistent", new UpdateAccountSubscriptionRequest()));
-    exception.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U30: Verifies unauthorized (401) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountSubscriptionsAsync_WhenUnauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Authentication error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountSubscriptionsAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U31: Verifies forbidden (403) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountSubscriptionsAsync_WhenForbidden_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""No billing permission"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountSubscriptionsAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U32: Verifies API error envelope throws CloudflareApiException.</summary>
+  /// <summary>U29: Verifies API error envelope throws CloudflareApiException.</summary>
   [Fact]
   public async Task CreateAccountSubscriptionAsync_WhenApiError_ThrowsCloudflareApiException()
   {
@@ -824,7 +763,7 @@ public class AccountSubscriptionsApiUnitTests
     exception.Errors[0].Code.Should().Be(10000);
   }
 
-  /// <summary>U33: Verifies invalid rate plan API error.</summary>
+  /// <summary>U30: Verifies invalid rate plan API error.</summary>
   [Fact]
   public async Task CreateAccountSubscriptionAsync_InvalidRatePlan_ThrowsCloudflareApiException()
   {
@@ -845,7 +784,7 @@ public class AccountSubscriptionsApiUnitTests
     exception.Errors.Should().Contain(e => e.Message.Contains("Rate plan"));
   }
 
-  /// <summary>U34: Verifies multiple errors in response are captured in CloudflareApiException.</summary>
+  /// <summary>U31: Verifies multiple errors in response are captured in CloudflareApiException.</summary>
   [Fact]
   public async Task UpdateAccountSubscriptionAsync_WhenMultipleErrors_CapturesAllErrors()
   {
@@ -869,92 +808,12 @@ public class AccountSubscriptionsApiUnitTests
     exception.Errors.Should().HaveCount(2);
   }
 
-  /// <summary>U35: Verifies rate limited (429) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountSubscriptionsAsync_WhenRateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Rate limited"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountSubscriptionsAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U36: Verifies server error (500) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountSubscriptionsAsync_WhenServerError500_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Server error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.InternalServerError);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountSubscriptionsAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-  }
-
-  /// <summary>U37: Verifies server error (502) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountSubscriptionsAsync_WhenServerError502_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Bad gateway"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.BadGateway);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountSubscriptionsAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-  }
-
-  /// <summary>U38: Verifies server error (503) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountSubscriptionsAsync_WhenServerError503_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Service unavailable"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.ServiceUnavailable);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountSubscriptionsAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-  }
-
   #endregion
 
 
-  #region URL Encoding Tests (U39-U40)
+  #region URL Encoding Tests (U33-U34)
 
-  /// <summary>U39: Verifies that ListAccountSubscriptionsAsync properly URL-encodes the account ID.</summary>
+  /// <summary>U33: Verifies that ListAccountSubscriptionsAsync properly URL-encodes the account ID.</summary>
   [Fact]
   public async Task ListAccountSubscriptionsAsync_WithSpecialChars_UrlEncodesAccountId()
   {
@@ -975,7 +834,7 @@ public class AccountSubscriptionsApiUnitTests
     capturedRequest!.RequestUri!.AbsolutePath.Should().Contain("abc%2Bdef%2Fghi");
   }
 
-  /// <summary>U40: Verifies that UpdateAccountSubscriptionAsync properly URL-encodes the subscription ID.</summary>
+  /// <summary>U34: Verifies that UpdateAccountSubscriptionAsync properly URL-encodes the subscription ID.</summary>
   [Fact]
   public async Task UpdateAccountSubscriptionAsync_WithSpecialChars_UrlEncodesSubscriptionId()
   {

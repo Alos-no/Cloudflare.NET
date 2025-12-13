@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 ///   </para>
 ///   <para>
 ///     <b>Billing Permissions:</b> These tests require an API token with Billing Read permissions.
-///     If the token lacks these permissions, the tests will gracefully handle 403 errors.
+///     Missing permissions will be caught by the PermissionValidationTests that run first.
 ///   </para>
 ///   <para>
 ///     <b>No Create Endpoint:</b> User subscriptions cannot be created via API - they are
@@ -36,9 +36,6 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   /// <summary>The subject under test, resolved from the test fixture.</summary>
   private readonly ISubscriptionsApi _sut;
 
-  /// <summary>The xUnit test output helper for writing warnings and debug info.</summary>
-  private readonly ITestOutputHelper _output;
-
   #endregion
 
 
@@ -49,8 +46,7 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   /// <param name="output">The xUnit test output helper.</param>
   public UserSubscriptionsApiIntegrationTests(CloudflareApiTestFixture fixture, ITestOutputHelper output)
   {
-    _sut    = fixture.SubscriptionsApi;
-    _output = output;
+    _sut = fixture.SubscriptionsApi;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -67,20 +63,10 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_ReturnsSubscriptions()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
     result.Should().NotBeNull();
-    _output.WriteLine($"Found {result.Count} user subscriptions");
   }
 
   /// <summary>I02: Verifies that subscriptions have valid state property.</summary>
@@ -88,28 +74,14 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_SubscriptionsHaveState()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No subscriptions found - skipping state validation");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one subscription to validate state property");
 
     foreach (var sub in result)
     {
       sub.State.Value.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"  Subscription {sub.Id}: State={sub.State}");
     }
   }
 
@@ -118,33 +90,16 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_SubscriptionsHaveRatePlan()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No subscriptions found - skipping rate plan validation");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one subscription to validate rate plan");
 
-    foreach (var sub in result)
-    {
-      _output.WriteLine($"  Subscription {sub.Id}: RatePlan={sub.RatePlan?.PublicName ?? "null"}");
-      if (sub.RatePlan != null)
-      {
-        sub.RatePlan.Id.Should().NotBeNullOrEmpty();
-        sub.RatePlan.PublicName.Should().NotBeNullOrEmpty();
-      }
-    }
+    var subWithRatePlan = result.FirstOrDefault(s => s.RatePlan != null);
+    subWithRatePlan.Should().NotBeNull("test requires at least one subscription with a rate plan");
+
+    subWithRatePlan!.RatePlan!.Id.Should().NotBeNullOrEmpty();
+    subWithRatePlan.RatePlan.PublicName.Should().NotBeNullOrEmpty();
   }
 
   /// <summary>I04: Verifies that subscriptions have frequency populated.</summary>
@@ -152,28 +107,14 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_SubscriptionsHaveFrequency()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No subscriptions found - skipping frequency validation");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one subscription to validate frequency");
 
     foreach (var sub in result)
     {
       sub.Frequency.Value.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"  Subscription {sub.Id}: Frequency={sub.Frequency}");
     }
   }
 
@@ -187,28 +128,14 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_SubscriptionsHaveCurrency()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No subscriptions found - skipping currency validation");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one subscription to validate currency");
 
     foreach (var sub in result)
     {
       sub.Currency.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"  Subscription {sub.Id}: Currency={sub.Currency}, Price={sub.Price}");
     }
   }
 
@@ -217,36 +144,15 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_ReturnsPeriodDates()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No subscriptions found - skipping period date validation");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one subscription to validate period dates");
 
-    foreach (var sub in result)
-    {
-      if (sub.CurrentPeriodStart.HasValue && sub.CurrentPeriodEnd.HasValue)
-      {
-        sub.CurrentPeriodEnd.Value.Should().BeAfter(sub.CurrentPeriodStart.Value);
-        _output.WriteLine($"  Subscription {sub.Id}: Period={sub.CurrentPeriodStart} to {sub.CurrentPeriodEnd}");
-      }
-      else
-      {
-        _output.WriteLine($"  Subscription {sub.Id}: No period dates");
-      }
-    }
+    var subWithDates = result.FirstOrDefault(s => s.CurrentPeriodStart.HasValue && s.CurrentPeriodEnd.HasValue);
+    subWithDates.Should().NotBeNull("test requires at least one subscription with period dates");
+
+    subWithDates!.CurrentPeriodEnd!.Value.Should().BeAfter(subWithDates.CurrentPeriodStart!.Value);
   }
 
   /// <summary>I07: Verifies that subscription component values are returned when available.</summary>
@@ -254,62 +160,29 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_ReturnsComponentValues()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No subscriptions found - skipping component values validation");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one subscription to validate component values");
 
-    foreach (var sub in result)
+    var subWithComponents = result.FirstOrDefault(s => s.ComponentValues != null && s.ComponentValues.Count > 0);
+    subWithComponents.Should().NotBeNull("test requires at least one subscription with component values");
+
+    foreach (var component in subWithComponents!.ComponentValues!)
     {
-      if (sub.ComponentValues != null && sub.ComponentValues.Count > 0)
-      {
-        _output.WriteLine($"  Subscription {sub.Id} has {sub.ComponentValues.Count} components:");
-        foreach (var component in sub.ComponentValues)
-        {
-          component.Name.Should().NotBeNullOrEmpty();
-          _output.WriteLine($"    - {component.Name}: {component.Value} (default={component.Default}, price={component.Price})");
-        }
-      }
-      else
-      {
-        _output.WriteLine($"  Subscription {sub.Id}: No component values");
-      }
+      component.Name.Should().NotBeNullOrEmpty();
     }
   }
 
-  /// <summary>I08: Verifies that listing returns empty collection when no subscriptions exist.</summary>
+  /// <summary>I08: Verifies that listing returns a valid collection.</summary>
   [IntegrationTest]
-  public async Task ListUserSubscriptionsAsync_WhenEmpty_ReturnsEmptyList()
+  public async Task ListUserSubscriptionsAsync_ReturnsValidCollection()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    // Either returns empty list or subscriptions - both are valid
     result.Should().NotBeNull();
-    _output.WriteLine($"Subscription count: {result.Count}");
   }
 
   #endregion
@@ -317,139 +190,157 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
 
   #region Error Handling Tests (I09-I12)
 
-  /// <summary>I09: Verifies that 404 is returned for non-existent subscription update.</summary>
+  /// <summary>I09: Verifies that PUT on non-existent subscription returns 405.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     The Cloudflare API returns 405 Method Not Allowed with error code 10000 and message
+  ///     "PUT method not allowed for the api_token authentication scheme" for PUT requests
+  ///     to non-existent user subscription IDs.
+  ///   </para>
+  ///   <para>
+  ///     <b>Note:</b> The cause is unclear - documentation indicates PUT should work with API tokens
+  ///     and Billing Write permission. This may be enumeration prevention (hiding whether a
+  ///     subscription ID exists) or another undocumented restriction.
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
-  public async Task UpdateUserSubscriptionAsync_NonExistent_ThrowsNotFound()
+  public async Task UpdateUserSubscriptionAsync_NonExistent_Returns405()
   {
     // Arrange
-    var nonExistentSubId = "non-existent-user-subscription-id-12345";
+    var subscriptionId = "non-existent-user-subscription-id-12345";
     var request = new UpdateUserSubscriptionRequest(Frequency: SubscriptionFrequency.Monthly);
 
-    // Act & Assert
-    try
-    {
-      await _sut.UpdateUserSubscriptionAsync(nonExistentSubId, request);
-      _output.WriteLine("Unexpectedly succeeded - subscription might exist or API behavior differs");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
-    {
-      _output.WriteLine("Skipped: PUT method not allowed for api_token authentication scheme (405)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Received expected 404 Not Found: {ex.Message}");
-      ex.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.UpdateUserSubscriptionAsync(subscriptionId, request);
+
+    // Assert - Cloudflare returns 405 for non-existent subscription IDs
+    // If this changes to 404, Cloudflare may have changed their error handling
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed,
+        "Cloudflare API returns 405 for PUT on non-existent subscriptions; " +
+        "if this test fails, Cloudflare may have changed this behavior");
   }
 
-  /// <summary>I10: Verifies that 404 is returned for non-existent subscription delete.</summary>
+  /// <summary>I10: Verifies that DELETE on non-existent subscription returns 405.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     The Cloudflare API returns 405 Method Not Allowed with error code 10000 and message
+  ///     "DELETE method not allowed for the api_token authentication scheme" for DELETE requests
+  ///     to non-existent user subscription IDs.
+  ///   </para>
+  ///   <para>
+  ///     <b>Note:</b> The cause is unclear - documentation indicates DELETE should work with API tokens
+  ///     and Billing Write permission. This may be enumeration prevention (hiding whether a
+  ///     subscription ID exists) or another undocumented restriction.
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
-  public async Task DeleteUserSubscriptionAsync_NonExistent_ThrowsNotFound()
+  public async Task DeleteUserSubscriptionAsync_NonExistent_Returns405()
   {
     // Arrange
-    var nonExistentSubId = "non-existent-user-subscription-id-67890";
+    var subscriptionId = "non-existent-user-subscription-id-67890";
 
-    // Act & Assert
-    try
-    {
-      await _sut.DeleteUserSubscriptionAsync(nonExistentSubId);
-      _output.WriteLine("Unexpectedly succeeded - subscription might exist or API behavior differs");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
-    {
-      _output.WriteLine("Skipped: DELETE method not allowed for api_token authentication scheme (405)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Received expected 404 Not Found: {ex.Message}");
-      ex.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.DeleteUserSubscriptionAsync(subscriptionId);
+
+    // Assert - Cloudflare returns 405 for non-existent subscription IDs
+    // If this changes to 404, Cloudflare may have changed their error handling
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed,
+        "Cloudflare API returns 405 for DELETE on non-existent subscriptions; " +
+        "if this test fails, Cloudflare may have changed this behavior");
   }
 
-  /// <summary>I11: Verifies that malformed subscription ID returns API error.</summary>
+  /// <summary>I11: Verifies that malformed subscription ID returns 405.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     The Cloudflare API returns 405 for malformed subscription IDs, suggesting the 405
+  ///     response occurs before any ID format validation.
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
-  public async Task UpdateUserSubscriptionAsync_MalformedId_ThrowsError()
+  public async Task UpdateUserSubscriptionAsync_MalformedId_Returns405()
   {
     // Arrange
     var malformedId = "!!!invalid-format!!!";
     var request = new UpdateUserSubscriptionRequest();
 
-    // Act & Assert
-    try
-    {
-      await _sut.UpdateUserSubscriptionAsync(malformedId, request);
-      _output.WriteLine("Unexpectedly succeeded");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex)
-    {
-      _output.WriteLine($"Received HTTP error {ex.StatusCode}: {ex.Message}");
-      ex.StatusCode.Should().NotBeNull();
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.UpdateUserSubscriptionAsync(malformedId, request);
+
+    // Assert - 405 is returned even for malformed IDs
+    // If this changes to 400, Cloudflare may have changed their error handling
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed,
+        "Cloudflare API returns 405 for malformed subscription IDs; " +
+        "if this test fails with 400, Cloudflare may have changed their error handling");
   }
 
-  /// <summary>I12: Verifies that invalid rate plan returns API error.</summary>
+  /// <summary>I12: Verifies that PUT with invalid rate plan returns 405.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     The Cloudflare API returns 405 regardless of request body content when the
+  ///     subscription ID doesn't exist or isn't accessible.
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
-  public async Task UpdateUserSubscriptionAsync_InvalidRatePlan_ThrowsError()
+  public async Task UpdateUserSubscriptionAsync_InvalidRatePlan_Returns405()
   {
     // Arrange
-    var nonExistentSubId = "test-sub-id";
+    var subscriptionId = "test-sub-id";
     var request = new UpdateUserSubscriptionRequest(
       RatePlan: new RatePlanReference("invalid-rate-plan-that-does-not-exist"));
 
-    // Act & Assert
-    try
-    {
-      await _sut.UpdateUserSubscriptionAsync(nonExistentSubId, request);
-      _output.WriteLine("Unexpectedly succeeded - API may have different behavior");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Write permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
-    {
-      _output.WriteLine("Skipped: PUT method not allowed for api_token authentication scheme (405)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Received 404 Not Found: {ex.Message}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-    {
-      _output.WriteLine($"Received 400 Bad Request for invalid rate plan: {ex.Message}");
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error for invalid rate plan: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.UpdateUserSubscriptionAsync(subscriptionId, request);
+
+    // Assert - 405 is returned regardless of request body
+    // If this changes to 404/400, Cloudflare may have changed their error handling
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed,
+        "Cloudflare API returns 405 for non-existent subscription IDs; " +
+        "if this test fails with 404, Cloudflare may have changed their error handling");
+  }
+
+  #endregion
+
+
+  #region Write Operation Happy Path Tests (I17)
+
+  /// <summary>I17: Verifies that a user subscription can be updated successfully.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Billing Write permission IS available via API tokens: https://developers.cloudflare.com/fundamentals/api/reference/permissions/</item>
+  ///     <item>Updating subscriptions may affect billing: https://developers.cloudflare.com/billing/billing-policy/</item>
+  ///     <item>Plan changes are pro-rated within billing cycle</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Note:</b> This test requires an existing subscription and Billing Write permission.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Modifies billing - may incur charges")]
+  public async Task UpdateUserSubscriptionAsync_ReturnsUpdatedSubscription()
+  {
+    // Arrange - Get an existing subscription to update
+    var subscriptions = await _sut.ListUserSubscriptionsAsync();
+    subscriptions.Should().NotBeEmpty("test requires an existing subscription to update");
+    var subscriptionToUpdate = subscriptions[0];
+
+    var request = new UpdateUserSubscriptionRequest(
+      Frequency: SubscriptionFrequency.Yearly);
+
+    // Act
+    var result = await _sut.UpdateUserSubscriptionAsync(subscriptionToUpdate.Id, request);
+
+    // Assert - Verify the subscription was updated
+    result.Should().NotBeNull();
+    result.Id.Should().Be(subscriptionToUpdate.Id);
+    result.Frequency.Should().Be(SubscriptionFrequency.Yearly);
   }
 
   #endregion
@@ -462,24 +353,16 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_CanIdentifyPaidSubscriptions()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    var paidSubscriptions = result.Where(s => s.State == SubscriptionState.Paid).ToList();
-    _output.WriteLine($"Found {paidSubscriptions.Count} paid subscriptions out of {result.Count} total");
+    result.Should().NotBeEmpty("test requires at least one subscription to identify paid subscriptions");
 
-    foreach (var sub in paidSubscriptions)
+    // All subscriptions should have a valid state that is identifiable
+    foreach (var sub in result)
     {
-      _output.WriteLine($"  - {sub.RatePlan?.PublicName ?? sub.Id}: {sub.Price} {sub.Currency}/{sub.Frequency}");
+      sub.State.Should().NotBeNull();
+      sub.State.Value.Should().NotBeNullOrEmpty();
     }
   }
 
@@ -488,29 +371,13 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_SubscriptionsHaveVariousStates()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
-    // Assert - group by state
+    // Assert
+    result.Should().NotBeEmpty("test requires at least one subscription to validate states");
+
     var stateGroups = result.GroupBy(s => s.State.Value).ToList();
-    _output.WriteLine("Subscription states found:");
-    foreach (var group in stateGroups)
-    {
-      _output.WriteLine($"  {group.Key}: {group.Count()} subscriptions");
-    }
-
-    if (result.Count > 0)
-    {
-      stateGroups.Should().NotBeEmpty("user should have at least one subscription state if any subscriptions exist");
-    }
+    stateGroups.Should().NotBeEmpty("subscriptions should have at least one state");
   }
 
   /// <summary>I15: Verifies that externally managed subscriptions are identifiable.</summary>
@@ -518,72 +385,48 @@ public class UserSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   public async Task ListUserSubscriptionsAsync_CanIdentifyExternallyManaged()
   {
     // Act
-    IReadOnlyList<Subscription>? result = null;
-    try
-    {
-      result = await _sut.ListUserSubscriptionsAsync();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListUserSubscriptionsAsync();
 
     // Assert
-    var externallyManaged = result.Where(s => s.RatePlan?.ExternallyManaged == true).ToList();
-    var internallyManaged = result.Where(s => s.RatePlan?.ExternallyManaged == false).ToList();
+    result.Should().NotBeEmpty("test requires at least one subscription to identify management type");
 
-    _output.WriteLine($"Externally managed subscriptions: {externallyManaged.Count}");
-    _output.WriteLine($"Internally managed subscriptions: {internallyManaged.Count}");
+    // All subscriptions with rate plans should have ExternallyManaged set to true or false
+    var subsWithRatePlan = result.Where(s => s.RatePlan != null).ToList();
+    subsWithRatePlan.Should().NotBeEmpty("test requires at least one subscription with a rate plan");
 
-    foreach (var sub in externallyManaged)
-    {
-      _output.WriteLine($"  [External] {sub.RatePlan?.PublicName ?? sub.Id}");
-    }
+    // Verify we can categorize subscriptions by management type
+    var externallyManaged = subsWithRatePlan.Where(s => s.RatePlan!.ExternallyManaged).ToList();
+    var internallyManaged = subsWithRatePlan.Where(s => !s.RatePlan!.ExternallyManaged).ToList();
 
-    foreach (var sub in internallyManaged)
-    {
-      _output.WriteLine($"  [Internal] {sub.RatePlan?.PublicName ?? sub.Id}");
-    }
+    // All subscriptions should be categorized as either externally or internally managed
+    (externallyManaged.Count + internallyManaged.Count).Should().Be(subsWithRatePlan.Count);
   }
 
   /// <summary>I16: Verifies that delete result contains subscription ID.</summary>
   /// <remarks>
-  ///   This test verifies the DeleteUserSubscriptionResult structure
-  ///   but expects failure since we use a non-existent ID.
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Billing Write permission IS available via API tokens: https://developers.cloudflare.com/fundamentals/api/reference/permissions/</item>
+  ///     <item>Deleting subscriptions will cancel the subscription: https://developers.cloudflare.com/billing/billing-policy/</item>
+  ///     <item>This test requires an existing user subscription to delete</item>
+  ///     <item>User subscriptions cannot be created via API, so manual setup is required</item>
+  ///   </list>
   /// </remarks>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Cancels subscription - may incur billing charges")]
   public async Task DeleteUserSubscriptionAsync_ReturnsSubscriptionIdInResult()
   {
-    // Arrange
-    var testSubId = "test-subscription-for-delete-result";
+    // Arrange - Get an existing subscription to delete
+    var subscriptions = await _sut.ListUserSubscriptionsAsync();
+    subscriptions.Should().NotBeEmpty("test requires an existing subscription to delete");
+    var subscriptionToDelete = subscriptions.First();
 
-    // Act & Assert
-    try
-    {
-      var result = await _sut.DeleteUserSubscriptionAsync(testSubId);
+    // Act
+    var result = await _sut.DeleteUserSubscriptionAsync(subscriptionToDelete.Id);
 
-      // If we get here, the subscription was deleted
-      result.Should().NotBeNull();
-      result.SubscriptionId.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"Delete result contains SubscriptionId: {result.SubscriptionId}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Expected 404 for non-existent subscription: {ex.Message}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
-    {
-      _output.WriteLine("Skipped: DELETE method not allowed for api_token authentication scheme (405)");
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-    }
+    // Assert - Verify the result contains the deleted subscription ID
+    result.Should().NotBeNull();
+    result.SubscriptionId.Should().NotBeNullOrEmpty();
+    result.SubscriptionId.Should().Be(subscriptionToDelete.Id);
   }
 
   #endregion

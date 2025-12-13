@@ -1,5 +1,6 @@
 namespace Cloudflare.NET.Tests.IntegrationTests;
 
+using Dns.Models;
 using Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Fixtures;
@@ -91,6 +92,10 @@ public class ZonesApiDnsIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   #region DNS Record Listing Tests
 
   /// <summary>Tests the lifecycle of listing DNS records via IZonesApi.</summary>
+  /// <remarks>
+  ///   Validates that all DnsRecord fields are properly populated when listing records,
+  ///   including the extended fields: Content, Proxied, Proxiable, Ttl, CreatedOn, ModifiedOn.
+  /// </remarks>
   [IntegrationTest]
   public async Task DnsRecordListing_Lifecycle()
   {
@@ -103,10 +108,26 @@ public class ZonesApiDnsIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     await foreach (var record in _sut.ListAllDnsRecordsAsync(_zoneId, filters))
       records.Add(record);
 
-    // Assert
+    // Assert - Basic fields
     records.Should().HaveCount(1);
-    records[0].Name.Should().Be(_hostname);
-    records[0].Type.Should().Be(DnsRecordType.CNAME);
+    var result = records[0];
+    result.Id.Should().NotBeNullOrWhiteSpace();
+    result.Name.Should().Be(_hostname);
+    result.Type.Should().Be(DnsRecordType.CNAME);
+
+    // Assert - Content fields
+    result.Content.Should().Be("localhost");
+
+    // Assert - Proxy fields
+    result.Proxiable.Should().BeTrue("CNAME records are proxiable");
+    result.Proxied.Should().BeTrue("record was created with default proxied=true via CreateCnameRecordAsync");
+
+    // Assert - TTL field
+    result.Ttl.Should().BeGreaterThan(0);
+
+    // Assert - Timestamp fields
+    result.CreatedOn.Should().NotBe(default(DateTime), "CreatedOn should be set by Cloudflare");
+    result.ModifiedOn.Should().NotBe(default(DateTime), "ModifiedOn should be set by Cloudflare");
   }
 
   /// <summary>
@@ -157,6 +178,10 @@ public class ZonesApiDnsIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   #region DNS Record CRUD Tests
 
   /// <summary>Tests that a DNS record can be found by its name after being created.</summary>
+  /// <remarks>
+  ///   Validates that all DnsRecord fields are properly populated when finding a record,
+  ///   including the extended fields: Content, Proxied, Proxiable, Ttl, CreatedOn, ModifiedOn.
+  /// </remarks>
   [IntegrationTest]
   public async Task CanFindDnsRecordByName()
   {
@@ -165,13 +190,78 @@ public class ZonesApiDnsIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     _recordId.Should().NotBeNullOrWhiteSpace("the DNS record should have been created in InitializeAsync");
 
     // Act
-    var findResult = await _sut.FindDnsRecordByNameAsync(_zoneId, _hostname);
+    var result = await _sut.FindDnsRecordByNameAsync(_zoneId, _hostname);
 
-    // Assert
-    findResult.Should().NotBeNull();
-    findResult.Id.Should().Be(_recordId);
-    findResult.Name.Should().Be(_hostname);
-    findResult.Type.Should().Be(DnsRecordType.CNAME);
+    // Assert - Basic fields
+    result.Should().NotBeNull();
+    result!.Id.Should().Be(_recordId);
+    result.Name.Should().Be(_hostname);
+    result.Type.Should().Be(DnsRecordType.CNAME);
+
+    // Assert - Content fields
+    result.Content.Should().Be("localhost");
+
+    // Assert - Proxy fields
+    result.Proxiable.Should().BeTrue("CNAME records are proxiable");
+    result.Proxied.Should().BeTrue("record was created with default proxied=true via CreateCnameRecordAsync");
+
+    // Assert - TTL field
+    result.Ttl.Should().BeGreaterThan(0);
+
+    // Assert - Timestamp fields
+    result.CreatedOn.Should().NotBe(default(DateTime), "CreatedOn should be set by Cloudflare");
+    result.ModifiedOn.Should().NotBe(default(DateTime), "ModifiedOn should be set by Cloudflare");
+  }
+
+  /// <summary>Tests that CreateCnameRecordAsync returns a DnsRecord with all fields populated.</summary>
+  /// <remarks>
+  ///   This test validates that the create operation returns a complete DnsRecord model
+  ///   with all extended fields populated by Cloudflare.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task CreateCnameRecordAsync_ReturnsCompleteRecord()
+  {
+    // Arrange
+    var hostname    = $"_cfnet-zonesdns-create-{Guid.NewGuid():N}.{_settings.BaseDomain}";
+    var cnameTarget = "create-test-target.example.com";
+    string? createdId = null;
+
+    try
+    {
+      // Act
+      var result = await _sut.CreateCnameRecordAsync(_zoneId, hostname, cnameTarget);
+      createdId = result.Id;
+
+      // Assert - Basic fields
+      result.Should().NotBeNull();
+      result.Id.Should().NotBeNullOrWhiteSpace();
+      result.Name.Should().Be(hostname);
+      result.Type.Should().Be(DnsRecordType.CNAME);
+
+      // Assert - Content fields
+      result.Content.Should().Be(cnameTarget);
+
+      // Assert - Proxy fields
+      result.Proxiable.Should().BeTrue("CNAME records are proxiable");
+      result.Proxied.Should().BeTrue("CreateCnameRecordAsync defaults to proxied=true");
+
+      // Assert - TTL field (auto TTL is typically 1 for proxied records or 300 for non-proxied)
+      result.Ttl.Should().BeGreaterThan(0);
+
+      // Assert - Timestamp fields
+      result.CreatedOn.Should().NotBe(default(DateTime), "CreatedOn should be set by Cloudflare");
+      result.ModifiedOn.Should().NotBe(default(DateTime), "ModifiedOn should be set by Cloudflare");
+
+      // Assert - Timestamps should be recent (within the last minute)
+      result.CreatedOn.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+      result.ModifiedOn.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+    }
+    finally
+    {
+      // Cleanup
+      if (createdId is not null)
+        await _sut.DeleteDnsRecordAsync(_zoneId, createdId);
+    }
   }
 
   /// <summary>Verifies that attempting to delete a non-existent resource correctly throws a 404 Not Found exception.</summary>

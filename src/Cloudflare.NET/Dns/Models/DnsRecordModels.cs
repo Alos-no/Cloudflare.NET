@@ -2,7 +2,6 @@ namespace Cloudflare.NET.Dns.Models;
 
 using System.Text.Json.Serialization;
 using Security.Firewall.Models;
-using DnsRecordType = Zones.Models.DnsRecordType;
 
 /// <summary>
 ///   Represents a complete DNS record from the Cloudflare API.

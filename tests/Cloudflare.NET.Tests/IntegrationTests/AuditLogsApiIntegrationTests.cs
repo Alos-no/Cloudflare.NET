@@ -29,9 +29,6 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   /// <summary>The subject under test, resolved from the test fixture.</summary>
   private readonly IAuditLogsApi _sut;
 
-  /// <summary>Test output helper for logging.</summary>
-  private readonly ITestOutputHelper _output;
-
   /// <summary>The account ID from test configuration.</summary>
   private readonly string _accountId;
 
@@ -49,7 +46,6 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   public AuditLogsApiIntegrationTests(CloudflareApiTestFixture fixture, ITestOutputHelper output)
   {
     _sut = fixture.AuditLogsApi;
-    _output = output;
     _accountId = TestConfiguration.CloudflareSettings.AccountId;
     _zoneId = TestConfiguration.CloudflareSettings.ZoneId;
 
@@ -71,20 +67,12 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var filters = CreateDefaultFilters();
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      // CursorInfo may be null if no pagination is needed
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    // Assert
+    result.Should().NotBeNull("API should return a valid paginated result");
+    result.Items.Should().NotBeNull("Items collection should not be null");
+    result.CursorInfo.Should().BeNull("audit logs endpoint does not return cursor pagination info");
   }
 
   /// <summary>I02: Verifies that GetAccountAuditLogsAsync with limit returns at most the specified number of logs.</summary>
@@ -95,20 +83,12 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var filters = CreateDefaultFilters(limit: 5);
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      result.Items.Count.Should().BeLessThanOrEqualTo(5);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+    result.Items.Count.Should().BeLessThanOrEqualTo(5, "API should respect the limit parameter");
   }
 
   /// <summary>I03: Verifies that GetAccountAuditLogsAsync with time range returns only logs within that range.</summary>
@@ -121,24 +101,18 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var filters = new ListAuditLogsFilters(Since: since, Before: before, Limit: 50);
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      // All returned logs should have time within the range (allowing for some clock skew)
-      foreach (var log in result.Items)
-      {
-        log.Action.Time.Should().BeOnOrAfter(since.AddMinutes(-5), "log time should be after the since filter");
-        log.Action.Time.Should().BeOnOrBefore(before.AddMinutes(5), "log time should be before the before filter");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("account should have audit logs within the last 7 days");
+
+    // All returned logs should have time within the range (allowing for some clock skew)
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Timestamp.Should().BeOnOrAfter(since.AddMinutes(-5), "log time should be after the since filter");
+      log.Timestamp.Should().BeOnOrBefore(before.AddMinutes(5), "log time should be before the before filter");
     }
   }
 
@@ -150,26 +124,20 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var filters = CreateDefaultFilters(daysBack: 1, limit: 10);
 
     // Act
-    try
-    {
-      var logs = new List<AuditLog>();
-      var maxLogs = 25; // Safety limit to avoid excessive iteration
-      await foreach (var log in _sut.GetAllAccountAuditLogsAsync(_accountId, filters))
-      {
-        logs.Add(log);
-        if (logs.Count >= maxLogs)
-          break;
-      }
+    var logs = new List<AuditLog>();
+    var maxLogs = 25; // Safety limit to avoid excessive iteration
 
-      // Assert - Should yield some logs (if any exist in the time range)
-      logs.Should().NotBeNull();
-      // We can't guarantee logs exist, but the enumeration should work without errors
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    await foreach (var log in _sut.GetAllAccountAuditLogsAsync(_accountId, filters))
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      logs.Add(log);
+
+      if (logs.Count >= maxLogs)
+        break;
     }
+
+    // Assert - Enumeration should complete without error
+    logs.Should().NotBeNull("enumeration should produce a valid list");
+    logs.Should().NotBeEmpty("account should have audit logs from recent API activity");
   }
 
   #endregion
@@ -191,23 +159,16 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       Limit: 20);
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      // All returned logs should have action type "create"
-      foreach (var log in result.Items)
-      {
-        log.Action.Type.Should().Be("create");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+
+    // All returned logs should have action type "create"
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Action.Type.Should().Be("create", "filter should return only 'create' action types");
     }
   }
 
@@ -225,70 +186,57 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       Limit: 20);
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      // All returned logs should have action result "success"
-      foreach (var log in result.Items)
-      {
-        log.Action.Result.Should().Be("success");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+
+    // All returned logs should have action result true (success)
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Action.Result.Should().BeTrue("filter should return only successful results");
     }
   }
 
   /// <summary>I07: Verifies that filtering by actor email returns only matching actor's logs.</summary>
-  [IntegrationTest]
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires specific audit log data that cannot be created via API.</b></para>
+  ///   <para>
+  ///     Audit logs are generated by account activity and cannot be created programmatically.
+  ///     This test requires logs with actor email addresses, which may not exist in all accounts.
+  ///   </para>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Audit logs are read-only: https://developers.cloudflare.com/fundamentals/setup/account/account-security/review-audit-logs/</item>
+  ///     <item>Actor email depends on authentication method used for the action</item>
+  ///   </list>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires specific audit log data (logs with actor emails). TODO: Add email to user secrets")]
   public async Task GetAccountAuditLogsAsync_FilterByActorEmail_ReturnsOnlyMatchingActorLogs()
   {
-    // Arrange - First get any log to find an actor email
+    // Arrange - Use a known email that would exist in the account's audit logs
     var since = DateTime.UtcNow.AddDays(-7);
     var before = DateTime.UtcNow;
+    var knownEmail = "user@example.com"; // Would be replaced with actual account owner email
 
-    try
+    // Act - Filter by that email
+    var filters = new ListAuditLogsFilters(
+      ActorEmails: new[] { knownEmail },
+      Since: since,
+      Before: before,
+      Limit: 20);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("filtering by a known email should return results");
+
+    // All returned logs should have the matching actor email
+    foreach (var log in result.Items)
     {
-      var anyLogs = await _sut.GetAccountAuditLogsAsync(_accountId, new ListAuditLogsFilters(
-        Since: since,
-        Before: before,
-        Limit: 10));
-
-      if (anyLogs.Items.Count == 0 || anyLogs.Items.All(l => string.IsNullOrEmpty(l.Actor.Email)))
-      {
-        _output.WriteLine("[INFO] No logs with actor email found to filter by. Test passes by default.");
-        return;
-      }
-
-      var knownEmail = anyLogs.Items.First(l => !string.IsNullOrEmpty(l.Actor.Email)).Actor.Email;
-
-      // Act - Filter by that email
-      var filters = new ListAuditLogsFilters(
-        ActorEmails: new[] { knownEmail! },
-        Since: since,
-        Before: before,
-        Limit: 20);
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
-
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      // All returned logs should have the matching actor email
-      foreach (var log in result.Items)
-      {
-        log.Actor.Email.Should().Be(knownEmail);
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Actor.Email.Should().Be(knownEmail, "filter should return only logs from the specified actor");
     }
   }
 
@@ -306,26 +254,18 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       Limit: 20);
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      // All returned logs should have the matching zone ID (if zone context is present)
-      foreach (var log in result.Items)
-      {
-        if (log.Zone != null)
-        {
-          log.Zone.Id.Should().Be(_zoneId);
-        }
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("zone filter should return logs when zone has recent activity");
+
+    // All returned logs should have the matching zone ID
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Zone.Should().NotBeNull("zone-filtered logs should include zone context");
+      log.Zone!.Id.Should().Be(_zoneId, "zone filter should return only logs for the specified zone");
     }
   }
 
@@ -343,23 +283,16 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       Limit: 20);
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Items.Should().NotBeNull();
-      // No returned logs should have action type "delete"
-      foreach (var log in result.Items)
-      {
-        log.Action.Type.Should().NotBe("delete");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+
+    // No returned logs should have action type "delete"
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Action.Type.Should().NotBe("delete", "excluded action types should not appear in results");
     }
   }
 
@@ -376,57 +309,41 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var filters = CreateDefaultFilters();
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      if (result.Items.Count > 0)
-      {
-        var log = result.Items[0];
-        log.Id.Should().NotBeNullOrEmpty("log should have an ID");
-        log.Account.Should().NotBeNull("log should have account context");
-        log.Account.Id.Should().NotBeNullOrEmpty("account should have an ID");
-        log.Action.Should().NotBeNull("log should have action details");
-        log.Actor.Should().NotBeNull("log should have actor information");
-      }
-      else
-      {
-        _output.WriteLine("[INFO] No logs found in the time range. Test passes by default.");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull("API should return a valid response");
+    result.Items.Should().NotBeNull("Items collection should never be null");
+    result.Items.Should().NotBeEmpty("account should have audit logs from recent API activity");
+
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Id.Should().NotBeNullOrEmpty("log should have an ID");
+      log.Account.Should().NotBeNull("log should have account context");
+      log.Account.Id.Should().NotBeNullOrEmpty("account should have an ID");
+      log.Action.Should().NotBeNull("log should have action details");
+      log.Actor.Should().NotBeNull("log should have actor information");
     }
   }
 
-  /// <summary>I11: Verifies that action time is a valid DateTime.</summary>
+  /// <summary>I11: Verifies that the when timestamp is a valid DateTime.</summary>
   [IntegrationTest]
-  public async Task GetAccountAuditLogsAsync_ActionTimeIsValidDateTime()
+  public async Task GetAccountAuditLogsAsync_WhenTimestampIsValidDateTime()
   {
     // Arrange
     var filters = CreateDefaultFilters();
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      foreach (var log in result.Items)
-      {
-        log.Action.Time.Should().BeAfter(DateTime.MinValue, "action time should be a valid date");
-        log.Action.Time.Should().BeBefore(DateTime.UtcNow.AddMinutes(5), "action time should not be in the future");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("account should have audit logs from recent API activity");
+
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      log.Timestamp.Should().BeAfter(DateTime.MinValue, "timestamp should be a valid date");
+      log.Timestamp.Should().BeBefore(DateTime.UtcNow.AddMinutes(5), "timestamp should not be in the future");
     }
   }
 
@@ -438,24 +355,16 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var filters = CreateDefaultFilters();
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert
-      result.Should().NotBeNull();
-      foreach (var log in result.Items)
-      {
-        // Actor should be present (the object itself should not be null)
-        log.Actor.Should().NotBeNull("log should have actor information");
-        // Note: Some automated/system actions may not have Id or Email populated,
-        // but at minimum the actor object should exist.
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("account should have audit logs from recent API activity");
+
+    foreach (var log in result.Items)
     {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
+      // Actor object is always present. Id and Email vary by action type (user vs system actions).
+      log.Actor.Should().NotBeNull("log should have actor information");
     }
   }
 
@@ -474,76 +383,67 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       Before: DateTime.UtcNow.AddDays(2));
 
     // Act
-    try
-    {
-      var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
+    var result = await _sut.GetAccountAuditLogsAsync(_accountId, filters);
 
-      // Assert - Should return empty results, not an error
-      result.Should().NotBeNull();
-      result.Items.Should().BeEmpty("no logs should exist in the future");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    // Assert - Should return empty results, not an error
+    result.Should().NotBeNull();
+    result.Items.Should().BeEmpty("no logs should exist in the future");
   }
 
-  /// <summary>I14: Verifies that an invalid account ID returns HTTP 403 or 404.</summary>
+  /// <summary>I14: Verifies that an invalid account ID format returns HTTP 404.</summary>
+  /// <remarks>
+  ///   Invalid account ID formats (not 32-character hex strings) return 404 NotFound
+  ///   with error code 7003 "Could not route to..." because Cloudflare's routing layer
+  ///   cannot match the path to a valid account endpoint.
+  /// </remarks>
   [IntegrationTest]
-  public async Task GetAccountAuditLogsAsync_InvalidAccountId_Returns403Or404()
+  public async Task GetAccountAuditLogsAsync_InvalidAccountId_Returns404()
   {
     // Arrange - Must provide time range even for invalid account
     var filters = CreateDefaultFilters();
 
     // Act
-    try
-    {
-      var act = () => _sut.GetAccountAuditLogsAsync("invalid-account-id-that-does-not-exist", filters);
+    var act = () => _sut.GetAccountAuditLogsAsync("invalid-account-id-that-does-not-exist", filters);
 
-      // Assert - Should throw with 400 (Bad Request for invalid format), 403 (Forbidden) or 404 (Not Found)
-      var exception = await act.Should().ThrowAsync<HttpRequestException>();
-      exception.Which.StatusCode.Should().BeOneOf(
-        HttpStatusCode.BadRequest,
-        HttpStatusCode.Forbidden,
-        HttpStatusCode.NotFound);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    // Assert - Invalid format returns 404 (routing error)
+    await act.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
   /// <summary>I15: Verifies that insufficient permissions returns HTTP 403 Forbidden.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     Cloudflare returns 403 Forbidden with error code 10000 "Authentication error" for
+  ///     non-existent account IDs that are in valid format (32-character hex strings).
+  ///     This is intentional security behavior to prevent account enumeration attacks -
+  ///     by returning the same 403 for both non-existent and unauthorized accounts,
+  ///     attackers cannot discover which account IDs are valid.
+  ///   </para>
+  ///   <para>
+  ///     See: https://authress.io/knowledge-base/articles/choosing-the-right-http-error-code-401-403-404
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
   public async Task GetAccountAuditLogsAsync_InsufficientPermissions_Returns403()
   {
-    // Note: This test is challenging to implement without a dedicated restricted token.
-    // We verify that the API correctly denies access to invalid/unauthorized accounts.
-    // The test for invalid account (I14) covers this scenario effectively.
-
-    // Arrange - Use a malformed account ID that looks valid but isn't accessible
+    // Arrange - Use a valid format account ID that doesn't exist
     var unauthorizedAccountId = "00000000000000000000000000000000";
     var filters = CreateDefaultFilters();
 
     // Act
-    try
-    {
-      var act = () => _sut.GetAccountAuditLogsAsync(unauthorizedAccountId, filters);
+    var act = () => _sut.GetAccountAuditLogsAsync(unauthorizedAccountId, filters);
 
-      // Assert - Should throw with 403 (most likely) or 404
-      var exception = await act.Should().ThrowAsync<HttpRequestException>();
-      exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.Forbidden, HttpStatusCode.NotFound);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    // Assert - Cloudflare returns 403 to prevent account enumeration (security best practice)
+    await act.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.Forbidden);
   }
 
-  /// <summary>I16: Verifies that a malformed account ID returns HTTP 400 or 404.</summary>
+  /// <summary>I16: Verifies that a malformed account ID with special characters returns HTTP 400.</summary>
+  /// <remarks>
+  ///   Malformed account IDs containing special characters that are not valid in URL paths
+  ///   return 400 BadRequest with error code 7003 "Could not route to..." because the
+  ///   request cannot be parsed correctly at the routing layer.
+  /// </remarks>
   [IntegrationTest]
   public async Task GetAccountAuditLogsAsync_MalformedAccountId_ReturnsError()
   {
@@ -552,22 +452,11 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var filters = CreateDefaultFilters();
 
     // Act
-    try
-    {
-      var act = () => _sut.GetAccountAuditLogsAsync(malformedAccountId, filters);
+    var act = () => _sut.GetAccountAuditLogsAsync(malformedAccountId, filters);
 
-      // Assert - Should throw with an HTTP error (400, 403, or 404)
-      var exception = await act.Should().ThrowAsync<HttpRequestException>();
-      exception.Which.StatusCode.Should().BeOneOf(
-        HttpStatusCode.BadRequest,
-        HttpStatusCode.Forbidden,
-        HttpStatusCode.NotFound);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    // Assert - Special characters return 400 BadRequest (routing/parsing error)
+    await act.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
   }
 
   #endregion

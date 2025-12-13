@@ -28,26 +28,17 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
 
-  /// <summary>The xUnit test output helper for writing warnings.</summary>
-  private readonly ITestOutputHelper _output;
-
   #endregion
 
   #region Constructors
 
   /// <summary>Initializes a new instance of the <see cref="AccountManagementApiIntegrationTests" /> class.</summary>
   /// <param name="fixture">The shared test fixture that provides configured API clients.</param>
-  /// <param name="output">The xUnit test output helper.</param>
-  public AccountManagementApiIntegrationTests(CloudflareApiTestFixture fixture, ITestOutputHelper output)
+  public AccountManagementApiIntegrationTests(CloudflareApiTestFixture fixture)
   {
     // The SUT is resolved via the fixture's pre-configured DI container.
     _sut      = fixture.AccountsApi;
     _settings = TestConfiguration.CloudflareSettings;
-    _output   = output;
-
-    // Wire up the logger provider to the current test's output.
-    var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
-    loggerProvider.Current = output;
   }
 
   #endregion
@@ -145,14 +136,12 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     // Act
     var result = await _sut.GetAccountAsync(accountId);
 
-    // Assert - Settings may or may not be present depending on account configuration
-    // If settings is present, verify its properties are accessible
-    if (result.Settings is not null)
-    {
-      // AbuseContactEmail may be null
-      // EnforceTwofactor should be a valid boolean (default false) - this assertion verifies access
-      _ = result.Settings.EnforceTwofactor; // Simply accessing the property verifies deserialization
-    }
+    // Assert - Settings should be present to verify deserialization
+    result.Settings.Should().NotBeNull("test requires account with settings to validate deserialization");
+
+    // Accessing EnforceTwofactor verifies deserialization worked
+    // (it's a boolean so no further assertion needed beyond accessibility)
+    _ = result.Settings!.EnforceTwofactor;
   }
 
   /// <summary>I06: Verifies that GetAccountAsync returns ManagedBy when account is managed.</summary>
@@ -160,7 +149,7 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
   ///   This test verifies that ManagedBy is properly deserialized when present.
   ///   Most standalone accounts will have ManagedBy as null.
   /// </remarks>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Requires a managed account (part of an organization) - test account is standalone")]
   public async Task GetAccountAsync_DeserializesManagedBy()
   {
     // Arrange
@@ -169,17 +158,26 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     // Act
     var result = await _sut.GetAccountAsync(accountId);
 
-    // Assert - ManagedBy is optional; verify it deserializes correctly if present
-    if (result.ManagedBy is not null)
-    {
-      // If ManagedBy exists, it should have valid parent org info
-      result.ManagedBy.ParentOrgId.Should().NotBeNullOrEmpty();
-      result.ManagedBy.ParentOrgName.Should().NotBeNullOrEmpty();
-    }
-    // If ManagedBy is null, the account is not managed - this is also valid
+    // Assert - ManagedBy should be present to verify deserialization
+    result.ManagedBy.Should().NotBeNull("test requires a managed account to validate ManagedBy deserialization");
+
+    // If ManagedBy exists, it should have valid parent org info
+    result.ManagedBy!.ParentOrgId.Should().NotBeNullOrEmpty();
+    result.ManagedBy.ParentOrgName.Should().NotBeNullOrEmpty();
   }
 
   /// <summary>I07: Verifies that GetAccountAsync throws HttpRequestException for non-existent account.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     Cloudflare returns 403 Forbidden with error code 9109 "Invalid account identifier"
+  ///     for non-existent account IDs. This is intentional security behavior to prevent
+  ///     account enumeration attacks - by returning the same 403 for both non-existent
+  ///     and unauthorized accounts, attackers cannot discover which account IDs are valid.
+  ///   </para>
+  ///   <para>
+  ///     See: https://authress.io/knowledge-base/articles/choosing-the-right-http-error-code-401-403-404
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
   public async Task GetAccountAsync_WhenAccountNotFound_ThrowsHttpRequestException()
   {
@@ -189,9 +187,9 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     // Act
     var action = async () => await _sut.GetAccountAsync(nonExistentAccountId);
 
-    // Assert - Cloudflare returns 403 (Invalid account identifier) or 404 for non-existent accounts
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.Forbidden);
+    // Assert - Cloudflare returns 403 to prevent account enumeration (security best practice)
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.Forbidden);
   }
 
   /// <summary>I08: Verifies pagination works correctly with ListAccountsAsync.</summary>
@@ -223,17 +221,7 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
   {
     // Arrange
     var accountId = _settings.AccountId;
-    Account originalAccount;
-    try
-    {
-      originalAccount = await _sut.GetAccountAsync(accountId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip this test with a warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    var originalAccount = await _sut.GetAccountAsync(accountId);
 
     var originalName = originalAccount.Name;
     var updateTestName = $"{originalName} - Test Update {Guid.NewGuid():N}";
@@ -250,11 +238,6 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
       updatedAccount.Name.Should().Be(testName);
       updatedAccount.Id.Should().Be(accountId);
     }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip with warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-    }
     finally
     {
       // Cleanup - Restore original name (best effort)
@@ -265,122 +248,81 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
       }
       catch (HttpRequestException)
       {
-        // Cleanup may also fail with transient errors - that's OK
+        // Cleanup may fail - that's OK, we want the main test to report its result
       }
     }
   }
 
-  /// <summary>
-  ///   I12: Verifies that UpdateAccountAsync can update account settings.
-  ///   Note: This test modifies the account and reverts changes.
-  /// </summary>
+  /// <summary>I12: Verifies that UpdateAccountAsync with settings parameter is broken and returns 500.</summary>
+  /// <remarks>
+  ///   <b>Cloudflare API Bug:</b> The 'settings' body parameter is documented but causes a 500 error.
+  ///   <para>
+  ///     The Cloudflare API documentation for PUT /accounts/{account_id} lists 'settings' as an optional
+  ///     body parameter with properties 'abuse_contact_email' and 'enforce_twofactor'. However, when
+  ///     sending a valid request with the 'settings' field, the API returns HTTP 500 Internal Server Error
+  ///     with error code 500 and message "unhandled server error".
+  ///   </para>
+  ///   <para>
+  ///     Error response: {"success":false,"errors":[{"code":500,"message":"unhandled server error"}],"messages":[],"result":null}
+  ///   </para>
+  ///   <para>
+  ///     API Ref: https://developers.cloudflare.com/api/resources/accounts/methods/update/
+  ///   </para>
+  /// </remarks>
+  [CloudflareInternalBug(
+    BugDescription = "PUT /accounts/{account_id} with 'settings' body parameter returns 500 Internal Server Error ('unhandled server error') despite 'settings' being documented as an optional body parameter",
+    ReferenceUrl = "https://community.cloudflare.com/t/put-accounts-account-id-returns-500-internal-server-error-with-settings/868211")]
   [IntegrationTest]
-  public async Task UpdateAccountAsync_CanUpdateSettings()
+  public async Task UpdateAccountAsync_WithSettings_IsBroken()
   {
     // Arrange
     var accountId = _settings.AccountId;
-    Account originalAccount;
-    try
-    {
-      originalAccount = await _sut.GetAccountAsync(accountId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip this test with a warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    var originalAccount = await _sut.GetAccountAsync(accountId);
 
-    var originalEnforce2fa = originalAccount.Settings?.EnforceTwofactor ?? false;
+    // Act - Attempt to update settings (documented but broken)
+    var newSettings = new AccountSettings(AbuseContactEmail: "thisisatest@email.com");
+    var updateRequest = new UpdateAccountRequest(originalAccount.Name, newSettings);
+    var action = async () => await _sut.UpdateAccountAsync(accountId, updateRequest);
 
-    try
-    {
-      // Act - Update settings
-      var newSettings = new AccountSettings(EnforceTwofactor: !originalEnforce2fa);
-      var updateRequest = new UpdateAccountRequest(originalAccount.Name, newSettings);
-      var updatedAccount = await _sut.UpdateAccountAsync(accountId, updateRequest);
-
-      // Assert
-      updatedAccount.Should().NotBeNull();
-      updatedAccount.Settings.Should().NotBeNull();
-      updatedAccount.Settings!.EnforceTwofactor.Should().Be(!originalEnforce2fa);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip with warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-    }
-    finally
-    {
-      // Cleanup - Restore original settings (best effort)
-      try
-      {
-        var revertSettings = new AccountSettings(EnforceTwofactor: originalEnforce2fa);
-        var revertRequest = new UpdateAccountRequest(originalAccount.Name, revertSettings);
-        await _sut.UpdateAccountAsync(accountId, revertRequest);
-      }
-      catch (HttpRequestException)
-      {
-        // Cleanup may also fail with transient errors - that's OK
-      }
-    }
+    // Assert - Document actual API behavior: settings parameter causes 500 Internal Server Error
+    // If this assertion fails in the future, it means Cloudflare fixed the bug
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError,
+        "the Cloudflare API returns 500 when 'settings' body parameter is sent; " +
+        "if this test fails, Cloudflare may have fixed the bug and the test should be updated to verify settings can be updated");
   }
 
-  /// <summary>I13: Verifies that UpdateAccountAsync can update both name and settings simultaneously.</summary>
+  /// <summary>I13: Verifies that UpdateAccountAsync with name and settings is broken and returns 500.</summary>
+  /// <remarks>
+  ///   <b>Cloudflare API Bug:</b> Same root cause as UpdateAccountAsync_WithSettings_IsBroken.
+  ///   <para>
+  ///     The Cloudflare API returns 500 Internal Server Error when sending the documented 'settings'
+  ///     body parameter, even when combined with a valid name update.
+  ///   </para>
+  /// </remarks>
+  [CloudflareInternalBug(
+    BugDescription = "PUT /accounts/{account_id} with 'settings' body parameter returns 500 Internal Server Error - see UpdateAccountAsync_WithSettings_IsBroken",
+    ReferenceUrl = "https://community.cloudflare.com/t/put-accounts-account-id-returns-500-internal-server-error-with-settings/868211")]
   [IntegrationTest]
-  public async Task UpdateAccountAsync_CanUpdateNameAndSettings()
+  public async Task UpdateAccountAsync_WithNameAndSettings_IsBroken()
   {
     // Arrange
     var accountId = _settings.AccountId;
-    Account originalAccount;
-    try
-    {
-      originalAccount = await _sut.GetAccountAsync(accountId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip this test with a warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
-
-    var originalName = originalAccount.Name;
-    var originalEnforce2fa = originalAccount.Settings?.EnforceTwofactor ?? false;
-    var comboTestName = $"{originalName} - Combo Test";
+    var originalAccount = await _sut.GetAccountAsync(accountId);
+    var comboTestName = $"{originalAccount.Name} - Combo Test";
     var testName = comboTestName.Substring(0, Math.Min(100, comboTestName.Length));
 
-    try
-    {
-      // Act - Update both name and settings
-      var newSettings = new AccountSettings(EnforceTwofactor: !originalEnforce2fa);
-      var updateRequest = new UpdateAccountRequest(testName, newSettings);
-      var updatedAccount = await _sut.UpdateAccountAsync(accountId, updateRequest);
+    // Act - Attempt to update both name and settings (settings causes the failure)
+    var newSettings = new AccountSettings(AbuseContactEmail: "thisisatest@email.com");
+    var updateRequest = new UpdateAccountRequest(testName, newSettings);
+    var action = async () => await _sut.UpdateAccountAsync(accountId, updateRequest);
 
-      // Assert
-      updatedAccount.Should().NotBeNull();
-      updatedAccount.Name.Should().Be(testName);
-      updatedAccount.Settings.Should().NotBeNull();
-      updatedAccount.Settings!.EnforceTwofactor.Should().Be(!originalEnforce2fa);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip with warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-    }
-    finally
-    {
-      // Cleanup - Restore original state (best effort)
-      try
-      {
-        var revertSettings = new AccountSettings(EnforceTwofactor: originalEnforce2fa);
-        var revertRequest = new UpdateAccountRequest(originalName, revertSettings);
-        await _sut.UpdateAccountAsync(accountId, revertRequest);
-      }
-      catch (HttpRequestException)
-      {
-        // Cleanup may also fail with transient errors - that's OK
-      }
-    }
+    // Assert - Document actual API behavior: settings parameter causes 500 Internal Server Error
+    // If this assertion fails in the future, it means Cloudflare fixed the bug
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError,
+        "the Cloudflare API returns 500 when 'settings' body parameter is sent; " +
+        "if this test fails, Cloudflare may have fixed the bug and the test should be updated to verify name+settings can be updated");
   }
 
   /// <summary>I14: Verifies UpdateAccountAsync returns the updated account.</summary>
@@ -415,6 +357,17 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
   }
 
   /// <summary>I15: Verifies UpdateAccountAsync throws for invalid account ID.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     Cloudflare returns 403 Forbidden with error code 9109 "Invalid account identifier"
+  ///     for non-existent account IDs. This is intentional security behavior to prevent
+  ///     account enumeration attacks - by returning the same 403 for both non-existent
+  ///     and unauthorized accounts, attackers cannot discover which account IDs are valid.
+  ///   </para>
+  ///   <para>
+  ///     See: https://authress.io/knowledge-base/articles/choosing-the-right-http-error-code-401-403-404
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
   public async Task UpdateAccountAsync_WhenAccountNotFound_ThrowsHttpRequestException()
   {
@@ -425,9 +378,9 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     // Act
     var action = async () => await _sut.UpdateAccountAsync(nonExistentAccountId, updateRequest);
 
-    // Assert - Cloudflare returns 403 (Invalid account identifier) or 404 for non-existent accounts
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.Forbidden);
+    // Assert - Cloudflare returns 403 to prevent account enumeration (security best practice)
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.Forbidden);
   }
 
   /// <summary>I16: Verifies ListAccountsAsync with name filter returns filtered results.</summary>
@@ -447,11 +400,8 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
 
     // Assert
     result.Should().NotBeNull();
-    // The filter is a partial match, so results should contain accounts with the substring
-    if (result.Items.Any())
-    {
-      result.Items.Should().Contain(a => a.Name.Contains(nameSubstring, StringComparison.OrdinalIgnoreCase));
-    }
+    result.Items.Should().NotBeEmpty("filtering by a known account name substring should return results");
+    result.Items.Should().Contain(a => a.Name.Contains(nameSubstring, StringComparison.OrdinalIgnoreCase));
   }
 
   /// <summary>
@@ -472,6 +422,94 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     // Assert - Both requests should succeed
     resultAsc.Should().NotBeNull();
     resultDesc.Should().NotBeNull();
+  }
+
+  #endregion
+
+
+  #region Account Create/Delete Tests (Skipped - Special Permissions Required)
+
+  /// <summary>
+  ///   I09: Verifies that a new account can be created successfully.
+  ///   This operation creates a sub-account under the parent account.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Tenant API required: https://developers.cloudflare.com/tenant/</item>
+  ///     <item>Account creation: https://developers.cloudflare.com/tenant/how-to/manage-accounts/</item>
+  ///     <item>API reference: https://developers.cloudflare.com/api/resources/accounts/methods/create/</item>
+  ///     <item>Only Tenant admins (Channel/Alliance partners) can create accounts</item>
+  ///     <item>Requires signed partner agreement with Cloudflare</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Prerequisites:</b> To run this test, you need:
+  ///     <list type="bullet">
+  ///       <item><description>A Tenant admin account (partner agreement required)</description></item>
+  ///       <item><description>An API token with Account:Edit permission</description></item>
+  ///       <item><description>Provisioning capability enabled for the tenant</description></item>
+  ///     </list>
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires Tenant API/Enterprise partner permissions - Account creation")]
+  public async Task CreateAccountAsync_ReturnsCreatedAccount()
+  {
+    // Arrange
+    var request = new CreateAccountRequest(
+      Name: $"SDK Test Account {Guid.NewGuid():N}");
+
+    // Act
+    var result = await _sut.CreateAccountAsync(request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().NotBeNullOrEmpty();
+    result.Name.Should().Be(request.Name);
+
+    // Cleanup - Delete the created account
+    // await _sut.DeleteAccountAsync(result.Id);
+  }
+
+  /// <summary>
+  ///   I10: Verifies that an account can be deleted successfully.
+  ///   This operation permanently removes a sub-account.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Tenant API required: https://developers.cloudflare.com/tenant/</item>
+  ///     <item>Account deletion: https://developers.cloudflare.com/api/resources/accounts/methods/delete/</item>
+  ///     <item>"Delete a specific account is only available for tenant admins at this time"</item>
+  ///     <item>Account deletion is IRREVERSIBLE - all zones, DNS, configs, billing lost</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Prerequisites:</b> Account deletion requires:
+  ///     <list type="bullet">
+  ///       <item><description>Tenant admin permissions (partner agreement required)</description></item>
+  ///       <item><description>A disposable sub-account to delete</description></item>
+  ///       <item><description>Account must have no active subscriptions or zones</description></item>
+  ///     </list>
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires Tenant API/Enterprise partner permissions - Account deletion is DESTRUCTIVE/IRREVERSIBLE")]
+  public async Task DeleteAccountAsync_ReturnsDeleteResult()
+  {
+    // Arrange
+    // First create an account to delete (requires Enterprise permissions)
+    // var createRequest = new CreateAccountRequest(Name: "Delete Test Account", Type: AccountType.Standard);
+    // var account = await _sut.CreateAccountAsync(createRequest);
+    var accountIdToDelete = "account-id-from-created-account";
+
+    // Act
+    var result = await _sut.DeleteAccountAsync(accountIdToDelete);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().Be(accountIdToDelete);
+
+    // Verify deletion by attempting to get the account (should fail)
+    var getAction = async () => await _sut.GetAccountAsync(accountIdToDelete);
+    await getAction.Should().ThrowAsync<HttpRequestException>();
   }
 
   #endregion

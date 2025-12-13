@@ -164,11 +164,11 @@ public class ApiTokensApi : ApiResource, IApiTokensApi
   {
     ThrowHelper.ThrowIfNullOrWhiteSpace(accountId);
 
-    // Build base endpoint without pagination parameters (handled by GetPaginatedAsync).
-    var baseFilters = filters is not null ? filters with { Page = null, PerPage = null } : null;
-    var endpoint = BuildPermissionGroupsQueryString(accountId, baseFilters);
+    // Note: The permission_groups endpoint does NOT support pagination.
+    // All groups are returned in a single response. GetPaginatedAsync handles this gracefully.
+    var endpoint = BuildPermissionGroupsQueryString(accountId, filters);
 
-    return GetPaginatedAsync<PermissionGroup>(endpoint, filters?.PerPage, cancellationToken);
+    return GetPaginatedAsync<PermissionGroup>(endpoint, perPage: null, cancellationToken);
   }
 
   #endregion
@@ -281,11 +281,11 @@ public class ApiTokensApi : ApiResource, IApiTokensApi
     ListPermissionGroupsFilters? filters = null,
     CancellationToken cancellationToken = default)
   {
-    // Build base endpoint without pagination parameters (handled by GetPaginatedAsync).
-    var baseFilters = filters is not null ? filters with { Page = null, PerPage = null } : null;
-    var endpoint = BuildUserPermissionGroupsQueryString(baseFilters);
+    // Note: The permission_groups endpoint does NOT support pagination.
+    // All groups are returned in a single response. GetPaginatedAsync handles this gracefully.
+    var endpoint = BuildUserPermissionGroupsQueryString(filters);
 
-    return GetPaginatedAsync<PermissionGroup>(endpoint, filters?.PerPage, cancellationToken);
+    return GetPaginatedAsync<PermissionGroup>(endpoint, perPage: null, cancellationToken);
   }
 
   #endregion
@@ -321,6 +321,9 @@ public class ApiTokensApi : ApiResource, IApiTokensApi
   /// <param name="accountId">The account identifier.</param>
   /// <param name="filters">Optional filters to apply.</param>
   /// <returns>The endpoint with query string.</returns>
+  /// <remarks>
+  ///   The permission_groups endpoint does NOT support pagination. All groups are returned in a single response.
+  /// </remarks>
   private static string BuildPermissionGroupsQueryString(string accountId, ListPermissionGroupsFilters? filters)
   {
     var queryParams = new List<string>();
@@ -329,10 +332,6 @@ public class ApiTokensApi : ApiResource, IApiTokensApi
       queryParams.Add($"name={Uri.EscapeDataString(filters.Name)}");
     if (filters?.Scope is not null)
       queryParams.Add($"scope={Uri.EscapeDataString(filters.Scope)}");
-    if (filters?.Page is not null)
-      queryParams.Add($"page={filters.Page}");
-    if (filters?.PerPage is not null)
-      queryParams.Add($"per_page={filters.PerPage}");
 
     var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
 
@@ -365,6 +364,9 @@ public class ApiTokensApi : ApiResource, IApiTokensApi
   /// </summary>
   /// <param name="filters">Optional filters to apply.</param>
   /// <returns>The endpoint with query string.</returns>
+  /// <remarks>
+  ///   The permission_groups endpoint does NOT support pagination. All groups are returned in a single response.
+  /// </remarks>
   private static string BuildUserPermissionGroupsQueryString(ListPermissionGroupsFilters? filters)
   {
     var queryParams = new List<string>();
@@ -373,10 +375,6 @@ public class ApiTokensApi : ApiResource, IApiTokensApi
       queryParams.Add($"name={Uri.EscapeDataString(filters.Name)}");
     if (filters?.Scope is not null)
       queryParams.Add($"scope={Uri.EscapeDataString(filters.Scope)}");
-    if (filters?.Page is not null)
-      queryParams.Add($"page={filters.Page}");
-    if (filters?.PerPage is not null)
-      queryParams.Add($"per_page={filters.PerPage}");
 
     var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
 

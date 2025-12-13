@@ -351,22 +351,30 @@ public class UserApiIntegrationTests : IClassFixture<UserApiTestFixture>, IAsync
     // Their presence is guaranteed by the record definition
   }
 
-  /// <summary>I14: Verifies that organizations array is handled (may be null or populated).</summary>
+  /// <summary>I14: Verifies that organizations collection deserializes correctly when populated.</summary>
+  /// <remarks>
+  ///   Organizations is nullable in the API response. This test verifies the structure is correct
+  ///   when organizations exist. Skipped when the user has no organization memberships.
+  /// </remarks>
   [UserIntegrationTest]
-  public async Task GetUserAsync_Organizations_IsHandled()
+  public async Task GetUserAsync_Organizations_DeserializesCorrectly()
   {
     // Act
     var user = await _sut.GetUserAsync();
 
-    // Assert - Organizations may be null or an array depending on the user
-    // We just verify the response is valid and doesn't throw
+    // Assert
     user.Should().NotBeNull();
-    // If organizations is populated, verify its structure
-    if (user.Organizations is not null && user.Organizations.Count > 0)
+
+    // Skip if user has no organizations - this is a valid state but not testable for structure validation.
+    Skip.If(user.Organizations is not { Count: > 0 },
+      "User has no organization memberships - cannot verify organization structure");
+
+    // Verify each organization has the required structure.
+    user.Organizations.Should().AllSatisfy(org =>
     {
-      user.Organizations[0].Id.Should().NotBeNullOrEmpty();
-      user.Organizations[0].Name.Should().NotBeNullOrEmpty();
-    }
+      org.Id.Should().NotBeNullOrEmpty();
+      org.Name.Should().NotBeNullOrEmpty();
+    });
   }
 
   #endregion
@@ -391,34 +399,25 @@ public class UserApiIntegrationTests : IClassFixture<UserApiTestFixture>, IAsync
     retrieved.Country.Should().Be(testCountry);
   }
 
-  /// <summary>I16: Verifies that an empty edit request (all nulls) is handled gracefully.</summary>
+  /// <summary>I16: Verifies that an empty edit request (all nulls) throws BadRequest.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: PATCH /user with empty body returns 400 Bad Request.
+  ///   Error code 1029: "Unable to find a user property to update. Perhaps you are trying to update a readOnly setting?"
+  ///   https://developers.cloudflare.com/api/resources/user/methods/edit/
+  /// </remarks>
   [UserIntegrationTest]
-  public async Task EditUserAsync_EmptyRequest_IsHandledGracefully()
+  public async Task EditUserAsync_EmptyRequest_ThrowsBadRequest()
   {
     // Arrange
     var emptyRequest = new EditUserRequest();
 
     // Act
-    var act = async () => await _sut.EditUserAsync(emptyRequest);
+    var act = () => _sut.EditUserAsync(emptyRequest);
 
-    // Assert - The API rejects empty requests with error 1029, which is expected behavior.
-    // We're testing that the edge case is handled predictably.
-    try
-    {
-      await act();
-      // If it succeeds, verify user is still valid
-      var user = await _sut.GetUserAsync();
-      user.Should().NotBeNull();
-    }
-    catch (CloudflareApiException)
-    {
-      // API may reject empty requests - this is acceptable
-    }
-    catch (HttpRequestException ex) when (ex.Message.Contains("1029"))
-    {
-      // API rejects empty requests with error 1029: "Unable to find a user property to update"
-      // This is expected and acceptable behavior.
-    }
+    // Assert - Empty edit request returns 400 Bad Request with error code 1029
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
   }
 
   /// <summary>I17: Verifies that an unauthorized request returns a permission error (simulated via invalid token test skipped in integration).</summary>
@@ -433,9 +432,15 @@ public class UserApiIntegrationTests : IClassFixture<UserApiTestFixture>, IAsync
     await act.Should().NotThrowAsync<HttpRequestException>();
   }
 
-  /// <summary>I18: Verifies that excessively long values are handled by the API.</summary>
+  /// <summary>I18: Verifies that excessively long values cause server error.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: PATCH /user with excessively long values returns 500 Internal Server Error.
+  ///   Error code 500: "unhandled server error"
+  ///   This appears to be a server-side validation issue with overly long field values.
+  ///   https://developers.cloudflare.com/api/resources/user/methods/edit/
+  /// </remarks>
   [UserIntegrationTest]
-  public async Task EditUserAsync_ExcessivelyLongValue_ThrowsOrTruncates()
+  public async Task EditUserAsync_ExcessivelyLongValue_ThrowsServerError()
   {
     // Arrange - Create a very long first name (300 characters)
     var longFirstName = new string('A', 300);
@@ -443,22 +448,10 @@ public class UserApiIntegrationTests : IClassFixture<UserApiTestFixture>, IAsync
     // Act
     var act = () => _sut.EditUserAsync(new EditUserRequest(FirstName: longFirstName));
 
-    // Assert - API should either reject or truncate
-    // We expect either an exception or a truncated/modified value
-    try
-    {
-      var result = await act();
-      // If it succeeds, the API may have truncated the value
-      result.FirstName?.Length.Should().BeLessThanOrEqualTo(300);
-    }
-    catch (CloudflareApiException)
-    {
-      // API rejected the excessively long value - this is expected behavior
-    }
-    catch (HttpRequestException)
-    {
-      // HTTP-level rejection - also acceptable
-    }
+    // Assert - Excessively long values cause 500 Internal Server Error
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.InternalServerError);
   }
 
   #endregion

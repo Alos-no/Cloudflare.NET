@@ -1,120 +1,52 @@
 namespace Cloudflare.NET.Tests.Shared;
 
 using Xunit;
+using Xunit.Abstractions;
+
 
 /// <summary>
-///   Defines test collection names for controlling test parallelization.
-///   Tests in the same collection run sequentially; different collections run in parallel.
+///   Custom test collection orderer that ensures PermissionValidation tests run first.
+///   <para>
+///     This orderer prioritizes collections whose names start with '!' (such as "!PermissionValidation")
+///     to ensure API token permissions are validated before any other integration tests run.
+///     If permission validation fails, the remaining tests won't waste time on 403 errors.
+///   </para>
 /// </summary>
-public static class TestCollections
+/// <remarks>
+///   <para>
+///     To use this orderer, add the following assembly-level attribute to the test project:
+///     <code>[assembly: TestCollectionOrderer("Cloudflare.NET.Tests.Shared.IntegrationTestCollectionOrderer", "Cloudflare.NET.Tests.Shared")]</code>
+///   </para>
+///   <para>
+///     Collections starting with '!' are treated as high-priority and sorted alphabetically among themselves.
+///     All other collections are sorted alphabetically after the high-priority ones.
+///   </para>
+///   <para>
+///     <b>Note:</b> Test collection definitions (the <c>[CollectionDefinition]</c> marker classes) must be defined
+///     in the same assembly as the tests that use them. This orderer is intentionally placed in the Shared
+///     assembly so it can be referenced by any test project via the assembly-level attribute.
+///   </para>
+/// </remarks>
+public class IntegrationTestCollectionOrderer : ITestCollectionOrderer
 {
-  /// <summary>Zone CRUD tests that must run sequentially.</summary>
-  public const string ZoneCrud = "Zone CRUD";
+  /// <summary>
+  ///   Orders test collections with high-priority collections (starting with '!') first, then alphabetically.
+  /// </summary>
+  /// <param name="testCollections">The test collections to order.</param>
+  /// <returns>The ordered test collections.</returns>
+  public IEnumerable<ITestCollection> OrderTestCollections(IEnumerable<ITestCollection> testCollections)
+  {
+    // Collections starting with '!' are high-priority and run first.
+    // This ensures permission validation happens before other tests.
+    return testCollections.OrderBy(collection =>
+    {
+      var displayName = collection.DisplayName ?? string.Empty;
 
-  /// <summary>DNS record tests that must run sequentially within a zone.</summary>
-  public const string DnsRecords = "DNS Records";
+      // High-priority collections (starting with '!') get priority 0, others get priority 1.
+      var priority = displayName.StartsWith('!') ? 0 : 1;
 
-  /// <summary>Zone holds tests that must run sequentially.</summary>
-  public const string ZoneHolds = "Zone Holds";
-
-  /// <summary>Zone settings tests that must run sequentially.</summary>
-  public const string ZoneSettings = "Zone Settings";
-
-  /// <summary>Account management tests that must run sequentially.</summary>
-  public const string AccountManagement = "Account Management";
-
-  /// <summary>Account member tests that must run sequentially.</summary>
-  public const string AccountMembers = "Account Members";
-
-  /// <summary>Account roles tests that must run sequentially.</summary>
-  public const string AccountRoles = "Account Roles";
-
-  /// <summary>API token tests that must run sequentially.</summary>
-  public const string ApiTokens = "API Tokens";
-
-  /// <summary>Audit log tests that must run sequentially.</summary>
-  public const string AuditLogs = "Audit Logs";
-
-  /// <summary>User management tests that must run sequentially.</summary>
-  public const string UserManagement = "User Management";
-
-  /// <summary>User memberships tests that must run sequentially.</summary>
-  public const string UserMemberships = "User Memberships";
-
-  /// <summary>User invitations tests that must run sequentially.</summary>
-  public const string UserInvitations = "User Invitations";
-
-  /// <summary>Turnstile widget tests that must run sequentially.</summary>
-  public const string TurnstileWidgets = "Turnstile Widgets";
-
-  /// <summary>Worker route tests that must run sequentially.</summary>
-  public const string WorkerRoutes = "Worker Routes";
-
-  /// <summary>Subscription tests that must run sequentially.</summary>
-  public const string Subscriptions = "Subscriptions";
+      // Return tuple for ordering: first by priority, then alphabetically.
+      return (priority, displayName);
+    });
+  }
 }
-
-
-#region Collection Definitions
-
-/// <summary>Zone CRUD test collection definition.</summary>
-[CollectionDefinition(TestCollections.ZoneCrud, DisableParallelization = true)]
-public class ZoneCrudCollection;
-
-/// <summary>DNS Records test collection definition.</summary>
-[CollectionDefinition(TestCollections.DnsRecords, DisableParallelization = true)]
-public class DnsRecordsCollection;
-
-/// <summary>Zone Holds test collection definition.</summary>
-[CollectionDefinition(TestCollections.ZoneHolds, DisableParallelization = true)]
-public class ZoneHoldsCollection;
-
-/// <summary>Zone Settings test collection definition.</summary>
-[CollectionDefinition(TestCollections.ZoneSettings, DisableParallelization = true)]
-public class ZoneSettingsCollection;
-
-/// <summary>Account Management test collection definition.</summary>
-[CollectionDefinition(TestCollections.AccountManagement, DisableParallelization = true)]
-public class AccountManagementCollection;
-
-/// <summary>Account Members test collection definition.</summary>
-[CollectionDefinition(TestCollections.AccountMembers, DisableParallelization = true)]
-public class AccountMembersCollection;
-
-/// <summary>Account Roles test collection definition.</summary>
-[CollectionDefinition(TestCollections.AccountRoles, DisableParallelization = true)]
-public class AccountRolesCollection;
-
-/// <summary>API Tokens test collection definition.</summary>
-[CollectionDefinition(TestCollections.ApiTokens, DisableParallelization = true)]
-public class ApiTokensCollection;
-
-/// <summary>Audit Logs test collection definition.</summary>
-[CollectionDefinition(TestCollections.AuditLogs, DisableParallelization = true)]
-public class AuditLogsCollection;
-
-/// <summary>User Management test collection definition.</summary>
-[CollectionDefinition(TestCollections.UserManagement, DisableParallelization = true)]
-public class UserManagementCollection;
-
-/// <summary>User Memberships test collection definition.</summary>
-[CollectionDefinition(TestCollections.UserMemberships, DisableParallelization = true)]
-public class UserMembershipsCollection;
-
-/// <summary>User Invitations test collection definition.</summary>
-[CollectionDefinition(TestCollections.UserInvitations, DisableParallelization = true)]
-public class UserInvitationsCollection;
-
-/// <summary>Turnstile Widgets test collection definition.</summary>
-[CollectionDefinition(TestCollections.TurnstileWidgets, DisableParallelization = true)]
-public class TurnstileWidgetsCollection;
-
-/// <summary>Worker Routes test collection definition.</summary>
-[CollectionDefinition(TestCollections.WorkerRoutes, DisableParallelization = true)]
-public class WorkerRoutesCollection;
-
-/// <summary>Subscriptions test collection definition.</summary>
-[CollectionDefinition(TestCollections.Subscriptions, DisableParallelization = true)]
-public class SubscriptionsCollection;
-
-#endregion

@@ -40,9 +40,6 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
 
-  /// <summary>The xUnit test output helper for writing warnings and debug info.</summary>
-  private readonly ITestOutputHelper _output;
-
   /// <summary>List of widget sitekeys created during tests that need cleanup.</summary>
   private readonly List<string> _createdWidgetSitekeys = new();
 
@@ -58,7 +55,6 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   {
     _sut      = fixture.TurnstileApi;
     _settings = TestConfiguration.CloudflareSettings;
-    _output   = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -80,10 +76,10 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     // Act
     var result = await _sut.ListWidgetsAsync(accountId);
 
-    // Assert
-    result.Should().NotBeNull();
-    // Note: Account may or may not have existing widgets
-    _output.WriteLine($"Found {result.Items.Count} Turnstile widgets in account");
+    // Assert - Verify API contract
+    result.Should().NotBeNull("API should return a valid response");
+    result.Items.Should().NotBeNull("Items collection should not be null");
+    // Note: Account may or may not have existing widgets - empty is valid
   }
 
   /// <summary>I02: Verifies that listing widgets returns proper structure.</summary>
@@ -96,14 +92,14 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     // Act
     var result = await _sut.ListWidgetsAsync(accountId);
 
-    // Assert
-    result.Should().NotBeNull();
+    // Assert - Verify API contract for widget structure
+    result.Should().NotBeNull("API should return a valid response");
     foreach (var widget in result.Items)
     {
-      widget.Sitekey.Should().NotBeNullOrEmpty();
-      widget.Name.Should().NotBeNullOrEmpty();
-      widget.Domains.Should().NotBeNull();
-      _output.WriteLine($"  Widget: {widget.Name} ({widget.Sitekey}) - Mode: {widget.Mode.Value}");
+      widget.Sitekey.Should().NotBeNullOrEmpty("widget should have a sitekey");
+      widget.Name.Should().NotBeNullOrEmpty("widget should have a name");
+      widget.Domains.Should().NotBeNull("widget should have domains collection");
+      widget.Mode.Value.Should().NotBeNullOrEmpty("widget should have a mode");
     }
   }
 
@@ -131,16 +127,12 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       _createdWidgetSitekeys.Add(result.Sitekey);
 
       // Assert
-      result.Should().NotBeNull();
-      result.Sitekey.Should().NotBeNullOrEmpty();
-      result.Name.Should().Be(widgetName);
-      result.Mode.Should().Be(WidgetMode.Managed);
-      result.Domains.Should().Contain("test.example.com");
-      // Secret is returned on creation
+      result.Should().NotBeNull("API should return the created widget");
+      result.Sitekey.Should().NotBeNullOrEmpty("created widget should have a sitekey");
+      result.Name.Should().Be(widgetName, "widget name should match request");
+      result.Mode.Should().Be(WidgetMode.Managed, "widget mode should match request");
+      result.Domains.Should().Contain("test.example.com", "widget domains should match request");
       result.Secret.Should().NotBeNullOrEmpty("Secret should be returned on widget creation");
-
-      _output.WriteLine($"Created widget: {result.Sitekey} with name: {result.Name}");
-      _output.WriteLine($"  Secret: {result.Secret?[..8]}... (truncated)");
     }
     finally
     {
@@ -149,9 +141,27 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   }
 
   /// <summary>I04: Verifies that a widget can be created with all optional fields.</summary>
-  [IntegrationTest]
-  public async Task CreateWidgetAsync_AllFields_CreatesWidgetWithAllSettings()
+  /// <remarks>
+  ///   <para>
+  ///     Tests widget creation with both BotFightMode enabled and disabled. The test with
+  ///     BotFightMode=true is skipped because it requires an entitlement not available on
+  ///     free Cloudflare accounts. The Turnstile API returns:
+  ///     <c>"not entitled to widgets with `bot_fight_mode` set to true"</c>
+  ///   </para>
+  ///   <para>
+  ///     Bot Fight Mode is an enterprise feature that provides enhanced protection against
+  ///     automated bot traffic. Testing this feature requires a paid Cloudflare plan with
+  ///     the appropriate entitlement enabled.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTestTheory]
+  [InlineData(false)]
+  [InlineData(true)]
+  public async Task CreateWidgetAsync_AllFields_CreatesWidgetWithAllSettings(bool botFightMode)
   {
+    // Skip bot_fight_mode=true test case - requires paid entitlement
+    Skip.If(botFightMode, "Requires paid account - bot_fight_mode entitlement (paid Cloudflare feature)");
+
     // Arrange
     var accountId = _settings.AccountId;
     var widgetName = GenerateTestWidgetName();
@@ -163,22 +173,21 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
         Name: widgetName,
         Domains: ["test.example.com", "api.example.com"],
         Mode: WidgetMode.Invisible,
-        BotFightMode: true,
+        BotFightMode: botFightMode,
         ClearanceLevel: ClearanceLevel.JsChallenge,
         EphemeralId: false,
         Offlabel: false,
         Region: "world");
+
       var result = await _sut.CreateWidgetAsync(accountId, request);
       _createdWidgetSitekeys.Add(result.Sitekey);
 
       // Assert
-      result.Should().NotBeNull();
-      result.Name.Should().Be(widgetName);
-      result.Mode.Should().Be(WidgetMode.Invisible);
-      result.Domains.Should().HaveCount(2);
-      result.BotFightMode.Should().BeTrue();
-
-      _output.WriteLine($"Created widget with all options: {result.Sitekey}");
+      result.Should().NotBeNull("API should return the created widget");
+      result.Name.Should().Be(widgetName, "widget name should match request");
+      result.Mode.Should().Be(WidgetMode.Invisible, "widget mode should match request");
+      result.Domains.Should().HaveCount(2, "widget should have 2 domains");
+      result.BotFightMode.Should().Be(botFightMode, "bot fight mode should match request");
     }
     finally
     {
@@ -208,13 +217,10 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       var result = await _sut.GetWidgetAsync(accountId, created.Sitekey);
 
       // Assert
-      result.Should().NotBeNull();
-      result.Sitekey.Should().Be(created.Sitekey);
-      result.Name.Should().Be(widgetName);
-      // Note: Secret is NOT returned on get, only on create/rotate
-      result.Secret.Should().BeNull("Secret should not be returned on get");
-
-      _output.WriteLine($"Retrieved widget: {result.Sitekey}");
+      result.Should().NotBeNull("API should return the widget");
+      result.Sitekey.Should().Be(created.Sitekey, "sitekey should match created widget");
+      result.Name.Should().Be(widgetName, "name should match created widget");
+      result.Secret.Should().NotBeNullOrEmpty("Secret is returned on get");
     }
     finally
     {
@@ -249,13 +255,11 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       var updated = await _sut.UpdateWidgetAsync(accountId, created.Sitekey, updateRequest);
 
       // Assert
-      updated.Should().NotBeNull();
-      updated.Sitekey.Should().Be(created.Sitekey);
-      updated.Name.Should().Be(updatedName);
-      updated.Mode.Should().Be(WidgetMode.NonInteractive);
-      updated.Domains.Should().Contain("updated.example.com");
-
-      _output.WriteLine($"Updated widget from '{originalName}' to '{updatedName}'");
+      updated.Should().NotBeNull("API should return the updated widget");
+      updated.Sitekey.Should().Be(created.Sitekey, "sitekey should remain the same");
+      updated.Name.Should().Be(updatedName, "name should be updated");
+      updated.Mode.Should().Be(WidgetMode.NonInteractive, "mode should be updated");
+      updated.Domains.Should().Contain("updated.example.com", "domains should be updated");
     }
     finally
     {
@@ -285,8 +289,6 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var action = async () => await _sut.GetWidgetAsync(accountId, created.Sitekey);
     await action.Should().ThrowAsync<HttpRequestException>()
       .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
-
-    _output.WriteLine($"Successfully deleted widget: {created.Sitekey}");
   }
 
   #endregion
@@ -318,13 +320,9 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       var result = await _sut.RotateSecretAsync(accountId, created.Sitekey, invalidateImmediately: false);
 
       // Assert
-      result.Should().NotBeNull();
-      result.Secret.Should().NotBeNullOrEmpty();
+      result.Should().NotBeNull("API should return the rotated secret");
+      result.Secret.Should().NotBeNullOrEmpty("new secret should be provided");
       result.Secret.Should().NotBe(originalSecret, "New secret should be different from original");
-
-      _output.WriteLine($"Rotated secret with grace period");
-      _output.WriteLine($"  Original: {originalSecret?[..8]}... (truncated)");
-      _output.WriteLine($"  New: {result.Secret[..8]}... (truncated)");
     }
     finally
     {
@@ -356,12 +354,9 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       var result = await _sut.RotateSecretAsync(accountId, created.Sitekey, invalidateImmediately: true);
 
       // Assert
-      result.Should().NotBeNull();
-      result.Secret.Should().NotBeNullOrEmpty();
+      result.Should().NotBeNull("API should return the rotated secret");
+      result.Secret.Should().NotBeNullOrEmpty("new secret should be provided");
       result.Secret.Should().NotBe(originalSecret, "New secret should be different from original");
-
-      _output.WriteLine($"Rotated secret with immediate invalidation");
-      _output.WriteLine($"  New secret: {result.Secret[..8]}... (truncated)");
     }
     finally
     {
@@ -394,18 +389,14 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
         Mode: WidgetMode.Managed);
       var created = await _sut.CreateWidgetAsync(accountId, createRequest);
       widgetSitekey = created.Sitekey;
-      created.Name.Should().Be(originalName);
-      created.Secret.Should().NotBeNullOrEmpty();
-
-      _output.WriteLine($"Step 1: Created widget {widgetSitekey}");
+      created.Name.Should().Be(originalName, "Step 1: Created widget should have correct name");
+      created.Secret.Should().NotBeNullOrEmpty("Step 1: Created widget should have a secret");
 
       // 2. Get
       var retrieved = await _sut.GetWidgetAsync(accountId, widgetSitekey);
-      retrieved.Sitekey.Should().Be(widgetSitekey);
-      retrieved.Name.Should().Be(originalName);
-      retrieved.Secret.Should().BeNull("Secret not returned on get");
-
-      _output.WriteLine("Step 2: Retrieved widget successfully");
+      retrieved.Sitekey.Should().Be(widgetSitekey, "Step 2: Retrieved sitekey should match");
+      retrieved.Name.Should().Be(originalName, "Step 2: Retrieved name should match");
+      retrieved.Secret.Should().NotBeNullOrEmpty("Step 2: Secret is returned on get");
 
       // 3. Update
       var updateRequest = new UpdateTurnstileWidgetRequest(
@@ -413,30 +404,22 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
         Domains: ["updated.example.com"],
         Mode: WidgetMode.Invisible);
       var updated = await _sut.UpdateWidgetAsync(accountId, widgetSitekey, updateRequest);
-      updated.Name.Should().Be(updatedName);
-      updated.Mode.Should().Be(WidgetMode.Invisible);
-
-      _output.WriteLine("Step 3: Updated widget successfully");
+      updated.Name.Should().Be(updatedName, "Step 3: Updated name should match");
+      updated.Mode.Should().Be(WidgetMode.Invisible, "Step 3: Updated mode should match");
 
       // 4. Rotate Secret
       var originalSecret = created.Secret;
       var rotated = await _sut.RotateSecretAsync(accountId, widgetSitekey);
-      rotated.Secret.Should().NotBe(originalSecret);
-
-      _output.WriteLine("Step 4: Rotated secret successfully");
+      rotated.Secret.Should().NotBe(originalSecret, "Step 4: Rotated secret should be different");
 
       // 5. Delete
       await _sut.DeleteWidgetAsync(accountId, widgetSitekey);
       widgetSitekey = null; // Mark as deleted
 
-      _output.WriteLine("Step 5: Deleted widget successfully");
-
       // 6. Verify deletion
       var action = async () => await _sut.GetWidgetAsync(accountId, created.Sitekey);
       await action.Should().ThrowAsync<HttpRequestException>()
         .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
-
-      _output.WriteLine("Step 6: Verified widget is deleted");
     }
     finally
     {
@@ -460,7 +443,10 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
 
   #region Error Handling Tests (I11-I14)
 
-  /// <summary>I11: Verifies that getting a non-existent widget returns 404.</summary>
+  /// <summary>I11: Verifies that getting a non-existent widget returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Non-existent Turnstile widget sitekeys return 404 NotFound with error code 10404.
+  /// </remarks>
   [IntegrationTest]
   public async Task GetWidgetAsync_NonExistent_ThrowsHttpRequestException()
   {
@@ -472,11 +458,14 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var action = async () => await _sut.GetWidgetAsync(accountId, nonExistentSitekey);
 
     // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.BadRequest);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I12: Verifies that deleting a non-existent widget returns appropriate error.</summary>
+  /// <summary>I12: Verifies that deleting a non-existent widget returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Non-existent Turnstile widget sitekeys return 404 NotFound with error code 10404.
+  /// </remarks>
   [IntegrationTest]
   public async Task DeleteWidgetAsync_NonExistent_ThrowsHttpRequestException()
   {
@@ -488,11 +477,14 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var action = async () => await _sut.DeleteWidgetAsync(accountId, nonExistentSitekey);
 
     // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.BadRequest);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I13: Verifies that rotating secret for non-existent widget returns error.</summary>
+  /// <summary>I13: Verifies that rotating secret for non-existent widget returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Non-existent Turnstile widget sitekeys return 404 NotFound with error code 10404.
+  /// </remarks>
   [IntegrationTest]
   public async Task RotateSecretAsync_NonExistent_ThrowsHttpRequestException()
   {
@@ -504,11 +496,16 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var action = async () => await _sut.RotateSecretAsync(accountId, nonExistentSitekey);
 
     // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.BadRequest);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I14: Verifies behavior with invalid account ID format.</summary>
+  /// <summary>I14: Verifies that invalid account ID format returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Invalid account ID formats (not 32-character hex strings) return 404 NotFound
+  ///   with error code 7003 "Could not route to..." because Cloudflare's routing layer
+  ///   cannot match the path to a valid account endpoint.
+  /// </remarks>
   [IntegrationTest]
   public async Task ListWidgetsAsync_InvalidAccountId_ThrowsHttpRequestException()
   {
@@ -519,11 +516,8 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var action = async () => await _sut.ListWidgetsAsync(invalidAccountId);
 
     // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(
-      HttpStatusCode.NotFound,
-      HttpStatusCode.BadRequest,
-      HttpStatusCode.Forbidden);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
   #endregion
@@ -545,12 +539,11 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       widgets.Add(widget);
     }
 
-    // Assert
-    _output.WriteLine($"ListAllWidgetsAsync yielded {widgets.Count} widgets");
+    // Assert - Verify structure of any returned widgets
     foreach (var widget in widgets)
     {
-      widget.Sitekey.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"  - {widget.Name} ({widget.Sitekey})");
+      widget.Sitekey.Should().NotBeNullOrEmpty("each widget should have a sitekey");
+      widget.Name.Should().NotBeNullOrEmpty("each widget should have a name");
     }
   }
 
@@ -566,16 +559,13 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var result = await _sut.ListWidgetsAsync(accountId, filters);
 
     // Assert
-    result.Should().NotBeNull();
-    result.Items.Count.Should().BeLessThanOrEqualTo(5);
-    // PageInfo should be present
-    if (result.PageInfo != null)
-    {
-      result.PageInfo.Page.Should().Be(1);
-      result.PageInfo.PerPage.Should().Be(5);
-    }
+    result.Should().NotBeNull("API should return a valid response");
+    result.Items.Count.Should().BeLessThanOrEqualTo(5, "should respect PerPage limit");
 
-    _output.WriteLine($"Page 1 (max 5 per page): {result.Items.Count} widgets");
+    // PageInfo is required for paginated responses.
+    result.PageInfo.Should().NotBeNull("pagination request should return PageInfo");
+    result.PageInfo!.Page.Should().Be(1, "should be on page 1");
+    result.PageInfo.PerPage.Should().Be(5, "should have PerPage of 5");
   }
 
   #endregion
@@ -602,7 +592,6 @@ public class TurnstileApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       try
       {
         await _sut.DeleteWidgetAsync(accountId, sitekey);
-        _output.WriteLine($"Cleaned up widget: {sitekey}");
       }
       catch
       {

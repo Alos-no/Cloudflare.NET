@@ -17,18 +17,18 @@ using Xunit.Abstractions;
 ///   <para>
 ///     <b>Important:</b> These tests require a user-scoped API token (<c>Cloudflare:UserApiToken</c>) with
 ///     <c>User:Invites Read</c> permission. Account-scoped tokens cannot access user-level endpoints.
-///   </para>
-///   <para>
-///     <b>Note:</b> Invitation tests are mostly read-only because responding to invitations is a one-time
-///     operation that cannot be undone. Tests that would respond to invitations are conditional and only
-///     run when appropriate test invitations are available.
+///     Missing permissions will be caught by the PermissionValidationTests that run first.
 ///   </para>
 /// </summary>
 /// <remarks>
 ///   <para>
-///     User Invitations are sent TO the authenticated user from other accounts. This means the test
-///     account may not have any pending invitations, which is a valid state. Tests are designed to
-///     handle both scenarios (invitations exist vs. no invitations).
+///     <b>SKIPPED TESTS:</b> Most tests in this class require a second Cloudflare account to send
+///     invitations TO the test user. Since we don't have a second account configured, these tests
+///     are skipped with proper documentation. When a second account becomes available, remove the
+///     Skip attribute and the tests will execute with proper assertions.
+///   </para>
+///   <para>
+///     Tests that don't require invitations (error handling, API call validation) run normally.
 ///   </para>
 /// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
@@ -39,9 +39,6 @@ public class UserInvitationsIntegrationTests : IClassFixture<UserApiTestFixture>
 
   /// <summary>The subject under test, resolved from the test fixture.</summary>
   private readonly IUserApi _sut;
-
-  /// <summary>Test output helper for logging.</summary>
-  private readonly ITestOutputHelper _output;
 
   #endregion
 
@@ -54,7 +51,6 @@ public class UserInvitationsIntegrationTests : IClassFixture<UserApiTestFixture>
   public UserInvitationsIntegrationTests(UserApiTestFixture fixture, ITestOutputHelper output)
   {
     _sut = fixture.UserApi;
-    _output = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -64,534 +60,442 @@ public class UserInvitationsIntegrationTests : IClassFixture<UserApiTestFixture>
   #endregion
 
 
-  #region List Invitations Tests (I01-I04)
+  #region List Invitations Tests - Can Run Without Second Account (I01-I02)
 
-  /// <summary>I01: Verifies that ListInvitationsAsync returns a valid collection (may be empty).</summary>
+  /// <summary>I01: Verifies that ListInvitationsAsync returns a valid collection.</summary>
+  /// <remarks>
+  ///   This test verifies the API call succeeds and returns a valid collection.
+  ///   The collection may contain historical invitations (accepted, rejected, or pending).
+  /// </remarks>
   [UserIntegrationTest]
   public async Task ListInvitationsAsync_ReturnsValidCollection()
   {
-    try
-    {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
 
-      // Assert
-      invitations.Should().NotBeNull("result should be a valid collection");
-      _output.WriteLine($"Found {invitations.Count} invitation(s)");
+    // Assert
+    invitations.Should().NotBeNull("API should return a valid collection");
 
-      foreach (var invitation in invitations)
-      {
-        _output.WriteLine($"  - {invitation.Id}: {invitation.OrganizationName ?? "(no org name)"} [{invitation.Status}]");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
+    // Validate any returned invitations have required fields (collection may be empty or not)
+    foreach (var invitation in invitations)
     {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
+      invitation.Id.Should().NotBeNullOrEmpty("invitation should have an ID");
+      invitation.InvitedMemberEmail.Should().NotBeNullOrEmpty("invitation should have an email");
+      invitation.Status.Should().NotBeNull("invitation should have a status");
     }
   }
 
-  /// <summary>I02: Verifies that ListInvitationsAsync handles empty invitation list gracefully.</summary>
+  /// <summary>I02: Verifies that ListInvitationsAsync with valid token returns result.</summary>
   [UserIntegrationTest]
-  public async Task ListInvitationsAsync_EmptyList_ReturnsEmptyCollection()
+  public async Task ListInvitationsAsync_WithValidToken_ReturnsResult()
   {
-    try
-    {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
 
-      // Assert - Empty list is valid, we're testing that it doesn't throw
-      invitations.Should().NotBeNull("result should be a valid collection even if empty");
-
-      if (invitations.Count == 0)
-      {
-        _output.WriteLine("No pending invitations found (this is a valid state)");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-    }
+    // Assert
+    invitations.Should().NotBeNull("API should return a result with valid token");
   }
 
-  /// <summary>I03: Verifies that listed invitations have required fields populated.</summary>
-  [UserIntegrationTest]
+  #endregion
+
+
+  #region List Invitations Tests - Require Second Account (I03-I04, I10-I12)
+
+  /// <summary>
+  ///   I03: Verifies that listed invitations have required fields populated.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send an invitation to the test user.
+  ///     Without a pending invitation, there is no data to verify.
+  ///   </para>
+  ///   <para><b>API Documentation:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/user/subresources/invites/methods/list/</item>
+  ///     <item>Required fields: id, invited_member_email, status</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation to test user.")]
   public async Task ListInvitationsAsync_HasRequiredFields()
   {
-    try
-    {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
 
-      // Assert - If we have invitations, verify required fields
-      if (invitations.Count == 0)
-      {
-        _output.WriteLine("No invitations to verify required fields (this is acceptable)");
+    // Assert
+    invitations.Should().NotBeEmpty("test requires at least one invitation");
 
-        return;
-      }
-
-      var firstInvitation = invitations[0];
-      firstInvitation.Id.Should().NotBeNullOrEmpty("invitation should have an ID");
-      firstInvitation.InvitedMemberEmail.Should().NotBeNullOrEmpty("invitation should have an email");
-      firstInvitation.Status.Should().NotBeNull("invitation should have a status");
-
-      _output.WriteLine($"Verified invitation {firstInvitation.Id} has required fields");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-    }
+    var firstInvitation = invitations[0];
+    firstInvitation.Id.Should().NotBeNullOrEmpty("invitation should have an ID");
+    firstInvitation.InvitedMemberEmail.Should().NotBeNullOrEmpty("invitation should have an email");
+    firstInvitation.Status.Should().NotBeNull("invitation should have a status");
   }
 
-  /// <summary>I04: Verifies that listed invitations have timestamp fields populated.</summary>
-  [UserIntegrationTest]
+  /// <summary>
+  ///   I04: Verifies that listed invitations have timestamp fields populated.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send an invitation to the test user.
+  ///     Without a pending invitation, there is no data to verify.
+  ///   </para>
+  ///   <para><b>API Documentation:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/user/subresources/invites/methods/list/</item>
+  ///     <item>Timestamp fields: invited_on, expires_on</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation to test user.")]
   public async Task ListInvitationsAsync_HasTimestamps()
   {
-    try
-    {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
 
-      // Assert - If we have invitations, verify timestamps
-      if (invitations.Count == 0)
-      {
-        _output.WriteLine("No invitations to verify timestamps (this is acceptable)");
+    // Assert
+    invitations.Should().NotBeEmpty("test requires at least one invitation");
 
-        return;
-      }
-
-      var firstInvitation = invitations[0];
-      firstInvitation.InvitedOn.Should().BeBefore(DateTime.UtcNow, "InvitedOn should be in the past");
-      firstInvitation.ExpiresOn.Should().BeAfter(firstInvitation.InvitedOn, "ExpiresOn should be after InvitedOn");
-
-      _output.WriteLine($"Invitation {firstInvitation.Id}: InvitedOn={firstInvitation.InvitedOn}, ExpiresOn={firstInvitation.ExpiresOn}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-    }
-  }
-
-  #endregion
-
-
-  #region Get Invitation Tests (I05-I07)
-
-  /// <summary>I05: Verifies that GetInvitationAsync returns invitation details when invitation exists.</summary>
-  [UserIntegrationTest]
-  public async Task GetInvitationAsync_ExistingInvitation_ReturnsDetails()
-  {
-    try
-    {
-      // Arrange - First list to get an invitation ID
-      var invitations = await _sut.ListInvitationsAsync();
-
-      if (invitations.Count == 0)
-      {
-        _output.WriteLine("No invitations available to test GetInvitationAsync (this is acceptable)");
-
-        return;
-      }
-
-      var invitationId = invitations[0].Id;
-
-      // Act
-      var invitation = await _sut.GetInvitationAsync(invitationId);
-
-      // Assert
-      invitation.Should().NotBeNull();
-      invitation.Id.Should().Be(invitationId);
-      invitation.InvitedMemberEmail.Should().NotBeNullOrEmpty();
-
-      _output.WriteLine($"Retrieved invitation {invitation.Id}: {invitation.OrganizationName ?? "(no org name)"}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-    }
-  }
-
-  /// <summary>I06: Verifies that invitation with roles has roles array populated.</summary>
-  [UserIntegrationTest]
-  public async Task GetInvitationAsync_WithRoles_HasRolesArray()
-  {
-    try
-    {
-      // Arrange - First list to get an invitation ID
-      var invitations = await _sut.ListInvitationsAsync();
-
-      if (invitations.Count == 0)
-      {
-        _output.WriteLine("No invitations available to test roles (this is acceptable)");
-
-        return;
-      }
-
-      // Try to find an invitation with roles
-      var invitationWithRoles = invitations.FirstOrDefault(i => i.Roles is { Count: > 0 });
-
-      if (invitationWithRoles is null)
-      {
-        // If the list doesn't have roles, try getting full details for each
-        foreach (var listedInvite in invitations)
-        {
-          var fullInvite = await _sut.GetInvitationAsync(listedInvite.Id);
-
-          if (fullInvite.Roles is { Count: > 0 })
-          {
-            invitationWithRoles = fullInvite;
-
-            break;
-          }
-        }
-      }
-
-      if (invitationWithRoles is null)
-      {
-        _output.WriteLine("No invitations with roles found (this is acceptable)");
-
-        return;
-      }
-
-      // Assert
-      invitationWithRoles.Roles.Should().NotBeNull();
-      invitationWithRoles.Roles!.Count.Should().BeGreaterThan(0);
-
-      foreach (var role in invitationWithRoles.Roles)
-      {
-        role.Id.Should().NotBeNullOrEmpty();
-        role.Name.Should().NotBeNullOrEmpty();
-        _output.WriteLine($"  Role: {role.Name} ({role.Id})");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-    }
-  }
-
-  /// <summary>I07: Verifies that GetInvitationAsync throws 404 for non-existent invitation ID.</summary>
-  [UserIntegrationTest]
-  public async Task GetInvitationAsync_NonExistentId_Throws404()
-  {
-    // Arrange - Use an ID that definitely doesn't exist
-    var nonExistentId = "nonexistent-" + Guid.NewGuid().ToString("N");
-
-    try
-    {
-      // Act
-      var act = () => _sut.GetInvitationAsync(nonExistentId);
-
-      // Assert
-      await act.Should().ThrowAsync<HttpRequestException>()
-               .Where(ex => ex.StatusCode == HttpStatusCode.NotFound ||
-                            ex.StatusCode == HttpStatusCode.BadRequest); // API may return 400 for invalid format
-    }
-    catch (CloudflareApiException ex)
-    {
-      // API may also return success=false for not found
-      _output.WriteLine($"Got CloudflareApiException as expected: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-    }
-  }
-
-  #endregion
-
-
-  #region Respond to Invitation Tests (I08-I10) - Mostly Conditional
-
-  /// <summary>
-  ///   I08: Test for accepting invitation - CONDITIONAL.
-  ///   This test is informational and skipped if no suitable test invitation exists.
-  ///   Responding to invitations is a one-time, irreversible operation.
-  /// </summary>
-  [UserIntegrationTest]
-  public async Task RespondToInvitationAsync_AcceptInvitation_Informational()
-  {
-    try
-    {
-      // Arrange - Check for pending invitations
-      var invitations = await _sut.ListInvitationsAsync();
-      var pendingInvitation = invitations.FirstOrDefault(i => i.Status == MemberStatus.Pending);
-
-      if (pendingInvitation is null)
-      {
-        _output.WriteLine("[INFO] No pending invitations available for accept test.");
-        _output.WriteLine("[INFO] To test accepting invitations, a test invitation must be sent from another account.");
-        _output.WriteLine("[INFO] This is expected behavior - skipping accept test.");
-
-        return;
-      }
-
-      // Log but don't actually accept - this is a destructive operation
-      _output.WriteLine($"[INFO] Found pending invitation: {pendingInvitation.Id}");
-      _output.WriteLine($"[INFO] Organization: {pendingInvitation.OrganizationName ?? "(not specified)"}");
-      _output.WriteLine("[INFO] NOT accepting automatically to preserve test environment.");
-      _output.WriteLine("[INFO] To test accept functionality, use manual testing with a disposable invitation.");
-
-      // Verify we can construct the request correctly
-      var acceptRequest = new RespondToInvitationRequest(MemberStatus.Accepted);
-      acceptRequest.Status.Should().Be(MemberStatus.Accepted);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations permission. Test skipped.");
-    }
-  }
-
-  /// <summary>
-  ///   I09: Test for rejecting invitation - CONDITIONAL.
-  ///   This test is informational and skipped if no suitable test invitation exists.
-  ///   Responding to invitations is a one-time, irreversible operation.
-  /// </summary>
-  [UserIntegrationTest]
-  public async Task RespondToInvitationAsync_RejectInvitation_Informational()
-  {
-    try
-    {
-      // Arrange - Check for pending invitations
-      var invitations = await _sut.ListInvitationsAsync();
-      var pendingInvitation = invitations.FirstOrDefault(i => i.Status == MemberStatus.Pending);
-
-      if (pendingInvitation is null)
-      {
-        _output.WriteLine("[INFO] No pending invitations available for reject test.");
-        _output.WriteLine("[INFO] To test rejecting invitations, a test invitation must be sent from another account.");
-        _output.WriteLine("[INFO] This is expected behavior - skipping reject test.");
-
-        return;
-      }
-
-      // Log but don't actually reject - this is a destructive operation
-      _output.WriteLine($"[INFO] Found pending invitation: {pendingInvitation.Id}");
-      _output.WriteLine($"[INFO] Organization: {pendingInvitation.OrganizationName ?? "(not specified)"}");
-      _output.WriteLine("[INFO] NOT rejecting automatically to preserve test environment.");
-      _output.WriteLine("[INFO] To test reject functionality, use manual testing with a disposable invitation.");
-
-      // Verify we can construct the request correctly
-      var rejectRequest = new RespondToInvitationRequest(MemberStatus.Rejected);
-      rejectRequest.Status.Should().Be(MemberStatus.Rejected);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations permission. Test skipped.");
-    }
+    var firstInvitation = invitations[0];
+    firstInvitation.InvitedOn.Should().BeBefore(DateTime.UtcNow, "InvitedOn should be in the past");
+    firstInvitation.ExpiresOn.Should().BeAfter(firstInvitation.InvitedOn, "ExpiresOn should be after InvitedOn");
   }
 
   /// <summary>
   ///   I10: Verifies that accepted invitations have accepted status.
-  ///   This test checks existing accepted invitations rather than accepting new ones.
   /// </summary>
-  [UserIntegrationTest]
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send an invitation that has been accepted.
+  ///   </para>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation to test user.")]
   public async Task ListInvitationsAsync_AcceptedInvitations_HaveCorrectStatus()
   {
-    try
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
+
+    // Assert
+    var acceptedInvitations = invitations.Where(i => i.Status == MemberStatus.Accepted).ToList();
+    acceptedInvitations.Should().NotBeEmpty("test requires at least one accepted invitation");
+
+    foreach (var invitation in acceptedInvitations)
     {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
-
-      // Assert - Check for any accepted invitations in history
-      var acceptedInvitations = invitations.Where(i => i.Status == MemberStatus.Accepted).ToList();
-
-      _output.WriteLine($"Found {acceptedInvitations.Count} accepted invitation(s)");
-
-      foreach (var invitation in acceptedInvitations)
-      {
-        invitation.Status.Should().Be(MemberStatus.Accepted);
-        _output.WriteLine($"  - {invitation.Id}: {invitation.OrganizationName ?? "(no org name)"} [accepted]");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
+      invitation.Status.Should().Be(MemberStatus.Accepted);
     }
   }
 
-  #endregion
-
-
-  #region Edge Cases (I11-I14)
-
-  /// <summary>I11: Verifies handling of expired invitation (informational - checks for expired status).</summary>
-  [UserIntegrationTest]
+  /// <summary>
+  ///   I11: Verifies handling of expired invitations.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send an invitation that has expired.
+  ///   </para>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation to test user.")]
   public async Task ListInvitationsAsync_ExpiredInvitations_AreHandled()
   {
-    try
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
+
+    // Assert
+    var now = DateTime.UtcNow;
+    var expiredByDate = invitations.Where(i => i.ExpiresOn < now).ToList();
+    expiredByDate.Should().NotBeEmpty("test requires at least one expired invitation");
+
+    foreach (var invitation in expiredByDate)
     {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
-
-      // Check for any expired invitations or invitations past their expiry date
-      var now = DateTime.UtcNow;
-      var expiredByDate = invitations.Where(i => i.ExpiresOn < now).ToList();
-
-      _output.WriteLine($"Found {expiredByDate.Count} invitation(s) past expiry date");
-
-      foreach (var invitation in expiredByDate)
-      {
-        _output.WriteLine($"  - {invitation.Id}: expired on {invitation.ExpiresOn} (status: {invitation.Status})");
-      }
-
-      // If we have a pending but expired invitation, it would be a good test candidate
-      var pendingExpired = expiredByDate.FirstOrDefault(i => i.Status == MemberStatus.Pending);
-
-      if (pendingExpired is not null)
-      {
-        _output.WriteLine($"[INFO] Found pending expired invitation {pendingExpired.Id} - API should reject response attempts");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
+      invitation.Id.Should().NotBeNullOrEmpty("expired invitation should have an ID");
+      invitation.ExpiresOn.Should().BeBefore(now, "expired invitation should have past expiration date");
     }
   }
 
-  /// <summary>I12: Verifies that already responded invitations show their final status.</summary>
-  [UserIntegrationTest]
+  /// <summary>
+  ///   I12: Verifies that already responded invitations show their final status.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send invitations that have been responded to.
+  ///   </para>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation to test user.")]
   public async Task ListInvitationsAsync_AlreadyRespondedInvitations_ShowFinalStatus()
   {
-    try
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
+
+    // Assert
+    var respondedInvitations = invitations.Where(i =>
+      i.Status == MemberStatus.Accepted ||
+      i.Status == MemberStatus.Rejected).ToList();
+
+    respondedInvitations.Should().NotBeEmpty("test requires at least one responded invitation");
+
+    foreach (var invitation in respondedInvitations)
     {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
-
-      // Check for invitations that have been responded to
-      var respondedInvitations = invitations.Where(i =>
-        i.Status == MemberStatus.Accepted ||
-        i.Status == MemberStatus.Rejected).ToList();
-
-      _output.WriteLine($"Found {respondedInvitations.Count} already-responded invitation(s)");
-
-      foreach (var invitation in respondedInvitations)
-      {
-        var isAcceptedOrRejected = invitation.Status == MemberStatus.Accepted ||
-                                   invitation.Status == MemberStatus.Rejected;
-        isAcceptedOrRejected.Should().BeTrue("responded invitation should have accepted or rejected status");
-        _output.WriteLine($"  - {invitation.Id}: [{invitation.Status}]");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
+      var isAcceptedOrRejected = invitation.Status == MemberStatus.Accepted ||
+                                 invitation.Status == MemberStatus.Rejected;
+      isAcceptedOrRejected.Should().BeTrue("responded invitation should have accepted or rejected status");
     }
   }
 
-  /// <summary>I13: Verifies that permission denied returns 403 (tested via API response).</summary>
-  [UserIntegrationTest]
-  public async Task ListInvitationsAsync_WithValidToken_ReturnsResultOrForbidden()
+  /// <summary>
+  ///   Verifies that MemberStatus values are correctly parsed from API responses.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires invitations to exist to verify status parsing.
+  ///   </para>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation to test user.")]
+  public async Task ListInvitationsAsync_StatusValues_ParsedCorrectly()
   {
-    // This test verifies the endpoint is accessible with the configured token
-    // If the token lacks permissions, we get 403 which is handled gracefully
-    try
+    // Act
+    var invitations = await _sut.ListInvitationsAsync();
+
+    // Assert
+    invitations.Should().NotBeEmpty("test requires at least one invitation");
+
+    foreach (var invitation in invitations)
     {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
-
-      // Assert - If we get here, the token has permission
-      invitations.Should().NotBeNull();
-      _output.WriteLine($"Token has permission - found {invitations.Count} invitation(s)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      // This is expected if the token lacks user invitations permission
-      _output.WriteLine("[INFO] 403 Forbidden - This is expected if UserApiToken lacks 'User:Invites Read' permission.");
-      _output.WriteLine("[INFO] To test this endpoint, ensure the API token has appropriate permissions.");
-
-      // Verify the exception has the right status code
-      ex.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
-  }
-
-  /// <summary>I14: Verifies that invalid ID format is handled gracefully.</summary>
-  [UserIntegrationTest]
-  public async Task GetInvitationAsync_InvalidIdFormat_HandledGracefully()
-  {
-    // Arrange - Use various invalid ID formats
-    var invalidIds = new[]
-    {
-      "invalid-format",
-      "123",
-      "",
-      "   ",
-      "!@#$%^&*()"
-    };
-
-    foreach (var invalidId in invalidIds)
-    {
-      // Skip empty/whitespace as those throw ArgumentException before API call
-      if (string.IsNullOrWhiteSpace(invalidId))
-      {
-        continue;
-      }
-
-      try
-      {
-        // Act & Assert
-        var act = () => _sut.GetInvitationAsync(invalidId);
-
-        try
-        {
-          await act();
-          _output.WriteLine($"[UNEXPECTED] ID '{invalidId}' did not throw - API may accept this format");
-        }
-        catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.BadRequest)
-        {
-          _output.WriteLine($"[OK] ID '{invalidId}' threw {ex.StatusCode} as expected");
-        }
-        catch (CloudflareApiException ex)
-        {
-          _output.WriteLine($"[OK] ID '{invalidId}' threw CloudflareApiException: {ex.Message}");
-        }
-      }
-      catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-      {
-        _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-
-        return;
-      }
+      var statusString = (string)invitation.Status;
+      statusString.Should().BeOneOf("pending", "accepted", "rejected");
     }
   }
 
   #endregion
 
 
-  #region Status Verification Tests
+  #region Get Invitation Tests - Require Second Account (I05-I06)
 
-  /// <summary>Verifies that MemberStatus values are correctly parsed from API responses.</summary>
-  [UserIntegrationTest]
-  public async Task ListInvitationsAsync_StatusValues_ParsedCorrectly()
+  /// <summary>
+  ///   I05: Verifies that GetInvitationAsync returns invitation details when invitation exists.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send an invitation to the test user.
+  ///   </para>
+  ///   <para><b>API Documentation:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/user/subresources/invites/methods/get/</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation to test user.")]
+  public async Task GetInvitationAsync_ExistingInvitation_ReturnsDetails()
   {
-    try
+    // Arrange - First list to get an invitation ID
+    var invitations = await _sut.ListInvitationsAsync();
+    invitations.Should().NotBeEmpty("test requires at least one invitation");
+
+    var invitationId = invitations[0].Id;
+
+    // Act
+    var invitation = await _sut.GetInvitationAsync(invitationId);
+
+    // Assert
+    invitation.Should().NotBeNull();
+    invitation.Id.Should().Be(invitationId);
+    invitation.InvitedMemberEmail.Should().NotBeNullOrEmpty();
+  }
+
+  /// <summary>
+  ///   I06: Verifies that invitation with roles has roles array populated.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send an invitation with roles assigned.
+  ///   </para>
+  ///   <para><b>API Documentation:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/user/subresources/invites/methods/get/</item>
+  ///     <item>Roles are returned as an array of role name strings</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send invitation with roles to test user.")]
+  public async Task GetInvitationAsync_WithRoles_HasRolesArray()
+  {
+    // Arrange - First list to get an invitation ID
+    var invitations = await _sut.ListInvitationsAsync();
+    var invitationWithRoles = invitations.FirstOrDefault(i => i.Roles is { Count: > 0 });
+
+    invitationWithRoles.Should().NotBeNull("test requires an invitation with roles");
+
+    // Assert
+    invitationWithRoles!.Roles.Should().NotBeNull();
+    invitationWithRoles.Roles!.Count.Should().BeGreaterThan(0);
+
+    foreach (var roleName in invitationWithRoles.Roles)
     {
-      // Act
-      var invitations = await _sut.ListInvitationsAsync();
-
-      // Assert - Group by status and report
-      var byStatus = invitations.GroupBy(i => (string)i.Status).ToList();
-
-      _output.WriteLine("Invitation status distribution:");
-
-      foreach (var group in byStatus)
-      {
-        _output.WriteLine($"  - {group.Key}: {group.Count()} invitation(s)");
-      }
-
-      // Verify status values are from known set
-      foreach (var invitation in invitations)
-      {
-        var statusString = (string)invitation.Status;
-        statusString.Should().BeOneOf("pending", "accepted", "rejected",
-          $"Status '{statusString}' should be a known value, but extensible enum allows unknown values");
-      }
+      roleName.Should().NotBeNullOrEmpty("each role name should be populated");
     }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack user invitations read permission. Test skipped.");
-    }
+  }
+
+  #endregion
+
+
+  #region Get Invitation Tests - Error Handling (I07, I14)
+
+  /// <summary>I07: Verifies that GetInvitationAsync throws 400 for invalid invitation ID format.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: GET /user/invites/{id} returns 400 Bad Request for invalid ID formats.
+  ///   Error code 7003: "Could not route to /user/invites/{id}, perhaps your object identifier is invalid?"
+  ///   The API's routing layer validates the ID format before processing.
+  ///   https://developers.cloudflare.com/api/resources/user/subresources/invites/methods/get/
+  /// </remarks>
+  [UserIntegrationTest]
+  public async Task GetInvitationAsync_InvalidIdFormat_ThrowsBadRequest()
+  {
+    // Arrange - Use an ID format that the API doesn't recognize
+    var invalidId = "nonexistent-" + Guid.NewGuid().ToString("N");
+
+    // Act
+    var act = () => _sut.GetInvitationAsync(invalidId);
+
+    // Assert - Invalid ID format returns 400 Bad Request (routing error)
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+  }
+
+  /// <summary>I14: Verifies that malformed ID format returns 400 Bad Request.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: Malformed IDs with special characters fail at the routing layer.
+  ///   Error code 7003: "Could not route to /user/invites/{id}"
+  ///   https://developers.cloudflare.com/api/resources/user/subresources/invites/
+  /// </remarks>
+  [UserIntegrationTest]
+  public async Task GetInvitationAsync_MalformedId_ThrowsBadRequest()
+  {
+    // Arrange - Use ID with special characters that fail routing
+    var malformedId = "!@#$%^&*()";
+
+    // Act
+    var act = () => _sut.GetInvitationAsync(malformedId);
+
+    // Assert - Malformed ID returns 400 Bad Request (routing error)
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+  }
+
+  #endregion
+
+
+  #region Respond to Invitation Tests - Require Second Account (I08-I09, I15-I16)
+
+  /// <summary>
+  ///   I08: Verifies that RespondToInvitationAsync (accept) actually accepts the invitation.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send a pending invitation to the test user.
+  ///     Accepting an invitation is a one-time operation that grants account access.
+  ///   </para>
+  ///   <para><b>API Documentation:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/user/subresources/invites/methods/edit/</item>
+  ///     <item>Status can be set to "accepted" or "rejected"</item>
+  ///     <item>User can leave account later via DELETE /memberships/{id}</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send pending invitation to test user.")]
+  public async Task RespondToInvitationAsync_AcceptInvitation_UpdatesStatus()
+  {
+    // Arrange - Find a pending invitation
+    var invitations = await _sut.ListInvitationsAsync();
+    var pendingInvitation = invitations.FirstOrDefault(i => i.Status == MemberStatus.Pending);
+    pendingInvitation.Should().NotBeNull("test requires a pending invitation");
+
+    // Act
+    var request = new RespondToInvitationRequest(MemberStatus.Accepted);
+    var result = await _sut.RespondToInvitationAsync(pendingInvitation!.Id, request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().Be(pendingInvitation.Id);
+    result.Status.Should().Be(MemberStatus.Accepted);
+  }
+
+  /// <summary>
+  ///   I09: Verifies that RespondToInvitationAsync (reject) actually rejects the invitation.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires second Cloudflare account.</b></para>
+  ///   <para>
+  ///     This test requires a second Cloudflare account to send a pending invitation to the test user.
+  ///     Rejecting an invitation declines account access.
+  ///   </para>
+  ///   <para><b>API Documentation:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/user/subresources/invites/methods/edit/</item>
+  ///     <item>Status can be set to "accepted" or "rejected"</item>
+  ///     <item>Account owner can send a new invitation if needed</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires second Cloudflare account to send pending invitation to test user.")]
+  public async Task RespondToInvitationAsync_RejectInvitation_UpdatesStatus()
+  {
+    // Arrange - Find a pending invitation
+    var invitations = await _sut.ListInvitationsAsync();
+    var pendingInvitation = invitations.FirstOrDefault(i => i.Status == MemberStatus.Pending);
+    pendingInvitation.Should().NotBeNull("test requires a pending invitation");
+
+    // Act
+    var request = new RespondToInvitationRequest(MemberStatus.Rejected);
+    var result = await _sut.RespondToInvitationAsync(pendingInvitation!.Id, request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().Be(pendingInvitation.Id);
+    result.Status.Should().Be(MemberStatus.Rejected);
+  }
+
+  #endregion
+
+
+  #region Respond to Invitation Tests - Error Handling (I17-I18)
+
+  /// <summary>I17: Verifies that responding to a non-existent invitation returns 404.</summary>
+  [UserIntegrationTest]
+  public async Task RespondToInvitationAsync_NonExistent_ThrowsNotFound()
+  {
+    // Arrange
+    var nonExistentId = "00000000000000000000000000000000";
+    var request = new RespondToInvitationRequest(MemberStatus.Accepted);
+
+    // Act
+    var act = () => _sut.RespondToInvitationAsync(nonExistentId, request);
+
+    // Assert - Non-existent invitation returns 404 or 400 or 403
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound ||
+                   ex.StatusCode == HttpStatusCode.BadRequest ||
+                   ex.StatusCode == HttpStatusCode.Forbidden);
+  }
+
+  /// <summary>I18: Verifies that responding with a malformed invitation ID returns 400.</summary>
+  [UserIntegrationTest]
+  public async Task RespondToInvitationAsync_MalformedId_ThrowsBadRequest()
+  {
+    // Arrange
+    var malformedId = "!@#$%^&*()";
+    var request = new RespondToInvitationRequest(MemberStatus.Accepted);
+
+    // Act
+    var act = () => _sut.RespondToInvitationAsync(malformedId, request);
+
+    // Assert - Malformed ID fails at routing with 400
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
   }
 
   #endregion

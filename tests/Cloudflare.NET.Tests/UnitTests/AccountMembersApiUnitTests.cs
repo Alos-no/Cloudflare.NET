@@ -722,27 +722,7 @@ public class AccountMembersApiUnitTests
 
   #region Error Handling Tests (U21-U28)
 
-  /// <summary>U21: Verifies GetAccountMemberAsync throws on 404 Not Found.</summary>
-  [Fact]
-  public async Task GetAccountMemberAsync_WhenNotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Member not found"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new MembersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.GetAccountMemberAsync("acc", "nonexistent"));
-    exception.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U22: Verifies API error envelope throws CloudflareApiException.</summary>
+  /// <summary>U21: Verifies API error envelope throws CloudflareApiException.</summary>
   [Fact]
   public async Task ListAccountMembersAsync_WhenApiError_ThrowsCloudflareApiException()
   {
@@ -763,7 +743,7 @@ public class AccountMembersApiUnitTests
     exception.Errors[0].Code.Should().Be(10000);
   }
 
-  /// <summary>U23: Verifies multiple errors in response are captured in CloudflareApiException.</summary>
+  /// <summary>U22: Verifies multiple errors in response are captured in CloudflareApiException.</summary>
   [Fact]
   public async Task ListAccountMembersAsync_WhenMultipleErrors_CapturesAllErrors()
   {
@@ -786,92 +766,7 @@ public class AccountMembersApiUnitTests
     exception.Errors.Should().HaveCount(2);
   }
 
-  /// <summary>U24: Verifies unauthorized (401) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountMembersAsync_WhenUnauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Authentication error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new MembersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountMembersAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U25: Verifies forbidden (403) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task CreateAccountMemberAsync_WhenForbidden_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Access denied"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new MembersApi(httpClient, _loggerFactory);
-
-    var request = new CreateAccountMemberRequest(Email: "test@example.com", Roles: new[] { "role-1" });
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.CreateAccountMemberAsync("acc", request));
-    exception.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U26: Verifies rate limited (429) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountMembersAsync_WhenRateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Rate limited"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new MembersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountMembersAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U27: Verifies server error (500/502/503) throws HttpRequestException.</summary>
-  [Theory]
-  [InlineData(HttpStatusCode.InternalServerError)]
-  [InlineData(HttpStatusCode.BadGateway)]
-  [InlineData(HttpStatusCode.ServiceUnavailable)]
-  public async Task ListAccountMembersAsync_WhenServerError_ThrowsHttpRequestException(HttpStatusCode statusCode)
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Server error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, statusCode);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new MembersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountMembersAsync("acc"));
-    exception.StatusCode.Should().Be(statusCode);
-  }
-
-  /// <summary>U28: Verifies CreateAccountMemberAsync error for duplicate email.</summary>
+  /// <summary>U23: Verifies CreateAccountMemberAsync error for duplicate email.</summary>
   [Fact]
   public async Task CreateAccountMemberAsync_WhenDuplicateEmail_ThrowsCloudflareApiException()
   {

@@ -3,6 +3,7 @@
 using Accounts;
 using ApiTokens;
 using AuditLogs;
+using Cloudflare.NET.Tests.Shared;
 using Dns;
 using Members;
 using Microsoft.Extensions.DependencyInjection;
@@ -133,10 +134,26 @@ public class CloudflareApiTestFixture : IAsyncLifetime
   public async Task InitializeAsync()
   {
     if (TestConfigurationValidator.IsSecretMissing(_settings.ZoneId) ||
-        TestConfigurationValidator.IsSecretMissing(_settings.ApiToken))
-      // Cannot infer the domain if the ZoneId or Token is missing. The test will be skipped
-      // by the [IntegrationTest] attribute, but we avoid throwing an exception here.
+        TestConfigurationValidator.IsSecretMissing(_settings.ApiToken) ||
+        TestConfigurationValidator.IsSecretMissing(_settings.AccountId))
+      // Cannot validate or infer the domain if required secrets are missing.
+      // The test will be skipped by the [IntegrationTest] attribute.
       return;
+
+    // Run permission validation lazily (only once across all fixtures).
+    // This ensures validation completes before any tests run, even with parallelization.
+    PermissionValidationRunner.InitializeAccountValidation(ApiTokensApi, _settings.AccountId);
+    await PermissionValidationRunner.EnsureAccountValidationAsync();
+    
+    // NOTE: Uncomment if you want to skip the test if user validation hasn't run yet.
+    /*Skip.If(
+      !PermissionValidationState.UserValidationCompleted,
+      "User token permission validation has not run yet. Ensure PermissionValidationTests runs first.");*/
+
+    // If ANY permission validation failed (account OR user), skip ALL tests.
+    // This ensures we don't run partial test suites with cryptic 403 errors.
+    PermissionValidationState.EnsureAccountPermissionsValidated();
+    PermissionValidationState.EnsureUserPermissionsValidated();
 
     var zoneDetails = await ZonesApi.GetZoneDetailsAsync(_settings.ZoneId);
     _settings.BaseDomain = zoneDetails.Name;

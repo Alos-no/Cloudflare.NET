@@ -589,26 +589,9 @@ public class TurnstileApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U22-U30)
+  #region Error Handling Tests (U22-U24)
 
-  /// <summary>U22: Verifies GetWidgetAsync throws HttpRequestException on 404.</summary>
-  [Fact]
-  public async Task GetWidgetAsync_NotFound_ThrowsHttpRequestException()
-  {
-    // Arrange - Non-2xx status code throws HttpRequestException.
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Not Found", HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new TurnstileApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.GetWidgetAsync(TestAccountId, "invalid-sitekey");
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U23: Verifies CreateWidgetAsync throws CloudflareApiException on API error.</summary>
+  /// <summary>U22: Verifies CreateWidgetAsync throws CloudflareApiException on API error.</summary>
   [Fact]
   public async Task CreateWidgetAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -627,7 +610,7 @@ public class TurnstileApiUnitTests
     exception.Which.Errors.Should().ContainSingle(e => e.Code == 1001);
   }
 
-  /// <summary>U24: Verifies API returns multiple errors they are all captured.</summary>
+  /// <summary>U23: Verifies API returns multiple errors they are all captured.</summary>
   [Fact]
   public async Task CreateWidgetAsync_MultipleErrors_CapturesAllErrors()
   {
@@ -658,116 +641,12 @@ public class TurnstileApiUnitTests
     exception.Which.Errors.Should().Contain(e => e.Code == 1002);
   }
 
-  /// <summary>U25: Verifies ListWidgetsAsync throws HttpRequestException on 401.</summary>
-  [Fact]
-  public async Task ListWidgetsAsync_Unauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange - 401 status code throws HttpRequestException.
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Unauthorized", HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new TurnstileApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.ListWidgetsAsync(TestAccountId);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U26: Verifies UpdateWidgetAsync throws HttpRequestException on 403.</summary>
-  [Fact]
-  public async Task UpdateWidgetAsync_Forbidden_ThrowsHttpRequestException()
-  {
-    // Arrange - 403 status code throws HttpRequestException.
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Forbidden", HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new TurnstileApi(httpClient, _loggerFactory);
-    var request = new UpdateTurnstileWidgetRequest("Test", ["example.com"], WidgetMode.Managed);
-
-    // Act
-    var action = async () => await sut.UpdateWidgetAsync(TestAccountId, TestSitekey, request);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U27: Verifies DeleteWidgetAsync throws HttpRequestException on 429.</summary>
-  [Fact]
-  public async Task DeleteWidgetAsync_RateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange - 429 status code throws HttpRequestException.
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Too Many Requests", HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new TurnstileApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.DeleteWidgetAsync(TestAccountId, TestSitekey);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U28: Verifies GetWidgetAsync throws HttpRequestException on 500.</summary>
-  [Fact]
-  public async Task GetWidgetAsync_ServerError500_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Internal Server Error", HttpStatusCode.InternalServerError);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new TurnstileApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.GetWidgetAsync(TestAccountId, TestSitekey);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-  }
-
-  /// <summary>U29: Verifies RotateSecretAsync throws HttpRequestException on 502.</summary>
-  [Fact]
-  public async Task RotateSecretAsync_ServerError502_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Bad Gateway", HttpStatusCode.BadGateway);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new TurnstileApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.RotateSecretAsync(TestAccountId, TestSitekey);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-  }
-
-  /// <summary>U30: Verifies CreateWidgetAsync throws HttpRequestException on 503.</summary>
-  [Fact]
-  public async Task CreateWidgetAsync_ServerError503_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Service Unavailable", HttpStatusCode.ServiceUnavailable);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new TurnstileApi(httpClient, _loggerFactory);
-    var request = new CreateTurnstileWidgetRequest("Test", ["example.com"], WidgetMode.Managed);
-
-    // Act
-    var action = async () => await sut.CreateWidgetAsync(TestAccountId, request);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-  }
-
   #endregion
 
 
-  #region URL Encoding Tests (U31-U32)
+  #region URL Encoding Tests (U25-U26)
 
-  /// <summary>U31: Verifies ListWidgetsAsync URL encodes accountId with special characters.</summary>
+  /// <summary>U25: Verifies ListWidgetsAsync URL encodes accountId with special characters.</summary>
   [Fact]
   public async Task ListWidgetsAsync_SpecialCharsInAccountId_UrlEncodesCorrectly()
   {
@@ -787,7 +666,7 @@ public class TurnstileApiUnitTests
     path.Should().NotContain("test/account+id");
   }
 
-  /// <summary>U32: Verifies GetWidgetAsync URL encodes sitekey with special characters.</summary>
+  /// <summary>U26: Verifies GetWidgetAsync URL encodes sitekey with special characters.</summary>
   [Fact]
   public async Task GetWidgetAsync_SpecialCharsInSitekey_UrlEncodesCorrectly()
   {

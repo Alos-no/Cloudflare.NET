@@ -1,7 +1,6 @@
 namespace Cloudflare.NET.Tests.IntegrationTests;
 
 using System.Net;
-using Cloudflare.NET.Core.Exceptions;
 using Cloudflare.NET.Members.Models;
 using Cloudflare.NET.User;
 using Cloudflare.NET.User.Models;
@@ -14,20 +13,24 @@ using Xunit.Abstractions;
 /// <summary>
 ///   Contains integration tests for the User Memberships API implementing F11 - User Memberships.
 ///   These tests interact with the live Cloudflare API and require credentials.
+/// </summary>
+/// <remarks>
 ///   <para>
 ///     <b>Important:</b> These tests require a user-scoped API token (<c>Cloudflare:UserApiToken</c>) with
 ///     <c>Memberships Read</c> and <c>Memberships Write</c> permissions.
 ///   </para>
 ///   <para>
-///     <b>Note:</b> Membership tests are mostly read-only because modifying memberships (accept/reject/delete)
-///     can permanently affect the user's account access. Tests that would modify memberships are informational
-///     and do not actually perform the operations.
+///     <b>Precondition:</b> The authenticated user MUST have at least one membership (their own account).
+///     Tests assume this precondition and will FAIL if it is not met.
 ///   </para>
-/// </summary>
-/// <remarks>
 ///   <para>
-///     User Memberships show which accounts the authenticated user has access to. The user must have
-///     at least one account membership (typically their own account) for these tests to work.
+///     <b>SKIPPED TESTS:</b> Tests that modify memberships (accept/reject/delete) are skipped because:
+///     <list type="bullet">
+///       <item>Accept/Reject require a pending invitation from another account owner</item>
+///       <item>Delete removes the user from an account (disruptive to real access)</item>
+///     </list>
+///     When these operations can be safely tested (e.g., with a disposable test invitation),
+///     remove the Skip attribute and the tests will execute with proper assertions.
 ///   </para>
 /// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
@@ -38,9 +41,6 @@ public class UserMembershipsIntegrationTests : IClassFixture<UserApiTestFixture>
 
   /// <summary>The subject under test, resolved from the test fixture.</summary>
   private readonly IUserApi _sut;
-
-  /// <summary>Test output helper for logging.</summary>
-  private readonly ITestOutputHelper _output;
 
   #endregion
 
@@ -53,7 +53,6 @@ public class UserMembershipsIntegrationTests : IClassFixture<UserApiTestFixture>
   public UserMembershipsIntegrationTests(UserApiTestFixture fixture, ITestOutputHelper output)
   {
     _sut = fixture.UserApi;
-    _output = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -69,26 +68,20 @@ public class UserMembershipsIntegrationTests : IClassFixture<UserApiTestFixture>
   [UserIntegrationTest]
   public async Task ListMembershipsAsync_ReturnsValidCollectionWithMemberships()
   {
-    try
+    // Act
+    var result = await _sut.ListMembershipsAsync();
+
+    // Assert
+    result.Should().NotBeNull("result should be a valid paginated response");
+    result.Items.Should().NotBeNull("items should be a valid collection");
+    result.Items.Should().NotBeEmpty("user should have at least one membership (their own account)");
+
+    // Verify each membership has required fields
+    foreach (var membership in result.Items)
     {
-      // Act
-      var result = await _sut.ListMembershipsAsync();
-
-      // Assert
-      result.Should().NotBeNull("result should be a valid paginated response");
-      result.Items.Should().NotBeNull("items should be a valid collection");
-      result.Items.Should().NotBeEmpty("user should have at least one membership (their own account)");
-
-      _output.WriteLine($"Found {result.Items.Count} membership(s)");
-
-      foreach (var membership in result.Items)
-      {
-        _output.WriteLine($"  - {membership.Id}: {membership.Account.Name} [{membership.Status}]");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships read permission. Test skipped.");
+      membership.Id.Should().NotBeNullOrEmpty("each membership should have an ID");
+      membership.Account.Should().NotBeNull("each membership should have an account");
+      membership.Account.Name.Should().NotBeNullOrEmpty("each account should have a name");
     }
   }
 
@@ -96,26 +89,19 @@ public class UserMembershipsIntegrationTests : IClassFixture<UserApiTestFixture>
   [UserIntegrationTest]
   public async Task ListMembershipsAsync_FilterByStatus_ReturnsOnlyMatchingMemberships()
   {
-    try
+    // Arrange
+    var filters = new ListMembershipsFilters(Status: MemberStatus.Accepted);
+
+    // Act
+    var result = await _sut.ListMembershipsAsync(filters);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("user should have at least one accepted membership (their own account)");
+
+    foreach (var membership in result.Items)
     {
-      // Act
-      var filters = new ListMembershipsFilters(Status: MemberStatus.Accepted);
-      var result = await _sut.ListMembershipsAsync(filters);
-
-      // Assert
-      result.Should().NotBeNull();
-
-      foreach (var membership in result.Items)
-      {
-        membership.Status.Should().Be(MemberStatus.Accepted, "all returned memberships should have accepted status");
-        _output.WriteLine($"  - {membership.Id}: {membership.Account.Name} [{membership.Status}]");
-      }
-
-      _output.WriteLine($"Found {result.Items.Count} accepted membership(s)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships read permission. Test skipped.");
+      membership.Status.Should().Be(MemberStatus.Accepted, "all returned memberships should have accepted status");
     }
   }
 
@@ -123,28 +109,21 @@ public class UserMembershipsIntegrationTests : IClassFixture<UserApiTestFixture>
   [UserIntegrationTest]
   public async Task ListAllMembershipsAsync_ReturnsAllMemberships()
   {
-    try
+    // Act
+    var memberships = new List<Membership>();
+
+    await foreach (var membership in _sut.ListAllMembershipsAsync())
     {
-      // Act
-      var memberships = new List<Membership>();
-      await foreach (var membership in _sut.ListAllMembershipsAsync())
-      {
-        memberships.Add(membership);
-      }
-
-      // Assert
-      memberships.Should().NotBeEmpty("user should have at least one membership");
-
-      _output.WriteLine($"Total memberships via pagination: {memberships.Count}");
-
-      foreach (var membership in memberships)
-      {
-        _output.WriteLine($"  - {membership.Id}: {membership.Account.Name}");
-      }
+      memberships.Add(membership);
     }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
+
+    // Assert
+    memberships.Should().NotBeEmpty("user should have at least one membership");
+
+    foreach (var membership in memberships)
     {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships read permission. Test skipped.");
+      membership.Id.Should().NotBeNullOrEmpty("each membership should have an ID");
+      membership.Account.Should().NotBeNull("each membership should have an account");
     }
   }
 
@@ -152,219 +131,173 @@ public class UserMembershipsIntegrationTests : IClassFixture<UserApiTestFixture>
   [UserIntegrationTest]
   public async Task GetMembershipAsync_ReturnsFullMembershipDetails()
   {
-    try
-    {
-      // Arrange - First get a membership ID from the list
-      var listResult = await _sut.ListMembershipsAsync();
+    // Arrange - Get a membership ID from the list (user must have at least one)
+    var listResult = await _sut.ListMembershipsAsync();
+    listResult.Items.Should().NotBeEmpty("user must have at least one membership to run this test");
 
-      if (listResult.Items.Count == 0)
-      {
-        _output.WriteLine("No memberships available to test GetMembershipAsync (this is unexpected)");
+    var membershipId = listResult.Items[0].Id;
 
-        return;
-      }
+    // Act
+    var membership = await _sut.GetMembershipAsync(membershipId);
 
-      var membershipId = listResult.Items[0].Id;
-
-      // Act
-      var membership = await _sut.GetMembershipAsync(membershipId);
-
-      // Assert
-      membership.Should().NotBeNull();
-      membership.Id.Should().Be(membershipId);
-      membership.Account.Should().NotBeNull();
-      membership.Account.Id.Should().NotBeNullOrEmpty();
-      membership.Account.Name.Should().NotBeNullOrEmpty();
-
-      _output.WriteLine($"Retrieved membership: {membership.Id}");
-      _output.WriteLine($"  Account: {membership.Account.Name} ({membership.Account.Id})");
-      _output.WriteLine($"  Status: {membership.Status}");
-      _output.WriteLine($"  API Access: {membership.ApiAccessEnabled}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships read permission. Test skipped.");
-    }
+    // Assert
+    membership.Should().NotBeNull();
+    membership.Id.Should().Be(membershipId);
+    membership.Account.Should().NotBeNull();
+    membership.Account.Id.Should().NotBeNullOrEmpty();
+    membership.Account.Name.Should().NotBeNullOrEmpty();
+    membership.Status.Should().NotBeNull();
   }
 
   /// <summary>I05: Verifies that membership has account populated with ID and name.</summary>
   [UserIntegrationTest]
   public async Task GetMembershipAsync_HasAccountPopulated()
   {
-    try
+    // Arrange - Get a membership (user must have at least one)
+    var listResult = await _sut.ListMembershipsAsync();
+    listResult.Items.Should().NotBeEmpty("user must have at least one membership to run this test");
+
+    var membershipId = listResult.Items[0].Id;
+
+    // Act
+    var membership = await _sut.GetMembershipAsync(membershipId);
+
+    // Assert
+    membership.Account.Should().NotBeNull("membership should have an account");
+    membership.Account.Id.Should().NotBeNullOrEmpty("account should have an ID");
+    membership.Account.Name.Should().NotBeNullOrEmpty("account should have a name");
+  }
+
+  #endregion
+
+
+  #region Filter Tests (I06)
+
+  /// <summary>
+  ///   I06: Verifies that filtering by pending status returns only pending memberships.
+  /// </summary>
+  /// <remarks>
+  ///   This test verifies the filter mechanism works correctly. An empty result is valid
+  ///   when the user has no pending invitations - the filter correctly excludes non-pending memberships.
+  /// </remarks>
+  [UserIntegrationTest]
+  public async Task ListMembershipsAsync_FilterByPending_ReturnsOnlyPendingMemberships()
+  {
+    // Arrange
+    var filters = new ListMembershipsFilters(Status: MemberStatus.Pending);
+
+    // Act
+    var result = await _sut.ListMembershipsAsync(filters);
+
+    // Assert - All returned items must have pending status. An empty collection is valid (no pending invitations).
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeNull();
+
+    foreach (var membership in result.Items)
     {
-      // Arrange
-      var listResult = await _sut.ListMembershipsAsync();
-
-      if (listResult.Items.Count == 0)
-      {
-        _output.WriteLine("No memberships available to test account details");
-
-        return;
-      }
-
-      var membershipId = listResult.Items[0].Id;
-
-      // Act
-      var membership = await _sut.GetMembershipAsync(membershipId);
-
-      // Assert
-      membership.Account.Should().NotBeNull("membership should have an account");
-      membership.Account.Id.Should().NotBeNullOrEmpty("account should have an ID");
-      membership.Account.Name.Should().NotBeNullOrEmpty("account should have a name");
-
-      _output.WriteLine($"Account details for membership {membership.Id}:");
-      _output.WriteLine($"  ID: {membership.Account.Id}");
-      _output.WriteLine($"  Name: {membership.Account.Name}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships read permission. Test skipped.");
+      membership.Status.Should().Be(MemberStatus.Pending, "all returned memberships should have pending status");
     }
   }
 
   #endregion
 
 
-  #region Invitation Workflow Tests (I06-I08) - Informational Only
+  #region Mutation Tests - Skipped (I07-I09)
 
   /// <summary>
-  ///   I06: Lists pending invitations (pending memberships).
-  ///   This test is informational and shows any pending invitations.
+  ///   I07: Verifies that UpdateMembershipAsync (accept) works for a pending membership.
   /// </summary>
-  [UserIntegrationTest]
-  public async Task ListMembershipsAsync_FilterByPending_ShowsPendingInvitations()
+  /// <remarks>
+  ///   <para><b>SKIPPED:</b> Requires a pending invitation from another account owner.</para>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/memberships/methods/update/</item>
+  ///     <item>Status can be set to "accepted" to join an account</item>
+  ///     <item>Requires pending invitation from account owner</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires pending invitation from another account owner - cannot create via API")]
+  public async Task UpdateMembershipAsync_AcceptPendingMembership_AcceptsMembership()
   {
-    try
-    {
-      // Act
-      var filters = new ListMembershipsFilters(Status: MemberStatus.Pending);
-      var result = await _sut.ListMembershipsAsync(filters);
+    // Arrange - Find a pending membership
+    var filters = new ListMembershipsFilters(Status: MemberStatus.Pending);
+    var result = await _sut.ListMembershipsAsync(filters);
+    result.Items.Should().NotBeEmpty("test requires a pending membership");
 
-      // Assert - Just report what we found
-      _output.WriteLine($"Found {result.Items.Count} pending membership(s)/invitation(s)");
+    var pendingMembership = result.Items[0];
 
-      foreach (var membership in result.Items)
-      {
-        _output.WriteLine($"  - {membership.Id}: {membership.Account.Name}");
-        _output.WriteLine($"    Status: {membership.Status}");
-      }
+    // Act
+    var request = new UpdateMembershipRequest(MemberStatus.Accepted);
+    var updated = await _sut.UpdateMembershipAsync(pendingMembership.Id, request);
 
-      if (result.Items.Count == 0)
-      {
-        _output.WriteLine("[INFO] No pending invitations (this is normal if no invitations have been sent)");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships read permission. Test skipped.");
-    }
+    // Assert
+    updated.Should().NotBeNull();
+    updated.Id.Should().Be(pendingMembership.Id);
+    updated.Status.Should().Be(MemberStatus.Accepted);
   }
 
   /// <summary>
-  ///   I07: Test for accepting invitation - INFORMATIONAL ONLY.
-  ///   This test does not actually accept any invitations to preserve test environment.
+  ///   I08: Verifies that UpdateMembershipAsync (reject) works for a pending membership.
   /// </summary>
-  [UserIntegrationTest]
-  public async Task UpdateMembershipAsync_AcceptInvitation_Informational()
+  /// <remarks>
+  ///   <para><b>SKIPPED:</b> Requires a pending invitation from another account owner.</para>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/memberships/methods/update/</item>
+  ///     <item>Status can be set to "rejected" to decline an invitation</item>
+  ///     <item>Account owner can re-invite if needed</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Requires pending invitation from another account owner - cannot create via API")]
+  public async Task UpdateMembershipAsync_RejectPendingMembership_RejectsMembership()
   {
-    try
-    {
-      // Arrange - Check for pending invitations
-      var filters = new ListMembershipsFilters(Status: MemberStatus.Pending);
-      var result = await _sut.ListMembershipsAsync(filters);
+    // Arrange - Find a pending membership
+    var filters = new ListMembershipsFilters(Status: MemberStatus.Pending);
+    var result = await _sut.ListMembershipsAsync(filters);
+    result.Items.Should().NotBeEmpty("test requires a pending membership");
 
-      if (result.Items.Count == 0)
-      {
-        _output.WriteLine("[INFO] No pending invitations available for accept test.");
-        _output.WriteLine("[INFO] To test accepting memberships, an invitation must be sent from another account.");
+    var pendingMembership = result.Items[0];
 
-        return;
-      }
+    // Act
+    var request = new UpdateMembershipRequest(MemberStatus.Rejected);
+    var updated = await _sut.UpdateMembershipAsync(pendingMembership.Id, request);
 
-      // Log but don't actually accept
-      var pendingMembership = result.Items[0];
-      _output.WriteLine($"[INFO] Found pending membership: {pendingMembership.Id}");
-      _output.WriteLine($"[INFO] Account: {pendingMembership.Account.Name}");
-      _output.WriteLine("[INFO] NOT accepting automatically to preserve test environment.");
-
-      // Verify we can construct the request correctly
-      var acceptRequest = new UpdateMembershipRequest(MemberStatus.Accepted);
-      acceptRequest.Status.Should().Be(MemberStatus.Accepted);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
+    // Assert
+    updated.Should().NotBeNull();
+    updated.Id.Should().Be(pendingMembership.Id);
+    updated.Status.Should().Be(MemberStatus.Rejected);
   }
 
   /// <summary>
-  ///   I08: Test for rejecting invitation - INFORMATIONAL ONLY.
-  ///   This test does not actually reject any invitations to preserve test environment.
+  ///   I09: Verifies that DeleteMembershipAsync works (leaving an account).
   /// </summary>
-  [UserIntegrationTest]
-  public async Task UpdateMembershipAsync_RejectInvitation_Informational()
+  /// <remarks>
+  ///   <para><b>SKIPPED:</b> Removes user from account - requires disposable test membership.</para>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/memberships/methods/delete/</item>
+  ///     <item>"Remove the associated member from an account"</item>
+  ///     <item>User can be re-invited by account owner</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "Removes user from account - requires disposable test membership")]
+  public async Task DeleteMembershipAsync_ExistingMembership_DeletesMembership()
   {
-    try
-    {
-      // Arrange - Check for pending invitations
-      var filters = new ListMembershipsFilters(Status: MemberStatus.Pending);
-      var result = await _sut.ListMembershipsAsync(filters);
+    // Arrange - Need a secondary membership (not the primary account)
+    var result = await _sut.ListMembershipsAsync();
+    result.Items.Should().HaveCountGreaterThan(1, "test requires at least 2 memberships to safely delete one");
 
-      if (result.Items.Count == 0)
-      {
-        _output.WriteLine("[INFO] No pending invitations available for reject test.");
+    // Find a secondary membership to delete (skip the first/primary)
+    var membershipToDelete = result.Items[1];
 
-        return;
-      }
+    // Act
+    await _sut.DeleteMembershipAsync(membershipToDelete.Id);
 
-      // Log but don't actually reject
-      var pendingMembership = result.Items[0];
-      _output.WriteLine($"[INFO] Found pending membership: {pendingMembership.Id}");
-      _output.WriteLine($"[INFO] Account: {pendingMembership.Account.Name}");
-      _output.WriteLine("[INFO] NOT rejecting automatically to preserve test environment.");
+    // Assert - Verify deletion by trying to get the membership (should throw 404)
+    var action = () => _sut.GetMembershipAsync(membershipToDelete.Id);
 
-      // Verify we can construct the request correctly
-      var rejectRequest = new UpdateMembershipRequest(MemberStatus.Rejected);
-      rejectRequest.Status.Should().Be(MemberStatus.Rejected);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
-  }
-
-  #endregion
-
-
-  #region Leave Account Tests (I09) - Informational Only
-
-  /// <summary>
-  ///   I09: Test for deleting membership (leaving account) - INFORMATIONAL ONLY.
-  ///   This test does not actually delete any memberships to preserve access.
-  /// </summary>
-  [UserIntegrationTest]
-  public async Task DeleteMembershipAsync_LeaveAccount_Informational()
-  {
-    try
-    {
-      // Arrange
-      var result = await _sut.ListMembershipsAsync();
-
-      _output.WriteLine($"[INFO] Found {result.Items.Count} membership(s)");
-
-      foreach (var membership in result.Items)
-      {
-        _output.WriteLine($"  - {membership.Id}: {membership.Account.Name} [{membership.Status}]");
-      }
-
-      _output.WriteLine("[INFO] NOT deleting any memberships to preserve account access.");
-      _output.WriteLine("[INFO] To test leaving an account, use a disposable test membership.");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
   #endregion
@@ -372,274 +305,273 @@ public class UserMembershipsIntegrationTests : IClassFixture<UserApiTestFixture>
 
   #region Permission Tests (I10-I11)
 
-  /// <summary>I10: Verifies that accepted memberships may have permissions populated.</summary>
+  /// <summary>I10: Verifies that GetMembershipAsync returns membership with account details.</summary>
+  /// <remarks>
+  ///   Note: Permissions may or may not be present depending on account type and API response.
+  ///   This test verifies the membership structure is valid.
+  /// </remarks>
   [UserIntegrationTest]
-  public async Task GetMembershipAsync_HasPermissions()
+  public async Task GetMembershipAsync_ReturnsValidMembershipStructure()
   {
-    try
-    {
-      // Arrange - Get an accepted membership
-      var filters = new ListMembershipsFilters(Status: MemberStatus.Accepted);
-      var result = await _sut.ListMembershipsAsync(filters);
+    // Arrange - Get an accepted membership
+    var filters = new ListMembershipsFilters(Status: MemberStatus.Accepted);
+    var result = await _sut.ListMembershipsAsync(filters);
+    result.Items.Should().NotBeEmpty("user must have at least one accepted membership");
 
-      if (result.Items.Count == 0)
-      {
-        _output.WriteLine("No accepted memberships available to test permissions");
+    // Act
+    var membership = await _sut.GetMembershipAsync(result.Items[0].Id);
 
-        return;
-      }
-
-      // Get full details
-      var membership = await _sut.GetMembershipAsync(result.Items[0].Id);
-
-      // Report permissions (may or may not be present depending on API response)
-      _output.WriteLine($"Membership: {membership.Id} ({membership.Account.Name})");
-
-      if (membership.Permissions is not null)
-      {
-        _output.WriteLine("Permissions found:");
-        if (membership.Permissions.Analytics is not null)
-          _output.WriteLine($"  - Analytics: Read={membership.Permissions.Analytics.Read}, Write={membership.Permissions.Analytics.Write}");
-        if (membership.Permissions.Dns is not null)
-          _output.WriteLine($"  - DNS: Read={membership.Permissions.Dns.Read}, Write={membership.Permissions.Dns.Write}");
-        if (membership.Permissions.Zones is not null)
-          _output.WriteLine($"  - Zones: Read={membership.Permissions.Zones.Read}, Write={membership.Permissions.Zones.Write}");
-      }
-      else
-      {
-        _output.WriteLine("[INFO] Permissions not included in response (may depend on account type)");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
+    // Assert - Verify core membership structure
+    membership.Should().NotBeNull();
+    membership.Id.Should().NotBeNullOrEmpty();
+    membership.Account.Should().NotBeNull();
+    membership.Account.Id.Should().NotBeNullOrEmpty();
+    membership.Account.Name.Should().NotBeNullOrEmpty();
+    membership.Status.Should().Be(MemberStatus.Accepted);
   }
 
-  /// <summary>I11: Verifies that PermissionGrant has Read/Write structure when present.</summary>
+  /// <summary>I11: Verifies that when Permissions is present, PermissionGrant has valid structure.</summary>
+  /// <remarks>
+  ///   This test verifies that the Permissions object is populated with valid PermissionGrant objects.
+  /// </remarks>
   [UserIntegrationTest]
-  public async Task GetMembershipAsync_PermissionGrantStructure()
+  public async Task GetMembershipAsync_WhenPermissionsPresent_HasValidPermissionGrantStructure()
   {
-    try
-    {
-      // Arrange - Get an accepted membership
-      var filters = new ListMembershipsFilters(Status: MemberStatus.Accepted);
-      var result = await _sut.ListMembershipsAsync(filters);
+    // Arrange - Get an accepted membership
+    var filters = new ListMembershipsFilters(Status: MemberStatus.Accepted);
+    var result = await _sut.ListMembershipsAsync(filters);
+    result.Items.Should().NotBeEmpty("user must have at least one accepted membership");
 
-      if (result.Items.Count == 0)
-      {
-        _output.WriteLine("No accepted memberships available to test permission structure");
+    // Act
+    var membership = await _sut.GetMembershipAsync(result.Items[0].Id);
 
-        return;
-      }
+    // Assert - Permissions must be present for this test
+    membership.Permissions.Should().NotBeNull("test requires permissions to be present");
 
-      // Get full details
-      var membership = await _sut.GetMembershipAsync(result.Items[0].Id);
+    // Check first non-null permission grant
+    var permissionGrant = membership.Permissions!.Analytics ??
+                          membership.Permissions.Dns ??
+                          membership.Permissions.Zones ??
+                          membership.Permissions.Billing;
 
-      if (membership.Permissions is null)
-      {
-        _output.WriteLine("[INFO] Permissions not present in this membership");
+    permissionGrant.Should().NotBeNull("at least one permission grant should be present");
 
-        return;
-      }
-
-      // Check first non-null permission grant
-      var permissionGrant = membership.Permissions.Analytics ??
-                            membership.Permissions.Dns ??
-                            membership.Permissions.Zones ??
-                            membership.Permissions.Billing;
-
-      if (permissionGrant is not null)
-      {
-        _output.WriteLine($"Permission grant structure verified:");
-        _output.WriteLine($"  Read: {permissionGrant.Read} (type: bool)");
-        _output.WriteLine($"  Write: {permissionGrant.Write} (type: bool)");
-      }
-      else
-      {
-        _output.WriteLine("[INFO] No specific permission grants found in this membership");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
+    // PermissionGrant has Read/Write boolean properties - verify the structure exists
+    // (The bool values themselves can be true or false, which is valid either way)
+    permissionGrant!.Should().NotBeNull();
   }
 
   #endregion
 
 
-  #region Edge Cases (I12-I15)
+  #region Error Handling Tests (I12-I15)
 
-  /// <summary>I12: Verifies that GetMembershipAsync with non-existent ID throws appropriate exception.</summary>
+  /// <summary>I12: Verifies that GetMembershipAsync with non-existent ID throws 404.</summary>
   [UserIntegrationTest]
-  public async Task GetMembershipAsync_NonExistentId_ThrowsException()
+  public async Task GetMembershipAsync_NonExistentId_ThrowsNotFound()
   {
     // Arrange
-    var nonExistentId = "nonexistent-" + Guid.NewGuid().ToString("N");
+    var nonExistentId = "nonexistent" + Guid.NewGuid().ToString("N");
 
-    try
-    {
-      // Act & Assert
-      var act = () => _sut.GetMembershipAsync(nonExistentId);
+    // Act
+    var act = () => _sut.GetMembershipAsync(nonExistentId);
 
-      try
-      {
-        await act();
-        _output.WriteLine("[UNEXPECTED] Non-existent membership ID did not throw an exception");
-      }
-      catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.BadRequest)
-      {
-        _output.WriteLine($"[OK] Got expected {ex.StatusCode} for non-existent membership");
-      }
-      catch (CloudflareApiException ex)
-      {
-        _output.WriteLine($"[OK] Got CloudflareApiException: {ex.Message}");
-        ex.Errors.Should().NotBeEmpty();
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
+    // Assert
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I13: Verifies behavior when deleting already-deleted membership (informational).</summary>
-  [UserIntegrationTest]
-  public async Task DeleteMembershipAsync_AlreadyDeleted_Informational()
+  /// <summary>I13: Verifies that deleting non-existent membership throws appropriate error.</summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED:</b> DELETE /memberships requires Global API Key authentication.</para>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/memberships/methods/delete/</item>
+  ///     <item>Documentation uses X-Auth-Email + X-Auth-Key (Global API Key), not Bearer token</item>
+  ///     <item>API tokens return 405 Method Not Allowed for this endpoint</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "DELETE /memberships requires Global API Key authentication, not API Token")]
+  public async Task DeleteMembershipAsync_NonExistent_ThrowsNotFound()
   {
-    // This test is informational only - we don't actually delete memberships
-    _output.WriteLine("[INFO] Delete already-deleted test is informational only.");
-    _output.WriteLine("[INFO] Expected behavior: API returns 404 Not Found for non-existent membership.");
+    // Arrange
+    var nonExistentId = "deleted" + Guid.NewGuid().ToString("N");
 
-    // Test with a clearly non-existent ID
-    var nonExistentId = "deleted-" + Guid.NewGuid().ToString("N");
+    // Act
+    var act = () => _sut.DeleteMembershipAsync(nonExistentId);
 
-    try
-    {
-      var act = () => _sut.DeleteMembershipAsync(nonExistentId);
-
-      try
-      {
-        await act();
-        _output.WriteLine("[UNEXPECTED] Non-existent membership deletion did not throw");
-      }
-      catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.BadRequest)
-      {
-        _output.WriteLine($"[OK] Got expected {ex.StatusCode} when trying to delete non-existent membership");
-      }
-      catch (CloudflareApiException ex)
-      {
-        _output.WriteLine($"[OK] Got CloudflareApiException: {ex.Message}");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
-
-    await Task.CompletedTask;
+    // Assert
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I14: Verifies that permission denied returns 403 (if token lacks permission).</summary>
+  /// <summary>I14: Verifies that ListMembershipsAsync returns valid response.</summary>
   [UserIntegrationTest]
-  public async Task ListMembershipsAsync_WithValidToken_ReturnsResultOrForbidden()
+  public async Task ListMembershipsAsync_WithValidToken_ReturnsNonEmptyResult()
   {
-    // This test verifies the endpoint is accessible with the configured token
-    try
-    {
-      // Act
-      var result = await _sut.ListMembershipsAsync();
+    // Act
+    var result = await _sut.ListMembershipsAsync();
 
-      // Assert - If we get here, the token has permission
-      result.Should().NotBeNull();
-      _output.WriteLine($"Token has permission - found {result.Items.Count} membership(s)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      // This is expected if the token lacks memberships permission
-      _output.WriteLine("[INFO] 403 Forbidden - This is expected if UserApiToken lacks 'Memberships Read' permission.");
-      _output.WriteLine("[INFO] To test this endpoint, ensure the API token has appropriate permissions.");
-      ex.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-    }
+    // Assert
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("user should have at least one membership");
   }
 
-  /// <summary>I15: Verifies that invalid ID format is handled gracefully.</summary>
+  /// <summary>I15: Verifies that GetMembershipAsync with malformed ID returns 400 Bad Request.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: Malformed IDs with special characters fail at the routing layer.
+  ///   Error code 7003: "Could not route to /memberships/{id}"
+  /// </remarks>
   [UserIntegrationTest]
-  public async Task GetMembershipAsync_InvalidIdFormat_HandledGracefully()
+  public async Task GetMembershipAsync_MalformedId_ThrowsBadRequest()
   {
-    // Test various invalid ID formats
-    var invalidIds = new[] { "invalid-format", "123", "!@#$%^&*()" };
+    // Arrange - Use ID with special characters that fail routing
+    var malformedId = "!@#$%^&*()";
 
-    foreach (var invalidId in invalidIds)
-    {
-      try
-      {
-        try
-        {
-          await _sut.GetMembershipAsync(invalidId);
-          _output.WriteLine($"[UNEXPECTED] ID '{invalidId}' did not throw - API may accept this format");
-        }
-        catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.BadRequest)
-        {
-          _output.WriteLine($"[OK] ID '{invalidId}' threw {ex.StatusCode} as expected");
-        }
-        catch (CloudflareApiException ex)
-        {
-          _output.WriteLine($"[OK] ID '{invalidId}' threw CloudflareApiException: {ex.Message}");
-        }
-      }
-      catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-      {
-        _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
+    // Act
+    var act = () => _sut.GetMembershipAsync(malformedId);
 
-        return;
-      }
-    }
+    // Assert
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
   }
 
   #endregion
 
 
-  #region API Access and Roles Tests
+  #region Update Error Tests (I16-I19)
 
-  /// <summary>Verifies that memberships may include API access status.</summary>
+  /// <summary>I16: Verifies that updating a non-existent membership returns error.</summary>
   [UserIntegrationTest]
-  public async Task GetMembershipAsync_IncludesApiAccessStatus()
+  public async Task UpdateMembershipAsync_NonExistent_ThrowsError()
   {
-    try
+    // Arrange
+    var nonExistentId = "00000000000000000000000000000000";
+    var request = new UpdateMembershipRequest(MemberStatus.Accepted);
+
+    // Act
+    var act = () => _sut.UpdateMembershipAsync(nonExistentId, request);
+
+    // Assert - May return 404, 400, or 403 depending on API behavior
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound ||
+                   ex.StatusCode == HttpStatusCode.BadRequest ||
+                   ex.StatusCode == HttpStatusCode.Forbidden);
+  }
+
+  /// <summary>I17: Verifies that updating with a malformed membership ID returns 400 Bad Request.</summary>
+  /// <remarks>
+  ///   <para><b>SKIPPED:</b> PUT /memberships requires Global API Key authentication.</para>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/memberships/methods/update/</item>
+  ///     <item>Documentation shows X-Auth-Email + X-Auth-Key headers (Global API Key)</item>
+  ///     <item>API tokens return 405 Method Not Allowed: "PUT method not allowed for the api_token authentication scheme"</item>
+  ///     <item>See also: https://community.cloudflare.com/t/cant-update-dns-record-error-put-method-not-allowed-for-the-api-token-authentication-scheme/447185</item>
+  ///   </list>
+  /// </remarks>
+  [UserIntegrationTest(Skip = "PUT /memberships requires Global API Key authentication, not API Token")]
+  public async Task UpdateMembershipAsync_MalformedId_ThrowsBadRequest()
+  {
+    // Arrange
+    var malformedId = "!@#$%^&*()";
+    var request = new UpdateMembershipRequest(MemberStatus.Accepted);
+
+    // Act
+    var act = () => _sut.UpdateMembershipAsync(malformedId, request);
+
+    // Assert - Malformed ID should fail at routing with 400 Bad Request
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+  }
+
+  #endregion
+
+
+  #region Delete Error Tests (I18-I19)
+
+  /// <summary>I18: Verifies that deleting with a malformed membership ID returns error.</summary>
+  /// <remarks>
+  ///   Note: DELETE /memberships requires Global API Key, but malformed IDs should fail at routing.
+  /// </remarks>
+  [UserIntegrationTest]
+  public async Task DeleteMembershipAsync_MalformedId_ThrowsError()
+  {
+    // Arrange
+    var malformedId = "!@#$%^&*()";
+
+    // Act
+    var act = () => _sut.DeleteMembershipAsync(malformedId);
+
+    // Assert - May return 400 (routing) or 405 (method not allowed for API tokens)
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest ||
+                   ex.StatusCode == HttpStatusCode.MethodNotAllowed);
+  }
+
+  #endregion
+
+
+  #region API Access and Roles Tests (I19-I20)
+
+  /// <summary>I19: Verifies that membership deserializes with API access status field.</summary>
+  /// <remarks>
+  ///   ApiAccessEnabled is a nullable boolean in the API response. The test verifies the membership
+  ///   structure is valid - the property value (null, true, or false) depends on account configuration.
+  /// </remarks>
+  [UserIntegrationTest]
+  public async Task GetMembershipAsync_DeserializesApiAccessField()
+  {
+    // Arrange - Get a membership
+    var listResult = await _sut.ListMembershipsAsync();
+    listResult.Items.Should().NotBeEmpty("user must have at least one membership");
+
+    // Act
+    var membership = await _sut.GetMembershipAsync(listResult.Items[0].Id);
+
+    // Assert - Membership deserializes correctly. ApiAccessEnabled is nullable per API contract.
+    membership.Should().NotBeNull();
+    membership.Id.Should().NotBeNullOrEmpty();
+    membership.Account.Should().NotBeNull();
+  }
+
+  /// <summary>I20: Verifies that membership roles deserialize correctly when populated.</summary>
+  /// <remarks>
+  ///   Roles are nullable/optional in the API response. Their presence depends on
+  ///   account configuration. Skipped when the membership has no roles.
+  /// </remarks>
+  [UserIntegrationTest]
+  public async Task GetMembershipAsync_DeserializesRoles()
+  {
+    // Arrange - Get a membership
+    var listResult = await _sut.ListMembershipsAsync();
+    listResult.Items.Should().NotBeEmpty("user must have at least one membership");
+
+    // Act
+    var membership = await _sut.GetMembershipAsync(listResult.Items[0].Id);
+
+    // Assert - Membership deserializes correctly.
+    membership.Should().NotBeNull();
+    membership.Id.Should().NotBeNullOrEmpty();
+    membership.Account.Should().NotBeNull();
+    membership.Status.Should().NotBeNull();
+
+    // Skip if membership has no roles - this is a valid state but not testable for role structure validation.
+    Skip.If(membership.Roles is not { Count: > 0 },
+      "Membership has no roles - cannot verify role IDs");
+
+    // Verify each role ID is a non-empty string.
+    // Note: Roles is IReadOnlyList<string> containing role IDs, not full role objects.
+    membership.Roles.Should().AllSatisfy(roleId =>
     {
-      // Arrange
-      var result = await _sut.ListMembershipsAsync();
-
-      if (result.Items.Count == 0)
-      {
-        _output.WriteLine("No memberships available");
-
-        return;
-      }
-
-      // Get full details for first membership
-      var membership = await _sut.GetMembershipAsync(result.Items[0].Id);
-
-      // Report API access status
-      _output.WriteLine($"Membership: {membership.Id}");
-      _output.WriteLine($"  API Access Enabled: {membership.ApiAccessEnabled?.ToString() ?? "Not specified"}");
-
-      if (membership.Roles is { Count: > 0 })
-      {
-        _output.WriteLine($"  Roles: {string.Join(", ", membership.Roles)}");
-      }
-
-      if (membership.Policies is { Count: > 0 })
-      {
-        _output.WriteLine($"  Policies: {membership.Policies.Count} defined");
-      }
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("[WARNING] 403 Forbidden - UserApiToken may lack memberships permission. Test skipped.");
-    }
+      roleId.Should().NotBeNullOrEmpty("role ID should be a valid identifier");
+    });
   }
 
   #endregion

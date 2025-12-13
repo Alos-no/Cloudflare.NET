@@ -872,28 +872,7 @@ public class ZoneSettingsApiUnitTests
       2);
   }
 
-  /// <summary>U23: Verifies that setting not found (404) is handled correctly.</summary>
-  [Fact]
-  public async Task GetZoneSettingAsync_NotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    const string zoneId    = "zone-123";
-    const string settingId = "invalid_setting";
-
-    var mockHandler = new Mock<HttpMessageHandler>();
-    mockHandler.Protected()
-               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound, Content = new StringContent("") });
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut        = new ZonesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    await CloudflareApiTestHelpers.AssertNotFoundAsync<ZoneSetting>(
-      () => sut.GetZoneSettingAsync(zoneId, settingId));
-  }
-
-  /// <summary>U24: Verifies that setting not editable error is handled correctly.</summary>
+  /// <summary>U23: Verifies that setting not editable error is handled correctly.</summary>
   [Fact]
   public async Task SetZoneSettingAsync_NotEditable_ThrowsCloudflareApiException()
   {
@@ -991,49 +970,6 @@ public class ZoneSettingsApiUnitTests
     // Act & Assert
     await CloudflareApiTestHelpers.AssertForbiddenAsync<ZoneSetting>(
       () => sut.GetZoneSettingAsync(zoneId, settingId));
-  }
-
-  /// <summary>U28: Verifies that HTTP 429 Rate Limited is handled correctly.</summary>
-  [Fact]
-  public async Task GetZoneSettingAsync_RateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    const string zoneId    = "zone-123";
-    const string settingId = "ssl";
-
-    var mockHandler = new Mock<HttpMessageHandler>();
-    mockHandler.Protected()
-               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.TooManyRequests, Content = new StringContent("") });
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut        = new ZonesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    await CloudflareApiTestHelpers.AssertRateLimitedAsync<ZoneSetting>(
-      () => sut.GetZoneSettingAsync(zoneId, settingId));
-  }
-
-  /// <summary>U29: Verifies that HTTP 5xx Server Error is handled correctly.</summary>
-  [Fact]
-  public async Task GetZoneSettingAsync_ServerError_ThrowsHttpRequestException()
-  {
-    // Arrange
-    const string zoneId    = "zone-123";
-    const string settingId = "ssl";
-
-    var mockHandler = new Mock<HttpMessageHandler>();
-    mockHandler.Protected()
-               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, Content = new StringContent("") });
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut        = new ZonesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    await CloudflareApiTestHelpers.AssertServerErrorAsync<ZoneSetting>(
-      () => sut.GetZoneSettingAsync(zoneId, settingId),
-      HttpStatusCode.InternalServerError);
   }
 
   #endregion

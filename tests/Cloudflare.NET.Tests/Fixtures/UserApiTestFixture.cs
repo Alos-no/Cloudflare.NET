@@ -1,7 +1,9 @@
 namespace Cloudflare.NET.Tests.Fixtures;
 
 using System.Net.Http.Headers;
+using ApiTokens;
 using AuditLogs;
+using Cloudflare.NET.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shared.Fixtures;
@@ -24,7 +26,7 @@ using User;
 ///     separate from the main SDK's HttpClient which uses the account-scoped <c>ApiToken</c>.
 ///   </para>
 /// </remarks>
-public class UserApiTestFixture : IDisposable
+public class UserApiTestFixture : IAsyncLifetime
 {
   #region Properties & Fields - Non-Public
 
@@ -83,6 +85,7 @@ public class UserApiTestFixture : IDisposable
     var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
     UserApi = new UserApi(_httpClient, loggerFactory);
     AuditLogsApi = new AuditLogsApi(_httpClient, loggerFactory);
+    ApiTokensApi = new ApiTokensApi(_httpClient, loggerFactory);
   }
 
   #endregion
@@ -96,20 +99,46 @@ public class UserApiTestFixture : IDisposable
   /// <summary>Gets the Audit Logs API client configured with a user-scoped API token.</summary>
   public IAuditLogsApi AuditLogsApi { get; }
 
+  /// <summary>Gets the API Tokens API client configured with a user-scoped API token.</summary>
+  public IApiTokensApi ApiTokensApi { get; }
+
   /// <summary>Gets the underlying service provider for resolving services in tests.</summary>
   public IServiceProvider ServiceProvider => _serviceProvider;
 
   #endregion
 
 
-  #region Methods Impl - IDisposable
+  #region Methods Impl - IAsyncLifetime
+
+  /// <summary>Initializes the fixture by validating user token permissions.</summary>
+  public async Task InitializeAsync()
+  {
+    // Run permission validation lazily (only once across all fixtures).
+    // This ensures validation completes before any tests run, even with parallelization.
+    // NOTE: We must run BOTH validations, not just user validation.
+    // The account validation needs an IApiTokensApi which we don't have here,
+    // so we just ensure it has been run (by PermissionValidationTests or CloudflareApiTestFixture).
+    PermissionValidationRunner.InitializeUserValidation(UserApi);
+    await PermissionValidationRunner.EnsureUserValidationAsync();
+
+    // NOTE: Uncomment if you want to skip the test if account validation hasn't run yet.
+    /*Skip.If(
+      !PermissionValidationState.AccountValidationCompleted,
+      "Account token permission validation has not run yet. Ensure PermissionValidationTests runs first.");*/
+
+    // If ANY permission validation failed (account OR user), skip ALL tests.
+    // This ensures we don't run partial test suites with cryptic 403 errors.
+    PermissionValidationState.EnsureAccountPermissionsValidated();
+    PermissionValidationState.EnsureUserPermissionsValidated();
+  }
 
   /// <summary>Disposes of the HTTP client and service provider.</summary>
-  public void Dispose()
+  public Task DisposeAsync()
   {
     _httpClient.Dispose();
     _serviceProvider.Dispose();
-    GC.SuppressFinalize(this);
+
+    return Task.CompletedTask;
   }
 
   #endregion

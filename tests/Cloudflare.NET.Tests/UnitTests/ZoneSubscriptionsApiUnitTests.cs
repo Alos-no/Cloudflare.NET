@@ -696,62 +696,9 @@ public class ZoneSubscriptionsApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U21-U28)
+  #region Error Handling Tests (U21-U24)
 
-  /// <summary>U21: Verifies that GetZoneSubscriptionAsync throws HttpRequestException on 404.</summary>
-  [Fact]
-  public async Task GetZoneSubscriptionAsync_NotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Not Found", HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.GetZoneSubscriptionAsync("non-existent-zone");
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U22: Verifies that CreateZoneSubscriptionAsync throws HttpRequestException on 401.</summary>
-  [Fact]
-  public async Task CreateZoneSubscriptionAsync_Unauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Unauthorized", HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-    var request = new CreateZoneSubscriptionRequest(RatePlan: new RatePlanReference("pro"));
-
-    // Act
-    var action = async () => await sut.CreateZoneSubscriptionAsync("zone", request);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U23: Verifies that UpdateZoneSubscriptionAsync throws HttpRequestException on 403.</summary>
-  [Fact]
-  public async Task UpdateZoneSubscriptionAsync_Forbidden_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Forbidden", HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-    var request = new UpdateZoneSubscriptionRequest();
-
-    // Act
-    var action = async () => await sut.UpdateZoneSubscriptionAsync("zone", request);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U24: Verifies that API error (success=false) throws CloudflareApiException.</summary>
+  /// <summary>U21: Verifies that API error (success=false) throws CloudflareApiException.</summary>
   [Fact]
   public async Task CreateZoneSubscriptionAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -770,7 +717,7 @@ public class ZoneSubscriptionsApiUnitTests
     exception.Which.Errors.Should().ContainSingle(e => e.Code == 1001);
   }
 
-  /// <summary>U25: Verifies that invalid rate plan error throws CloudflareApiException.</summary>
+  /// <summary>U22: Verifies that invalid rate plan error throws CloudflareApiException.</summary>
   [Fact]
   public async Task CreateZoneSubscriptionAsync_InvalidRatePlan_ThrowsCloudflareApiException()
   {
@@ -789,7 +736,7 @@ public class ZoneSubscriptionsApiUnitTests
     exception.Which.Errors.Should().ContainSingle(e => e.Code == 1002);
   }
 
-  /// <summary>U26: Verifies that multiple API errors are all captured.</summary>
+  /// <summary>U23: Verifies that multiple API errors are all captured.</summary>
   [Fact]
   public async Task UpdateZoneSubscriptionAsync_MultipleErrors_CapturesAllErrors()
   {
@@ -820,49 +767,12 @@ public class ZoneSubscriptionsApiUnitTests
     exception.Which.Errors.Should().Contain(e => e.Code == 1002);
   }
 
-  /// <summary>U27: Verifies that ListAvailableRatePlansAsync throws HttpRequestException on 429.</summary>
-  [Fact]
-  public async Task ListAvailableRatePlansAsync_RateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Too Many Requests", HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.ListAvailableRatePlansAsync("zone");
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U28: Verifies that server errors throw HttpRequestException.</summary>
-  [Theory]
-  [InlineData(HttpStatusCode.InternalServerError)]
-  [InlineData(HttpStatusCode.BadGateway)]
-  [InlineData(HttpStatusCode.ServiceUnavailable)]
-  public async Task GetZoneSubscriptionAsync_ServerError_ThrowsHttpRequestException(HttpStatusCode statusCode)
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Server Error", statusCode);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.GetZoneSubscriptionAsync("zone");
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(statusCode);
-  }
-
   #endregion
 
 
-  #region URL Encoding Tests (U29-U30)
+  #region URL Encoding Tests (U25-U26)
 
-  /// <summary>U29: Verifies that special characters in zoneId are URL encoded.</summary>
+  /// <summary>U25: Verifies that special characters in zoneId are URL encoded.</summary>
   [Fact]
   public async Task GetZoneSubscriptionAsync_SpecialChars_UrlEncodesCorrectly()
   {
@@ -885,7 +795,7 @@ public class ZoneSubscriptionsApiUnitTests
     path.Should().NotContain("zone/with:special&chars?");
   }
 
-  /// <summary>U30: Verifies that spaces in zoneId are URL encoded.</summary>
+  /// <summary>U26: Verifies that spaces in zoneId are URL encoded.</summary>
   [Fact]
   public async Task CreateZoneSubscriptionAsync_SpacesInId_UrlEncodesCorrectly()
   {

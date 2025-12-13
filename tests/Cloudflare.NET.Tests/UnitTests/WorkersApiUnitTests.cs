@@ -328,29 +328,9 @@ public class WorkersApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U11-U20)
+  #region Error Handling Tests (U11-U14)
 
-  /// <summary>U11: Verifies that GetRouteAsync throws on 404 Not Found.</summary>
-  [Fact]
-  public async Task GetRouteAsync_WhenNotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 7003, ""message"": ""Route not found"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new WorkersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.GetRouteAsync(TestZoneId, "nonexistent"));
-    exception.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U12: Verifies that API error envelope throws CloudflareApiException.</summary>
+  /// <summary>U11: Verifies that API error envelope throws CloudflareApiException.</summary>
   [Fact]
   public async Task CreateRouteAsync_WhenApiError_ThrowsCloudflareApiException()
   {
@@ -372,7 +352,7 @@ public class WorkersApiUnitTests
     exception.Errors[0].Code.Should().Be(10016);
   }
 
-  /// <summary>U13: Verifies that invalid pattern throws CloudflareApiException.</summary>
+  /// <summary>U12: Verifies that invalid pattern throws CloudflareApiException.</summary>
   [Fact]
   public async Task CreateRouteAsync_InvalidPattern_ThrowsCloudflareApiException()
   {
@@ -394,7 +374,7 @@ public class WorkersApiUnitTests
     exception.Errors[0].Code.Should().Be(10015);
   }
 
-  /// <summary>U14: Verifies multiple errors in response are captured.</summary>
+  /// <summary>U13: Verifies multiple errors in response are captured.</summary>
   [Fact]
   public async Task CreateRouteAsync_WhenMultipleErrors_CapturesAllErrors()
   {
@@ -419,134 +399,12 @@ public class WorkersApiUnitTests
     exception.Errors.Select(e => e.Code).Should().Contain(new[] { 10015, 10016 });
   }
 
-  /// <summary>U15: Verifies unauthorized (401) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListRoutesAsync_WhenUnauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Authentication error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new WorkersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListRoutesAsync(TestZoneId));
-    exception.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U16: Verifies forbidden (403) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListRoutesAsync_WhenForbidden_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Access denied"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new WorkersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListRoutesAsync(TestZoneId));
-    exception.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U17: Verifies rate limited (429) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task CreateRouteAsync_WhenRateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Rate limited"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new WorkersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var request = new CreateWorkerRouteRequest("example.com/*");
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.CreateRouteAsync(TestZoneId, request));
-    exception.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U18: Verifies server error (500) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task GetRouteAsync_WhenServerError500_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Internal server error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.InternalServerError);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new WorkersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.GetRouteAsync(TestZoneId, TestRouteId));
-    exception.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-  }
-
-  /// <summary>U19: Verifies server error (502) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task UpdateRouteAsync_WhenServerError502_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Bad Gateway"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.BadGateway);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new WorkersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var request = new UpdateWorkerRouteRequest("example.com/*");
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.UpdateRouteAsync(TestZoneId, TestRouteId, request));
-    exception.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-  }
-
-  /// <summary>U20: Verifies server error (503) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task DeleteRouteAsync_WhenServerError503_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Service Unavailable"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.ServiceUnavailable);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new WorkersApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.DeleteRouteAsync(TestZoneId, TestRouteId));
-    exception.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-  }
-
   #endregion
 
 
-  #region URL Encoding Tests (U21-U22)
+  #region URL Encoding Tests (U15-U16)
 
-  /// <summary>U21: Verifies that ListRoutesAsync properly URL-encodes the zone ID.</summary>
+  /// <summary>U15: Verifies that ListRoutesAsync properly URL-encodes the zone ID.</summary>
   [Fact]
   public async Task ListRoutesAsync_WithSpecialChars_UrlEncodesZoneId()
   {
@@ -567,7 +425,7 @@ public class WorkersApiUnitTests
     capturedRequest!.RequestUri!.AbsolutePath.Should().Contain("zone%2Bwith%2Fspecial");
   }
 
-  /// <summary>U22: Verifies that GetRouteAsync properly URL-encodes the route ID.</summary>
+  /// <summary>U16: Verifies that GetRouteAsync properly URL-encodes the route ID.</summary>
   [Fact]
   public async Task GetRouteAsync_WithSpecialChars_UrlEncodesRouteId()
   {

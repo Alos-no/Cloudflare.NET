@@ -252,7 +252,7 @@ public record TokenPermissionGroupReference(
 /// </summary>
 /// <param name="RequestIp">IP address restrictions.</param>
 public record TokenCondition(
-  [property: JsonPropertyName("request.ip")]
+  [property: JsonPropertyName("request_ip")]
   TokenIpCondition? RequestIp = null
 );
 
@@ -462,15 +462,21 @@ public record ListApiTokensFilters(
 
 
 /// <summary>Filtering options for listing permission groups.</summary>
-/// <param name="Name">Filter by permission group name.</param>
-/// <param name="Scope">Filter by permission group scope.</param>
-/// <param name="Page">Page number (minimum 1, default 1).</param>
-/// <param name="PerPage">Results per page (5-50, default 20).</param>
+/// <param name="Name">
+///   Filter by permission group name.
+///   <para>
+///     <b>Note:</b> This parameter is documented by Cloudflare but appears to be non-functional.
+///     The API returns empty results regardless of the filter value.
+///   </para>
+/// </param>
+/// <param name="Scope">Filter by permission group scope (e.g., "com.cloudflare.api.account.zone").</param>
+/// <remarks>
+///   The permission_groups endpoint does NOT support pagination. All permission groups are returned
+///   in a single response. The 'page' and 'per_page' parameters are not accepted by this endpoint.
+/// </remarks>
 public record ListPermissionGroupsFilters(
   string? Name = null,
-  string? Scope = null,
-  int? Page = null,
-  int? PerPage = null
+  string? Scope = null
 );
 
 #endregion

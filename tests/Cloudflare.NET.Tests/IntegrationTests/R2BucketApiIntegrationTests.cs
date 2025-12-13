@@ -726,24 +726,21 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
 
   /// <summary>Verifies that getting lifecycle from a new bucket returns the default lifecycle policy.</summary>
   /// <remarks>
-  ///   R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts incomplete multipart
-  ///   uploads after 7 days (604800 seconds).
+  ///   <para>
+  ///     R2 automatically creates a "Default Multipart Abort Rule" for new buckets that aborts incomplete multipart
+  ///     uploads after 7 days (604800 seconds).
+  ///   </para>
+  ///   <para>
+  ///     <b>Note:</b> If this test fails with 5xx errors, it indicates a transient Cloudflare API issue.
+  ///     Per testing guidelines, 5xx errors should cause test failure (not be silently ignored) to reveal real issues.
+  ///   </para>
   /// </remarks>
   [IntegrationTest]
   public async Task GetBucketLifecycleAsync_ReturnsDefaultPolicyForNewBucket()
   {
     // Arrange - Create a fresh bucket
     var bucketName = $"cfnet-nolifecycle-bucket-{Guid.NewGuid():N}";
-    try
-    {
-      await _sut.CreateR2BucketAsync(bucketName);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip this test with a warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-      return;
-    }
+    await _sut.CreateR2BucketAsync(bucketName);
 
     try
     {
@@ -761,21 +758,16 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       defaultRule.AbortMultipartUploadsTransition!.Condition.Type.Should().Be(LifecycleConditionType.Age);
       defaultRule.AbortMultipartUploadsTransition.Condition.MaxAge.Should().Be(7 * 86400); // 7 days in seconds
     }
-    catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.InternalServerError or HttpStatusCode.BadGateway)
-    {
-      // Cloudflare API may return transient 5xx errors - skip with warning
-      _output.WriteLine($"[WARNING - Transient API Error] Cloudflare returned {ex.StatusCode}. Test skipped due to transient API issue.");
-    }
     finally
     {
-      // Cleanup (best effort)
+      // Cleanup (best effort - ignore errors during cleanup only)
       try
       {
         await _sut.DeleteR2BucketAsync(bucketName);
       }
       catch (HttpRequestException)
       {
-        // Cleanup may fail with transient errors - that's OK
+        // Cleanup may fail - that's OK for cleanup only
       }
     }
   }

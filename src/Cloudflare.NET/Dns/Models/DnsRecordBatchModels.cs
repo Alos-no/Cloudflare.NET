@@ -1,7 +1,6 @@
 namespace Cloudflare.NET.Dns.Models;
 
 using System.Text.Json.Serialization;
-using DnsRecordType = Zones.Models.DnsRecordType;
 
 /// <summary>
 ///   Request to perform batch DNS record operations in a single API call.

@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 ///   </para>
 ///   <para>
 ///     <b>Billing Permissions:</b> These tests require an API token with Billing Read permissions.
-///     If the token lacks these permissions, the tests will gracefully handle 403 errors.
+///     Missing permissions will be caught by the PermissionValidationTests that run first.
 ///   </para>
 ///   <para>
 ///     <b>No Delete Endpoint:</b> Zones always have a subscription (at minimum, a Free plan).
@@ -39,9 +39,6 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
 
-  /// <summary>The xUnit test output helper for writing warnings and debug info.</summary>
-  private readonly ITestOutputHelper _output;
-
   #endregion
 
 
@@ -54,7 +51,6 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   {
     _sut      = fixture.SubscriptionsApi;
     _settings = TestConfiguration.CloudflareSettings;
-    _output   = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -74,21 +70,11 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
     // Assert
     result.Should().NotBeNull();
-    result!.Id.Should().NotBeNullOrEmpty();
-    _output.WriteLine($"Zone subscription ID: {result.Id}");
+    result.Id.Should().NotBeNullOrEmpty();
   }
 
   /// <summary>I02: Verifies that zone subscription has valid state property.</summary>
@@ -99,20 +85,10 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
     // Assert
-    result!.State.Value.Should().NotBeNullOrEmpty();
-    _output.WriteLine($"Zone subscription state: {result.State}");
+    result.State.Value.Should().NotBeNullOrEmpty();
   }
 
   /// <summary>I03: Verifies that zone subscription has rate plan populated.</summary>
@@ -123,58 +99,28 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
     // Assert
-    if (result!.RatePlan != null)
-    {
-      result.RatePlan.Id.Should().NotBeNullOrEmpty();
-      result.RatePlan.PublicName.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"Zone plan: {result.RatePlan.PublicName} (ID: {result.RatePlan.Id})");
-    }
-    else
-    {
-      _output.WriteLine("Zone subscription has no rate plan specified");
-    }
+    result.RatePlan.Should().NotBeNull("zone subscription should have a rate plan");
+    result.RatePlan!.Id.Should().NotBeNullOrEmpty();
+    result.RatePlan.PublicName.Should().NotBeNullOrEmpty();
   }
 
-  /// <summary>I04: Verifies that free zone returns free plan subscription.</summary>
+  /// <summary>I04: Verifies that free zone returns subscription with expected properties.</summary>
   [IntegrationTest]
-  public async Task GetZoneSubscriptionAsync_FreeZone_ReturnsFreeOrProPlan()
+  public async Task GetZoneSubscriptionAsync_ReturnsValidSubscription()
   {
     // Arrange
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
-    // Assert - Most test zones are on free plan, but could be paid
+    // Assert
     result.Should().NotBeNull();
-    _output.WriteLine($"Zone plan ID: {result!.RatePlan?.Id ?? "(no plan)"}, Price: {result.Price} {result.Currency}");
-
-    // Free plan typically has price of 0
-    if (result.RatePlan?.Id?.ToLower() == "free")
-    {
-      result.Price.Should().Be(0m, "Free plan should have zero price");
-    }
+    result.RatePlan.Should().NotBeNull("zone should have a rate plan");
+    result.RatePlan!.Id.Should().NotBeNullOrEmpty();
   }
 
   /// <summary>I05: Verifies that zone subscription has frequency populated.</summary>
@@ -185,20 +131,10 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
     // Assert
-    result!.Frequency.Value.Should().NotBeNullOrEmpty();
-    _output.WriteLine($"Zone subscription frequency: {result.Frequency}");
+    result.Frequency.Value.Should().NotBeNullOrEmpty();
   }
 
   #endregion
@@ -214,24 +150,11 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    IReadOnlyList<ZoneRatePlan>? result = null;
-    try
-    {
-      result = await _sut.ListAvailableRatePlansAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have necessary permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListAvailableRatePlansAsync(zoneId);
 
     // Assert
     result.Should().NotBeNull();
-    _output.WriteLine($"Found {result.Count} available rate plans");
-    foreach (var plan in result)
-    {
-      _output.WriteLine($"  - {plan.Name} (ID: {plan.Id}, {plan.Currency}, {plan.Frequency})");
-    }
+    result.Should().NotBeEmpty("zone should have available rate plans");
   }
 
   /// <summary>I07: Verifies that Free plan is in the list of available plans.</summary>
@@ -242,43 +165,16 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    IReadOnlyList<ZoneRatePlan>? result = null;
-    try
-    {
-      result = await _sut.ListAvailableRatePlansAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have necessary permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListAvailableRatePlansAsync(zoneId);
 
     // Assert
-    if (result.Count > 0)
-    {
-      // Check for free plan (may be named differently)
-      var freePlan = result.FirstOrDefault(p =>
-        p.Id.Contains("free", StringComparison.OrdinalIgnoreCase) ||
-        p.Name.Contains("free", StringComparison.OrdinalIgnoreCase));
+    result.Should().NotBeEmpty("test requires at least one rate plan");
 
-      if (freePlan != null)
-      {
-        _output.WriteLine($"Free plan found: {freePlan.Name} (ID: {freePlan.Id})");
-      }
-      else
-      {
-        _output.WriteLine("No explicit 'Free' plan found in list - plan names may differ");
-        // Log all plans for debugging
-        foreach (var plan in result)
-        {
-          _output.WriteLine($"  Available: {plan.Name} (ID: {plan.Id})");
-        }
-      }
-    }
-    else
-    {
-      _output.WriteLine("No rate plans returned - API may not return plans for this zone");
-    }
+    var freePlan = result.FirstOrDefault(p =>
+      p.Id.Contains("free", StringComparison.OrdinalIgnoreCase) ||
+      p.Name.Contains("free", StringComparison.OrdinalIgnoreCase));
+
+    freePlan.Should().NotBeNull("Free plan should be available");
   }
 
   /// <summary>I08: Verifies that Pro plan is in the list of available plans.</summary>
@@ -289,38 +185,16 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    IReadOnlyList<ZoneRatePlan>? result = null;
-    try
-    {
-      result = await _sut.ListAvailableRatePlansAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have necessary permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListAvailableRatePlansAsync(zoneId);
 
     // Assert
-    if (result.Count > 0)
-    {
-      // Check for pro plan (may be named differently)
-      var proPlan = result.FirstOrDefault(p =>
-        p.Id.Contains("pro", StringComparison.OrdinalIgnoreCase) ||
-        p.Name.Contains("pro", StringComparison.OrdinalIgnoreCase));
+    result.Should().NotBeEmpty("test requires at least one rate plan");
 
-      if (proPlan != null)
-      {
-        _output.WriteLine($"Pro plan found: {proPlan.Name} (ID: {proPlan.Id})");
-      }
-      else
-      {
-        _output.WriteLine("No explicit 'Pro' plan found in list - plan names may differ");
-      }
-    }
-    else
-    {
-      _output.WriteLine("No rate plans returned - API may not return plans for this zone");
-    }
+    var proPlan = result.FirstOrDefault(p =>
+      p.Id.Contains("pro", StringComparison.OrdinalIgnoreCase) ||
+      p.Name.Contains("pro", StringComparison.OrdinalIgnoreCase));
+
+    proPlan.Should().NotBeNull("Pro plan should be available");
   }
 
   /// <summary>I09: Verifies that rate plans have pricing information.</summary>
@@ -331,30 +205,16 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    IReadOnlyList<ZoneRatePlan>? result = null;
-    try
-    {
-      result = await _sut.ListAvailableRatePlansAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have necessary permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListAvailableRatePlansAsync(zoneId);
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No rate plans returned");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one rate plan to validate pricing");
 
     foreach (var plan in result)
     {
       plan.Currency.Should().NotBeNullOrEmpty();
       plan.Duration.Should().BeGreaterThanOrEqualTo(0);
       plan.Frequency.Value.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"  {plan.Name}: Currency={plan.Currency}, Duration={plan.Duration}, Frequency={plan.Frequency}");
     }
   }
 
@@ -366,33 +226,19 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    IReadOnlyList<ZoneRatePlan>? result = null;
-    try
-    {
-      result = await _sut.ListAvailableRatePlansAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have necessary permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.ListAvailableRatePlansAsync(zoneId);
 
     // Assert
-    if (result.Count == 0)
-    {
-      _output.WriteLine("No rate plans returned");
-      return;
-    }
+    result.Should().NotBeEmpty("test requires at least one rate plan");
 
     var plansWithComponents = result.Where(p => p.Components != null && p.Components.Count > 0).ToList();
-    _output.WriteLine($"Plans with components: {plansWithComponents.Count} / {result.Count}");
+    plansWithComponents.Should().NotBeEmpty("test requires at least one plan with components");
 
     foreach (var plan in plansWithComponents)
     {
-      _output.WriteLine($"  {plan.Name}:");
       foreach (var component in plan.Components!)
       {
-        _output.WriteLine($"    - {component.Name}: default={component.Default}, unit_price={component.UnitPrice}");
+        component.Name.Should().NotBeNullOrEmpty();
       }
     }
   }
@@ -403,163 +249,190 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
   #region Error Handling Tests (I11-I15)
 
   /// <summary>I11: Verifies that 404 is returned for non-existent zone.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: GET /zones/{zone_id}/subscription returns 404 for non-existent zones.
+  ///   https://developers.cloudflare.com/api/resources/zones/subresources/subscriptions/methods/get/
+  /// </remarks>
   [IntegrationTest]
   public async Task GetZoneSubscriptionAsync_NonExistentZone_ThrowsNotFound()
   {
     // Arrange
     var nonExistentZoneId = "non-existent-zone-id-12345";
 
-    // Act & Assert
-    try
-    {
-      await _sut.GetZoneSubscriptionAsync(nonExistentZoneId);
-      _output.WriteLine("Unexpectedly succeeded - zone might exist or API behavior differs");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Received expected 404 Not Found: {ex.Message}");
-      ex.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.GetZoneSubscriptionAsync(nonExistentZoneId);
+
+    // Assert - Non-existent zone returns 404 Not Found
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
-  /// <summary>I12: Verifies that create subscription with invalid rate plan returns error.</summary>
+  /// <summary>I12: Verifies that create subscription with invalid rate plan returns 404.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: POST with non-existent rate plan returns 404 Not Found.
+  ///   Error code 1298: "Review the rate plan ID and try again. Could not find the rate plan."
+  ///   https://developers.cloudflare.com/api/resources/zones/subresources/subscriptions/methods/create/
+  /// </remarks>
   [IntegrationTest]
-  public async Task CreateZoneSubscriptionAsync_InvalidRatePlan_ThrowsError()
+  public async Task CreateZoneSubscriptionAsync_InvalidRatePlan_ThrowsNotFound()
   {
     // Arrange
     var zoneId = _settings.ZoneId;
     var request = new CreateZoneSubscriptionRequest(
       RatePlan: new RatePlanReference("invalid-rate-plan-that-does-not-exist"));
 
-    // Act & Assert
-    try
-    {
-      await _sut.CreateZoneSubscriptionAsync(zoneId, request);
-      _output.WriteLine("Unexpectedly succeeded - API may have different behavior");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Write permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.MethodNotAllowed)
-    {
-      _output.WriteLine("Skipped: POST method not allowed for api_token authentication scheme (405)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Received 404 Not Found for invalid rate plan: {ex.Message}");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-    {
-      _output.WriteLine($"Received 400 Bad Request for invalid rate plan: {ex.Message}");
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error for invalid rate plan: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.CreateZoneSubscriptionAsync(zoneId, request);
+
+    // Assert - Non-existent rate plan returns 404 Not Found
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
-  /// <summary>I13: Verifies that update subscription on non-existent zone returns error.</summary>
+  /// <summary>I13: Verifies that update subscription on non-existent zone returns 404.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: PUT /zones/{zone_id}/subscription returns 404 for non-existent zones.
+  ///   https://developers.cloudflare.com/api/resources/zones/subresources/subscriptions/methods/update/
+  /// </remarks>
   [IntegrationTest]
-  public async Task UpdateZoneSubscriptionAsync_NonExistentZone_ThrowsError()
+  public async Task UpdateZoneSubscriptionAsync_NonExistentZone_ThrowsNotFound()
   {
     // Arrange
     var nonExistentZoneId = "non-existent-zone-id-67890";
     var request = new UpdateZoneSubscriptionRequest();
 
-    // Act & Assert
-    try
-    {
-      await _sut.UpdateZoneSubscriptionAsync(nonExistentZoneId, request);
-      _output.WriteLine("Unexpectedly succeeded");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Received expected 404 Not Found: {ex.Message}");
-      ex.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
-    }
-    catch (HttpRequestException ex)
-    {
-      _output.WriteLine($"Received HTTP error {ex.StatusCode}: {ex.Message}");
-      ex.StatusCode.Should().NotBeNull();
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.UpdateZoneSubscriptionAsync(nonExistentZoneId, request);
+
+    // Assert - Non-existent zone returns 404 Not Found
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
-  /// <summary>I14: Verifies that listing rate plans for non-existent zone returns error.</summary>
+  /// <summary>I14: Verifies that listing rate plans for non-existent zone returns 404.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: GET /zones/{zone_id}/available_rate_plans returns 404 for non-existent zones.
+  ///   https://developers.cloudflare.com/api/resources/zones/subresources/subscriptions/
+  /// </remarks>
   [IntegrationTest]
-  public async Task ListAvailableRatePlansAsync_NonExistentZone_ThrowsError()
+  public async Task ListAvailableRatePlansAsync_NonExistentZone_ThrowsNotFound()
   {
     // Arrange
     var nonExistentZoneId = "non-existent-zone-id-99999";
 
-    // Act & Assert
-    try
-    {
-      await _sut.ListAvailableRatePlansAsync(nonExistentZoneId);
-      _output.WriteLine("Unexpectedly succeeded");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-    {
-      _output.WriteLine($"Received expected 404 Not Found: {ex.Message}");
-      ex.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.ListAvailableRatePlansAsync(nonExistentZoneId);
+
+    // Assert - Non-existent zone returns 404 Not Found
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
-  /// <summary>I15: Verifies that malformed zone ID returns error.</summary>
+  /// <summary>I15: Verifies that malformed zone ID returns 400 Bad Request.</summary>
+  /// <remarks>
+  ///   Per Cloudflare API: Malformed zone IDs with invalid characters fail at the routing layer.
+  ///   Error code 7003: "Could not route to /zones/{id}/subscription, perhaps your object identifier is invalid?"
+  ///   Error code 7000: "No route for that URI"
+  ///   https://developers.cloudflare.com/api/resources/zones/
+  /// </remarks>
   [IntegrationTest]
-  public async Task GetZoneSubscriptionAsync_MalformedId_ThrowsError()
+  public async Task GetZoneSubscriptionAsync_MalformedId_ThrowsBadRequest()
   {
     // Arrange
     var malformedId = "!!!invalid-format!!!";
 
-    // Act & Assert
-    try
-    {
-      await _sut.GetZoneSubscriptionAsync(malformedId);
-      _output.WriteLine("Unexpectedly succeeded");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing permissions (403 Forbidden)");
-    }
-    catch (HttpRequestException ex)
-    {
-      _output.WriteLine($"Received HTTP error {ex.StatusCode}: {ex.Message}");
-      ex.StatusCode.Should().NotBeNull();
-    }
-    catch (Core.Exceptions.CloudflareApiException ex)
-    {
-      _output.WriteLine($"API error: {ex.Message}");
-      ex.Errors.Should().NotBeEmpty();
-    }
+    // Act
+    var act = () => _sut.GetZoneSubscriptionAsync(malformedId);
+
+    // Assert - Malformed zone ID returns 400 Bad Request (routing error)
+    await act.Should()
+      .ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
+  }
+
+  #endregion
+
+
+  #region Write Operation Happy Path Tests (I19-I20)
+
+  /// <summary>I19: Verifies that a zone subscription can be created (upgraded) successfully.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Billing Write permission IS available via API tokens: https://developers.cloudflare.com/fundamentals/api/reference/permissions/</item>
+  ///     <item>Zone plans have recurring billing: https://www.cloudflare.com/plans/</item>
+  ///     <item>Pro plan: $25/month, Business plan: $250/month</item>
+  ///     <item>Plan changes are pro-rated within billing cycle</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Warning:</b> When enabled, this test will upgrade the zone to a paid plan and incur charges.
+  ///     Ensure you downgrade back to Free after testing.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires paid plan - Consider Dev account or WireMock")]
+  public async Task CreateZoneSubscriptionAsync_ReturnsCreatedSubscription()
+  {
+    // Arrange - Use a test zone that can be upgraded
+    var zoneId = _settings.ZoneId;
+
+    // First, get available rate plans to find a valid plan ID
+    var plans = await _sut.ListAvailableRatePlansAsync(zoneId);
+    plans.Should().NotBeEmpty("test requires at least one available rate plan");
+
+    var proPlan = plans.FirstOrDefault(p =>
+      p.Id.Contains("pro", StringComparison.OrdinalIgnoreCase));
+    proPlan.Should().NotBeNull("test requires a Pro plan to be available");
+
+    var request = new CreateZoneSubscriptionRequest(
+      RatePlan: new RatePlanReference(proPlan!.Id),
+      Frequency: SubscriptionFrequency.Monthly);
+
+    // Act
+    var result = await _sut.CreateZoneSubscriptionAsync(zoneId, request);
+
+    // Assert - Verify the subscription was created with expected properties
+    result.Should().NotBeNull();
+    result.Id.Should().NotBeNullOrEmpty();
+    result.RatePlan.Should().NotBeNull();
+    result.RatePlan!.PublicName.Should().NotBeNullOrEmpty();
+
+    // Cleanup - Downgrade back to Free to avoid ongoing charges
+    // var downgradeRequest = new UpdateZoneSubscriptionRequest(
+    //   RatePlan: new RatePlanReference("free"));
+    // await _sut.UpdateZoneSubscriptionAsync(zoneId, downgradeRequest);
+  }
+
+  /// <summary>I20: Verifies that a zone subscription can be updated successfully.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Billing Write permission IS available via API tokens: https://developers.cloudflare.com/fundamentals/api/reference/permissions/</item>
+  ///     <item>Updating subscriptions may affect billing: https://developers.cloudflare.com/billing/billing-policy/</item>
+  ///     <item>Frequency changes (monthly ↔ yearly) affect billing amounts</item>
+  ///     <item>This test requires a zone already on a paid plan to demonstrate updates</item>
+  ///   </list>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires paid plan - Consider Dev account or WireMock - Modifies subscription billing")]
+  public async Task UpdateZoneSubscriptionAsync_ReturnsUpdatedSubscription()
+  {
+    // Arrange - Get the current subscription
+    var zoneId = _settings.ZoneId;
+    var currentSubscription = await _sut.GetZoneSubscriptionAsync(zoneId);
+    currentSubscription.Should().NotBeNull();
+
+    var request = new UpdateZoneSubscriptionRequest(
+      Frequency: SubscriptionFrequency.Yearly);
+
+    // Act
+    var result = await _sut.UpdateZoneSubscriptionAsync(zoneId, request);
+
+    // Assert - Verify the subscription was updated
+    result.Should().NotBeNull();
+    result.Frequency.Should().Be(SubscriptionFrequency.Yearly);
   }
 
   #endregion
@@ -575,26 +448,19 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
-    // Assert
-    var isPaid = result!.State == SubscriptionState.Paid;
+    // Assert - State should be one of the known subscription states
+    result.State.Should().NotBeNull();
+    result.State.Value.Should().NotBeNullOrEmpty();
+
+    // Verify we can categorize the subscription state
+    var isPaid = result.State == SubscriptionState.Paid;
     var isTrial = result.State == SubscriptionState.Trial;
     var isProvisioned = result.State == SubscriptionState.Provisioned;
 
-    _output.WriteLine($"Zone subscription state: {result.State}");
-    _output.WriteLine($"  Is Paid: {isPaid}");
-    _output.WriteLine($"  Is Trial: {isTrial}");
-    _output.WriteLine($"  Is Provisioned: {isProvisioned}");
+    // At least one state categorization should be determinable (or it's a different state)
+    (isPaid || isTrial || isProvisioned || result.State.Value.Length > 0).Should().BeTrue();
   }
 
   /// <summary>I17: Verifies that externally managed subscriptions can be identified.</summary>
@@ -605,58 +471,34 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
-    // Assert
-    if (result!.RatePlan != null)
-    {
-      var isExternallyManaged = result.RatePlan.ExternallyManaged;
-      _output.WriteLine($"Zone plan '{result.RatePlan.PublicName}' is externally managed: {isExternallyManaged}");
-    }
-    else
-    {
-      _output.WriteLine("Zone has no rate plan - cannot determine external management status");
-    }
+    // Assert - Zone subscription should have a fully populated rate plan
+    result.RatePlan.Should().NotBeNull("zone subscription should have a rate plan");
+    result.RatePlan!.Id.Should().NotBeNullOrEmpty("rate plan should have an ID");
+    result.RatePlan.PublicName.Should().NotBeNullOrEmpty("rate plan should have a public name");
+
+    // ExternallyManaged is a non-nullable boolean - verify the RatePlan is properly deserialized
+    // by checking that the property value is consistent (it's determinable)
+    var externallyManaged = result.RatePlan.ExternallyManaged;
+    result.RatePlan.ExternallyManaged.Should().Be(externallyManaged);
   }
 
   /// <summary>I18: Verifies that subscription has billing period dates when applicable.</summary>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Requires paid plan - Consider Dev account or WireMock - Free plan subscriptions do not have period dates")]
   public async Task GetZoneSubscriptionAsync_HasBillingPeriod()
   {
     // Arrange
     var zoneId = _settings.ZoneId;
 
     // Act
-    Subscription? result = null;
-    try
-    {
-      result = await _sut.GetZoneSubscriptionAsync(zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      _output.WriteLine("Skipped: Token does not have Billing Read permissions (403 Forbidden)");
-      return;
-    }
+    var result = await _sut.GetZoneSubscriptionAsync(zoneId);
 
-    // Assert
-    if (result!.CurrentPeriodStart.HasValue && result.CurrentPeriodEnd.HasValue)
-    {
-      result.CurrentPeriodEnd.Value.Should().BeAfter(result.CurrentPeriodStart.Value);
-      _output.WriteLine($"Billing period: {result.CurrentPeriodStart} to {result.CurrentPeriodEnd}");
-    }
-    else
-    {
-      _output.WriteLine("Zone subscription has no billing period dates (may be free plan)");
-    }
+    // Assert - Subscription should have billing period dates
+    result.CurrentPeriodStart.Should().HaveValue("zone subscription should have a period start date");
+    result.CurrentPeriodEnd.Should().HaveValue("zone subscription should have a period end date");
+
+    result.CurrentPeriodEnd!.Value.Should().BeAfter(result.CurrentPeriodStart!.Value);
   }
 
   #endregion

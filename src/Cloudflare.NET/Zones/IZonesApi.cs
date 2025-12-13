@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Zones;
 using AccessRules;
 using Core.Models;
 using CustomHostnames;
+using Dns.Models;
 using Firewall;
 using Models;
 using Rulesets;

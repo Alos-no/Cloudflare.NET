@@ -20,9 +20,14 @@ using Xunit;
 ///     Use this attribute instead of <see cref="IntegrationTestAttribute" /> for tests that call user-level
 ///     endpoints such as <c>GET /user</c> or <c>PATCH /user</c>.
 ///   </para>
+///   <para>
+///     This attribute extends <see cref="SkippableFactAttribute" /> to support dynamic runtime skipping
+///     via <see cref="Skip.If" /> and <see cref="SkipException" />. This allows tests to be skipped
+///     at runtime when permission validation fails.
+///   </para>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Method)]
-public sealed class UserIntegrationTestAttribute : FactAttribute
+public sealed class UserIntegrationTestAttribute : SkippableFactAttribute
 {
   #region Constants & Statics
 

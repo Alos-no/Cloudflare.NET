@@ -1,8 +1,8 @@
 namespace Cloudflare.NET.User.Models;
 
 using System.Text.Json.Serialization;
+using Core.Json;
 using Members.Models;
-using Roles.Models;
 
 /// <summary>
 ///   Represents an invitation for a user to join an account.
@@ -27,7 +27,7 @@ using Roles.Models;
 /// <param name="InvitedOn">When the invitation was sent.</param>
 /// <param name="ExpiresOn">When the invitation expires.</param>
 /// <param name="OrganizationName">The name of the account the user is invited to join.</param>
-/// <param name="Roles">The roles that will be assigned upon acceptance.</param>
+/// <param name="Roles">The role names that will be assigned upon acceptance (e.g., "Super Administrator - All Privileges").</param>
 public record UserInvitation(
   [property: JsonPropertyName("id")]
   string Id,
@@ -39,9 +39,11 @@ public record UserInvitation(
   MemberStatus Status,
 
   [property: JsonPropertyName("invited_on")]
+  [property: JsonConverter(typeof(CloudflareDateTimeConverter))]
   DateTime InvitedOn,
 
   [property: JsonPropertyName("expires_on")]
+  [property: JsonConverter(typeof(CloudflareDateTimeConverter))]
   DateTime ExpiresOn,
 
   [property: JsonPropertyName("organization_name")]
@@ -50,7 +52,7 @@ public record UserInvitation(
 
   [property: JsonPropertyName("roles")]
   [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-  IReadOnlyList<AccountRole>? Roles = null
+  IReadOnlyList<string>? Roles = null
 );
 
 

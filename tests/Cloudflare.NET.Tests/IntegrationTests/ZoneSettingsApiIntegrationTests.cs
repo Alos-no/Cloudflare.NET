@@ -6,6 +6,7 @@ using Shared.Fixtures;
 using Shared.Helpers;
 using Xunit.Abstractions;
 using Zones;
+using Zones.CustomHostnames.Models;
 using Zones.Models;
 
 /// <summary>
@@ -70,7 +71,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     setting.Id.Should().Be("ssl");
     setting.Value.ValueKind.Should().Be(System.Text.Json.JsonValueKind.String);
     var sslMode = setting.Value.GetString();
-    sslMode.Should().BeOneOf("off", "flexible", "full", "strict");
+    sslMode.Should().BeOneOf(EnumTestHelpers.GetAllValues<SslMode>());
   }
 
   /// <summary>
@@ -105,7 +106,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     setting.Should().NotBeNull();
     setting.Id.Should().Be("always_use_https");
     var toggleValue = setting.Value.GetString();
-    toggleValue.Should().BeOneOf("on", "off");
+    toggleValue.Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
   }
 
   /// <summary>
@@ -135,13 +136,12 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     setting.Should().NotBeNull();
     setting.Id.Should().Be("min_tls_version");
     var tlsVersion = setting.Value.GetString();
-    tlsVersion.Should().BeOneOf("1.0", "1.1", "1.2", "1.3");
+    tlsVersion.Should().BeOneOf(EnumTestHelpers.GetAllValues<MinTlsVersion>());
   }
 
   /// <summary>
   ///   I06: Verifies that a string-based setting can be updated and reverted.
   ///   Uses min_tls_version as the test setting.
-  ///   Skips gracefully if the API token lacks Zone Settings Edit permission.
   /// </summary>
   [IntegrationTest]
   public async Task SetZoneSettingAsync_MinTlsVersion_CanUpdateAndRevert()
@@ -153,32 +153,24 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Choose a different valid value to set
     var newValue = originalValue == "1.2" ? "1.0" : "1.2";
 
-    try
-    {
-      // Act - Update to new value
-      var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion, newValue);
+    // Act - Update to new value
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion, newValue);
 
-      // Assert
-      updatedSetting.Should().NotBeNull();
-      updatedSetting.Value.GetString().Should().Be(newValue);
+    // Assert
+    updatedSetting.Should().NotBeNull();
+    updatedSetting.Value.GetString().Should().Be(newValue);
 
-      // Cleanup - Revert to original
-      await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion, originalValue!);
+    // Cleanup - Revert to original
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion, originalValue!);
 
-      // Verify revert
-      var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion);
-      revertedSetting.Value.GetString().Should().Be(originalValue);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone Settings Edit permission
-    }
+    // Verify revert
+    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion);
+    revertedSetting.Value.GetString().Should().Be(originalValue);
   }
 
   /// <summary>
   ///   I07: Verifies that an integer-based setting can be updated and reverted.
   ///   Uses browser_cache_ttl as the test setting.
-  ///   Skips gracefully if the API token lacks Zone Settings Edit permission.
   /// </summary>
   [IntegrationTest]
   public async Task SetZoneSettingAsync_BrowserCacheTtl_CanUpdateAndRevert()
@@ -190,32 +182,24 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Choose a different valid value (common TTL values)
     var newValue = originalValue == 14400 ? 7200 : 14400;
 
-    try
-    {
-      // Act - Update to new value
-      var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl, newValue);
+    // Act - Update to new value
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl, newValue);
 
-      // Assert
-      updatedSetting.Should().NotBeNull();
-      updatedSetting.Value.GetInt32().Should().Be(newValue);
+    // Assert
+    updatedSetting.Should().NotBeNull();
+    updatedSetting.Value.GetInt32().Should().Be(newValue);
 
-      // Cleanup - Revert to original
-      await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl, originalValue);
+    // Cleanup - Revert to original
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl, originalValue);
 
-      // Verify revert
-      var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl);
-      revertedSetting.Value.GetInt32().Should().Be(originalValue);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone Settings Edit permission
-    }
+    // Verify revert
+    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl);
+    revertedSetting.Value.GetInt32().Should().Be(originalValue);
   }
 
   /// <summary>
   ///   I08: Verifies that an on/off toggle setting can be updated and reverted.
   ///   Uses brotli as the test setting.
-  ///   Skips gracefully if the API token lacks Zone Settings Edit permission.
   /// </summary>
   [IntegrationTest]
   public async Task SetZoneSettingAsync_Brotli_CanToggleAndRevert()
@@ -227,26 +211,19 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Toggle to opposite value
     var newValue = originalValue == "on" ? "off" : "on";
 
-    try
-    {
-      // Act - Toggle
-      var toggledSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli, newValue);
+    // Act - Toggle
+    var toggledSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli, newValue);
 
-      // Assert
-      toggledSetting.Should().NotBeNull();
-      toggledSetting.Value.GetString().Should().Be(newValue);
+    // Assert
+    toggledSetting.Should().NotBeNull();
+    toggledSetting.Value.GetString().Should().Be(newValue);
 
-      // Cleanup - Revert
-      await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli, originalValue!);
+    // Cleanup - Revert
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli, originalValue!);
 
-      // Verify revert
-      var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli);
-      revertedSetting.Value.GetString().Should().Be(originalValue);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone Settings Edit permission
-    }
+    // Verify revert
+    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli);
+    revertedSetting.Value.GetString().Should().Be(originalValue);
   }
 
   /// <summary>
@@ -260,53 +237,37 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var originalValue = originalSetting.Value.GetString();
     var newValue = originalValue == "on" ? "off" : "on";
 
-    try
-    {
-      // Act
-      var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysOnline, newValue);
+    // Act
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysOnline, newValue);
 
-      // Assert
-      updatedSetting.Id.Should().Be("always_online");
-      updatedSetting.Editable.Should().BeTrue();
-      updatedSetting.ModifiedOn.Should().NotBeNull("modified_on should be updated");
-      updatedSetting.ModifiedOn!.Value.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
+    // Assert
+    updatedSetting.Id.Should().Be("always_online");
+    updatedSetting.Editable.Should().BeTrue();
+    updatedSetting.ModifiedOn.Should().NotBeNull("modified_on should be updated");
+    updatedSetting.ModifiedOn!.Value.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
 
-      // Cleanup
-      await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysOnline, originalValue!);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone Settings Edit permission
-    }
+    // Cleanup
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysOnline, originalValue!);
   }
 
   /// <summary>
   ///   I10: Verifies that development mode can be enabled.
   ///   Development mode is a special toggle that auto-disables after 3 hours.
-  ///   Skips gracefully if the API token lacks Zone Settings Edit permission.
   /// </summary>
   [IntegrationTest]
   public async Task SetZoneSettingAsync_DevelopmentMode_CanEnable()
   {
     // Arrange
     var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode);
-    var originalValue = originalSetting.Value.GetString();
 
-    try
-    {
-      // Act - Enable development mode
-      var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "on");
+    // Act - Enable development mode
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "on");
 
-      // Assert
-      updatedSetting.Value.GetString().Should().Be("on");
+    // Assert
+    updatedSetting.Value.GetString().Should().Be("on");
 
-      // Cleanup - Disable development mode
-      await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "off");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone Settings Edit permission
-    }
+    // Cleanup - Disable development mode
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "off");
   }
 
   /// <summary>
@@ -318,18 +279,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Arrange
     var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode);
 
-    try
-    {
-      // Act - Ensure development mode is off
-      var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "off");
+    // Act - Ensure development mode is off
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "off");
 
-      // Assert
-      updatedSetting.Value.GetString().Should().Be("off");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone Settings Edit permission
-    }
+    // Assert
+    updatedSetting.Value.GetString().Should().Be("off");
   }
 
   /// <summary>
@@ -344,7 +298,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Assert
     setting.Should().NotBeNull();
     setting.Id.Should().Be("development_mode");
-    setting.Value.GetString().Should().BeOneOf("on", "off");
+    setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
     setting.Editable.Should().BeTrue("development mode should be editable");
   }
 
@@ -360,7 +314,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Assert
     setting.Should().NotBeNull();
     var sslMode = setting.Value.GetString();
-    sslMode.Should().BeOneOf("off", "flexible", "full", "strict",
+    sslMode.Should().BeOneOf(EnumTestHelpers.GetAllValues<SslMode>(),
       "SSL mode should be one of the valid Cloudflare SSL modes");
   }
 
@@ -377,7 +331,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     setting.Should().NotBeNull();
     setting.Id.Should().Be("tls_1_3");
     var tls13Value = setting.Value.GetString();
-    tls13Value.Should().BeOneOf("on", "off", "zrt");
+    tls13Value.Should().BeOneOf(EnumTestHelpers.GetAllValues<Tls13Setting>());
   }
 
   /// <summary>
@@ -393,15 +347,18 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     setting.Should().NotBeNull();
     setting.Id.Should().Be("security_level");
     var level = setting.Value.GetString();
-    level.Should().BeOneOf("off", "essentially_off", "low", "medium", "high", "under_attack");
+    level.Should().BeOneOf(EnumTestHelpers.GetAllValues<ZoneSecurityLevel>());
   }
 
   /// <summary>
-  ///   I16: Verifies that requesting an unknown setting ID returns an error.
-  ///   Note: The API returns 400 BadRequest with error code 1003 for undefined settings.
+  ///   I16: Verifies that requesting an unknown setting ID returns HTTP 400 BadRequest.
   /// </summary>
+  /// <remarks>
+  ///   The Cloudflare API validates setting IDs against a known list and returns error code 1003
+  ///   "Undefined zone setting: {setting_id}" with HTTP 400 BadRequest for invalid setting names.
+  /// </remarks>
   [IntegrationTest]
-  public async Task GetZoneSettingAsync_UnknownSettingId_ThrowsError()
+  public async Task GetZoneSettingAsync_UnknownSettingId_ThrowsBadRequest()
   {
     // Arrange
     var unknownSettingId = "this_setting_does_not_exist";
@@ -410,10 +367,8 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var action = async () => await _sut.GetZoneSettingAsync(_zoneId, unknownSettingId);
 
     // Assert - API returns 400 BadRequest for undefined settings (error code 1003)
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().BeOneOf(
-      System.Net.HttpStatusCode.BadRequest,
-      System.Net.HttpStatusCode.NotFound);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
   }
 
   /// <summary>
@@ -429,14 +384,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var action = async () => await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Ssl, invalidSslMode);
 
     // Assert - API should reject the invalid value
-    try
-    {
-      await action.Should().ThrowAsync<Exception>();
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // If we get 403, the token doesn't have edit permission - that's okay
-    }
+    await action.Should().ThrowAsync<Exception>();
   }
 
   /// <summary>
@@ -462,23 +410,25 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   }
 
   /// <summary>
-  ///   I19: Verifies behavior when getting a setting for a non-existent zone.
+  ///   I19: Verifies that getting a setting for a non-existent zone returns HTTP 403 Forbidden.
   /// </summary>
+  /// <remarks>
+  ///   Using a valid format but non-existent zone ID (32-character hex) returns 403 Forbidden.
+  ///   This is a deliberate security measure to prevent zone enumeration attacks - the API
+  ///   does not reveal whether a zone exists or not.
+  /// </remarks>
   [IntegrationTest]
-  public async Task GetZoneSettingAsync_NonExistentZone_ThrowsError()
+  public async Task GetZoneSettingAsync_NonExistentZone_ThrowsForbidden()
   {
-    // Arrange
+    // Arrange - Valid format but non-existent zone ID
     var nonExistentZoneId = "00000000000000000000000000000000";
 
     // Act
     var action = async () => await _sut.GetZoneSettingAsync(nonExistentZoneId, ZoneSettingIds.Ssl);
 
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().BeOneOf(
-      System.Net.HttpStatusCode.NotFound,
-      System.Net.HttpStatusCode.Forbidden,
-      System.Net.HttpStatusCode.BadRequest);
+    // Assert - Returns 403 to prevent zone enumeration attacks
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.Forbidden);
   }
 
   /// <summary>
@@ -493,7 +443,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Assert
     setting.Should().NotBeNull();
     setting.Id.Should().Be("websockets");
-    setting.Value.GetString().Should().BeOneOf("on", "off");
+    setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
   }
 
   /// <summary>
@@ -508,7 +458,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Assert
     setting.Should().NotBeNull();
     setting.Id.Should().Be("ipv6");
-    setting.Value.GetString().Should().BeOneOf("on", "off");
+    setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
   }
 
   /// <summary>
@@ -523,7 +473,49 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Assert
     setting.Should().NotBeNull();
     setting.Id.Should().Be("0rtt");
-    setting.Value.GetString().Should().BeOneOf("on", "off");
+    setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
+  }
+
+  /// <summary>
+  ///   I23: Verifies that getting a setting with a malformed zone ID returns HTTP 404 NotFound.
+  /// </summary>
+  /// <remarks>
+  ///   Malformed zone IDs (containing invalid characters) fail at the routing layer before
+  ///   reaching the zone settings handler, resulting in error code 7003 "Could not route to..."
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetZoneSettingAsync_MalformedZoneId_ThrowsNotFound()
+  {
+    // Arrange
+    var malformedZoneId = "invalid-zone-id-format!!!";
+
+    // Act
+    var action = async () => await _sut.GetZoneSettingAsync(malformedZoneId, ZoneSettingIds.Ssl);
+
+    // Assert - Malformed ID fails at routing layer with 404 (error code 7003)
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
+  }
+
+  /// <summary>
+  ///   I24: Verifies that setting a value with a malformed zone ID returns HTTP 404 NotFound.
+  /// </summary>
+  /// <remarks>
+  ///   Malformed zone IDs (containing invalid characters) fail at the routing layer before
+  ///   reaching the zone settings handler, resulting in error code 7003 "Could not route to..."
+  /// </remarks>
+  [IntegrationTest]
+  public async Task SetZoneSettingAsync_MalformedZoneId_ThrowsNotFound()
+  {
+    // Arrange
+    var malformedZoneId = "invalid-zone-id-format!!!";
+
+    // Act
+    var action = async () => await _sut.SetZoneSettingAsync(malformedZoneId, ZoneSettingIds.Ssl, "full");
+
+    // Assert - Malformed ID fails at routing layer with 404 (error code 7003)
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
   #endregion

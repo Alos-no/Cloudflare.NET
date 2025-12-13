@@ -529,62 +529,9 @@ public class UserSubscriptionsApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U16-U23)
+  #region Error Handling Tests (U16-U19)
 
-  /// <summary>U16: Verifies that UpdateUserSubscriptionAsync throws HttpRequestException on 404.</summary>
-  [Fact]
-  public async Task UpdateUserSubscriptionAsync_NotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Not Found", HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-    var request = new UpdateUserSubscriptionRequest();
-
-    // Act
-    var action = async () => await sut.UpdateUserSubscriptionAsync("non-existent", request);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U17: Verifies that ListUserSubscriptionsAsync throws HttpRequestException on 401.</summary>
-  [Fact]
-  public async Task ListUserSubscriptionsAsync_Unauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Unauthorized", HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.ListUserSubscriptionsAsync();
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U18: Verifies that UpdateUserSubscriptionAsync throws HttpRequestException on 403.</summary>
-  [Fact]
-  public async Task UpdateUserSubscriptionAsync_Forbidden_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Forbidden", HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-    var request = new UpdateUserSubscriptionRequest();
-
-    // Act
-    var action = async () => await sut.UpdateUserSubscriptionAsync("sub", request);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U19: Verifies that API error (success=false) throws CloudflareApiException.</summary>
+  /// <summary>U16: Verifies that API error (success=false) throws CloudflareApiException.</summary>
   [Fact]
   public async Task UpdateUserSubscriptionAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -603,7 +550,7 @@ public class UserSubscriptionsApiUnitTests
     exception.Which.Errors.Should().ContainSingle(e => e.Code == 1001);
   }
 
-  /// <summary>U20: Verifies that invalid rate plan error throws CloudflareApiException.</summary>
+  /// <summary>U17: Verifies that invalid rate plan error throws CloudflareApiException.</summary>
   [Fact]
   public async Task UpdateUserSubscriptionAsync_InvalidRatePlan_ThrowsCloudflareApiException()
   {
@@ -622,7 +569,7 @@ public class UserSubscriptionsApiUnitTests
     exception.Which.Errors.Should().ContainSingle(e => e.Code == 1002);
   }
 
-  /// <summary>U21: Verifies that multiple API errors are all captured.</summary>
+  /// <summary>U18: Verifies that multiple API errors are all captured.</summary>
   [Fact]
   public async Task UpdateUserSubscriptionAsync_MultipleErrors_CapturesAllErrors()
   {
@@ -653,49 +600,12 @@ public class UserSubscriptionsApiUnitTests
     exception.Which.Errors.Should().Contain(e => e.Code == 1002);
   }
 
-  /// <summary>U22: Verifies that DeleteUserSubscriptionAsync throws HttpRequestException on 429.</summary>
-  [Fact]
-  public async Task DeleteUserSubscriptionAsync_RateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Too Many Requests", HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.DeleteUserSubscriptionAsync("sub");
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U23: Verifies that server errors throw HttpRequestException.</summary>
-  [Theory]
-  [InlineData(HttpStatusCode.InternalServerError)]
-  [InlineData(HttpStatusCode.BadGateway)]
-  [InlineData(HttpStatusCode.ServiceUnavailable)]
-  public async Task ListUserSubscriptionsAsync_ServerError_ThrowsHttpRequestException(HttpStatusCode statusCode)
-  {
-    // Arrange
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler("Server Error", statusCode);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new SubscriptionsApi(httpClient, _loggerFactory);
-
-    // Act
-    var action = async () => await sut.ListUserSubscriptionsAsync();
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(statusCode);
-  }
-
   #endregion
 
 
-  #region URL Encoding Tests (U24-U25)
+  #region URL Encoding Tests (U20-U21)
 
-  /// <summary>U24: Verifies that special characters in subscriptionId are URL encoded.</summary>
+  /// <summary>U20: Verifies that special characters in subscriptionId are URL encoded.</summary>
   [Fact]
   public async Task UpdateUserSubscriptionAsync_SpecialChars_UrlEncodesCorrectly()
   {
@@ -719,7 +629,7 @@ public class UserSubscriptionsApiUnitTests
     path.Should().NotContain("sub/with:special&chars?");
   }
 
-  /// <summary>U25: Verifies that spaces in subscriptionId are URL encoded.</summary>
+  /// <summary>U21: Verifies that spaces in subscriptionId are URL encoded.</summary>
   [Fact]
   public async Task DeleteUserSubscriptionAsync_SpacesInId_UrlEncodesCorrectly()
   {

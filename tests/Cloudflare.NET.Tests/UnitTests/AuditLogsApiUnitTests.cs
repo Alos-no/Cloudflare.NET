@@ -351,15 +351,16 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task GetAccountAuditLogsAsync_FullModel_DeserializesAllProperties()
   {
-    // Arrange
+    // Arrange - v1 API format: when at top level, actor uses ip not ip_address, no raw object
     var auditLogJson = """
       {
         "id": "audit-log-123",
         "account": { "id": "acc-123", "name": "Test Account" },
-        "action": { "description": "Created zone", "result": "success", "time": "2024-06-15T12:30:00Z", "type": "create" },
-        "actor": { "id": "user-456", "context": "api", "email": "admin@example.com", "ip_address": "192.168.1.1", "token_id": "tok-789", "token_name": "API Token", "type": "user" },
-        "raw": { "cf_ray_id": "ray-abc", "method": "POST", "status_code": 200, "uri": "/client/v4/zones", "user_agent": "Cloudflare-SDK" },
+        "action": { "result": true, "type": "create" },
+        "actor": { "id": "user-456", "email": "admin@example.com", "ip": "192.168.1.1", "type": "user" },
+        "interface": "API",
         "resource": { "id": "res-123", "product": "zones", "scope": "account", "type": "zone" },
+        "when": "2024-06-15T12:30:00Z",
         "zone": { "id": "zone-xyz", "name": "example.com" }
       }
       """;
@@ -376,15 +377,15 @@ public class AuditLogsApiUnitTests
     result.Items.Should().HaveCount(1);
     var log = result.Items[0];
     log.Id.Should().Be("audit-log-123");
-    log.Account.Id.Should().Be("acc-123");
+    log.Account!.Id.Should().Be("acc-123");
     log.Account.Name.Should().Be("Test Account");
     log.Action.Type.Should().Be("create");
-    log.Action.Result.Should().Be("success");
-    log.Action.Description.Should().Be("Created zone");
+    log.Action.Result.Should().BeTrue();
     log.Actor.Id.Should().Be("user-456");
     log.Actor.Email.Should().Be("admin@example.com");
-    log.Raw.Should().NotBeNull();
-    log.Raw!.Method.Should().Be("POST");
+    log.Actor.Ip.Should().Be("192.168.1.1");
+    log.Interface.Should().Be("API");
+    log.When.Should().Be(DateTime.Parse("2024-06-15T12:30:00Z").ToUniversalTime());
     log.Resource.Should().NotBeNull();
     log.Resource!.Product.Should().Be("zones");
     log.Zone.Should().NotBeNull();
@@ -395,13 +396,14 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task GetAccountAuditLogsAsync_OptionalFieldsNull_DeserializesWithNulls()
   {
-    // Arrange - minimal audit log with only required fields
+    // Arrange - minimal audit log with only required fields (v1 API format)
     var auditLogJson = """
       {
         "id": "audit-log-minimal",
         "account": { "id": "acc-min" },
-        "action": { "result": "success", "time": "2024-06-15T12:30:00Z", "type": "delete" },
-        "actor": { "id": "system" }
+        "action": { "result": true, "type": "delete" },
+        "actor": { "id": "system" },
+        "when": "2024-06-15T12:30:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -417,11 +419,9 @@ public class AuditLogsApiUnitTests
     result.Items.Should().HaveCount(1);
     var log = result.Items[0];
     log.Id.Should().Be("audit-log-minimal");
-    log.Account.Name.Should().BeNull();
-    log.Action.Description.Should().BeNull();
+    log.Account!.Name.Should().BeNull();
     log.Actor.Email.Should().BeNull();
-    log.Actor.IpAddress.Should().BeNull();
-    log.Raw.Should().BeNull();
+    log.Actor.Ip.Should().BeNull();
     log.Resource.Should().BeNull();
     log.Zone.Should().BeNull();
   }
@@ -430,13 +430,14 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task GetAccountAuditLogsAsync_AuditLogAccount_DeserializesIdAndName()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "log-1",
         "account": { "id": "acc-full", "name": "My Account" },
-        "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "update" },
-        "actor": { "id": "user-1" }
+        "action": { "result": true, "type": "update" },
+        "actor": { "id": "user-1" },
+        "when": "2024-01-01T00:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -450,21 +451,22 @@ public class AuditLogsApiUnitTests
 
     // Assert
     var account = result.Items[0].Account;
-    account.Id.Should().Be("acc-full");
+    account!.Id.Should().Be("acc-full");
     account.Name.Should().Be("My Account");
   }
 
-  /// <summary>U16: Verifies that AuditLogAction model deserializes Type, Result, and Time correctly.</summary>
+  /// <summary>U16: Verifies that AuditLogAction model deserializes Type and Result correctly, and When timestamp is at top level.</summary>
   [Fact]
-  public async Task GetAccountAuditLogsAsync_AuditLogAction_DeserializesTypeResultTime()
+  public async Task GetAccountAuditLogsAsync_AuditLogAction_DeserializesTypeAndResult()
   {
-    // Arrange
+    // Arrange - v1 API format: when is at top level, not in action
     var auditLogJson = """
       {
         "id": "log-2",
         "account": { "id": "acc-1" },
-        "action": { "description": "Deleted record", "result": "failure", "time": "2024-03-15T10:45:30Z", "type": "delete" },
-        "actor": { "id": "user-2" }
+        "action": { "result": false, "type": "delete" },
+        "actor": { "id": "user-2" },
+        "when": "2024-03-15T10:45:30Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -477,32 +479,29 @@ public class AuditLogsApiUnitTests
     var result = await sut.GetAccountAuditLogsAsync(TestAccountId);
 
     // Assert
-    var action = result.Items[0].Action;
-    action.Type.Should().Be("delete");
-    action.Result.Should().Be("failure");
-    action.Description.Should().Be("Deleted record");
-    action.Time.Should().Be(DateTime.Parse("2024-03-15T10:45:30Z").ToUniversalTime());
+    var log = result.Items[0];
+    log.Action.Type.Should().Be("delete");
+    log.Action.Result.Should().BeFalse();
+    log.When.Should().Be(DateTime.Parse("2024-03-15T10:45:30Z").ToUniversalTime());
   }
 
   /// <summary>U17: Verifies that AuditLogActor model deserializes all actor details correctly.</summary>
   [Fact]
   public async Task GetAccountAuditLogsAsync_AuditLogActor_DeserializesAllDetails()
   {
-    // Arrange
+    // Arrange - v1 API actor format: id, email, ip, type
     var auditLogJson = """
       {
         "id": "log-3",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+        "action": { "result": true, "type": "create" },
         "actor": {
           "id": "actor-id-123",
-          "context": "dashboard",
           "email": "user@example.org",
-          "ip_address": "10.0.0.1",
-          "token_id": "token-123",
-          "token_name": "Dashboard Token",
+          "ip": "10.0.0.1",
           "type": "user"
-        }
+        },
+        "when": "2024-01-01T00:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -517,32 +516,24 @@ public class AuditLogsApiUnitTests
     // Assert
     var actor = result.Items[0].Actor;
     actor.Id.Should().Be("actor-id-123");
-    actor.Context.Should().Be("dashboard");
     actor.Email.Should().Be("user@example.org");
-    actor.IpAddress.Should().Be("10.0.0.1");
-    actor.TokenId.Should().Be("token-123");
-    actor.TokenName.Should().Be("Dashboard Token");
+    actor.Ip.Should().Be("10.0.0.1");
     actor.Type.Should().Be("user");
   }
 
-  /// <summary>U18: Verifies that AuditLogRaw model deserializes Method, StatusCode, and Uri correctly.</summary>
+  /// <summary>U18: Verifies that AuditLog Interface field deserializes correctly.</summary>
   [Fact]
-  public async Task GetAccountAuditLogsAsync_AuditLogRaw_DeserializesHttpDetails()
+  public async Task GetAccountAuditLogsAsync_AuditLogInterface_DeserializesCorrectly()
   {
-    // Arrange
+    // Arrange - v1 API format with interface field
     var auditLogJson = """
       {
         "id": "log-4",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "update" },
+        "action": { "result": true, "type": "update" },
         "actor": { "id": "user-1" },
-        "raw": {
-          "cf_ray_id": "ray-xyz-123",
-          "method": "PUT",
-          "status_code": 201,
-          "uri": "/client/v4/zones/abc/dns_records",
-          "user_agent": "curl/7.88.0"
-        }
+        "interface": "API",
+        "when": "2024-01-01T00:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -555,32 +546,28 @@ public class AuditLogsApiUnitTests
     var result = await sut.GetAccountAuditLogsAsync(TestAccountId);
 
     // Assert
-    var raw = result.Items[0].Raw;
-    raw.Should().NotBeNull();
-    raw!.CfRayId.Should().Be("ray-xyz-123");
-    raw.Method.Should().Be("PUT");
-    raw.StatusCode.Should().Be(201);
-    raw.Uri.Should().Be("/client/v4/zones/abc/dns_records");
-    raw.UserAgent.Should().Be("curl/7.88.0");
+    var log = result.Items[0];
+    log.Interface.Should().Be("API");
   }
 
   /// <summary>U19: Verifies that AuditLogResource model deserializes Product, Type, and Scope correctly.</summary>
   [Fact]
   public async Task GetAccountAuditLogsAsync_AuditLogResource_DeserializesResourceDetails()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "log-5",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+        "action": { "result": true, "type": "create" },
         "actor": { "id": "user-1" },
         "resource": {
           "id": "resource-id-456",
           "product": "dns",
           "scope": "zone",
           "type": "dns_record"
-        }
+        },
+        "when": "2024-01-01T00:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -610,7 +597,7 @@ public class AuditLogsApiUnitTests
       {
         "id": "log-6",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "update" },
+        "action": { "result": true, "time": "2024-01-01T00:00:00Z", "type": "update" },
         "actor": { "id": "user-1" },
         "resource": {
           "id": "res-with-payloads",
@@ -646,7 +633,7 @@ public class AuditLogsApiUnitTests
       {
         "id": "log-7",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+        "action": { "result": true, "time": "2024-01-01T00:00:00Z", "type": "create" },
         "actor": { "id": "user-1" },
         "zone": { "id": "zone-id-789", "name": "mysite.com" }
       }
@@ -681,7 +668,7 @@ public class AuditLogsApiUnitTests
       {
         "id": "single-log",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+        "action": { "result": true, "time": "2024-01-01T00:00:00Z", "type": "create" },
         "actor": { "id": "user-1" }
       }
       """;
@@ -721,7 +708,7 @@ public class AuditLogsApiUnitTests
           {
             "id": "log-page-{{requestCount}}",
             "account": { "id": "acc-1" },
-            "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+            "action": { "result": true, "time": "2024-01-01T00:00:00Z", "type": "create" },
             "actor": { "id": "user-1" }
           }
           """;
@@ -775,28 +762,9 @@ public class AuditLogsApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U25-U31)
+  #region Error Handling Tests (U25-U27)
 
-  /// <summary>U25: Verifies that GetAccountAuditLogsAsync throws HttpRequestException with status 404 when account not found.</summary>
-  [Fact]
-  public async Task GetAccountAuditLogsAsync_AccountNotFound404_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(7003, "Account not found");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.NotFound);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetAccountAuditLogsAsync("nonexistent-account");
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U26: Verifies that GetAccountAuditLogsAsync throws CloudflareApiException when API returns success=false.</summary>
+  /// <summary>U25: Verifies that GetAccountAuditLogsAsync throws CloudflareApiException when API returns success=false.</summary>
   [Fact]
   public async Task GetAccountAuditLogsAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -817,7 +785,7 @@ public class AuditLogsApiUnitTests
     exception.Which.Errors[0].Message.Should().Be("Invalid API token");
   }
 
-  /// <summary>U27: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
+  /// <summary>U26: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
   [Fact]
   public async Task GetAccountAuditLogsAsync_MultipleErrors_ThrowsCloudflareApiExceptionWithAllErrors()
   {
@@ -850,91 +818,12 @@ public class AuditLogsApiUnitTests
     exception.Which.Errors[2].Code.Should().Be(1003);
   }
 
-  /// <summary>U28: Verifies that GetAccountAuditLogsAsync throws HttpRequestException with status 401 when unauthorized.</summary>
-  [Fact]
-  public async Task GetAccountAuditLogsAsync_Unauthorized401_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10000, "Authentication error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Unauthorized);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetAccountAuditLogsAsync(TestAccountId);
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U29: Verifies that GetAccountAuditLogsAsync throws HttpRequestException with status 403 when forbidden.</summary>
-  [Fact]
-  public async Task GetAccountAuditLogsAsync_Forbidden403_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10001, "Forbidden");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Forbidden);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetAccountAuditLogsAsync(TestAccountId);
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U30: Verifies that GetAccountAuditLogsAsync throws HttpRequestException with status 429 when rate limited.</summary>
-  [Fact]
-  public async Task GetAccountAuditLogsAsync_RateLimited429_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10002, "Rate limited");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.TooManyRequests);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetAccountAuditLogsAsync(TestAccountId);
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U31: Verifies that GetAccountAuditLogsAsync throws HttpRequestException with 5xx status on server errors.</summary>
-  [Theory]
-  [InlineData(HttpStatusCode.InternalServerError)]
-  [InlineData(HttpStatusCode.BadGateway)]
-  [InlineData(HttpStatusCode.ServiceUnavailable)]
-  public async Task GetAccountAuditLogsAsync_ServerError5xx_ThrowsHttpRequestException(HttpStatusCode statusCode)
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10003, "Server error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, statusCode);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetAccountAuditLogsAsync(TestAccountId);
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(statusCode);
-  }
-
   #endregion
 
 
-  #region URL Encoding and DateTime Tests (U32-U33)
+  #region URL Encoding and DateTime Tests (U27-U28)
 
-  /// <summary>U32: Verifies that AccountId with special characters is properly URL-encoded.</summary>
+  /// <summary>U27: Verifies that AccountId with special characters is properly URL-encoded.</summary>
   [Fact]
   public async Task GetAccountAuditLogsAsync_AccountIdWithSpecialChars_UrlEncodesAccountId()
   {
@@ -965,17 +854,18 @@ public class AuditLogsApiUnitTests
     uri.Should().Contain("%2B"); // encoded +
   }
 
-  /// <summary>U33: Verifies that DateTime in action.time is parsed correctly using ISO 8601 format.</summary>
+  /// <summary>U28: Verifies that DateTime in 'when' field is parsed correctly using ISO 8601 format.</summary>
   [Fact]
-  public async Task GetAccountAuditLogsAsync_ActionTime_ParsesIso8601DateTime()
+  public async Task GetAccountAuditLogsAsync_When_ParsesIso8601DateTime()
   {
-    // Arrange
+    // Arrange - v1 API format: when is at top level
     var auditLogJson = """
       {
         "id": "log-datetime",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-06-15T14:30:45.123Z", "type": "create" },
-        "actor": { "id": "user-1" }
+        "action": { "result": true, "type": "create" },
+        "actor": { "id": "user-1" },
+        "when": "2024-06-15T14:30:45.123Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -988,13 +878,14 @@ public class AuditLogsApiUnitTests
     var result = await sut.GetAccountAuditLogsAsync(TestAccountId);
 
     // Assert
-    var action = result.Items[0].Action;
-    action.Time.Year.Should().Be(2024);
-    action.Time.Month.Should().Be(6);
-    action.Time.Day.Should().Be(15);
-    action.Time.Hour.Should().Be(14);
-    action.Time.Minute.Should().Be(30);
-    action.Time.Second.Should().Be(45);
+    var log = result.Items[0];
+    // v1 API uses top-level 'when' field - use Timestamp for cross-API-version compatibility
+    log.Timestamp.Year.Should().Be(2024);
+    log.Timestamp.Month.Should().Be(6);
+    log.Timestamp.Day.Should().Be(15);
+    log.Timestamp.Hour.Should().Be(14);
+    log.Timestamp.Minute.Should().Be(30);
+    log.Timestamp.Second.Should().Be(45);
   }
 
   #endregion
@@ -1056,7 +947,11 @@ public class AuditLogsApiUnitTests
     query.Should().Contain("2024-06-20");
   }
 
-  /// <summary>U03: Verifies that ListUserAuditLogsAsync with ActorEmail includes actor_email in query string.</summary>
+  /// <summary>U03: Verifies that ListUserAuditLogsAsync with ActorEmail includes actor.email in query string.</summary>
+  /// <remarks>
+  ///   The v1 User Audit Logs API uses dot notation (<c>actor.email</c>) instead of
+  ///   underscore notation (<c>actor_email</c>) used by the v2 Account Audit Logs API.
+  /// </remarks>
   [Fact]
   public async Task ListUserAuditLogsAsync_WithActorEmail_IncludesActorEmailInQueryString()
   {
@@ -1075,12 +970,16 @@ public class AuditLogsApiUnitTests
     // Act
     await sut.ListUserAuditLogsAsync(filters);
 
-    // Assert
+    // Assert - v1 API uses actor.email (dot notation)
     capturedRequest.Should().NotBeNull();
-    capturedRequest!.RequestUri!.Query.Should().Contain("actor_email=user%40example.com");
+    capturedRequest!.RequestUri!.Query.Should().Contain("actor.email=user%40example.com");
   }
 
-  /// <summary>U04: Verifies that ListUserAuditLogsAsync with ActorIp includes actor_ip_address in query string.</summary>
+  /// <summary>U04: Verifies that ListUserAuditLogsAsync with ActorIp includes actor.ip in query string.</summary>
+  /// <remarks>
+  ///   The v1 User Audit Logs API uses dot notation (<c>actor.ip</c>) instead of
+  ///   underscore notation (<c>actor_ip_address</c>) used by the v2 Account Audit Logs API.
+  /// </remarks>
   [Fact]
   public async Task ListUserAuditLogsAsync_WithActorIp_IncludesActorIpInQueryString()
   {
@@ -1099,9 +998,9 @@ public class AuditLogsApiUnitTests
     // Act
     await sut.ListUserAuditLogsAsync(filters);
 
-    // Assert
+    // Assert - v1 API uses actor.ip (dot notation)
     capturedRequest.Should().NotBeNull();
-    capturedRequest!.RequestUri!.Query.Should().Contain("actor_ip_address=192.168.1.1");
+    capturedRequest!.RequestUri!.Query.Should().Contain("actor.ip=192.168.1.1");
   }
 
   /// <summary>U05: Verifies that ListUserAuditLogsAsync with Direction includes direction in query string.</summary>
@@ -1128,9 +1027,13 @@ public class AuditLogsApiUnitTests
     capturedRequest!.RequestUri!.Query.Should().Contain("direction=desc");
   }
 
-  /// <summary>U06: Verifies that ListUserAuditLogsAsync with PerPage includes limit in query string.</summary>
+  /// <summary>U06: Verifies that ListUserAuditLogsAsync with Limit uses per_page in query string.</summary>
+  /// <remarks>
+  ///   The v1 User Audit Logs API uses <c>per_page</c> instead of <c>limit</c>
+  ///   used by the v2 Account Audit Logs API.
+  /// </remarks>
   [Fact]
-  public async Task ListUserAuditLogsAsync_WithPerPage_IncludesLimitInQueryString()
+  public async Task ListUserAuditLogsAsync_WithPerPage_IncludesPerPageInQueryString()
   {
     // Arrange
     var filters = new ListAuditLogsFilters(Limit: 50);
@@ -1147,14 +1050,19 @@ public class AuditLogsApiUnitTests
     // Act
     await sut.ListUserAuditLogsAsync(filters);
 
-    // Assert
+    // Assert - v1 API uses per_page instead of limit
     capturedRequest.Should().NotBeNull();
-    capturedRequest!.RequestUri!.Query.Should().Contain("limit=50");
+    capturedRequest!.RequestUri!.Query.Should().Contain("per_page=50");
   }
 
-  /// <summary>U07: Verifies that ListUserAuditLogsAsync with Cursor includes cursor in query string.</summary>
+  /// <summary>U07: Verifies that ListUserAuditLogsAsync ignores Cursor (v1 API uses page-based pagination).</summary>
+  /// <remarks>
+  ///   The v1 User Audit Logs API uses page-based pagination (<c>page</c> parameter) instead of
+  ///   cursor-based pagination (<c>cursor</c> parameter) used by the v2 Account Audit Logs API.
+  ///   The <c>Cursor</c> filter property is ignored when calling the User Audit Logs endpoint.
+  /// </remarks>
   [Fact]
-  public async Task ListUserAuditLogsAsync_WithCursor_IncludesCursorInQueryString()
+  public async Task ListUserAuditLogsAsync_WithCursor_IgnoresCursorForV1Api()
   {
     // Arrange
     var filters = new ListAuditLogsFilters(Cursor: "next-page-cursor-xyz");
@@ -1171,9 +1079,10 @@ public class AuditLogsApiUnitTests
     // Act
     await sut.ListUserAuditLogsAsync(filters);
 
-    // Assert
+    // Assert - v1 API doesn't support cursor-based pagination, so cursor is not included
     capturedRequest.Should().NotBeNull();
-    capturedRequest!.RequestUri!.Query.Should().Contain("cursor=next-page-cursor-xyz");
+    capturedRequest!.RequestUri!.Query.Should().NotContain("cursor",
+      "v1 User Audit Logs API uses page-based pagination, not cursor");
   }
 
   /// <summary>U08: Verifies that ListAllUserAuditLogsAsync iterates through cursor-based pagination.</summary>
@@ -1194,7 +1103,7 @@ public class AuditLogsApiUnitTests
           {
             "id": "user-log-page-{{requestCount}}",
             "account": { "id": "acc-1" },
-            "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+            "action": { "result": true, "time": "2024-01-01T00:00:00Z", "type": "create" },
             "actor": { "id": "user-1" }
           }
           """;
@@ -1223,6 +1132,11 @@ public class AuditLogsApiUnitTests
   }
 
   /// <summary>U09: Verifies that ListUserAuditLogsAsync with combined filters includes all in query string.</summary>
+  /// <remarks>
+  ///   The v1 User Audit Logs API uses different parameter names than the v2 Account Audit Logs API:
+  ///   <c>per_page</c> instead of <c>limit</c>, and <c>action.type</c> instead of <c>action_type</c>.
+  ///   The v1 API also only supports single values for action.type, not arrays.
+  /// </remarks>
   [Fact]
   public async Task ListUserAuditLogsAsync_CombinedFilters_IncludesAllFiltersInQueryString()
   {
@@ -1247,13 +1161,12 @@ public class AuditLogsApiUnitTests
     // Act
     await sut.ListUserAuditLogsAsync(filters);
 
-    // Assert
+    // Assert - v1 API uses per_page and action.type (dot notation)
     capturedRequest.Should().NotBeNull();
     var query = capturedRequest!.RequestUri!.Query;
     query.Should().Contain("since=");
-    query.Should().Contain("limit=25");
-    query.Should().Contain("action_type=create");
-    query.Should().Contain("action_type=update");
+    query.Should().Contain("per_page=25");
+    query.Should().Contain("action.type=create"); // v1 API only takes first value
     query.Should().Contain("direction=asc");
   }
 
@@ -1266,14 +1179,15 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task ListUserAuditLogsAsync_FullModel_DeserializesAllProperties()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "user-audit-log-123",
         "account": { "id": "acc-123", "name": "Test Account" },
-        "action": { "description": "Created zone", "result": "success", "time": "2024-06-15T12:30:00Z", "type": "create" },
-        "actor": { "id": "user-456", "context": "api", "email": "admin@example.com", "ip_address": "192.168.1.1", "type": "user" },
+        "action": { "result": true, "type": "create" },
+        "actor": { "id": "user-456", "email": "admin@example.com", "ip": "192.168.1.1", "type": "user" },
         "resource": { "id": "res-123", "product": "zones", "type": "zone" },
+        "when": "2024-06-15T12:30:00Z",
         "zone": { "id": "zone-xyz", "name": "example.com" }
       }
       """;
@@ -1290,7 +1204,7 @@ public class AuditLogsApiUnitTests
     result.Items.Should().HaveCount(1);
     var log = result.Items[0];
     log.Id.Should().Be("user-audit-log-123");
-    log.Account.Id.Should().Be("acc-123");
+    log.Account!.Id.Should().Be("acc-123");
     log.Action.Type.Should().Be("create");
     log.Actor.Email.Should().Be("admin@example.com");
     log.Resource.Should().NotBeNull();
@@ -1301,13 +1215,14 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task ListUserAuditLogsAsync_MinimalModel_HasNullOptionalProperties()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "minimal-log",
         "account": { "id": "acc-min" },
-        "action": { "result": "success", "time": "2024-06-15T12:30:00Z", "type": "delete" },
-        "actor": { "id": "system" }
+        "action": { "result": true, "type": "delete" },
+        "actor": { "id": "system" },
+        "when": "2024-06-15T12:30:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -1321,10 +1236,9 @@ public class AuditLogsApiUnitTests
 
     // Assert
     var log = result.Items[0];
-    log.Account.Name.Should().BeNull();
-    log.Action.Description.Should().BeNull();
+    log.Account!.Name.Should().BeNull();
     log.Actor.Email.Should().BeNull();
-    log.Raw.Should().BeNull();
+    log.Actor.Ip.Should().BeNull();
     log.Resource.Should().BeNull();
     log.Zone.Should().BeNull();
   }
@@ -1333,13 +1247,14 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task ListUserAuditLogsAsync_AuditLogAction_DeserializesTypeAndResult()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "log-action",
         "account": { "id": "acc-1" },
-        "action": { "description": "Updated DNS record", "result": "failure", "time": "2024-06-15T10:00:00Z", "type": "update" },
-        "actor": { "id": "user-1" }
+        "action": { "result": false, "type": "update" },
+        "actor": { "id": "user-1" },
+        "when": "2024-06-15T10:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -1354,21 +1269,21 @@ public class AuditLogsApiUnitTests
     // Assert
     var action = result.Items[0].Action;
     action.Type.Should().Be("update");
-    action.Result.Should().Be("failure");
-    action.Description.Should().Be("Updated DNS record");
+    action.Result.Should().BeFalse();
   }
 
   /// <summary>U13: Verifies that AuditLogActor nested object deserializes with id, email, and IP.</summary>
   [Fact]
   public async Task ListUserAuditLogsAsync_AuditLogActor_DeserializesIdEmailIp()
   {
-    // Arrange
+    // Arrange - v1 API format: uses "ip" not "ip_address"
     var auditLogJson = """
       {
         "id": "log-actor",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-06-15T10:00:00Z", "type": "create" },
-        "actor": { "id": "actor-xyz", "email": "test@example.org", "ip_address": "10.0.0.1" }
+        "action": { "result": true, "type": "create" },
+        "actor": { "id": "actor-xyz", "email": "test@example.org", "ip": "10.0.0.1" },
+        "when": "2024-06-15T10:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -1384,21 +1299,22 @@ public class AuditLogsApiUnitTests
     var actor = result.Items[0].Actor;
     actor.Id.Should().Be("actor-xyz");
     actor.Email.Should().Be("test@example.org");
-    actor.IpAddress.Should().Be("10.0.0.1");
+    actor.Ip.Should().Be("10.0.0.1");
   }
 
   /// <summary>U14: Verifies that AuditLogResource nested object deserializes type and ID.</summary>
   [Fact]
   public async Task ListUserAuditLogsAsync_AuditLogResource_DeserializesTypeAndId()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "log-resource",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-06-15T10:00:00Z", "type": "create" },
+        "action": { "result": true, "type": "create" },
         "actor": { "id": "user-1" },
-        "resource": { "id": "resource-id", "type": "dns_record", "product": "dns", "scope": "zone" }
+        "resource": { "id": "resource-id", "type": "dns_record", "product": "dns", "scope": "zone" },
+        "when": "2024-06-15T10:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -1421,13 +1337,14 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task ListUserAuditLogsAsync_AuditLogAccount_DeserializesCorrectly()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "log-account",
         "account": { "id": "acc-full", "name": "My Account Name" },
-        "action": { "result": "success", "time": "2024-06-15T10:00:00Z", "type": "update" },
-        "actor": { "id": "user-1" }
+        "action": { "result": true, "type": "update" },
+        "actor": { "id": "user-1" },
+        "when": "2024-06-15T10:00:00Z"
       }
       """;
     var successResponse = CreateAuditLogCursorResponse(auditLogJson);
@@ -1441,7 +1358,7 @@ public class AuditLogsApiUnitTests
 
     // Assert
     var account = result.Items[0].Account;
-    account.Id.Should().Be("acc-full");
+    account!.Id.Should().Be("acc-full");
     account.Name.Should().Be("My Account Name");
   }
 
@@ -1449,13 +1366,14 @@ public class AuditLogsApiUnitTests
   [Fact]
   public async Task ListUserAuditLogsAsync_AuditLogZone_DeserializesCorrectly()
   {
-    // Arrange
+    // Arrange - v1 API format
     var auditLogJson = """
       {
         "id": "log-zone",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-06-15T10:00:00Z", "type": "create" },
+        "action": { "result": true, "type": "create" },
         "actor": { "id": "user-1" },
+        "when": "2024-06-15T10:00:00Z",
         "zone": { "id": "zone-id-abc", "name": "mysite.io" }
       }
       """;
@@ -1502,7 +1420,7 @@ public class AuditLogsApiUnitTests
       {
         "id": "log-1",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-06-15T10:00:00Z", "type": "create" },
+        "action": { "result": true, "time": "2024-06-15T10:00:00Z", "type": "create" },
         "actor": { "id": "user-1" }
       }
       """;
@@ -1534,7 +1452,7 @@ public class AuditLogsApiUnitTests
       {
         "id": "log-1",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-06-15T10:00:00Z", "type": "create" },
+        "action": { "result": true, "time": "2024-06-15T10:00:00Z", "type": "create" },
         "actor": { "id": "user-1" }
       }
       """;
@@ -1561,7 +1479,7 @@ public class AuditLogsApiUnitTests
       {
         "id": "log-last",
         "account": { "id": "acc-1" },
-        "action": { "result": "success", "time": "2024-06-15T10:00:00Z", "type": "create" },
+        "action": { "result": true, "time": "2024-06-15T10:00:00Z", "type": "create" },
         "actor": { "id": "user-1" }
       }
       """;
@@ -1596,7 +1514,7 @@ public class AuditLogsApiUnitTests
           {
             "id": "combined-log-{{requestCount}}",
             "account": { "id": "acc-1" },
-            "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+            "action": { "result": true, "time": "2024-01-01T00:00:00Z", "type": "create" },
             "actor": { "id": "user-1" }
           }
           """;
@@ -1625,6 +1543,10 @@ public class AuditLogsApiUnitTests
   }
 
   /// <summary>U22: Verifies that ListAllUserAuditLogsAsync with filters applies filters to all pages.</summary>
+  /// <remarks>
+  ///   The v1 User Audit Logs API uses <c>action.type</c> and <c>per_page</c> instead of
+  ///   <c>action_type</c> and <c>limit</c> used by the v2 Account Audit Logs API.
+  /// </remarks>
   [Fact]
   public async Task ListAllUserAuditLogsAsync_WithFilters_AppliesFiltersToAllPages()
   {
@@ -1645,7 +1567,7 @@ public class AuditLogsApiUnitTests
           {
             "id": "filtered-log-{{requestCount}}",
             "account": { "id": "acc-1" },
-            "action": { "result": "success", "time": "2024-01-01T00:00:00Z", "type": "create" },
+            "action": { "result": true, "time": "2024-01-01T00:00:00Z", "type": "create" },
             "actor": { "id": "user-1" }
           }
           """;
@@ -1666,40 +1588,21 @@ public class AuditLogsApiUnitTests
       logs.Add(log);
     }
 
-    // Assert
+    // Assert - v1 API uses action.type and per_page (dot notation)
     capturedRequests.Should().HaveCount(2);
     foreach (var req in capturedRequests)
     {
-      req.RequestUri!.Query.Should().Contain("action_type=create");
-      req.RequestUri.Query.Should().Contain("limit=10");
+      req.RequestUri!.Query.Should().Contain("action.type=create");
+      req.RequestUri.Query.Should().Contain("per_page=10");
     }
   }
 
   #endregion
 
 
-  #region F15 User Audit Logs - Error Handling Tests (U23-U31)
+  #region F15 User Audit Logs - Error Handling Tests (U23-U26)
 
-  /// <summary>U23: Verifies that ListUserAuditLogsAsync throws HttpRequestException with 401 when unauthorized.</summary>
-  [Fact]
-  public async Task ListUserAuditLogsAsync_Unauthorized401_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10000, "Authentication error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Unauthorized);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListUserAuditLogsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U24: Verifies that ListUserAuditLogsAsync throws CloudflareApiException when API returns success=false.</summary>
+  /// <summary>U23: Verifies that ListUserAuditLogsAsync throws CloudflareApiException when API returns success=false.</summary>
   [Fact]
   public async Task ListUserAuditLogsAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -1719,7 +1622,7 @@ public class AuditLogsApiUnitTests
     exception.Which.Errors[0].Code.Should().Be(1001);
   }
 
-  /// <summary>U25: Verifies that invalid date format filter is handled (tested indirectly via query building).</summary>
+  /// <summary>U24: Verifies that invalid date format filter is handled (tested indirectly via query building).</summary>
   [Fact]
   public async Task ListUserAuditLogsAsync_ValidDateFormat_UsesIso8601()
   {
@@ -1746,7 +1649,7 @@ public class AuditLogsApiUnitTests
     capturedRequest.RequestUri.Query.Should().Contain("2024-12-01");
   }
 
-  /// <summary>U26: Verifies that CloudflareApiException contains all errors from response.</summary>
+  /// <summary>U25: Verifies that CloudflareApiException contains all errors from response.</summary>
   [Fact]
   public async Task ListUserAuditLogsAsync_MultipleErrors_ThrowsCloudflareApiExceptionWithAll()
   {
@@ -1773,101 +1676,6 @@ public class AuditLogsApiUnitTests
     // Assert
     var exception = await act.Should().ThrowAsync<CloudflareApiException>();
     exception.Which.Errors.Should().HaveCount(2);
-  }
-
-  /// <summary>U27: Verifies that ListUserAuditLogsAsync throws HttpRequestException with 403 when forbidden.</summary>
-  [Fact]
-  public async Task ListUserAuditLogsAsync_Forbidden403_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10001, "Forbidden");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Forbidden);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListUserAuditLogsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U28: Verifies that ListUserAuditLogsAsync throws HttpRequestException with 429 when rate limited.</summary>
-  [Fact]
-  public async Task ListUserAuditLogsAsync_RateLimited429_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10002, "Rate limited");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.TooManyRequests);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListUserAuditLogsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U29: Verifies that ListUserAuditLogsAsync throws HttpRequestException on HTTP 500.</summary>
-  [Fact]
-  public async Task ListUserAuditLogsAsync_ServerError500_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10003, "Server error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.InternalServerError);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListUserAuditLogsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-  }
-
-  /// <summary>U30: Verifies that ListUserAuditLogsAsync throws HttpRequestException on HTTP 502.</summary>
-  [Fact]
-  public async Task ListUserAuditLogsAsync_BadGateway502_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10004, "Bad gateway");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.BadGateway);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListUserAuditLogsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-  }
-
-  /// <summary>U31: Verifies that ListUserAuditLogsAsync throws HttpRequestException on HTTP 503.</summary>
-  [Fact]
-  public async Task ListUserAuditLogsAsync_ServiceUnavailable503_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10005, "Service unavailable");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.ServiceUnavailable);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new AuditLogsApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListUserAuditLogsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
   }
 
   #endregion

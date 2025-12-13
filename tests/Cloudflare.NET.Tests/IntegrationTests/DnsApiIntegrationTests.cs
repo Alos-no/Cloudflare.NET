@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Shared.Fixtures;
 using Shared.Helpers;
 using Xunit.Abstractions;
-using DnsRecordType = Zones.Models.DnsRecordType;
 
 /// <summary>
 ///   Contains integration tests for the <see cref="DnsApi" /> class.
@@ -934,24 +933,30 @@ public class DnsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, I
     record.Content.Should().Be(content);
   }
 
-  /// <summary>
-  ///   I35: Verifies that operations on a non-existent zone throw an error.
-  /// </summary>
+  /// <summary>I35: Verifies that operations on a non-existent zone throw HTTP 403 Forbidden.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     Cloudflare returns 403 Forbidden for non-existent zone IDs that are in valid format
+  ///     (32-character hex strings). This is intentional security behavior to prevent zone
+  ///     enumeration attacks - by returning the same 403 for both non-existent and unauthorized
+  ///     zones, attackers cannot discover which zone IDs are valid.
+  ///   </para>
+  ///   <para>
+  ///     See: https://authress.io/knowledge-base/articles/choosing-the-right-http-error-code-401-403-404
+  ///   </para>
+  /// </remarks>
   [IntegrationTest]
-  public async Task GetDnsRecordAsync_NonExistentZone_ThrowsError()
+  public async Task GetDnsRecordAsync_NonExistentZone_ThrowsForbidden()
   {
-    // Arrange
+    // Arrange - Use a valid format zone ID that doesn't exist
     var nonExistentZoneId = "00000000000000000000000000000000";
 
     // Act
     var action = async () => await _sut.GetDnsRecordAsync(nonExistentZoneId, _primaryRecordId!);
 
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().BeOneOf(
-      System.Net.HttpStatusCode.NotFound,
-      System.Net.HttpStatusCode.Forbidden,
-      System.Net.HttpStatusCode.BadRequest);
+    // Assert - Cloudflare returns 403 to prevent zone enumeration (security best practice)
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.Forbidden);
   }
 
   /// <summary>
@@ -969,6 +974,65 @@ public class DnsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, I
     // Assert
     var ex = await action.Should().ThrowAsync<HttpRequestException>();
     ex.Which.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+  }
+
+  /// <summary>I39: Verifies that getting a record with a malformed zone ID returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Invalid zone ID formats (not 32-character hex strings) return 404 NotFound
+  ///   with error code 7003 "Could not route to..." because Cloudflare's routing layer
+  ///   cannot match the path to a valid zone endpoint.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetDnsRecordAsync_MalformedZoneId_ThrowsNotFound()
+  {
+    // Arrange
+    var malformedZoneId = "invalid-zone-id-format!!!";
+
+    // Act
+    var action = async () => await _sut.GetDnsRecordAsync(malformedZoneId, _primaryRecordId!);
+
+    // Assert
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
+  }
+
+  /// <summary>I40: Verifies that getting a record with a malformed record ID returns HTTP 400 BadRequest.</summary>
+  /// <remarks>
+  ///   Malformed DNS record IDs (not 32-character hex strings) return 400 BadRequest
+  ///   because the record ID validation fails within a valid zone context.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetDnsRecordAsync_MalformedRecordId_ThrowsBadRequest()
+  {
+    // Arrange
+    var malformedRecordId = "invalid-record-id-format!!!";
+
+    // Act
+    var action = async () => await _sut.GetDnsRecordAsync(_zoneId, malformedRecordId);
+
+    // Assert
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
+  }
+
+  /// <summary>I41: Verifies that listing records with a malformed zone ID returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Invalid zone ID formats (not 32-character hex strings) return 404 NotFound
+  ///   with error code 7003 "Could not route to..." because Cloudflare's routing layer
+  ///   cannot match the path to a valid zone endpoint.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task ListDnsRecordsAsync_MalformedZoneId_ThrowsNotFound()
+  {
+    // Arrange
+    var malformedZoneId = "invalid-zone-id-format!!!";
+
+    // Act
+    var action = async () => await _sut.ListDnsRecordsAsync(malformedZoneId);
+
+    // Assert
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
   #endregion

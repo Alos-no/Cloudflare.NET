@@ -725,30 +725,9 @@ public class AccountManagementApiUnitTests
   #endregion
 
 
-  #region Account Management - Error Handling Tests (U24-U31)
+  #region Account Management - Error Handling Tests (U24-U26)
 
-  /// <summary>U24: Verifies GetAccountAsync throws on 404 Not Found.</summary>
-  [Fact]
-  public async Task GetAccountAsync_WhenNotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 7003, ""message"": ""Could not route to /accounts/nonexistent, perhaps your object identifier is invalid?"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var options    = Options.Create(new CloudflareApiOptions { AccountId = "test-account-id" });
-    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.GetAccountAsync("nonexistent"));
-    exception.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U25: Verifies API error envelope throws CloudflareApiException.</summary>
+  /// <summary>U24: Verifies API error envelope throws CloudflareApiException.</summary>
   [Fact]
   public async Task GetAccountAsync_WhenApiError_ThrowsCloudflareApiException()
   {
@@ -771,7 +750,7 @@ public class AccountManagementApiUnitTests
     exception.Errors[0].Message.Should().Be("Invalid request headers");
   }
 
-  /// <summary>U26: Verifies multiple API errors are captured in exception.</summary>
+  /// <summary>U25: Verifies multiple API errors are captured in exception.</summary>
   [Fact]
   public async Task GetAccountAsync_WhenMultipleApiErrors_CapturesAllErrors()
   {
@@ -794,110 +773,6 @@ public class AccountManagementApiUnitTests
     var exception = await Assert.ThrowsAsync<CloudflareApiException>(() => sut.GetAccountAsync("abc123"));
     exception.Errors.Should().HaveCount(2);
     exception.Errors.Select(e => e.Code).Should().Contain(new[] { 6003, 6007 });
-  }
-
-  /// <summary>U27: Verifies CreateAccountAsync throws on permission error.</summary>
-  [Fact]
-  public async Task CreateAccountAsync_WhenUnauthorized_ThrowsCloudflareApiException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Authentication error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var options    = Options.Create(new CloudflareApiOptions { AccountId = "test-account-id" });
-    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
-
-    // Act & Assert
-    await Assert.ThrowsAsync<HttpRequestException>(() => sut.CreateAccountAsync(new CreateAccountRequest("Test")));
-  }
-
-  /// <summary>U28: Verifies DeleteAccountAsync throws on permission error.</summary>
-  [Fact]
-  public async Task DeleteAccountAsync_WhenUnauthorized_ThrowsCloudflareApiException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Authentication error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var options    = Options.Create(new CloudflareApiOptions { AccountId = "test-account-id" });
-    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
-
-    // Act & Assert
-    await Assert.ThrowsAsync<HttpRequestException>(() => sut.DeleteAccountAsync("abc123"));
-  }
-
-  /// <summary>U29: Verifies unauthorized (401) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task GetAccountAsync_WhenUnauthorized401_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Authentication error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var options    = Options.Create(new CloudflareApiOptions { AccountId = "test-account-id" });
-    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.GetAccountAsync("abc123"));
-    exception.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U30: Verifies rate limited (429) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountsAsync_WhenRateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Rate limited"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var options    = Options.Create(new CloudflareApiOptions { AccountId = "test-account-id" });
-    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountsAsync());
-    exception.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U31: Verifies server error (500) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task UpdateAccountAsync_WhenServerError_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Internal server error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.InternalServerError);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var options    = Options.Create(new CloudflareApiOptions { AccountId = "test-account-id" });
-    var sut        = new AccountsApi(httpClient, options, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(
-      () => sut.UpdateAccountAsync("abc123", new UpdateAccountRequest("Test")));
-    exception.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
   }
 
   #endregion

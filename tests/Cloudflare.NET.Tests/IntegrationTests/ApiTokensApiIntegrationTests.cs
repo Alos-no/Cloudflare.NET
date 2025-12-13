@@ -37,9 +37,6 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
 
-  /// <summary>The xUnit test output helper for writing warnings and debug info.</summary>
-  private readonly ITestOutputHelper _output;
-
   /// <summary>List of token IDs created during tests that need cleanup.</summary>
   private readonly List<string> _createdTokenIds = new();
 
@@ -55,7 +52,6 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   {
     _sut      = fixture.ApiTokensApi;
     _settings = TestConfiguration.CloudflareSettings;
-    _output   = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -80,7 +76,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     // Assert
     result.Should().NotBeNull();
     result.Items.Should().NotBeNullOrEmpty("there should be permission groups available");
-    // Note: Permission groups endpoint may not return result_info, so PageInfo may be null
+    result.PageInfo.Should().BeNull("permission groups endpoint does not return result_info");
   }
 
   /// <summary>I02: Verifies that GetAllAccountPermissionGroupsAsync iterates through all groups.</summary>
@@ -105,54 +101,87 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     groups.All(g => !string.IsNullOrEmpty(g.Id)).Should().BeTrue();
     groups.All(g => !string.IsNullOrEmpty(g.Name)).Should().BeTrue();
     groups.All(g => g.Scopes != null).Should().BeTrue();
-
-    // Log some groups for visibility
-    _output.WriteLine($"Found {groups.Count} permission groups:");
-    foreach (var g in groups.Take(5))
-      _output.WriteLine($"  - {g.Name} ({g.Id}): {string.Join(", ", g.Scopes.Take(3))}...");
   }
 
-  /// <summary>I03: Verifies that permission groups can be filtered by name.</summary>
-  [IntegrationTest]
-  public async Task GetAccountPermissionGroupsAsync_WithNameFilter_ReturnsFilteredResults()
-  {
-    // Arrange
-    var accountId = _settings.AccountId;
-    var filters = new ListPermissionGroupsFilters(Name: "Zone");
-
-    // Act
-    var result = await _sut.GetAccountPermissionGroupsAsync(accountId, filters);
-
-    // Assert
-    result.Should().NotBeNull();
-    if (result.Items.Any())
-    {
-      result.Items.Should().OnlyContain(g =>
-        g.Name.Contains("Zone", StringComparison.OrdinalIgnoreCase) ||
-        g.Scopes.Any(s => s.Contains("zone", StringComparison.OrdinalIgnoreCase)));
-    }
-  }
-
-  /// <summary>I04: Verifies permission groups with pagination parameter.</summary>
+  /// <summary>I03: Verifies that the name filter parameter is broken and returns empty results.</summary>
   /// <remarks>
-  ///   Note: The Cloudflare API may ignore pagination parameters for permission groups.
-  ///   This test verifies the request is accepted but doesn't assert on result count
-  ///   since the API behavior varies.
+  ///   <b>Cloudflare API Bug:</b> The 'name' filter is documented but does not work.
+  ///   The API returns empty results when a name filter is applied, regardless of filter value.
+  ///   <para>
+  ///     API documentation at /api/resources/accounts/.../permission_groups/methods/list/ states:
+  ///     "name (optional, string) - Filter by the name of the permission group."
+  ///     However, the API returns empty results regardless of the filter value.
+  ///   </para>
+  ///   <para>
+  ///     Verified 2024-12-12: Unfiltered request returns 308 groups (12 containing "Zone").
+  ///     Request with ?name=Zone returns 0 groups despite documentation claiming filter support.
+  ///   </para>
   /// </remarks>
+  [CloudflareInternalBug(
+    BugDescription = "GET /accounts/{account_id}/tokens/permission_groups?name={filter} returns empty results despite documentation claiming name filter support",
+    ReferenceUrl = "https://community.cloudflare.com/t/name-filter-on-permission-groups-endpoint-returns-empty-results/868236")]
   [IntegrationTest]
-  public async Task GetAccountPermissionGroupsAsync_WithPagination_AcceptsRequest()
+  public async Task GetAccountPermissionGroupsAsync_WithNameFilter_IsBroken()
   {
-    // Arrange
+    // Arrange - First get all permission groups
     var accountId = _settings.AccountId;
-    var filters = new ListPermissionGroupsFilters(PerPage: 5);
+    var allGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
+    allGroups.Items.Should().NotBeEmpty("test requires permission groups to exist");
 
-    // Act
+    // Find a group name containing "Zone" (common across all Cloudflare accounts)
+    var zoneGroup = allGroups.Items.FirstOrDefault(g =>
+      g.Name.Contains("Zone", StringComparison.OrdinalIgnoreCase));
+    zoneGroup.Should().NotBeNull(
+      "test requires at least one permission group with 'Zone' in the name");
+
+    // Act - Filter by "Zone" which should return results if filter worked
+    var filters = new ListPermissionGroupsFilters(Name: "Zone");
     var result = await _sut.GetAccountPermissionGroupsAsync(accountId, filters);
 
-    // Assert
+    // Assert - Document actual API behavior: name filter returns empty results
+    // This is a documented API bug - the filter is silently ignored/broken
     result.Should().NotBeNull();
     result.Items.Should().NotBeNull();
-    // Note: The API may ignore per_page for permission groups; we just verify the call succeeds
+
+    // The API returns empty results when name filter is applied (documented bug)
+    // If this assertion fails in the future, it means Cloudflare fixed the bug
+    result.Items.Should().BeEmpty(
+      "the Cloudflare API 'name' filter is documented but silently returns empty results; " +
+      "if this test fails, Cloudflare may have fixed the bug and the test should be updated");
+  }
+
+  /// <summary>I04: Verifies that the scope filter parameter works correctly.</summary>
+  /// <remarks>
+  ///   Unlike the 'name' filter (which is broken), the 'scope' filter works correctly.
+  ///   This test verifies that filtering by scope (e.g., "com.cloudflare.api.account.zone")
+  ///   returns only permission groups that include that scope.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetAccountPermissionGroupsAsync_WithScopeFilter_ReturnsFilteredResults()
+  {
+    // Arrange - Use the zone scope which is common across Cloudflare accounts
+    var accountId = _settings.AccountId;
+    var zoneScope = "com.cloudflare.api.account.zone";
+
+    // Act - Filter by zone scope
+    var filters = new ListPermissionGroupsFilters(Scope: zoneScope);
+    var result = await _sut.GetAccountPermissionGroupsAsync(accountId, filters);
+
+    // Also get all groups for comparison
+    var allGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
+
+    // Assert - Results must not be empty and must match the scope filter
+    result.Should().NotBeNull();
+    result.Items.Should().NotBeEmpty("filtering by zone scope should return results");
+
+    // Verify filtered results are fewer than total (proving filter works)
+    result.Items.Should().HaveCountLessThan(allGroups.Items.Count,
+      "scope filter should return fewer results than unfiltered request");
+
+    // Verify all returned groups have the zone scope
+    result.Items.Should().OnlyContain(g =>
+      g.Scopes.Any(s => s.Contains("zone", StringComparison.OrdinalIgnoreCase)),
+      "all filtered results must contain 'zone' in their scopes");
   }
 
   #endregion
@@ -198,8 +227,6 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     tokens.Should().NotBeEmpty();
     tokens.All(t => !string.IsNullOrEmpty(t.Id)).Should().BeTrue();
     tokens.All(t => !string.IsNullOrEmpty(t.Name)).Should().BeTrue();
-
-    _output.WriteLine($"Found {tokens.Count} API tokens");
   }
 
   /// <summary>I07: Verifies token listing with pagination.</summary>
@@ -261,11 +288,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       g.Name.Contains("Read", StringComparison.OrdinalIgnoreCase) &&
       g.Name.Contains("Account", StringComparison.OrdinalIgnoreCase));
 
-    if (readOnlyGroup is null)
-    {
-      _output.WriteLine("[SKIP] Could not find a suitable read-only permission group for testing.");
-      return;
-    }
+    readOnlyGroup.Should().NotBeNull("test requires at least one read-only permission group (Account Read)");
 
     try
     {
@@ -297,9 +320,6 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       result.Value.Should().NotBeNullOrEmpty("the token secret should be returned on creation");
       result.Status.Should().Be(TokenStatus.Active);
       result.Policies.Should().NotBeEmpty();
-
-      _output.WriteLine($"Created token: {result.Id}");
-      _output.WriteLine($"Token value starts with: {result.Value[..Math.Min(10, result.Value.Length)]}...");
     }
     finally
     {
@@ -319,11 +339,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var listResult = await _sut.ListAccountTokensAsync(accountId);
     var existingToken = listResult.Items.FirstOrDefault();
 
-    if (existingToken is null)
-    {
-      _output.WriteLine("[SKIP] No tokens found to test GetAccountTokenAsync.");
-      return;
-    }
+    existingToken.Should().NotBeNull("test requires at least one existing API token");
 
     // Act
     var result = await _sut.GetAccountTokenAsync(accountId, existingToken.Id);
@@ -347,11 +363,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     try
     {
@@ -404,11 +416,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     try
     {
@@ -471,11 +479,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     try
     {
@@ -538,11 +542,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     // Create a token
     var createRequest = new CreateApiTokenRequest(
@@ -598,11 +598,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     try
     {
@@ -632,9 +628,6 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       // Assert
       newValue.Should().NotBeNullOrEmpty();
       newValue.Should().NotBe(originalValue, "rolled token should have a different value");
-
-      _output.WriteLine($"Original value starts with: {originalValue[..Math.Min(10, originalValue.Length)]}...");
-      _output.WriteLine($"New value starts with: {newValue[..Math.Min(10, newValue.Length)]}...");
     }
     finally
     {
@@ -653,11 +646,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     try
     {
@@ -686,25 +675,23 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       var result = await _sut.CreateAccountTokenAsync(accountId, request);
       _createdTokenIds.Add(result.Id);
 
-      // Assert
+      // Assert - Basic token creation succeeded
       result.Should().NotBeNull();
       result.Name.Should().Be(tokenName);
       result.Value.Should().NotBeNullOrEmpty();
 
-      // Note: The condition may not be returned in the create response depending on API behavior.
-      // We verify the token was created successfully with the expected name and value.
-      // If condition is returned, verify its structure.
-      if (result.Condition?.RequestIp is not null)
-      {
-        result.Condition.RequestIp.In.Should().Contain("192.168.1.0/24");
-        result.Condition.RequestIp.In.Should().Contain("10.0.0.0/8");
-        result.Condition.RequestIp.NotIn.Should().Contain("192.168.1.100/32");
-      }
-      else
-      {
-        // Log that condition was not returned for visibility
-        _output.WriteLine("[INFO] Token condition was not returned in create response - this is expected API behavior.");
-      }
+      // Assert - Verify IP conditions are returned in create response
+      result.Condition.Should().NotBeNull("token should have condition in create response");
+      result.Condition!.RequestIp.Should().NotBeNull("token should have IP restriction");
+      result.Condition.RequestIp!.In.Should().Contain("192.168.1.0/24");
+      result.Condition.RequestIp.In.Should().Contain("10.0.0.0/8");
+      result.Condition.RequestIp.NotIn.Should().Contain("192.168.1.100/32");
+
+      // Also verify via GET endpoint
+      var fetchedToken = await _sut.GetAccountTokenAsync(accountId, result.Id);
+      fetchedToken.Should().NotBeNull("token should be retrievable after creation");
+      fetchedToken.Condition.Should().NotBeNull("fetched token should have condition");
+      fetchedToken.Condition!.RequestIp.Should().NotBeNull("fetched token should have IP restriction");
     }
     finally
     {
@@ -725,11 +712,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     try
     {
@@ -781,11 +764,11 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var action = async () => await _sut.GetAccountTokenAsync(accountId, nonExistentTokenId);
 
     // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.Forbidden);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I20: Verifies that DeleteAccountTokenAsync handles non-existent token gracefully.</summary>
+  /// <summary>I20: Verifies that DeleteAccountTokenAsync returns 404 for non-existent token.</summary>
   [IntegrationTest]
   public async Task DeleteAccountTokenAsync_WhenTokenNotFound_ThrowsHttpRequestException()
   {
@@ -793,15 +776,13 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var accountId = _settings.AccountId;
     var nonExistentTokenId = "00000000000000000000000000000000";
 
-    // Act
+    // Act & Assert
     var action = async () => await _sut.DeleteAccountTokenAsync(accountId, nonExistentTokenId);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.Forbidden);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I21: Verifies that RollAccountTokenAsync throws for non-existent token.</summary>
+  /// <summary>I21: Verifies that RollAccountTokenAsync returns 404 for non-existent token.</summary>
   [IntegrationTest]
   public async Task RollAccountTokenAsync_WhenTokenNotFound_ThrowsHttpRequestException()
   {
@@ -809,12 +790,63 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var accountId = _settings.AccountId;
     var nonExistentTokenId = "00000000000000000000000000000000";
 
-    // Act
+    // Act & Assert
     var action = async () => await _sut.RollAccountTokenAsync(accountId, nonExistentTokenId);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
+  }
 
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.Forbidden);
+  /// <summary>I23: Verifies that GetAccountTokenAsync with a malformed account ID returns HTTP 400.</summary>
+  /// <remarks>
+  ///   Malformed account IDs containing special characters that cannot be parsed as valid
+  ///   identifiers return 400 BadRequest with error code 7003 "Could not route to..."
+  ///   because the request fails at the routing/parsing layer.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetAccountTokenAsync_MalformedAccountId_ThrowsBadRequest()
+  {
+    // Arrange - Use special characters that cause a parsing error (400 BadRequest)
+    var malformedAccountId = "!@#$%^&*()";
+    // Token ID format is valid (32 hex chars) - actual existence doesn't matter since
+    // account ID validation occurs first and will reject the malformed account ID
+    var validFormatTokenId = "00000000000000000000000000000000";
+
+    // Act & Assert
+    var action = async () => await _sut.GetAccountTokenAsync(malformedAccountId, validFormatTokenId);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+  }
+
+  /// <summary>I24: Verifies that GetAccountTokenAsync with a malformed token ID returns 400 Bad Request.</summary>
+  [IntegrationTest]
+  public async Task GetAccountTokenAsync_MalformedTokenId_ThrowsBadRequest()
+  {
+    // Arrange
+    var accountId = _settings.AccountId;
+    var malformedTokenId = "invalid-token-id-format!!!";
+
+    // Act & Assert
+    var action = async () => await _sut.GetAccountTokenAsync(accountId, malformedTokenId);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+  }
+
+  /// <summary>I25: Verifies that ListAccountTokensAsync with a malformed account ID returns HTTP 400.</summary>
+  /// <remarks>
+  ///   Malformed account IDs containing special characters that cannot be parsed as valid
+  ///   identifiers return 400 BadRequest with error code 7003 "Could not route to..."
+  ///   because the request fails at the routing/parsing layer.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task ListAccountTokensAsync_MalformedAccountId_ThrowsBadRequest()
+  {
+    // Arrange - Use special characters that cause a parsing error (400 BadRequest)
+    var malformedAccountId = "!@#$%^&*()";
+
+    // Act & Assert
+    var action = async () => await _sut.ListAccountTokensAsync(malformedAccountId);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
   }
 
   #endregion
@@ -834,11 +866,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var permGroups = await _sut.GetAccountPermissionGroupsAsync(accountId);
     var anyGroup = permGroups.Items.FirstOrDefault();
 
-    if (anyGroup is null)
-    {
-      _output.WriteLine("[SKIP] No permission groups available.");
-      return;
-    }
+    anyGroup.Should().NotBeNull("test requires at least one permission group");
 
     string? tokenId = null;
 
@@ -868,14 +896,10 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       created.Value.Should().NotBeNullOrEmpty();
       var originalValue = created.Value;
 
-      _output.WriteLine($"Step 1: Created token {tokenId}");
-
       // 2. Get
       var retrieved = await _sut.GetAccountTokenAsync(accountId, tokenId);
       retrieved.Id.Should().Be(tokenId);
       retrieved.Name.Should().Be(tokenName);
-
-      _output.WriteLine("Step 2: Retrieved token successfully");
 
       // 3. Update
       var updateRequest = new UpdateApiTokenRequest(
@@ -896,26 +920,18 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       var updated = await _sut.UpdateAccountTokenAsync(accountId, tokenId, updateRequest);
       updated.Name.Should().Be(updatedName);
 
-      _output.WriteLine("Step 3: Updated token successfully");
-
       // 4. Roll
       var newValue = await _sut.RollAccountTokenAsync(accountId, tokenId);
       newValue.Should().NotBe(originalValue);
-
-      _output.WriteLine("Step 4: Rolled token successfully");
 
       // 5. Delete
       await _sut.DeleteAccountTokenAsync(accountId, tokenId);
       tokenId = null; // Mark as deleted so cleanup doesn't try to delete again
 
-      _output.WriteLine("Step 5: Deleted token successfully");
-
       // 6. Verify deletion
       var action = async () => await _sut.GetAccountTokenAsync(accountId, created.Id);
       await action.Should().ThrowAsync<HttpRequestException>()
         .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
-
-      _output.WriteLine("Step 6: Verified token is deleted");
     }
     finally
     {
@@ -956,7 +972,6 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       try
       {
         await _sut.DeleteAccountTokenAsync(accountId, tokenId);
-        _output.WriteLine($"Cleaned up token: {tokenId}");
       }
       catch
       {

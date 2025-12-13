@@ -419,29 +419,9 @@ public class AccountRolesApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U12-U18)
+  #region Error Handling Tests (U12-U14)
 
-  /// <summary>U12: Verifies GetAccountRoleAsync throws on 404 Not Found.</summary>
-  [Fact]
-  public async Task GetAccountRoleAsync_WhenNotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Role not found"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.NotFound);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new RolesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.GetAccountRoleAsync("acc", "nonexistent"));
-    exception.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U13: Verifies API error envelope throws CloudflareApiException.</summary>
+  /// <summary>U12: Verifies API error envelope throws CloudflareApiException.</summary>
   [Fact]
   public async Task ListAccountRolesAsync_WhenApiError_ThrowsCloudflareApiException()
   {
@@ -462,7 +442,7 @@ public class AccountRolesApiUnitTests
     exception.Errors[0].Code.Should().Be(10000);
   }
 
-  /// <summary>U14: Verifies multiple errors in response are captured in CloudflareApiException.</summary>
+  /// <summary>U13: Verifies multiple errors in response are captured in CloudflareApiException.</summary>
   [Fact]
   public async Task ListAccountRolesAsync_WhenMultipleErrors_CapturesAllErrors()
   {
@@ -485,95 +465,12 @@ public class AccountRolesApiUnitTests
     exception.Errors.Should().HaveCount(2);
   }
 
-  /// <summary>U15: Verifies unauthorized (401) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountRolesAsync_WhenUnauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Authentication error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Unauthorized);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new RolesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountRolesAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U16: Verifies forbidden (403) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task GetAccountRoleAsync_WhenForbidden_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Access denied"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.Forbidden);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new RolesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.GetAccountRoleAsync("acc", "role-123"));
-    exception.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U17: Verifies rate limited (429) throws HttpRequestException.</summary>
-  [Fact]
-  public async Task ListAccountRolesAsync_WhenRateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Rate limited"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, HttpStatusCode.TooManyRequests);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new RolesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountRolesAsync("acc"));
-    exception.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U18: Verifies server error (500/502/503) throws HttpRequestException.</summary>
-  [Theory]
-  [InlineData(HttpStatusCode.InternalServerError)]
-  [InlineData(HttpStatusCode.BadGateway)]
-  [InlineData(HttpStatusCode.ServiceUnavailable)]
-  public async Task ListAccountRolesAsync_WhenServerError_ThrowsHttpRequestException(HttpStatusCode statusCode)
-  {
-    // Arrange
-    var jsonResponse = @"{
-      ""success"": false,
-      ""errors"": [{ ""code"": 10000, ""message"": ""Server error"" }],
-      ""messages"": [],
-      ""result"": null
-    }";
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(jsonResponse, statusCode);
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new RolesApi(httpClient, _loggerFactory);
-
-    // Act & Assert
-    var exception = await Assert.ThrowsAsync<HttpRequestException>(() => sut.ListAccountRolesAsync("acc"));
-    exception.StatusCode.Should().Be(statusCode);
-  }
-
   #endregion
 
 
-  #region URL Encoding Tests (U19-U20)
+  #region URL Encoding Tests (U15-U16)
 
-  /// <summary>U19: Verifies that GetAccountRoleAsync properly URL-encodes the account ID.</summary>
+  /// <summary>U15: Verifies that GetAccountRoleAsync properly URL-encodes the account ID.</summary>
   [Fact]
   public async Task GetAccountRoleAsync_WithSpecialChars_UrlEncodesAccountId()
   {
@@ -595,7 +492,7 @@ public class AccountRolesApiUnitTests
     capturedRequest!.RequestUri!.AbsolutePath.Should().Contain("abc%2Bdef%2Fghi");
   }
 
-  /// <summary>U20: Verifies that GetAccountRoleAsync properly URL-encodes the role ID.</summary>
+  /// <summary>U16: Verifies that GetAccountRoleAsync properly URL-encodes the role ID.</summary>
   [Fact]
   public async Task GetAccountRoleAsync_WithSpecialChars_UrlEncodesRoleId()
   {

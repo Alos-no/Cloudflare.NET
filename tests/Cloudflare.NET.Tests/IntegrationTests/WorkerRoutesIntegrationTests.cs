@@ -22,6 +22,7 @@ using Xunit.Abstractions;
 ///   <para>
 ///     Test routes use patterns prefixed with "_cfnet-test-" for easy identification.
 ///     The token used for testing must have Zone Read and Workers Routes Write permissions.
+///     Missing permissions will be caught by the PermissionValidationTests that run first.
 ///   </para>
 /// </remarks>
 [Trait("Category", TestConstants.TestCategories.Integration)]
@@ -35,9 +36,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
 
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
-
-  /// <summary>The xUnit test output helper for writing warnings and debug info.</summary>
-  private readonly ITestOutputHelper _output;
 
   /// <summary>List of route IDs created during tests that need cleanup.</summary>
   private readonly List<string> _createdRouteIds = new();
@@ -54,7 +52,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   {
     _sut      = fixture.WorkersApi;
     _settings = TestConfiguration.CloudflareSettings;
-    _output   = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -78,8 +75,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
 
     // Assert
     result.Should().NotBeNull();
-    // Note: Zone may or may not have existing routes, so we just verify the call succeeds
-    _output.WriteLine($"Found {result.Count} worker routes in zone");
   }
 
   /// <summary>I02: Verifies that listing routes on a zone without routes returns empty list.</summary>
@@ -99,7 +94,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     {
       route.Id.Should().NotBeNullOrEmpty();
       route.Pattern.Should().NotBeNullOrEmpty();
-      _output.WriteLine($"  Route: {route.Pattern} -> {route.Script ?? "(disabled)"}");
     }
   }
 
@@ -125,8 +119,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       result.Should().NotBeNull();
       result.Id.Should().Be(created.Id);
       result.Pattern.Should().Be(testPattern);
-
-      _output.WriteLine($"Retrieved route: {result.Id}");
     }
     finally
     {
@@ -164,8 +156,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       result.Pattern.Should().Be(testPattern);
       // Script should be null for disabled routes
       result.Script.Should().BeNull();
-
-      _output.WriteLine($"Created route: {result.Id} with pattern: {result.Pattern}");
     }
     finally
     {
@@ -191,8 +181,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       // Assert
       result.Should().NotBeNull();
       result.Script.Should().BeNull("disabled routes have no script binding");
-
-      _output.WriteLine($"Created disabled route: {result.Id}");
     }
     finally
     {
@@ -224,8 +212,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       updated.Should().NotBeNull();
       updated.Id.Should().Be(created.Id);
       updated.Pattern.Should().Be(updatedPattern);
-
-      _output.WriteLine($"Updated route pattern from '{originalPattern}' to '{updatedPattern}'");
     }
     finally
     {
@@ -252,8 +238,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var action = async () => await _sut.GetRouteAsync(zoneId, created.Id);
     await action.Should().ThrowAsync<HttpRequestException>()
       .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
-
-    _output.WriteLine($"Successfully deleted route: {created.Id}");
   }
 
   #endregion
@@ -281,8 +265,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       // Assert
       result.Should().NotBeNull();
       result.Pattern.Should().Be(testPattern);
-
-      _output.WriteLine($"Created wildcard subdomain route: {result.Pattern}");
     }
     finally
     {
@@ -309,8 +291,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       // Assert
       result.Should().NotBeNull();
       result.Pattern.Should().Be(testPattern);
-
-      _output.WriteLine($"Created specific path route: {result.Pattern}");
     }
     finally
     {
@@ -336,8 +316,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       // Assert
       result.Should().NotBeNull();
       result.Pattern.Should().Be(testPattern);
-
-      _output.WriteLine($"Created root domain route: {result.Pattern}");
     }
     finally
     {
@@ -369,34 +347,24 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       routeId = created.Id;
       created.Pattern.Should().Be(originalPattern);
 
-      _output.WriteLine($"Step 1: Created route {routeId}");
-
       // 2. Get
       var retrieved = await _sut.GetRouteAsync(zoneId, routeId);
       retrieved.Id.Should().Be(routeId);
       retrieved.Pattern.Should().Be(originalPattern);
-
-      _output.WriteLine("Step 2: Retrieved route successfully");
 
       // 3. Update
       var updateRequest = new UpdateWorkerRouteRequest(updatedPattern);
       var updated = await _sut.UpdateRouteAsync(zoneId, routeId, updateRequest);
       updated.Pattern.Should().Be(updatedPattern);
 
-      _output.WriteLine("Step 3: Updated route successfully");
-
       // 4. Delete
       await _sut.DeleteRouteAsync(zoneId, routeId);
       routeId = null; // Mark as deleted
-
-      _output.WriteLine("Step 4: Deleted route successfully");
 
       // 5. Verify deletion
       var action = async () => await _sut.GetRouteAsync(zoneId, created.Id);
       await action.Should().ThrowAsync<HttpRequestException>()
         .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
-
-      _output.WriteLine("Step 5: Verified route is deleted");
     }
     finally
     {
@@ -428,15 +396,13 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var zoneId = _settings.ZoneId;
     var nonExistentRouteId = "00000000000000000000000000000000";
 
-    // Act
+    // Act & Assert
     var action = async () => await _sut.GetRouteAsync(zoneId, nonExistentRouteId);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.BadRequest);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I14: Verifies that deleting a non-existent route returns appropriate error.</summary>
+  /// <summary>I14: Verifies that deleting a non-existent route returns 404.</summary>
   [IntegrationTest]
   public async Task DeleteRouteAsync_NonExistent_ThrowsHttpRequestException()
   {
@@ -444,30 +410,23 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     var zoneId = _settings.ZoneId;
     var nonExistentRouteId = "00000000000000000000000000000000";
 
-    // Act
+    // Act & Assert
     var action = async () => await _sut.DeleteRouteAsync(zoneId, nonExistentRouteId);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(HttpStatusCode.NotFound, HttpStatusCode.BadRequest);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I17: Verifies behavior with invalid zone ID format.</summary>
+  /// <summary>I17: Verifies that invalid zone ID format returns 404.</summary>
   [IntegrationTest]
   public async Task ListRoutesAsync_InvalidZoneId_ThrowsHttpRequestException()
   {
     // Arrange
     var invalidZoneId = "invalid-zone-id-format";
 
-    // Act
+    // Act & Assert
     var action = async () => await _sut.ListRoutesAsync(invalidZoneId);
-
-    // Assert
-    var exception = await action.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().BeOneOf(
-      HttpStatusCode.NotFound,
-      HttpStatusCode.BadRequest,
-      HttpStatusCode.Forbidden);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
   #endregion
@@ -494,7 +453,6 @@ public class WorkerRoutesIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       try
       {
         await _sut.DeleteRouteAsync(zoneId, routeId);
-        _output.WriteLine($"Cleaned up route: {routeId}");
       }
       catch
       {

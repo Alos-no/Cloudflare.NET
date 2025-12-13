@@ -1,4 +1,4 @@
-namespace Cloudflare.NET.Zones.Models;
+namespace Cloudflare.NET.Dns.Models;
 
 using System.Diagnostics;
 using System.Text.Json.Serialization;

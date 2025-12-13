@@ -185,32 +185,23 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>
   #region Zone Activation Tests
 
   /// <summary>
-  ///   Verifies that triggering an activation check on an already-active zone either succeeds
-  ///   or returns a 403 Forbidden if the API token lacks the required permission.
+  ///   Verifies that triggering an activation check on an already-active zone succeeds.
   ///   This is a safe mutation test since activation check is idempotent.
   /// </summary>
   [IntegrationTest]
-  public async Task TriggerActivationCheckAsync_OnActiveZone_SucceedsOrRequiresPermission()
+  public async Task TriggerActivationCheckAsync_OnActiveZone_Succeeds()
   {
     // Arrange
-    // Verify zone is active before triggering check
+    // Verify zone is active before triggering check.
     var zone = await _sut.GetZoneDetailsAsync(_zoneId);
     zone.Status.Should().Be(ZoneStatus.Active, "activation check test requires an active zone");
 
     // Act
-    try
-    {
-      var result = await _sut.TriggerActivationCheckAsync(_zoneId);
+    var result = await _sut.TriggerActivationCheckAsync(_zoneId);
 
-      // Assert - If we reach here, the API token has the required permission
-      result.Should().NotBeNull();
-      result.Id.Should().Be(_zoneId);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone > Zone > Edit permission for activation check
-      // This is acceptable behavior - the test verifies the API integration works
-    }
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().Be(_zoneId);
   }
 
   #endregion
@@ -219,37 +210,141 @@ public class ZonesApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>
   #region Zone Pause/Unpause Tests
 
   /// <summary>
-  ///   Verifies that zone pause state can be toggled and reverted, or returns 403 if
-  ///   the API token lacks Zone > Zone > Edit permission.
+  ///   Verifies that zone pause state can be toggled and reverted.
   /// </summary>
   [IntegrationTest]
-  public async Task SetZonePausedAsync_CanToggleAndRevertOrRequiresPermission()
+  public async Task SetZonePausedAsync_CanToggleAndRevert()
   {
-    // Arrange - Get current pause state
-    var originalZone     = await _sut.GetZoneDetailsAsync(_zoneId);
-    var originalPaused   = originalZone.Paused;
-    var testPausedState  = !originalPaused; // Toggle to opposite state
+    // Arrange - Get current pause state.
+    var originalZone    = await _sut.GetZoneDetailsAsync(_zoneId);
+    var originalPaused  = originalZone.Paused;
+    var testPausedState = !originalPaused; // Toggle to opposite state
 
-    try
-    {
-      // Act - Toggle to different state
-      var toggledZone = await _sut.SetZonePausedAsync(_zoneId, testPausedState);
+    // Act - Toggle to different state.
+    var toggledZone = await _sut.SetZonePausedAsync(_zoneId, testPausedState);
 
-      // Assert - Verify the toggle worked (API token has permission)
-      toggledZone.Paused.Should().Be(testPausedState, "zone paused state should be toggled");
+    // Assert - Verify the toggle worked.
+    toggledZone.Paused.Should().Be(testPausedState, "zone paused state should be toggled");
 
-      // Cleanup - Revert to original state
-      await _sut.SetZonePausedAsync(_zoneId, originalPaused);
+    // Cleanup - Revert to original state.
+    await _sut.SetZonePausedAsync(_zoneId, originalPaused);
 
-      // Verify revert succeeded
-      var revertedZone = await _sut.GetZoneDetailsAsync(_zoneId);
-      revertedZone.Paused.Should().Be(originalPaused, "zone should be reverted to original paused state");
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
-    {
-      // Expected if API token doesn't have Zone > Zone > Edit permission
-      // This is acceptable behavior - the test verifies the API integration works
-    }
+    // Verify revert succeeded.
+    var revertedZone = await _sut.GetZoneDetailsAsync(_zoneId);
+    revertedZone.Paused.Should().Be(originalPaused, "zone should be reverted to original paused state");
+  }
+
+  #endregion
+
+
+  #region Zone Create/Edit/Delete Tests (Skipped - Dangerous Operations)
+
+  /// <summary>
+  ///   Verifies that a zone can be created successfully.
+  ///   This test creates a new zone and then deletes it as cleanup.
+  /// </summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/zones/methods/create/</item>
+  ///     <item>Full setup: https://developers.cloudflare.com/dns/zone-setups/full-setup/setup/</item>
+  ///     <item>Zone requires nameserver delegation at domain registrar</item>
+  ///     <item>Domain must be valid TLD from Public Suffix List (PSL)</item>
+  ///     <item>Zone remains "pending" until nameservers are delegated</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Prerequisites:</b> To run this test, you need:
+  ///     <list type="bullet">
+  ///       <item><description>A domain you own that is not already in Cloudflare</description></item>
+  ///       <item><description>An API token with Zone:Edit permission</description></item>
+  ///       <item><description>Ability to delegate nameservers at registrar</description></item>
+  ///     </list>
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable test domain + nameserver delegation at registrar - Consider Dev account or WireMock")]
+  public async Task CreateZoneAsync_ReturnsCreatedZone()
+  {
+    // Arrange
+    // Note: Replace with a test domain you own
+    var request = new CreateZoneRequest(
+      Name: "test-domain-for-sdk.example",
+      Type: ZoneType.Full,
+      Account: new ZoneAccountReference(_settings.AccountId));
+
+    // Act
+    var result = await _sut.CreateZoneAsync(request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().NotBeNullOrEmpty();
+    result.Name.Should().Be(request.Name);
+    result.Status.Should().BeOneOf(ZoneStatus.Pending, ZoneStatus.Active);
+
+    // Cleanup - Delete the zone
+    // await _sut.DeleteZoneAsync(result.Id);
+  }
+
+  /// <summary>Verifies that a zone can be edited successfully.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/zones/methods/edit/</item>
+  ///     <item>Can modify: paused, plan, type, vanity_name_servers</item>
+  ///     <item>Plan changes have billing implications</item>
+  ///   </list>
+  ///   <para>
+  ///     <b>Coverage Note:</b> SetZonePausedAsync_CanToggleAndRevert tests the EditZoneAsync method
+  ///     with the paused field, providing integration test coverage for the edit endpoint.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable test domain - Consider Dev account or WireMock")]
+  public async Task EditZoneAsync_ReturnsUpdatedZone()
+  {
+    // Arrange
+    var zone = await _sut.GetZoneDetailsAsync(_zoneId);
+    var request = new EditZoneRequest(
+      Paused: !zone.Paused,
+      VanityNameServers: zone.VanityNameServers);
+
+    // Act
+    var result = await _sut.EditZoneAsync(_zoneId, request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Id.Should().Be(_zoneId);
+    result.Paused.Should().Be(!zone.Paused);
+
+    // Cleanup - Revert the change
+    var revertRequest = new EditZoneRequest(Paused: zone.Paused);
+    await _sut.EditZoneAsync(_zoneId, revertRequest);
+  }
+
+  /// <summary>Verifies that a zone can be deleted successfully.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>API: https://developers.cloudflare.com/api/resources/zones/methods/delete/</item>
+  ///     <item>Zone deletion is IRREVERSIBLE</item>
+  ///     <item>All DNS records, settings, configs permanently lost</item>
+  ///     <item>Requires disposable test zone with domain ownership</item>
+  ///   </list>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable test domain - Zone deletion is DESTRUCTIVE/IRREVERSIBLE - Consider Dev account or WireMock")]
+  public async Task DeleteZoneAsync_ReturnsDeleteResult()
+  {
+    // Arrange
+    // First create a zone to delete (requires domain ownership)
+    // var createRequest = new CreateZoneRequest(Name: "delete-test.example", Type: ZoneType.Full, Account: new ZoneAccountReference(_settings.AccountId));
+    // var zone = await _sut.CreateZoneAsync(createRequest);
+    var zoneIdToDelete = "zone-id-from-created-zone";
+
+    // Act
+    await _sut.DeleteZoneAsync(zoneIdToDelete);
+
+    // Assert - Verify deletion by trying to get the zone (should throw 404)
+    var action = async () => await _sut.GetZoneDetailsAsync(zoneIdToDelete);
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
   #endregion

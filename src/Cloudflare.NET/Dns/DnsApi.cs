@@ -5,7 +5,6 @@ using Core.Internal;
 using Core.Models;
 using Microsoft.Extensions.Logging;
 using Models;
-using DnsRecordType = Zones.Models.DnsRecordType;
 
 /// <summary>Implements the API for managing DNS records in Cloudflare zones.</summary>
 public class DnsApi : ApiResource, IDnsApi

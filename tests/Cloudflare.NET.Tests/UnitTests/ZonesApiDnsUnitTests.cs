@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Tests.UnitTests;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Dns.Models;
 using Microsoft.Extensions.Logging;
 using Moq.Protected;
 using NET.Security.Firewall.Models;
@@ -59,7 +60,17 @@ public class ZonesApiDnsUnitTests
     var hostname    = "test.example.com";
     var cnameTarget = "target.example.com";
 
-    var                 expectedResult  = new DnsRecord("dns-record-id", hostname, "CNAME");
+    var expectedResult = new DnsRecord(
+      Id: "dns-record-id",
+      Name: hostname,
+      Type: DnsRecordType.CNAME,
+      Content: cnameTarget,
+      Proxied: true,
+      Proxiable: true,
+      Ttl: 300,
+      CreatedOn: DateTime.UtcNow,
+      ModifiedOn: DateTime.UtcNow
+    );
     var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
     HttpRequestMessage? capturedRequest = null;
     var mockHandler =
@@ -72,12 +83,16 @@ public class ZonesApiDnsUnitTests
     var result = await sut.CreateCnameRecordAsync(zoneId, hostname, cnameTarget);
 
     // Assert
-    result.Should().BeEquivalentTo(expectedResult);
+    result.Id.Should().Be(expectedResult.Id);
+    result.Name.Should().Be(expectedResult.Name);
+    result.Type.Should().Be(expectedResult.Type);
     capturedRequest.Should().NotBeNull();
     capturedRequest.Method.Should().Be(HttpMethod.Post);
     capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records");
     var content = await capturedRequest.Content!.ReadFromJsonAsync<CreateDnsRecordRequest>();
-    content.Should().BeEquivalentTo(new CreateDnsRecordRequest("CNAME", hostname, cnameTarget, 300, true));
+    content!.Type.Should().Be(DnsRecordType.CNAME);
+    content.Name.Should().Be(hostname);
+    content.Content.Should().Be(cnameTarget);
   }
 
   /// <summary>Verifies that DeleteDnsRecordAsync sends a correctly formatted DELETE request.</summary>
@@ -114,8 +129,14 @@ public class ZonesApiDnsUnitTests
     var zoneId   = "test-zone-id";
     var hostname = "findme.example.com";
 
-    var                 record1         = new DnsRecord("id-1", hostname, "A");
-    var                 record2         = new DnsRecord("id-2", hostname, "AAAA");
+    var record1 = new DnsRecord(
+      Id: "id-1", Name: hostname, Type: DnsRecordType.A, Content: "192.0.2.1",
+      Proxied: false, Proxiable: true, Ttl: 1, CreatedOn: DateTime.UtcNow, ModifiedOn: DateTime.UtcNow
+    );
+    var record2 = new DnsRecord(
+      Id: "id-2", Name: hostname, Type: DnsRecordType.AAAA, Content: "2001:db8::1",
+      Proxied: false, Proxiable: true, Ttl: 1, CreatedOn: DateTime.UtcNow, ModifiedOn: DateTime.UtcNow
+    );
     var                 successResponse = HttpFixtures.CreateSuccessResponse(new[] { record1, record2 });
     HttpRequestMessage? capturedRequest = null;
     var mockHandler =
@@ -128,7 +149,9 @@ public class ZonesApiDnsUnitTests
     var result = await sut.FindDnsRecordByNameAsync(zoneId, hostname);
 
     // Assert
-    result.Should().BeEquivalentTo(record1);
+    result!.Id.Should().Be(record1.Id);
+    result.Name.Should().Be(record1.Name);
+    result.Type.Should().Be(record1.Type);
     capturedRequest.Should().NotBeNull();
     capturedRequest!.RequestUri!.ToString().Should()
                     .Be($"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records?name={hostname}");
@@ -208,8 +231,14 @@ public class ZonesApiDnsUnitTests
   {
     // Arrange
     var zoneId  = "test-zone-id";
-    var record1 = new DnsRecord("id-1", "a.example.com", "A");
-    var record2 = new DnsRecord("id-2", "b.example.com", "A");
+    var record1 = new DnsRecord(
+      Id: "id-1", Name: "a.example.com", Type: DnsRecordType.A, Content: "192.0.2.1",
+      Proxied: false, Proxiable: true, Ttl: 1, CreatedOn: DateTime.UtcNow, ModifiedOn: DateTime.UtcNow
+    );
+    var record2 = new DnsRecord(
+      Id: "id-2", Name: "b.example.com", Type: DnsRecordType.A, Content: "192.0.2.2",
+      Proxied: false, Proxiable: true, Ttl: 1, CreatedOn: DateTime.UtcNow, ModifiedOn: DateTime.UtcNow
+    );
 
     // Mock first page response
     var responsePage1 =

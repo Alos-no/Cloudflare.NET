@@ -5,6 +5,7 @@ using Core;
 using Core.Internal;
 using Core.Models;
 using CustomHostnames;
+using Dns.Models;
 using Firewall;
 using Microsoft.Extensions.Logging;
 using Models;

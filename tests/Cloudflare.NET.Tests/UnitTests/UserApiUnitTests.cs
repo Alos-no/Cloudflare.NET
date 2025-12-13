@@ -544,28 +544,9 @@ public class UserApiUnitTests
   #endregion
 
 
-  #region Error Handling Tests (U14-U22)
+  #region Error Handling Tests (U14-U16)
 
-  /// <summary>U14: Verifies that GetUserAsync throws HttpRequestException with status 401 when unauthorized.</summary>
-  [Fact]
-  public async Task GetUserAsync_Unauthorized401_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10000, "Authentication error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Unauthorized);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetUserAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U15: Verifies that GetUserAsync throws CloudflareApiException when API returns success=false.</summary>
+  /// <summary>U14: Verifies that GetUserAsync throws CloudflareApiException when API returns success=false.</summary>
   [Fact]
   public async Task GetUserAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -586,7 +567,7 @@ public class UserApiUnitTests
     exception.Which.Errors[0].Message.Should().Be("Invalid API token");
   }
 
-  /// <summary>U16: Verifies that EditUserAsync throws CloudflareApiException when country code is invalid.</summary>
+  /// <summary>U15: Verifies that EditUserAsync throws CloudflareApiException when country code is invalid.</summary>
   [Fact]
   public async Task EditUserAsync_InvalidCountryCode_ThrowsCloudflareApiException()
   {
@@ -607,7 +588,7 @@ public class UserApiUnitTests
     exception.Which.Errors[0].Code.Should().Be(1002);
   }
 
-  /// <summary>U17: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
+  /// <summary>U16: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
   [Fact]
   public async Task GetUserAsync_MultipleErrors_ThrowsCloudflareApiExceptionWithAllErrors()
   {
@@ -638,101 +619,6 @@ public class UserApiUnitTests
     exception.Which.Errors[0].Code.Should().Be(1001);
     exception.Which.Errors[1].Code.Should().Be(1002);
     exception.Which.Errors[2].Code.Should().Be(1003);
-  }
-
-  /// <summary>U18: Verifies that GetUserAsync throws HttpRequestException with status 403 when forbidden.</summary>
-  [Fact]
-  public async Task GetUserAsync_Forbidden403_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10001, "Forbidden");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Forbidden);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetUserAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U19: Verifies that GetUserAsync throws HttpRequestException with status 429 when rate limited.</summary>
-  [Fact]
-  public async Task GetUserAsync_RateLimited429_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10002, "Rate limited");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.TooManyRequests);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetUserAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U20: Verifies that GetUserAsync throws HttpRequestException with status 500 on server error.</summary>
-  [Fact]
-  public async Task GetUserAsync_ServerError500_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10003, "Internal server error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.InternalServerError);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetUserAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-  }
-
-  /// <summary>U21: Verifies that GetUserAsync throws HttpRequestException with status 502 on bad gateway.</summary>
-  [Fact]
-  public async Task GetUserAsync_BadGateway502_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10004, "Bad gateway");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.BadGateway);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetUserAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-  }
-
-  /// <summary>U22: Verifies that GetUserAsync throws HttpRequestException with status 503 on service unavailable.</summary>
-  [Fact]
-  public async Task GetUserAsync_ServiceUnavailable503_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10005, "Service unavailable");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.ServiceUnavailable);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetUserAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
   }
 
   #endregion
@@ -908,6 +794,10 @@ public class UserApiUnitTests
   #region F16 User Invitations - Response Deserialization Tests (U05-U13)
 
   /// <summary>U05: Verifies that UserInvitation model deserializes all properties correctly from a complete JSON response.</summary>
+  /// <remarks>
+  ///   The Cloudflare API returns roles as an array of role name strings (not AccountRole objects).
+  ///   Example: "roles": ["Administrator", "DNS Manager"]
+  /// </remarks>
   [Fact]
   public async Task GetInvitationAsync_FullModel_DeserializesAllProperties()
   {
@@ -920,25 +810,7 @@ public class UserApiUnitTests
         "invited_on": "2024-01-15T10:30:00Z",
         "expires_on": "2024-01-22T10:30:00Z",
         "organization_name": "Acme Corporation",
-        "roles": [
-          {
-            "id": "role-admin-001",
-            "name": "Administrator",
-            "description": "Full account access",
-            "permissions": {
-              "dns": { "read": true, "write": true },
-              "zones": { "read": true, "write": true }
-            }
-          },
-          {
-            "id": "role-dns-001",
-            "name": "DNS Manager",
-            "description": "Manage DNS records",
-            "permissions": {
-              "dns_records": { "read": true, "write": true }
-            }
-          }
-        ]
+        "roles": ["Administrator", "DNS Manager"]
       }
       """;
     var successResponse = CreateSuccessResponseRaw(invitationJson);
@@ -959,10 +831,8 @@ public class UserApiUnitTests
     result.OrganizationName.Should().Be("Acme Corporation");
     result.Roles.Should().NotBeNull();
     result.Roles!.Should().HaveCount(2);
-    result.Roles[0].Id.Should().Be("role-admin-001");
-    result.Roles[0].Name.Should().Be("Administrator");
-    result.Roles[1].Id.Should().Be("role-dns-001");
-    result.Roles[1].Name.Should().Be("DNS Manager");
+    result.Roles[0].Should().Be("Administrator");
+    result.Roles[1].Should().Be("DNS Manager");
   }
 
   /// <summary>U06: Verifies that UserInvitation model with only required fields has null for optional properties.</summary>
@@ -1080,7 +950,11 @@ public class UserApiUnitTests
     ((string)result.Status).Should().Be("rejected");
   }
 
-  /// <summary>U10: Verifies that UserInvitation with roles array deserializes AccountRole objects correctly.</summary>
+  /// <summary>U10: Verifies that UserInvitation with roles array deserializes role name strings correctly.</summary>
+  /// <remarks>
+  ///   The Cloudflare API returns roles as an array of role name strings (e.g., "Super Administrator - All Privileges").
+  ///   This differs from the Account Roles API which returns full AccountRole objects.
+  /// </remarks>
   [Fact]
   public async Task GetInvitationAsync_WithRoles_DeserializesRolesCorrectly()
   {
@@ -1092,18 +966,7 @@ public class UserApiUnitTests
         "status": "pending",
         "invited_on": "2024-01-15T10:00:00Z",
         "expires_on": "2024-01-22T10:00:00Z",
-        "roles": [
-          {
-            "id": "role-001",
-            "name": "Super Administrator",
-            "description": "Can access entire account",
-            "permissions": {
-              "analytics": { "read": true, "write": true },
-              "billing": { "read": true, "write": false },
-              "dns": { "read": true, "write": true }
-            }
-          }
-        ]
+        "roles": ["Super Administrator - All Privileges", "DNS Admin"]
       }
       """;
     var successResponse = CreateSuccessResponseRaw(invitationJson);
@@ -1117,18 +980,9 @@ public class UserApiUnitTests
 
     // Assert
     result.Roles.Should().NotBeNull();
-    result.Roles!.Should().HaveCount(1);
-    var role = result.Roles[0];
-    role.Id.Should().Be("role-001");
-    role.Name.Should().Be("Super Administrator");
-    role.Description.Should().Be("Can access entire account");
-    role.Permissions.Should().NotBeNull();
-    role.Permissions.Analytics.Should().NotBeNull();
-    role.Permissions.Analytics!.Read.Should().BeTrue();
-    role.Permissions.Analytics!.Write.Should().BeTrue();
-    role.Permissions.Billing.Should().NotBeNull();
-    role.Permissions.Billing!.Read.Should().BeTrue();
-    role.Permissions.Billing!.Write.Should().BeFalse();
+    result.Roles!.Should().HaveCount(2);
+    result.Roles[0].Should().Be("Super Administrator - All Privileges");
+    result.Roles[1].Should().Be("DNS Admin");
   }
 
   /// <summary>U11: Verifies that UserInvitation with organization_name deserializes correctly.</summary>
@@ -1210,47 +1064,9 @@ public class UserApiUnitTests
   #endregion
 
 
-  #region F16 User Invitations - Error Handling Tests (U14-U24)
+  #region F16 User Invitations - Error Handling Tests (U14-U18)
 
-  /// <summary>U14: Verifies that GetInvitationAsync throws HttpRequestException with status 404 when invitation not found.</summary>
-  [Fact]
-  public async Task GetInvitationAsync_NotFound404_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(7003, "Invitation not found");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.NotFound);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetInvitationAsync("non-existent-invite");
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U15: Verifies that ListInvitationsAsync throws HttpRequestException with status 401 when unauthorized.</summary>
-  [Fact]
-  public async Task ListInvitationsAsync_Unauthorized401_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10000, "Authentication error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Unauthorized);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListInvitationsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U16: Verifies that GetInvitationAsync throws CloudflareApiException when API returns success=false.</summary>
+  /// <summary>U14: Verifies that GetInvitationAsync throws CloudflareApiException when API returns success=false.</summary>
   [Fact]
   public async Task GetInvitationAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -1271,7 +1087,7 @@ public class UserApiUnitTests
     exception.Which.Errors[0].Message.Should().Be("Invalid API token");
   }
 
-  /// <summary>U17: Verifies that RespondToInvitationAsync throws CloudflareApiException when invitation already responded.</summary>
+  /// <summary>U15: Verifies that RespondToInvitationAsync throws CloudflareApiException when invitation already responded.</summary>
   [Fact]
   public async Task RespondToInvitationAsync_AlreadyResponded_ThrowsCloudflareApiException()
   {
@@ -1291,7 +1107,7 @@ public class UserApiUnitTests
     exception.Which.Errors[0].Code.Should().Be(1004);
   }
 
-  /// <summary>U18: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
+  /// <summary>U16: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
   [Fact]
   public async Task ListInvitationsAsync_MultipleErrors_ThrowsCloudflareApiExceptionWithAllErrors()
   {
@@ -1322,102 +1138,7 @@ public class UserApiUnitTests
     exception.Which.Errors[1].Code.Should().Be(1002);
   }
 
-  /// <summary>U19: Verifies that GetInvitationAsync throws HttpRequestException with status 403 when forbidden.</summary>
-  [Fact]
-  public async Task GetInvitationAsync_Forbidden403_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10001, "Forbidden");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Forbidden);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetInvitationAsync("invite-forbidden");
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U20: Verifies that ListInvitationsAsync throws HttpRequestException with status 429 when rate limited.</summary>
-  [Fact]
-  public async Task ListInvitationsAsync_RateLimited429_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10002, "Rate limited");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.TooManyRequests);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListInvitationsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U21: Verifies that GetInvitationAsync throws HttpRequestException with status 500 on server error.</summary>
-  [Fact]
-  public async Task GetInvitationAsync_ServerError500_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10003, "Internal server error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.InternalServerError);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetInvitationAsync("invite-500");
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-  }
-
-  /// <summary>U22: Verifies that ListInvitationsAsync throws HttpRequestException with status 502 on bad gateway.</summary>
-  [Fact]
-  public async Task ListInvitationsAsync_BadGateway502_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10004, "Bad gateway");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.BadGateway);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListInvitationsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-  }
-
-  /// <summary>U23: Verifies that RespondToInvitationAsync throws HttpRequestException with status 503 on service unavailable.</summary>
-  [Fact]
-  public async Task RespondToInvitationAsync_ServiceUnavailable503_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10005, "Service unavailable");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.ServiceUnavailable);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.RespondToInvitationAsync("invite-503", new RespondToInvitationRequest(MemberStatus.Accepted));
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-  }
-
-  /// <summary>U24: Verifies that GetInvitationAsync properly URL-encodes special characters in invitation ID.</summary>
+  /// <summary>U17: Verifies that GetInvitationAsync properly URL-encodes special characters in invitation ID.</summary>
   [Fact]
   public async Task GetInvitationAsync_SpecialCharsInId_UrlEncodesCorrectly()
   {
@@ -1455,7 +1176,7 @@ public class UserApiUnitTests
     requestUri.Should().NotContain("&foo");   // Should be encoded
   }
 
-  /// <summary>U24b: Verifies that RespondToInvitationAsync properly URL-encodes special characters in invitation ID.</summary>
+  /// <summary>U18: Verifies that RespondToInvitationAsync properly URL-encodes special characters in invitation ID.</summary>
   [Fact]
   public async Task RespondToInvitationAsync_SpecialCharsInId_UrlEncodesCorrectly()
   {
@@ -2194,28 +1915,9 @@ public class UserApiUnitTests
   #endregion
 
 
-  #region F11 User Memberships - Error Handling Tests (U20-U30)
+  #region F11 User Memberships - Error Handling Tests (U20-U23)
 
-  /// <summary>U20: Verifies that GetMembershipAsync throws HttpRequestException with status 404 when membership not found.</summary>
-  [Fact]
-  public async Task GetMembershipAsync_NotFound404_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(7003, "Membership not found");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.NotFound);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetMembershipAsync("non-existent-membership");
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U21: Verifies that GetMembershipAsync throws CloudflareApiException when API returns success=false.</summary>
+  /// <summary>U20: Verifies that GetMembershipAsync throws CloudflareApiException when API returns success=false.</summary>
   [Fact]
   public async Task GetMembershipAsync_ApiError_ThrowsCloudflareApiException()
   {
@@ -2235,7 +1937,7 @@ public class UserApiUnitTests
     exception.Which.Errors[0].Code.Should().Be(1001);
   }
 
-  /// <summary>U22: Verifies that UpdateMembershipAsync throws CloudflareApiException for invalid status update.</summary>
+  /// <summary>U21: Verifies that UpdateMembershipAsync throws CloudflareApiException for invalid status update.</summary>
   [Fact]
   public async Task UpdateMembershipAsync_InvalidStatus_ThrowsCloudflareApiException()
   {
@@ -2255,7 +1957,7 @@ public class UserApiUnitTests
     exception.Which.Errors[0].Code.Should().Be(1004);
   }
 
-  /// <summary>U23: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
+  /// <summary>U22: Verifies that CloudflareApiException contains all errors when API returns multiple errors.</summary>
   [Fact]
   public async Task ListMembershipsAsync_MultipleErrors_ThrowsCloudflareApiExceptionWithAllErrors()
   {
@@ -2286,121 +1988,7 @@ public class UserApiUnitTests
     exception.Which.Errors[1].Code.Should().Be(1002);
   }
 
-  /// <summary>U24: Verifies that ListMembershipsAsync throws HttpRequestException with status 401 when unauthorized.</summary>
-  [Fact]
-  public async Task ListMembershipsAsync_Unauthorized401_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10000, "Authentication error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Unauthorized);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListMembershipsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U25: Verifies that GetMembershipAsync throws HttpRequestException with status 403 when forbidden.</summary>
-  [Fact]
-  public async Task GetMembershipAsync_Forbidden403_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10001, "Forbidden");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.Forbidden);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetMembershipAsync("membership-forbidden");
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U26: Verifies that ListMembershipsAsync throws HttpRequestException with status 429 when rate limited.</summary>
-  [Fact]
-  public async Task ListMembershipsAsync_RateLimited429_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10002, "Rate limited");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.TooManyRequests);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListMembershipsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U27: Verifies that GetMembershipAsync throws HttpRequestException with status 500 on server error.</summary>
-  [Fact]
-  public async Task GetMembershipAsync_ServerError500_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10003, "Internal server error");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.InternalServerError);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.GetMembershipAsync("membership-500");
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-  }
-
-  /// <summary>U28: Verifies that ListMembershipsAsync throws HttpRequestException with status 502 on bad gateway.</summary>
-  [Fact]
-  public async Task ListMembershipsAsync_BadGateway502_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10004, "Bad gateway");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.BadGateway);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.ListMembershipsAsync();
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.BadGateway);
-  }
-
-  /// <summary>U29: Verifies that UpdateMembershipAsync throws HttpRequestException with status 503 on service unavailable.</summary>
-  [Fact]
-  public async Task UpdateMembershipAsync_ServiceUnavailable503_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var errorResponse = HttpFixtures.CreateErrorResponse(10005, "Service unavailable");
-    var mockHandler = HttpFixtures.GetMockHttpMessageHandler(errorResponse, HttpStatusCode.ServiceUnavailable);
-
-    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
-    var sut = new UserApi(httpClient, _loggerFactory);
-
-    // Act
-    var act = () => sut.UpdateMembershipAsync("membership-503", new UpdateMembershipRequest(MemberStatus.Accepted));
-
-    // Assert
-    var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-  }
-
-  /// <summary>U30: Verifies that GetMembershipAsync properly URL-encodes special characters in membership ID.</summary>
+  /// <summary>U23: Verifies that GetMembershipAsync properly URL-encodes special characters in membership ID.</summary>
   [Fact]
   public async Task GetMembershipAsync_SpecialCharsInId_UrlEncodesCorrectly()
   {

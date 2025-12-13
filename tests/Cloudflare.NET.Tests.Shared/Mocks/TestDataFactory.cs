@@ -1,5 +1,8 @@
 namespace Cloudflare.NET.Tests.Shared.Mocks;
 
+using Dns.Models;
+using Zones.Models;
+
 /// <summary>
 ///   Factory for generating consistent test data (IDs, entities, requests).
 ///   Use this to avoid magic strings scattered across tests.
@@ -154,6 +157,35 @@ public static class TestDataFactory
       created_on = TestCreatedOnString,
       modified_on = TestModifiedOnString
     };
+  }
+
+  /// <summary>Creates a typed <see cref="DnsRecord"/> instance for testing.</summary>
+  /// <param name="id">Optional record ID.</param>
+  /// <param name="type">Record type (default: A).</param>
+  /// <param name="name">Optional record name.</param>
+  /// <param name="content">Optional record content.</param>
+  /// <param name="proxied">Whether the record is proxied (default: false).</param>
+  /// <returns>A strongly-typed <see cref="DnsRecord"/> instance.</returns>
+  public static DnsRecord CreateTypedDnsRecord(
+    string? id = null,
+    DnsRecordType? type = null,
+    string? name = null,
+    string? content = null,
+    bool proxied = false)
+  {
+    var recordType = type ?? DnsRecordType.A;
+
+    return new DnsRecord(
+      Id: id ?? GenerateId(),
+      Name: name ?? $"test.{TestDomain}",
+      Type: recordType,
+      Content: content ?? GetDefaultDnsContent(recordType.Value),
+      Proxied: proxied,
+      Proxiable: true,
+      Ttl: 3600,
+      CreatedOn: DateTime.Parse(TestCreatedOnString),
+      ModifiedOn: DateTime.Parse(TestModifiedOnString)
+    );
   }
 
   /// <summary>Creates a minimal Account entity for testing.</summary>
@@ -393,7 +425,7 @@ public static class TestDataFactory
   /// <summary>Creates a minimal ZoneHold entity for testing.</summary>
   /// <param name="hold">Whether the zone is held (default: false).</param>
   /// <param name="holdAfter">Optional hold after date.</param>
-  /// <param name="includeSubdomains">Whether the hold includes subdomains (default: null).</param>
+  /// <param name="includeSubdomains">Whether the hold extends to subdomains.</param>
   /// <returns>An anonymous object representing a zone hold.</returns>
   public static object CreateZoneHold(
     bool hold = false,

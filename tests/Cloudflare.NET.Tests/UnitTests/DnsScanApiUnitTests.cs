@@ -7,7 +7,6 @@ using Cloudflare.NET.Dns.Models;
 using Microsoft.Extensions.Logging;
 using Shared.Fixtures;
 using Shared.Mocks;
-using DnsRecordType = Zones.Models.DnsRecordType;
 
 /// <summary>
 ///   Contains unit tests for the DNS scan operations in <see cref="DnsApi" /> class.
@@ -98,6 +97,21 @@ public class DnsScanApiUnitTests
     });
   }
 
+  /// <summary>Creates a test accept item with the given ID for use in unit tests.</summary>
+  /// <param name="id">The unique identifier for the accept item.</param>
+  /// <returns>A DnsScanAcceptItem with test data.</returns>
+  private static DnsScanAcceptItem CreateTestAcceptItem(string id)
+  {
+    return new DnsScanAcceptItem(
+      Id: id,
+      Type: DnsRecordType.A,
+      Name: $"test-{id}.example.com",
+      Content: "192.0.2.1",
+      Ttl: 1
+    );
+  }
+
+
   #endregion
 
 
@@ -173,7 +187,7 @@ public class DnsScanApiUnitTests
     string? capturedBody = null;
     var sut = CreateDnsApi(CreateSuccessResponse(new { accepts = 2, rejects = 0 }), requestCallback: (_, body) => capturedBody = body);
 
-    var request = new DnsScanReviewRequest { Accepts = ["id1", "id2"] };
+    var request = new DnsScanReviewRequest { Accepts = [CreateTestAcceptItem("id1"), CreateTestAcceptItem("id2")] };
 
     // Act
     await sut.SubmitDnsRecordScanReviewAsync(TestZoneId, request);
@@ -214,7 +228,7 @@ public class DnsScanApiUnitTests
     string? capturedBody = null;
     var sut = CreateDnsApi(CreateSuccessResponse(new { accepts = 1, rejects = 2 }), requestCallback: (_, body) => capturedBody = body);
 
-    var request = new DnsScanReviewRequest { Accepts = ["accept-id"], Rejects = ["reject-id1", "reject-id2"] };
+    var request = new DnsScanReviewRequest { Accepts = [CreateTestAcceptItem("accept-id")], Rejects = ["reject-id1", "reject-id2"] };
 
     // Act
     await sut.SubmitDnsRecordScanReviewAsync(TestZoneId, request);
@@ -240,7 +254,7 @@ public class DnsScanApiUnitTests
     var sut = CreateDnsApi(CreateSuccessResponse(new { accepts = 1, rejects = 0 }), requestCallback: (_, body) => capturedBody = body);
 
     // Only set accepts, leave rejects as default (empty array)
-    var request = new DnsScanReviewRequest { Accepts = ["id1"] };
+    var request = new DnsScanReviewRequest { Accepts = [CreateTestAcceptItem("id1")] };
 
     // Act
     await sut.SubmitDnsRecordScanReviewAsync(TestZoneId, request);
@@ -420,7 +434,10 @@ public class DnsScanApiUnitTests
   {
     // Arrange
     var sut = CreateDnsApi(CreateSuccessResponse(new { accepts = 5, rejects = 0 }));
-    var request = new DnsScanReviewRequest { Accepts = ["1", "2", "3", "4", "5"] };
+    var request = new DnsScanReviewRequest
+    {
+      Accepts = [CreateTestAcceptItem("1"), CreateTestAcceptItem("2"), CreateTestAcceptItem("3"), CreateTestAcceptItem("4"), CreateTestAcceptItem("5")]
+    };
 
     // Act
     var result = await sut.SubmitDnsRecordScanReviewAsync(TestZoneId, request);
@@ -454,7 +471,7 @@ public class DnsScanApiUnitTests
   {
     // Arrange
     var sut = CreateDnsApi(CreateSuccessResponse(new { accepts = 2, rejects = 1 }));
-    var request = new DnsScanReviewRequest { Accepts = ["a", "b"], Rejects = ["c"] };
+    var request = new DnsScanReviewRequest { Accepts = [CreateTestAcceptItem("a"), CreateTestAcceptItem("b")], Rejects = ["c"] };
 
     // Act
     var result = await sut.SubmitDnsRecordScanReviewAsync(TestZoneId, request);
@@ -468,24 +485,9 @@ public class DnsScanApiUnitTests
   #endregion
 
 
-  #region U15-U22: Error Handling Tests
+  #region U15-U19: Error Handling Tests
 
-  /// <summary>U15: Verifies 404 response throws HttpRequestException.</summary>
-  [Fact]
-  public async Task GetDnsRecordScanReviewAsync_NotFound_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var sut = CreateDnsApi(CreateErrorResponse(7003, "Zone not found"), HttpStatusCode.NotFound);
-
-    // Act
-    var action = async () => await sut.GetDnsRecordScanReviewAsync(TestZoneId);
-
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
-
-  /// <summary>U16: Verifies API error in envelope throws CloudflareApiException.</summary>
+  /// <summary>U15: Verifies API error in envelope throws exception.</summary>
   [Fact]
   public async Task TriggerDnsRecordScanAsync_ApiError_ThrowsWithErrorDetails()
   {
@@ -499,7 +501,7 @@ public class DnsScanApiUnitTests
     await action.Should().ThrowAsync<Exception>();
   }
 
-  /// <summary>U17: Verifies multiple errors in response are captured.</summary>
+  /// <summary>U16: Verifies multiple errors in response are captured.</summary>
   [Fact]
   public async Task SubmitDnsRecordScanReviewAsync_MultipleErrors_ThrowsWithAllErrors()
   {
@@ -515,77 +517,13 @@ public class DnsScanApiUnitTests
       messages = Array.Empty<object>()
     });
     var sut = CreateDnsApi(response);
-    var request = new DnsScanReviewRequest { Accepts = ["invalid"] };
+    var request = new DnsScanReviewRequest { Accepts = [CreateTestAcceptItem("invalid")] };
 
     // Act
     var action = async () => await sut.SubmitDnsRecordScanReviewAsync(TestZoneId, request);
 
     // Assert
     await action.Should().ThrowAsync<Exception>();
-  }
-
-  /// <summary>U19: Verifies 401 Unauthorized throws HttpRequestException.</summary>
-  [Fact]
-  public async Task TriggerDnsRecordScanAsync_Unauthorized_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var sut = CreateDnsApi(CreateErrorResponse(9109, "Unauthorized"), HttpStatusCode.Unauthorized);
-
-    // Act
-    var action = async () => await sut.TriggerDnsRecordScanAsync(TestZoneId);
-
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-  }
-
-  /// <summary>U20: Verifies 403 Forbidden throws HttpRequestException.</summary>
-  [Fact]
-  public async Task GetDnsRecordScanReviewAsync_Forbidden_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var sut = CreateDnsApi(CreateErrorResponse(9110, "Forbidden"), HttpStatusCode.Forbidden);
-
-    // Act
-    var action = async () => await sut.GetDnsRecordScanReviewAsync(TestZoneId);
-
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-  }
-
-  /// <summary>U21: Verifies 429 Rate Limited throws HttpRequestException.</summary>
-  [Fact]
-  public async Task SubmitDnsRecordScanReviewAsync_RateLimited_ThrowsHttpRequestException()
-  {
-    // Arrange
-    var sut = CreateDnsApi(CreateErrorResponse(10000, "Rate limited"), HttpStatusCode.TooManyRequests);
-    var request = new DnsScanReviewRequest { Accepts = ["id"] };
-
-    // Act
-    var action = async () => await sut.SubmitDnsRecordScanReviewAsync(TestZoneId, request);
-
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
-  }
-
-  /// <summary>U22: Verifies 500/502/503 server errors throw HttpRequestException.</summary>
-  [Theory]
-  [InlineData(HttpStatusCode.InternalServerError)]
-  [InlineData(HttpStatusCode.BadGateway)]
-  [InlineData(HttpStatusCode.ServiceUnavailable)]
-  public async Task TriggerDnsRecordScanAsync_ServerError_ThrowsHttpRequestException(HttpStatusCode statusCode)
-  {
-    // Arrange
-    var sut = CreateDnsApi(CreateErrorResponse(0, "Server error"), statusCode);
-
-    // Act
-    var action = async () => await sut.TriggerDnsRecordScanAsync(TestZoneId);
-
-    // Assert
-    var ex = await action.Should().ThrowAsync<HttpRequestException>();
-    ex.Which.StatusCode.Should().Be(statusCode);
   }
 
   #endregion

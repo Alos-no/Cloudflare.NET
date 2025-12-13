@@ -131,7 +131,7 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
     await action.Should().ThrowAsync<Exception>();
   }
 
-  /// <summary>I03: Verifies second scan trigger doesn't cause error (may be rate limited but not error).</summary>
+  /// <summary>I03: Verifies second scan trigger completes without throwing.</summary>
   [IntegrationTest]
   public async Task TriggerDnsRecordScanAsync_DoubleTrigger_DoesNotThrowImmediately()
   {
@@ -139,20 +139,10 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
     await _sut.TriggerDnsRecordScanAsync(_zoneId);
 
     // Act - Second trigger immediately
-    // Note: Cloudflare may rate limit but shouldn't throw an error for a valid zone
     var action = async () => await _sut.TriggerDnsRecordScanAsync(_zoneId);
 
-    // Assert - Should either succeed or throw rate limit error (429), not zone error
-    // Either completion without exception or HttpRequestException with 429 is acceptable
-    try
-    {
-      await action();
-      // Success - double trigger allowed
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-    {
-      // Also acceptable - rate limited
-    }
+    // Assert - Should complete without throwing
+    await action.Should().NotThrowAsync();
   }
 
   #endregion
@@ -197,12 +187,7 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
     await _sut.TriggerDnsRecordScanAsync(_zoneId);
     var records = await PollForScanResultsAsync(_zoneId, DefaultPollTimeout, DefaultPollInterval);
 
-    // Skip if no records found (zone may not have discoverable DNS)
-    if (records.Count == 0)
-    {
-      // No records to validate - test is inconclusive but not a failure
-      return;
-    }
+    records.Should().NotBeEmpty("DNS scan should discover records for a zone not yet migrated to Cloudflare nameservers");
 
     // Assert - Verify record structure
     var record = records[0];
@@ -219,146 +204,114 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
 
   /// <summary>I07: Verifies accepting records creates DNS records (if records available and API supports it).</summary>
   /// <remarks>
-  ///   This test may skip if no scanned records are found, or if the zone/plan doesn't support
-  ///   scan review operations.
+  ///   DNS scan is designed for zones before nameserver migration to Cloudflare.
+  ///   Once nameservers point to Cloudflare, the scan has nothing external to discover.
   /// </remarks>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Requires disposable domain - Consider WireMock - DNS scan only works for zones not yet migrated to Cloudflare nameservers")]
   public async Task SubmitDnsRecordScanReviewAsync_AcceptRecords_CreatesRecords()
   {
     // Arrange - Trigger scan and wait for records
     await _sut.TriggerDnsRecordScanAsync(_zoneId);
     var pendingRecords = await PollForScanResultsAsync(_zoneId, DefaultPollTimeout, DefaultPollInterval);
 
-    // Skip if no records found
-    if (pendingRecords.Count == 0)
-    {
-      return;
-    }
+    pendingRecords.Should().NotBeEmpty("DNS scan should discover records for a zone not yet migrated to Cloudflare nameservers");
 
-    // Accept first record only to minimize cleanup
+    // Accept first record only to minimize cleanup - convert to DnsScanAcceptItem
     var recordToAccept = pendingRecords[0];
-    var request = new DnsScanReviewRequest { Accepts = [recordToAccept.Id] };
+    var acceptItem = DnsScanAcceptItem.FromDnsRecord(recordToAccept);
+    var request = new DnsScanReviewRequest { Accepts = [acceptItem] };
 
-    // Act - API may reject if zone/plan doesn't support scan review
-    try
-    {
-      var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
+    // Act
+    var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
 
-      // Track for cleanup
-      _acceptedRecordIds.Add(recordToAccept.Id);
+    // Track for cleanup
+    _acceptedRecordIds.Add(recordToAccept.Id);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Accepts.Should().BeGreaterThanOrEqualTo(1);
+    // Assert
+    result.Should().NotBeNull();
+    result.Accepts.Should().BeGreaterThanOrEqualTo(1);
 
-      // Verify record now exists as a permanent DNS record
-      var createdRecord = await _sut.GetDnsRecordAsync(_zoneId, recordToAccept.Id);
-      createdRecord.Should().NotBeNull();
-      createdRecord.Id.Should().Be(recordToAccept.Id);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-    {
-      // API rejected - zone/plan may not support scan review submissions
-    }
+    // Verify record now exists as a permanent DNS record
+    var createdRecord = await _sut.GetDnsRecordAsync(_zoneId, recordToAccept.Id);
+    createdRecord.Should().NotBeNull();
+    createdRecord.Id.Should().Be(recordToAccept.Id);
   }
 
   /// <summary>I08: Verifies rejecting records removes them from review queue (if records available and API supports it).</summary>
-  [IntegrationTest]
+  /// <remarks>
+  ///   DNS scan is designed for zones before nameserver migration to Cloudflare.
+  ///   Once nameservers point to Cloudflare, the scan has nothing external to discover.
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable domain - Consider WireMock - DNS scan only works for zones not yet migrated to Cloudflare nameservers")]
   public async Task SubmitDnsRecordScanReviewAsync_RejectRecords_RemovesFromReview()
   {
     // Arrange - Trigger scan and wait for records
     await _sut.TriggerDnsRecordScanAsync(_zoneId);
     var pendingRecords = await PollForScanResultsAsync(_zoneId, DefaultPollTimeout, DefaultPollInterval);
 
-    // Skip if no records found
-    if (pendingRecords.Count == 0)
-    {
-      return;
-    }
+    pendingRecords.Should().NotBeEmpty("DNS scan should discover records for a zone not yet migrated to Cloudflare nameservers");
 
     // Reject first record
     var recordToReject = pendingRecords[0];
     var request = new DnsScanReviewRequest { Rejects = [recordToReject.Id] };
 
-    // Act - API may reject if zone/plan doesn't support scan review
-    try
-    {
-      var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
+    // Act
+    var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Rejects.Should().BeGreaterThanOrEqualTo(1);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-    {
-      // API rejected - zone/plan may not support scan review submissions
-    }
+    // Assert
+    result.Should().NotBeNull();
+    result.Rejects.Should().BeGreaterThanOrEqualTo(1);
   }
 
   /// <summary>I09: Verifies mixed accept/reject works (if enough records available and API supports it).</summary>
-  [IntegrationTest]
+  /// <remarks>
+  ///   DNS scan is designed for zones before nameserver migration to Cloudflare.
+  ///   Once nameservers point to Cloudflare, the scan has nothing external to discover.
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable domain - Consider WireMock - DNS scan only works for zones not yet migrated to Cloudflare nameservers")]
   public async Task SubmitDnsRecordScanReviewAsync_MixedAcceptReject_ProcessesBoth()
   {
     // Arrange - Trigger scan and wait for records
     await _sut.TriggerDnsRecordScanAsync(_zoneId);
     var pendingRecords = await PollForScanResultsAsync(_zoneId, DefaultPollTimeout, DefaultPollInterval);
 
-    // Skip if less than 2 records found
-    if (pendingRecords.Count < 2)
-    {
-      return;
-    }
+    pendingRecords.Should().HaveCountGreaterThanOrEqualTo(2, "DNS scan should discover at least 2 records for this test");
 
-    // Accept first, reject second
-    var acceptIds = new[] { pendingRecords[0].Id };
+    // Accept first record, reject second
+    var recordToAccept = pendingRecords[0];
+    var acceptItem = DnsScanAcceptItem.FromDnsRecord(recordToAccept);
     var rejectIds = new[] { pendingRecords[1].Id };
-    var request = new DnsScanReviewRequest { Accepts = acceptIds, Rejects = rejectIds };
+    var request = new DnsScanReviewRequest { Accepts = [acceptItem], Rejects = rejectIds };
 
-    // Act - API may reject if zone/plan doesn't support scan review
-    try
-    {
-      var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
+    // Act
+    var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
 
-      // Track accepted record for cleanup
-      _acceptedRecordIds.Add(pendingRecords[0].Id);
+    // Track accepted record for cleanup
+    _acceptedRecordIds.Add(pendingRecords[0].Id);
 
-      // Assert
-      result.Should().NotBeNull();
-      result.Accepts.Should().Be(1);
-      result.Rejects.Should().Be(1);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-    {
-      // API rejected - zone/plan may not support scan review submissions
-    }
+    // Assert
+    result.Should().NotBeNull();
+    result.Accepts.Should().Be(1);
+    result.Rejects.Should().Be(1);
   }
 
-  /// <summary>I12: Verifies empty request is handled (may return zero counts or fail based on API implementation).</summary>
+  /// <summary>I12: Verifies empty request throws BadRequest (API requires at least one accept or reject).</summary>
   /// <remarks>
-  ///   Some zones may reject empty scan review requests. This test verifies the API responds
-  ///   consistently (either success with zero counts or a well-formed error).
+  ///   The Cloudflare API requires at least one record in the accepts or rejects array.
+  ///   Submitting an empty request returns error 9207 "Request body is invalid".
   /// </remarks>
   [IntegrationTest]
-  public async Task SubmitDnsRecordScanReviewAsync_EmptyRequest_HandledConsistently()
+  public async Task SubmitDnsRecordScanReviewAsync_EmptyRequest_ThrowsBadRequest()
   {
     // Arrange
     var request = new DnsScanReviewRequest();
 
-    // Act - The API may return success with zero counts or reject the request
-    try
-    {
-      var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
+    // Act
+    var action = async () => await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
 
-      // If it succeeds, verify zero counts
-      result.Should().NotBeNull();
-      result.Accepts.Should().Be(0);
-      result.Rejects.Should().Be(0);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-    {
-      // API rejected empty request - this is acceptable behavior
-      // Some zones/plans may not support empty scan review submissions
-    }
+    // Assert - API rejects empty requests with error 9207
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
   }
 
   #endregion
@@ -367,7 +320,11 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
   #region Test Methods - Full Workflow (I13)
 
   /// <summary>I13: Verifies complete scan workflow: trigger → poll → accept → verify (if API supports it).</summary>
-  [IntegrationTest]
+  /// <remarks>
+  ///   DNS scan is designed for zones before nameserver migration to Cloudflare.
+  ///   Once nameservers point to Cloudflare, the scan has nothing external to discover.
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires disposable domain - Consider WireMock - DNS scan only works for zones not yet migrated to Cloudflare nameservers")]
   public async Task CompleteScanWorkflow_TriggerPollAcceptVerify_WorksEndToEnd()
   {
     // Step 1: Trigger scan
@@ -376,35 +333,25 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
     // Step 2: Poll for results
     var pendingRecords = await PollForScanResultsAsync(_zoneId, DefaultPollTimeout, DefaultPollInterval);
 
-    // Skip remaining steps if no records found
-    if (pendingRecords.Count == 0)
-    {
-      return;
-    }
+    pendingRecords.Should().NotBeEmpty("DNS scan should discover records for a zone not yet migrated to Cloudflare nameservers");
 
-    // Step 3: Accept a record - API may reject if zone/plan doesn't support scan review
+    // Step 3: Accept a record
     var recordToAccept = pendingRecords[0];
-    var acceptRequest = new DnsScanReviewRequest { Accepts = [recordToAccept.Id] };
+    var acceptItem = DnsScanAcceptItem.FromDnsRecord(recordToAccept);
+    var acceptRequest = new DnsScanReviewRequest { Accepts = [acceptItem] };
 
-    try
-    {
-      var reviewResult = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, acceptRequest);
+    var reviewResult = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, acceptRequest);
 
-      _acceptedRecordIds.Add(recordToAccept.Id);
+    _acceptedRecordIds.Add(recordToAccept.Id);
 
-      // Assert review result
-      reviewResult.Accepts.Should().Be(1);
+    // Assert review result
+    reviewResult.Accepts.Should().Be(1);
 
-      // Step 4: Verify accepted record exists in DNS list
-      var dnsRecord = await _sut.GetDnsRecordAsync(_zoneId, recordToAccept.Id);
-      dnsRecord.Should().NotBeNull();
-      dnsRecord.Name.Should().Be(recordToAccept.Name);
-      dnsRecord.Type.Should().Be(recordToAccept.Type);
-    }
-    catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-    {
-      // API rejected - zone/plan may not support scan review submissions
-    }
+    // Step 4: Verify accepted record exists in DNS list
+    var dnsRecord = await _sut.GetDnsRecordAsync(_zoneId, recordToAccept.Id);
+    dnsRecord.Should().NotBeNull();
+    dnsRecord.Name.Should().Be(recordToAccept.Name);
+    dnsRecord.Type.Should().Be(recordToAccept.Type);
   }
 
   #endregion
@@ -412,25 +359,31 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
 
   #region Test Methods - Edge Cases (I16-I19)
 
-  /// <summary>I18: Verifies request with invalid record ID is handled gracefully.</summary>
+  /// <summary>I18: Verifies request with a record not in the scan queue throws NotFound.</summary>
+  /// <remarks>
+  ///   The Cloudflare API returns error 81044 "Record ID does not exist" with HTTP 404 NotFound
+  ///   when attempting to accept a record ID that doesn't exist in the scan review queue.
+  /// </remarks>
   [IntegrationTest]
-  public async Task SubmitDnsRecordScanReviewAsync_InvalidRecordId_HandledGracefully()
+  public async Task SubmitDnsRecordScanReviewAsync_RecordNotInQueue_ThrowsNotFound()
   {
-    // Arrange - Use a fake record ID
-    var request = new DnsScanReviewRequest { Accepts = ["00000000000000000000000000000000"] };
+    // Arrange - Use a fake record that doesn't match anything in the scan review queue
+    var fakeAcceptItem = new DnsScanAcceptItem(
+      Id: "fake-nonexistent-id",
+      Type: DnsRecordType.A,
+      Name: "fake-nonexistent.example.com",
+      Content: "192.0.2.1",
+      Ttl: 1,
+      Proxied: false
+    );
+    var request = new DnsScanReviewRequest { Accepts = [fakeAcceptItem] };
 
-    // Act - Submit with invalid ID
-    // Note: Cloudflare may return 0 accepts (ignoring invalid IDs) or throw an error
-    try
-    {
-      var result = await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
-      // If no exception, result should show 0 accepts for non-existent ID
-      result.Accepts.Should().Be(0);
-    }
-    catch (Exception)
-    {
-      // Exception is also acceptable behavior for invalid ID
-    }
+    // Act
+    var action = async () => await _sut.SubmitDnsRecordScanReviewAsync(_zoneId, request);
+
+    // Assert - Cloudflare returns 404 NotFound with error 81044 for non-existent record IDs
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
   /// <summary>I19: Verifies scan on zone with minimal DNS works without error.</summary>
@@ -448,6 +401,67 @@ public class DnsScanIntegrationTests : IClassFixture<CloudflareApiTestFixture>, 
 
     // Assert - Should not throw regardless of zone content
     await action.Should().NotThrowAsync();
+  }
+
+  /// <summary>I20: Verifies that triggering a scan with a malformed zone ID returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Invalid zone ID formats (not 32-character hex strings) return 404 NotFound
+  ///   with error code 7003 "Could not route to..." because Cloudflare's routing layer
+  ///   cannot match the path to a valid zone endpoint.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task TriggerDnsRecordScanAsync_MalformedZoneId_ThrowsNotFound()
+  {
+    // Arrange
+    var malformedZoneId = "invalid-zone-id-format!!!";
+
+    // Act
+    var action = async () => await _sut.TriggerDnsRecordScanAsync(malformedZoneId);
+
+    // Assert
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
+  }
+
+  /// <summary>I21: Verifies that getting scan review with a malformed zone ID returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Invalid zone ID formats (not 32-character hex strings) return 404 NotFound
+  ///   with error code 7003 "Could not route to..." because Cloudflare's routing layer
+  ///   cannot match the path to a valid zone endpoint.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetDnsRecordScanReviewAsync_MalformedZoneId_ThrowsNotFound()
+  {
+    // Arrange
+    var malformedZoneId = "invalid-zone-id-format!!!";
+
+    // Act
+    var action = async () => await _sut.GetDnsRecordScanReviewAsync(malformedZoneId);
+
+    // Assert
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
+  }
+
+  /// <summary>I22: Verifies that submitting scan review with a malformed zone ID returns HTTP 404 NotFound.</summary>
+  /// <remarks>
+  ///   Invalid zone ID formats (not 32-character hex strings) return 404 NotFound
+  ///   with error code 7003 "Could not route to..." because Cloudflare's routing layer
+  ///   cannot match the path to a valid zone endpoint.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task SubmitDnsRecordScanReviewAsync_MalformedZoneId_ThrowsNotFound()
+  {
+    // Arrange
+    var malformedZoneId = "invalid-zone-id-format!!!";
+    var request = new DnsScanReviewRequest { Accepts = [], Rejects = [] };
+
+    // Act
+    var action = async () => await _sut.SubmitDnsRecordScanReviewAsync(malformedZoneId, request);
+
+    // Assert
+    await action.Should().ThrowAsync<HttpRequestException>()
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
   #endregion

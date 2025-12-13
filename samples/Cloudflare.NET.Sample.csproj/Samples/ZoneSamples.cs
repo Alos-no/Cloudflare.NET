@@ -1,5 +1,6 @@
 ﻿namespace Cloudflare.NET.Sample.Samples;
 
+using Dns.Models;
 using Microsoft.Extensions.Logging;
 using Zones.Models;
 

@@ -2,6 +2,7 @@ namespace Cloudflare.NET.AuditLogs.Models;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Core.Json;
 using Core.Models;
 using Security.Firewall.Models;
 
@@ -9,33 +10,67 @@ using Security.Firewall.Models;
 /// <summary>
 ///   Represents an audit log entry recording an action taken on account resources.
 ///   <para>
-///     Audit logs are retained for 30 days. Use filtering parameters to narrow
-///     results when querying large datasets.
+///     Audit logs are retained for 18 months (v1 API) or 30 days (v2 API).
+///     Use filtering parameters to narrow results when querying large datasets.
 ///   </para>
 /// </summary>
 /// <param name="Id">Unique identifier for this audit log entry.</param>
 /// <param name="Account">Account where the action occurred.</param>
 /// <param name="Action">Details about the action performed.</param>
 /// <param name="Actor">Information about who performed the action.</param>
-/// <param name="Raw">Raw HTTP request details.</param>
+/// <param name="When">When the action occurred (v1 API, RFC3339 timestamp). Use <see cref="Timestamp"/> for cross-version compatibility.</param>
+/// <param name="Interface">Interface used for the action (e.g., "API", "UI").</param>
+/// <param name="Metadata">Additional metadata about the action.</param>
+/// <param name="NewValue">New value after the action (for change operations).</param>
+/// <param name="OldValue">Previous value before the action (for change operations).</param>
+/// <param name="Owner">Owner (account) of the resource.</param>
 /// <param name="Resource">The resource that was acted upon.</param>
-/// <param name="Zone">Zone context if the action was zone-scoped.</param>
+/// <param name="Zone">Zone context for zone-scoped actions.</param>
+/// <param name="Raw">Raw HTTP request details (v2 API only).</param>
+/// <remarks>
+///   The timestamp location differs between API versions:
+///   <list type="bullet">
+///     <item><description>v1 API: Uses the <c>when</c> field at the top level</description></item>
+///     <item><description>v2 API: Uses <c>action.time</c> instead</description></item>
+///   </list>
+///   Use the <see cref="Timestamp"/> property to get the timestamp regardless of API version.
+/// </remarks>
 public record AuditLog(
   [property: JsonPropertyName("id")]
   string Id,
   [property: JsonPropertyName("account")]
-  AuditLogAccount Account,
+  AuditLogAccount? Account,
   [property: JsonPropertyName("action")]
   AuditLogAction Action,
   [property: JsonPropertyName("actor")]
   AuditLogActor Actor,
-  [property: JsonPropertyName("raw")]
-  AuditLogRaw? Raw = null,
+  [property: JsonPropertyName("when")]
+  DateTime? When = null,
+  [property: JsonPropertyName("interface")]
+  string? Interface = null,
+  [property: JsonPropertyName("metadata")]
+  JsonElement? Metadata = null,
+  [property: JsonPropertyName("newValue")]
+  string? NewValue = null,
+  [property: JsonPropertyName("oldValue")]
+  string? OldValue = null,
+  [property: JsonPropertyName("owner")]
+  AuditLogOwner? Owner = null,
   [property: JsonPropertyName("resource")]
   AuditLogResource? Resource = null,
   [property: JsonPropertyName("zone")]
-  AuditLogZone? Zone = null
-);
+  AuditLogZone? Zone = null,
+  [property: JsonPropertyName("raw")]
+  AuditLogRaw? Raw = null
+)
+{
+  /// <summary>
+  ///   Gets the timestamp when the action occurred, regardless of API version.
+  ///   Returns <see cref="When"/> (v1 API) or <see cref="AuditLogAction.Time"/> (v2 API).
+  /// </summary>
+  [JsonIgnore]
+  public DateTime Timestamp => When ?? Action.Time ?? DateTime.MinValue;
+}
 
 
 /// <summary>Account context for an audit log entry.</summary>
@@ -50,43 +85,50 @@ public record AuditLogAccount(
 
 
 /// <summary>Action details for an audit log entry.</summary>
-/// <param name="Description">Human-readable description of the action.</param>
-/// <param name="Result">Result of the action (e.g., "success", "failure").</param>
-/// <param name="Time">When the action occurred.</param>
-/// <param name="Type">Type of action (e.g., "create", "update", "delete").</param>
+/// <param name="Result">Whether the action was successful (true) or failed (false).</param>
+/// <param name="Type">Type of action (e.g., "create", "update", "delete", "change_setting").</param>
+/// <param name="Time">
+///   When the action occurred (v2 API). In v1 API, this is at the top level <see cref="AuditLog.When"/>.
+/// </param>
+/// <param name="Description">Human-readable description of the action (v2 API only).</param>
+/// <remarks>
+///   The v1 audit logs API returns <c>result</c> as a boolean. The v2 beta API
+///   (at <c>/accounts/{id}/logs/audit</c>) returns a string ("success"/"failure").
+///   The <see cref="BooleanOrStringConverter"/> handles both formats transparently.
+/// </remarks>
 public record AuditLogAction(
-  [property: JsonPropertyName("description")]
-  string? Description,
   [property: JsonPropertyName("result")]
-  string Result,
-  [property: JsonPropertyName("time")]
-  DateTime Time,
+  [property: JsonConverter(typeof(BooleanOrStringConverter))]
+  bool Result,
   [property: JsonPropertyName("type")]
-  string Type
+  string Type,
+  [property: JsonPropertyName("time")]
+  DateTime? Time = null,
+  [property: JsonPropertyName("description")]
+  string? Description = null
+);
+
+
+/// <summary>Owner (account) reference for an audit log entry.</summary>
+/// <param name="Id">Account identifier that owns the resource.</param>
+public record AuditLogOwner(
+  [property: JsonPropertyName("id")]
+  string Id
 );
 
 
 /// <summary>Actor (who performed the action) for an audit log entry.</summary>
 /// <param name="Id">Actor identifier (user or service ID).</param>
-/// <param name="Context">Context of the action (e.g., "dashboard", "api").</param>
 /// <param name="Email">Email address of the actor (for user actions).</param>
-/// <param name="IpAddress">IP address from which the action was performed.</param>
-/// <param name="TokenId">API token identifier used for the action.</param>
-/// <param name="TokenName">Name of the API token used.</param>
+/// <param name="Ip">IP address from which the action was performed.</param>
 /// <param name="Type">Type of actor (e.g., "user", "system", "service").</param>
 public record AuditLogActor(
   [property: JsonPropertyName("id")]
   string? Id,
-  [property: JsonPropertyName("context")]
-  string? Context = null,
   [property: JsonPropertyName("email")]
   string? Email = null,
-  [property: JsonPropertyName("ip_address")]
-  string? IpAddress = null,
-  [property: JsonPropertyName("token_id")]
-  string? TokenId = null,
-  [property: JsonPropertyName("token_name")]
-  string? TokenName = null,
+  [property: JsonPropertyName("ip")]
+  string? Ip = null,
   [property: JsonPropertyName("type")]
   string? Type = null
 );

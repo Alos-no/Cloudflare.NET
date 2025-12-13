@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.Json;
 using Cloudflare.NET.Dns;
 using Cloudflare.NET.Zones.Models;
+using Dns.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Shared.Fixtures;

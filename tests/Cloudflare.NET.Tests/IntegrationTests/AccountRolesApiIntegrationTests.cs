@@ -30,9 +30,6 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   /// <summary>The settings loaded from the test configuration.</summary>
   private readonly TestCloudflareSettings _settings;
 
-  /// <summary>The xUnit test output helper for writing warnings and debug info.</summary>
-  private readonly ITestOutputHelper _output;
-
   #endregion
 
 
@@ -45,7 +42,6 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   {
     _sut      = fixture.RolesApi;
     _settings = TestConfiguration.CloudflareSettings;
-    _output   = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -68,9 +64,9 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var result = await _sut.ListAccountRolesAsync(accountId);
 
     // Assert
-    result.Should().NotBeNull();
+    result.Should().NotBeNull("API should return a valid response");
     result.Items.Should().NotBeNullOrEmpty("accounts should have at least one predefined role");
-    result.PageInfo.Should().NotBeNull();
+    result.PageInfo.Should().NotBeNull("response should include pagination info");
   }
 
   /// <summary>I02: Verifies that ListAllAccountRolesAsync iterates through all roles.</summary>
@@ -90,17 +86,15 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
         break;
     }
 
-    // Assert
-    roles.Should().NotBeEmpty();
-    roles.All(r => !string.IsNullOrEmpty(r.Id)).Should().BeTrue();
-    roles.All(r => !string.IsNullOrEmpty(r.Name)).Should().BeTrue();
-    roles.All(r => !string.IsNullOrEmpty(r.Description)).Should().BeTrue();
-    roles.All(r => r.Permissions != null).Should().BeTrue();
-
-    // Log some roles for visibility
-    _output.WriteLine($"Found {roles.Count} roles:");
-    foreach (var role in roles.Take(10))
-      _output.WriteLine($"  - {role.Name} ({role.Id}): {role.Description.Substring(0, Math.Min(50, role.Description.Length))}...");
+    // Assert - Verify all roles have required properties
+    roles.Should().NotBeEmpty("account should have at least one role");
+    roles.Should().AllSatisfy(r =>
+    {
+      r.Id.Should().NotBeNullOrEmpty("each role should have an ID");
+      r.Name.Should().NotBeNullOrEmpty("each role should have a name");
+      r.Description.Should().NotBeNullOrEmpty("each role should have a description");
+      r.Permissions.Should().NotBeNull("each role should have permissions object");
+    });
   }
 
   /// <summary>I03: Verifies that roles have complete model properties.</summary>
@@ -114,14 +108,12 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var result = await _sut.ListAccountRolesAsync(accountId);
 
     // Assert - check first role has all expected properties
+    result.Items.Should().NotBeEmpty("account should have at least one role");
     var firstRole = result.Items.First();
-    firstRole.Id.Should().NotBeNullOrEmpty();
-    firstRole.Name.Should().NotBeNullOrEmpty();
-    firstRole.Description.Should().NotBeNullOrEmpty();
-    firstRole.Permissions.Should().NotBeNull();
-
-    _output.WriteLine($"First role: {firstRole.Name}");
-    _output.WriteLine($"  Description: {firstRole.Description}");
+    firstRole.Id.Should().NotBeNullOrEmpty("role should have an ID");
+    firstRole.Name.Should().NotBeNullOrEmpty("role should have a name");
+    firstRole.Description.Should().NotBeNullOrEmpty("role should have a description");
+    firstRole.Permissions.Should().NotBeNull("role should have permissions");
   }
 
   /// <summary>I04: Verifies that roles with pagination parameter work correctly.</summary>
@@ -136,10 +128,9 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var result = await _sut.ListAccountRolesAsync(accountId, filters);
 
     // Assert
-    result.Should().NotBeNull();
-    result.Items.Should().NotBeNull();
-    // Note: The actual count may be less than or equal to PerPage
-    _output.WriteLine($"Requested PerPage=5, got {result.Items.Count} roles");
+    result.Should().NotBeNull("API should return a valid response");
+    result.Items.Should().NotBeNull("Items collection should not be null");
+    result.Items.Count.Should().BeLessThanOrEqualTo(5, "API should respect PerPage parameter");
   }
 
   #endregion
@@ -156,23 +147,28 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
 
     // First, list roles to get a valid role ID
     var roles = await _sut.ListAccountRolesAsync(accountId);
+    roles.Items.Should().NotBeEmpty("need at least one role to test GetAccountRoleAsync");
     var roleId = roles.Items.First().Id;
 
     // Act
     var result = await _sut.GetAccountRoleAsync(accountId, roleId);
 
     // Assert
-    result.Should().NotBeNull();
-    result.Id.Should().Be(roleId);
-    result.Name.Should().NotBeNullOrEmpty();
-    result.Description.Should().NotBeNullOrEmpty();
-    result.Permissions.Should().NotBeNull();
-
-    _output.WriteLine($"Retrieved role: {result.Name} ({result.Id})");
-    _output.WriteLine($"Description: {result.Description}");
+    result.Should().NotBeNull("API should return a valid role");
+    result.Id.Should().Be(roleId, "returned role ID should match requested ID");
+    result.Name.Should().NotBeNullOrEmpty("role should have a name");
+    result.Description.Should().NotBeNullOrEmpty("role should have a description");
+    result.Permissions.Should().NotBeNull("role should have permissions");
   }
 
   /// <summary>I06: Verifies that role permissions are populated correctly.</summary>
+  /// <remarks>
+  ///   This test verifies that roles have a permissions object and that at least some
+  ///   permission categories exist. We cannot assert on specific permissions (DNS, Analytics, etc.)
+  ///   because permission availability varies by account type and plan. Instead, we verify
+  ///   the structure is correct and that the first role with any populated permissions has
+  ///   readable permission entries.
+  /// </remarks>
   [IntegrationTest]
   public async Task GetAccountRoleAsync_HasPermissions()
   {
@@ -181,31 +177,38 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
 
     // First, list roles to find one with permissions
     var roles = await _sut.ListAccountRolesAsync(accountId);
-    var adminRole = roles.Items.FirstOrDefault(r => r.Name.Contains("Admin", StringComparison.OrdinalIgnoreCase))
+    roles.Items.Should().NotBeEmpty("account should have at least one role");
+
+    // Try to find roles in order of preference (most complete permissions first)
+    // See RoleConstants for the full list of available Cloudflare roles
+    var adminRole = roles.Items.FirstOrDefault(r => r.Name == RoleConstants.SuperAdministrator)
+                 ?? roles.Items.FirstOrDefault(r => r.Name == RoleConstants.Administrator)
                  ?? roles.Items.First();
 
     // Act
     var result = await _sut.GetAccountRoleAsync(accountId, adminRole.Id);
 
-    // Assert
-    result.Permissions.Should().NotBeNull();
+    // Assert - Permissions object must exist
+    result.Permissions.Should().NotBeNull("role should have permissions object");
 
-    // Log the permissions that are set
-    _output.WriteLine($"Role: {result.Name}");
-    _output.WriteLine("Permissions:");
+    // Verify that the permissions object has some content (any permission category populated)
+    // We cannot assume specific permissions like DNS/Analytics exist as they vary by account/plan
+    var hasAnyPermission =
+      result.Permissions.Analytics != null ||
+      result.Permissions.Billing != null ||
+      result.Permissions.CachePurge != null ||
+      result.Permissions.Dns != null ||
+      result.Permissions.DnsRecords != null ||
+      result.Permissions.LoadBalancer != null ||
+      result.Permissions.Logs != null ||
+      result.Permissions.Organization != null ||
+      result.Permissions.Ssl != null ||
+      result.Permissions.Waf != null ||
+      result.Permissions.ZoneSettings != null ||
+      result.Permissions.Zones != null;
 
-    if (result.Permissions.Analytics is not null)
-      _output.WriteLine($"  Analytics: Read={result.Permissions.Analytics.Read}, Write={result.Permissions.Analytics.Write}");
-    if (result.Permissions.Billing is not null)
-      _output.WriteLine($"  Billing: Read={result.Permissions.Billing.Read}, Write={result.Permissions.Billing.Write}");
-    if (result.Permissions.Dns is not null)
-      _output.WriteLine($"  DNS: Read={result.Permissions.Dns.Read}, Write={result.Permissions.Dns.Write}");
-    if (result.Permissions.DnsRecords is not null)
-      _output.WriteLine($"  DNS Records: Read={result.Permissions.DnsRecords.Read}, Write={result.Permissions.DnsRecords.Write}");
-    if (result.Permissions.Zones is not null)
-      _output.WriteLine($"  Zones: Read={result.Permissions.Zones.Read}, Write={result.Permissions.Zones.Write}");
-    if (result.Permissions.ZoneSettings is not null)
-      _output.WriteLine($"  Zone Settings: Read={result.Permissions.ZoneSettings.Read}, Write={result.Permissions.ZoneSettings.Write}");
+    hasAnyPermission.Should().BeTrue(
+      $"role '{result.Name}' should have at least one permission category populated");
   }
 
   /// <summary>I07: Verifies that common roles exist (Administrator, etc.).</summary>
@@ -220,18 +223,16 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     await foreach (var role in _sut.ListAllAccountRolesAsync(accountId))
       roles.Add(role);
 
-    // Assert - check for common role types
-    var roleNames = roles.Select(r => r.Name.ToLowerInvariant()).ToList();
-
-    _output.WriteLine("Available roles:");
-    foreach (var role in roles)
-      _output.WriteLine($"  - {role.Name}: {role.Description}");
-
-    // At minimum, there should be some roles
+    // Assert - At minimum, there should be some roles
     roles.Should().NotBeEmpty("every account should have at least one role");
+    roles.Should().AllSatisfy(r =>
+    {
+      r.Id.Should().NotBeNullOrEmpty("each role should have an ID");
+      r.Name.Should().NotBeNullOrEmpty("each role should have a name");
+    });
   }
 
-  /// <summary>I08: Verifies that getting a non-existent role returns 404.</summary>
+  /// <summary>I08: Verifies that getting a non-existent role returns error.</summary>
   [IntegrationTest]
   public async Task GetAccountRoleAsync_NonExistentRole_ThrowsNotFound()
   {
@@ -244,8 +245,7 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
 
     // API may return 404 for non-existent role
     var exception = await act.Should().ThrowAsync<HttpRequestException>();
-    exception.Which.StatusCode.Should().NotBeNull();
-    _output.WriteLine($"Received expected error status: {exception.Which.StatusCode}");
+    exception.Which.StatusCode.Should().NotBeNull("error should have a status code");
   }
 
   #endregion
@@ -260,6 +260,7 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Arrange
     var accountId = _settings.AccountId;
     var roles = await _sut.ListAccountRolesAsync(accountId);
+    roles.Items.Should().NotBeEmpty("account should have at least one role");
     var roleWithPermissions = roles.Items.FirstOrDefault(r =>
       r.Permissions.Dns is not null ||
       r.Permissions.Zones is not null ||
@@ -286,7 +287,7 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     hasAnyPermission.Should().BeTrue("roles should have at least one permission defined");
   }
 
-  /// <summary>I10: Verifies that read-only roles have read=true, write=false.</summary>
+  /// <summary>I10: Verifies that read-only roles have read=true, write=false when present.</summary>
   [IntegrationTest]
   public async Task ListAccountRolesAsync_ReadOnlyRolesHaveCorrectPermissions()
   {
@@ -298,65 +299,21 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     await foreach (var role in _sut.ListAllAccountRolesAsync(accountId))
       roles.Add(role);
 
-    // Find a read-only role if one exists
+    // Assert - Verify roles structure is valid
+    roles.Should().NotBeEmpty("account should have at least one role");
+
+    // Find a read-only role if one exists and verify its structure
     var readOnlyRole = roles.FirstOrDefault(r =>
       r.Name.Contains("Read Only", StringComparison.OrdinalIgnoreCase) ||
       r.Name.Contains("Viewer", StringComparison.OrdinalIgnoreCase));
 
-    if (readOnlyRole != null)
+    if (readOnlyRole != null && readOnlyRole.Permissions.Zones is not null)
     {
-      _output.WriteLine($"Found read-only role: {readOnlyRole.Name}");
-
-      // Check that any non-null permission has read=true and write=false
-      if (readOnlyRole.Permissions.Zones is not null)
-      {
-        readOnlyRole.Permissions.Zones.Read.Should().BeTrue();
-        readOnlyRole.Permissions.Zones.Write.Should().BeFalse();
-        _output.WriteLine($"  Zones: Read={readOnlyRole.Permissions.Zones.Read}, Write={readOnlyRole.Permissions.Zones.Write}");
-      }
+      // If a read-only role exists with Zones permission, verify the pattern
+      readOnlyRole.Permissions.Zones.Read.Should().BeTrue("read-only role should have read access");
+      readOnlyRole.Permissions.Zones.Write.Should().BeFalse("read-only role should not have write access");
     }
-    else
-    {
-      _output.WriteLine("No read-only role found - this is expected for some account types");
-    }
-  }
-
-  /// <summary>I11: Verifies that the Administrator role has write permissions.</summary>
-  [IntegrationTest]
-  public async Task GetAccountRoleAsync_AdminRoleHasWritePermissions()
-  {
-    // Arrange
-    var accountId = _settings.AccountId;
-    var roles = await _sut.ListAccountRolesAsync(accountId);
-
-    // Find the Administrator or Super Admin role
-    var adminRole = roles.Items.FirstOrDefault(r =>
-      r.Name.Equals("Administrator", StringComparison.OrdinalIgnoreCase) ||
-      r.Name.Contains("Super Admin", StringComparison.OrdinalIgnoreCase) ||
-      r.Name.Contains("Admin", StringComparison.OrdinalIgnoreCase));
-
-    if (adminRole == null)
-    {
-      _output.WriteLine("No admin role found - skipping write permission check");
-      return;
-    }
-
-    // Act
-    var result = await _sut.GetAccountRoleAsync(accountId, adminRole.Id);
-
-    // Assert - Admin should have some write permissions
-    var hasWritePermission =
-      result.Permissions.Dns?.Write == true ||
-      result.Permissions.DnsRecords?.Write == true ||
-      result.Permissions.Zones?.Write == true ||
-      result.Permissions.ZoneSettings?.Write == true ||
-      result.Permissions.Organization?.Write == true;
-
-    _output.WriteLine($"Admin role: {result.Name}");
-    _output.WriteLine($"  Has write permissions: {hasWritePermission}");
-
-    // Note: Different account types have different admin permissions
-    // Just log the result rather than asserting
+    // Note: Not all accounts have read-only roles, so we don't fail if none exists
   }
 
   /// <summary>I12: Verifies that roles list and get return consistent data.</summary>
@@ -366,19 +323,16 @@ public class AccountRolesApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     // Arrange
     var accountId = _settings.AccountId;
     var roles = await _sut.ListAccountRolesAsync(accountId);
+    roles.Items.Should().NotBeEmpty("account should have at least one role");
     var roleFromList = roles.Items.First();
 
     // Act
     var roleFromGet = await _sut.GetAccountRoleAsync(accountId, roleFromList.Id);
 
-    // Assert
-    roleFromGet.Id.Should().Be(roleFromList.Id);
-    roleFromGet.Name.Should().Be(roleFromList.Name);
-    roleFromGet.Description.Should().Be(roleFromList.Description);
-
-    _output.WriteLine($"List vs Get comparison for role: {roleFromList.Name}");
-    _output.WriteLine($"  IDs match: {roleFromGet.Id == roleFromList.Id}");
-    _output.WriteLine($"  Names match: {roleFromGet.Name == roleFromList.Name}");
+    // Assert - Data should be consistent between list and get
+    roleFromGet.Id.Should().Be(roleFromList.Id, "IDs should match");
+    roleFromGet.Name.Should().Be(roleFromList.Name, "names should match");
+    roleFromGet.Description.Should().Be(roleFromList.Description, "descriptions should match");
   }
 
   #endregion
