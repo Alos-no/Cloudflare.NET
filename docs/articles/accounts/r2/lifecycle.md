@@ -9,7 +9,7 @@ public class LifecycleService(ICloudflareApiClient cf)
 {
     public async Task SetRetentionPolicyAsync(string bucket, int days)
     {
-        await cf.Accounts.SetBucketLifecycleAsync(bucket, new BucketLifecyclePolicy([
+        await cf.Accounts.Buckets.SetLifecycleAsync(bucket, new BucketLifecyclePolicy([
             new LifecycleRule(
                 Id: "auto-delete",
                 DeleteObjectsTransition: new DeleteObjectsTransition(
@@ -28,7 +28,7 @@ public class LifecycleService(ICloudflareApiClient cf)
 Delete objects after a specified number of days:
 
 ```csharp
-await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
+await cf.Accounts.Buckets.SetLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
     new LifecycleRule(
         Id: "delete-after-30-days",
         Enabled: true,
@@ -44,7 +44,7 @@ await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy
 Delete objects on a specific date:
 
 ```csharp
-await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
+await cf.Accounts.Buckets.SetLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
     new LifecycleRule(
         Id: "delete-on-date",
         DeleteObjectsTransition: new DeleteObjectsTransition(
@@ -59,7 +59,7 @@ await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy
 Move objects to cheaper storage after a period:
 
 ```csharp
-await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
+await cf.Accounts.Buckets.SetLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
     new LifecycleRule(
         Id: "move-to-ia",
         StorageClassTransitions: [
@@ -77,7 +77,7 @@ await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy
 Clean up failed multipart uploads:
 
 ```csharp
-await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
+await cf.Accounts.Buckets.SetLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
     new LifecycleRule(
         Id: "cleanup-multipart",
         AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(
@@ -92,7 +92,7 @@ await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy
 Apply rules to objects with a specific prefix:
 
 ```csharp
-await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
+await cf.Accounts.Buckets.SetLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
     new LifecycleRule(
         Id: "temp-files-cleanup",
         Conditions: new LifecycleRuleConditions(Prefix: "temp/"),
@@ -106,7 +106,7 @@ await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy
 ### Complete Lifecycle Configuration
 
 ```csharp
-await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
+await cf.Accounts.Buckets.SetLifecycleAsync("my-bucket", new BucketLifecyclePolicy([
     // Move to IA after 30 days
     new LifecycleRule(
         Id: "archive-old-objects",
@@ -145,7 +145,7 @@ await cf.Accounts.SetBucketLifecycleAsync("my-bucket", new BucketLifecyclePolicy
 ## Getting Lifecycle Policy
 
 ```csharp
-var policy = await cf.Accounts.GetBucketLifecycleAsync("my-bucket");
+var policy = await cf.Accounts.Buckets.GetLifecycleAsync("my-bucket");
 
 foreach (var rule in policy.Rules)
 {
@@ -162,7 +162,7 @@ foreach (var rule in policy.Rules)
 ## Deleting Lifecycle Policy
 
 ```csharp
-await cf.Accounts.DeleteBucketLifecycleAsync("my-bucket");
+await cf.Accounts.Buckets.DeleteLifecycleAsync("my-bucket");
 ```
 
 ## Models Reference
@@ -220,7 +220,7 @@ See [SDK Conventions](../../conventions.md#extensible-enums) for more on extensi
 ```csharp
 public async Task SetLogRetentionAsync(string bucket, int retentionDays)
 {
-    await cf.Accounts.SetBucketLifecycleAsync(bucket, new BucketLifecyclePolicy([
+    await cf.Accounts.Buckets.SetLifecycleAsync(bucket, new BucketLifecyclePolicy([
         new LifecycleRule(
             Id: "log-retention",
             Conditions: new LifecycleRuleConditions(Prefix: "logs/"),
@@ -243,7 +243,7 @@ public async Task SetLogRetentionAsync(string bucket, int retentionDays)
 ```csharp
 public async Task SetBackupPolicyAsync(string bucket)
 {
-    await cf.Accounts.SetBucketLifecycleAsync(bucket, new BucketLifecyclePolicy([
+    await cf.Accounts.Buckets.SetLifecycleAsync(bucket, new BucketLifecyclePolicy([
         // Daily backups: keep 30 days
         new LifecycleRule(
             Id: "daily-backups",

@@ -1,5 +1,7 @@
 namespace Cloudflare.NET.Zones;
 
+using Models;
+
 /// <summary>
 ///   Well-known zone setting identifiers.
 ///   <para>
@@ -12,6 +14,7 @@ namespace Cloudflare.NET.Zones;
 ///   Use string literals for settings not listed here.
 /// </remarks>
 /// <seealso href="https://developers.cloudflare.com/api/resources/zones/subresources/settings/" />
+[Obsolete($"Use {nameof(ZoneSettingId)} extensible enum instead. This class will be removed in a future version.")]
 public static class ZoneSettingIds
 {
   #region Security Settings
@@ -95,7 +98,7 @@ public static class ZoneSettingIds
   /// <summary>IPv6 compatibility. Value: "on"/"off"</summary>
   public const string Ipv6 = "ipv6";
 
-  /// <summary>WebSockets support. Value: "on"/"off"</summary>
+  /// <summary>WebSocket support. Value: "on"/"off"</summary>
   public const string Websockets = "websockets";
 
   /// <summary>Pseudo IPv4. Value: "off", "add_header", "overwrite_header"</summary>

@@ -81,7 +81,7 @@ public static class Program
       if (createdBucket)
       {
         logger.LogInformation("Creating temporary R2 bucket: {Bucket}", bucketName);
-        await accounts.CreateR2BucketAsync(bucketName);
+        await accounts.Buckets.CreateAsync(bucketName);
       }
       else
       {
@@ -144,7 +144,7 @@ public static class Program
         try
         {
           logger.LogInformation("Deleting temporary bucket: {Bucket}", bucketName);
-          await accounts.DeleteR2BucketAsync(bucketName);
+          await accounts.Buckets.DeleteAsync(bucketName);
         }
         catch (Exception ex)
         {

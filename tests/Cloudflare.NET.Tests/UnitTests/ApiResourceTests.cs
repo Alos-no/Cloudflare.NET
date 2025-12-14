@@ -1,4 +1,7 @@
-﻿namespace Cloudflare.NET.Tests.UnitTests;
+﻿// Suppress obsolete warnings for tests that use deprecated methods as test vehicles.
+#pragma warning disable CS0618
+
+namespace Cloudflare.NET.Tests.UnitTests;
 
 using System.Net;
 using System.Text.Json;

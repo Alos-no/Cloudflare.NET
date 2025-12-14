@@ -9,7 +9,7 @@ public class CorsService(ICloudflareApiClient cf)
 {
     public async Task EnableCorsAsync(string bucket)
     {
-        await cf.Accounts.SetBucketCorsAsync(bucket, new BucketCorsPolicy([
+        await cf.Accounts.Buckets.SetCorsAsync(bucket, new BucketCorsPolicy([
             new CorsRule(
                 Allowed: new CorsAllowed(
                     Methods: ["GET", "HEAD"],
@@ -26,7 +26,7 @@ public class CorsService(ICloudflareApiClient cf)
 ### Basic CORS for Web Access
 
 ```csharp
-await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
+await cf.Accounts.Buckets.SetCorsAsync("my-bucket", new BucketCorsPolicy([
     new CorsRule(
         Allowed: new CorsAllowed(
             Methods: ["GET", "HEAD"],
@@ -39,7 +39,7 @@ await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
 ### Allow All Origins
 
 ```csharp
-await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
+await cf.Accounts.Buckets.SetCorsAsync("my-bucket", new BucketCorsPolicy([
     new CorsRule(
         Allowed: new CorsAllowed(
             Methods: ["GET", "HEAD"],
@@ -52,7 +52,7 @@ await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
 ### Full CRUD Access
 
 ```csharp
-await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
+await cf.Accounts.Buckets.SetCorsAsync("my-bucket", new BucketCorsPolicy([
     new CorsRule(
         Allowed: new CorsAllowed(
             Methods: ["GET", "HEAD", "PUT", "POST", "DELETE"],
@@ -68,7 +68,7 @@ await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
 ### Multiple Rules
 
 ```csharp
-await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
+await cf.Accounts.Buckets.SetCorsAsync("my-bucket", new BucketCorsPolicy([
     // Read-only for public site
     new CorsRule(
         Id: "public-read",
@@ -93,7 +93,7 @@ await cf.Accounts.SetBucketCorsAsync("my-bucket", new BucketCorsPolicy([
 ## Getting CORS Policy
 
 ```csharp
-var policy = await cf.Accounts.GetBucketCorsAsync("my-bucket");
+var policy = await cf.Accounts.Buckets.GetCorsAsync("my-bucket");
 
 foreach (var rule in policy.Rules)
 {
@@ -106,7 +106,7 @@ foreach (var rule in policy.Rules)
 ## Deleting CORS Policy
 
 ```csharp
-await cf.Accounts.DeleteBucketCorsAsync("my-bucket");
+await cf.Accounts.Buckets.DeleteCorsAsync("my-bucket");
 ```
 
 ## Models Reference
@@ -151,7 +151,7 @@ await cf.Accounts.DeleteBucketCorsAsync("my-bucket");
 ```csharp
 public async Task ConfigureCdnCorsAsync(string bucket, string cdnDomain)
 {
-    await cf.Accounts.SetBucketCorsAsync(bucket, new BucketCorsPolicy([
+    await cf.Accounts.Buckets.SetCorsAsync(bucket, new BucketCorsPolicy([
         new CorsRule(
             Allowed: new CorsAllowed(
                 Methods: ["GET", "HEAD"],
@@ -173,7 +173,7 @@ public async Task SetupCorsAsync(string bucket, bool isDevelopment)
         ? new[] { "http://localhost:3000", "http://localhost:5173" }
         : new[] { "https://app.example.com" };
 
-    await cf.Accounts.SetBucketCorsAsync(bucket, new BucketCorsPolicy([
+    await cf.Accounts.Buckets.SetCorsAsync(bucket, new BucketCorsPolicy([
         new CorsRule(
             Allowed: new CorsAllowed(
                 Methods: ["GET", "HEAD", "PUT", "DELETE"],
@@ -189,7 +189,7 @@ public async Task SetupCorsAsync(string bucket, bool isDevelopment)
 
 ```csharp
 // Enable CORS for presigned URL uploads
-await cf.Accounts.SetBucketCorsAsync("uploads", new BucketCorsPolicy([
+await cf.Accounts.Buckets.SetCorsAsync("uploads", new BucketCorsPolicy([
     new CorsRule(
         Allowed: new CorsAllowed(
             Methods: ["PUT"],

@@ -3,6 +3,9 @@ namespace Cloudflare.NET.Accounts.Models;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+
+#region Managed Domain Models
+
 // PUT /accounts/{id}/r2/buckets/{name}/domains/managed
 /// <summary>Defines the request payload for enabling or disabling the r2.dev subdomain.</summary>
 /// <param name="Enabled">Whether the domain should be enabled.</param>
@@ -10,6 +13,24 @@ public record SetManagedDomainRequest(
   [property: JsonPropertyName("enabled")]
   bool Enabled
 );
+
+/// <summary>Represents the response for the R2-managed (r2.dev) domain configuration.</summary>
+/// <param name="BucketId">The unique identifier of the bucket.</param>
+/// <param name="Domain">The r2.dev domain hostname (e.g., "bucket-name.account-id.r2.dev").</param>
+/// <param name="Enabled">Whether public access via the r2.dev domain is enabled.</param>
+public record ManagedDomainResponse(
+  [property: JsonPropertyName("bucketId")]
+  string? BucketId,
+  [property: JsonPropertyName("domain")]
+  string? Domain,
+  [property: JsonPropertyName("enabled")]
+  bool Enabled
+);
+
+#endregion
+
+
+#region Custom Domain Models
 
 // POST .../r2/buckets/{name}/domains/custom
 /// <summary>Defines the request payload for attaching a custom domain to a bucket.</summary>
@@ -24,6 +45,47 @@ public record AttachCustomDomainRequest(
   [property: JsonPropertyName("zoneId")]
   string ZoneId
 );
+
+/// <summary>Defines the request payload for updating a custom domain configuration.</summary>
+/// <param name="Enabled">Whether the domain should be enabled.</param>
+/// <param name="MinTls">Optional minimum TLS version (e.g., "1.2", "1.3").</param>
+public record UpdateCustomDomainRequest(
+  [property: JsonPropertyName("enabled")]
+  bool? Enabled = null,
+  [property: JsonPropertyName("minTLS")]
+  string? MinTls = null
+);
+
+/// <summary>Represents a custom domain in the list of custom domains for a bucket.</summary>
+/// <param name="Domain">The custom domain hostname (e.g., "files.example.com").</param>
+/// <param name="Enabled">Whether the domain is currently enabled.</param>
+/// <param name="Status">The status of the domain (e.g., "active", "pending").</param>
+/// <param name="MinTls">The minimum TLS version for the domain.</param>
+/// <param name="ZoneId">The Zone ID the domain belongs to.</param>
+/// <param name="ZoneName">The Zone name the domain belongs to.</param>
+public record CustomDomain(
+  [property: JsonPropertyName("domain")]
+  string Domain,
+  [property: JsonPropertyName("enabled")]
+  bool Enabled,
+  [property: JsonPropertyName("status")]
+  CustomDomainStatusObject? Status = null,
+  [property: JsonPropertyName("minTLS")]
+  string? MinTls = null,
+  [property: JsonPropertyName("zoneId")]
+  string? ZoneId = null,
+  [property: JsonPropertyName("zoneName")]
+  string? ZoneName = null
+);
+
+/// <summary>Represents the response wrapper for listing custom domains.</summary>
+/// <param name="Domains">The list of custom domains attached to the bucket.</param>
+public record ListCustomDomainsResponse(
+  [property: JsonPropertyName("domains")]
+  IReadOnlyList<CustomDomain> Domains
+);
+
+#endregion
 
 /// <summary>
 ///   Represents the response from attaching or querying a custom domain. The custom converter handles the

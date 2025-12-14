@@ -1,6 +1,7 @@
 ﻿namespace Cloudflare.NET.Accounts;
 
 using AccessRules;
+using Buckets;
 using Core.Models;
 using Models;
 using Rulesets;
@@ -14,6 +15,13 @@ using Rulesets;
 /// </summary>
 public interface IAccountsApi
 {
+  /// <summary>Gets the API for managing R2 buckets and related resources.</summary>
+  /// <remarks>
+  ///   Provides operations for bucket CRUD, CORS, lifecycle, custom domains, managed domains,
+  ///   bucket locks, Sippy migration, and temporary credentials.
+  /// </remarks>
+  IR2BucketsApi Buckets { get; }
+
   /// <summary>Gets the API for managing account-level IP Access Rules.</summary>
   /// <remarks>Corresponds to the `/accounts/{account_id}/firewall/access_rules/rules` endpoint.</remarks>
   IAccountAccessRulesApi AccessRules { get; }
@@ -42,6 +50,7 @@ public interface IAccountsApi
   ///   the Cloudflare API, detailing the created bucket.
   /// </returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/create/" />
+  [Obsolete("Use Buckets.CreateAsync instead. This method will be removed in a future version.")]
   Task<R2Bucket> CreateR2BucketAsync(
     string            bucketName,
     R2LocationHint?   locationHint      = null,
@@ -53,6 +62,7 @@ public interface IAccountsApi
   /// <param name="filters">Optional filters for pagination.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A single page of R2 buckets along with pagination information.</returns>
+  [Obsolete("Use Buckets.ListAsync instead. This method will be removed in a future version.")]
   Task<CursorPaginatedResult<R2Bucket>> ListR2BucketsAsync(ListR2BucketsFilters? filters           = null,
                                                            CancellationToken     cancellationToken = default);
 
@@ -60,12 +70,14 @@ public interface IAccountsApi
   /// <param name="filters">Optional filters for pagination. The cursor will be ignored.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An asynchronous stream of all R2 buckets in the account.</returns>
+  [Obsolete("Use Buckets.ListAllAsync instead. This method will be removed in a future version.")]
   IAsyncEnumerable<R2Bucket> ListAllR2BucketsAsync(ListR2BucketsFilters? filters = null, CancellationToken cancellationToken = default);
 
   /// <summary>Disables the public `r2.dev` URL for a given bucket.</summary>
   /// <param name="bucketName">The name of the bucket to modify.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
+  [Obsolete("Use Buckets.DisableManagedDomainAsync instead. This method will be removed in a future version.")]
   Task DisableDevUrlAsync(string bucketName, CancellationToken cancellationToken = default);
 
   /// <summary>Attaches a custom domain to an R2 bucket, allowing it to be served from a custom hostname.</summary>
@@ -78,6 +90,7 @@ public interface IAccountsApi
   ///   <see cref="CustomDomainResponse" /> from the API.
   /// </returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/" />
+  [Obsolete("Use Buckets.AttachCustomDomainAsync instead. This method will be removed in a future version.")]
   Task<CustomDomainResponse> AttachCustomDomainAsync(string            bucketName,
                                                      string            hostname,
                                                      string            zoneId,
@@ -91,6 +104,7 @@ public interface IAccountsApi
   ///   A task that represents the asynchronous operation. The task result contains the
   ///   <see cref="CustomDomainResponse" /> with the latest status.
   /// </returns>
+  [Obsolete("Use Buckets.GetCustomDomainStatusAsync instead. This method will be removed in a future version.")]
   Task<CustomDomainResponse> GetCustomDomainStatusAsync(string bucketName, string hostname, CancellationToken cancellationToken = default);
 
   /// <summary>Detaches a custom domain from an R2 bucket.</summary>
@@ -98,12 +112,14 @@ public interface IAccountsApi
   /// <param name="hostname">The custom hostname to detach.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
+  [Obsolete("Use Buckets.DetachCustomDomainAsync instead. This method will be removed in a future version.")]
   Task DetachCustomDomainAsync(string bucketName, string hostname, CancellationToken cancellationToken = default);
 
   /// <summary>Deletes an R2 bucket. The bucket must be empty before it can be deleted.</summary>
   /// <param name="bucketName">The name of the bucket to delete.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
+  [Obsolete("Use Buckets.DeleteAsync instead. This method will be removed in a future version.")]
   Task DeleteR2BucketAsync(string bucketName, CancellationToken cancellationToken = default);
 
   /// <summary>Gets the CORS policy for an R2 bucket.</summary>
@@ -114,6 +130,7 @@ public interface IAccountsApi
   ///   <see cref="BucketCorsPolicy" /> with the current CORS rules.
   /// </returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/get/" />
+  [Obsolete("Use Buckets.GetCorsAsync instead. This method will be removed in a future version.")]
   Task<BucketCorsPolicy> GetBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default);
 
   /// <summary>Sets or updates the CORS policy for an R2 bucket.</summary>
@@ -123,6 +140,7 @@ public interface IAccountsApi
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <seealso
   ///   href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/update/" />
+  [Obsolete("Use Buckets.SetCorsAsync instead. This method will be removed in a future version.")]
   Task SetBucketCorsAsync(string bucketName, BucketCorsPolicy corsPolicy, CancellationToken cancellationToken = default);
 
   /// <summary>Deletes the CORS policy for an R2 bucket, removing all CORS rules.</summary>
@@ -131,6 +149,7 @@ public interface IAccountsApi
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <seealso
   ///   href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/delete/" />
+  [Obsolete("Use Buckets.DeleteCorsAsync instead. This method will be removed in a future version.")]
   Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default);
 
   /// <summary>Gets the lifecycle policy for an R2 bucket.</summary>
@@ -146,6 +165,7 @@ public interface IAccountsApi
   /// </remarks>
   /// <seealso
   ///   href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/get/" />
+  [Obsolete("Use Buckets.GetLifecycleAsync instead. This method will be removed in a future version.")]
   Task<BucketLifecyclePolicy> GetBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default);
 
   /// <summary>Sets or updates the lifecycle policy for an R2 bucket.</summary>
@@ -170,6 +190,7 @@ public interface IAccountsApi
   /// </remarks>
   /// <seealso
   ///   href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/update/" />
+  [Obsolete("Use Buckets.SetLifecycleAsync instead. This method will be removed in a future version.")]
   Task SetBucketLifecycleAsync(string bucketName, BucketLifecyclePolicy lifecyclePolicy, CancellationToken cancellationToken = default);
 
   /// <summary>Deletes the lifecycle policy for an R2 bucket, removing all lifecycle rules.</summary>
@@ -181,6 +202,7 @@ public interface IAccountsApi
   ///   by setting an empty rules array.
   /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/r2/buckets/object-lifecycles/" />
+  [Obsolete("Use Buckets.DeleteLifecycleAsync instead. This method will be removed in a future version.")]
   Task DeleteBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default);
 
 

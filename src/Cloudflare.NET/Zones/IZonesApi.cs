@@ -363,51 +363,60 @@ public interface IZonesApi
 
   /// <summary>Gets a single zone setting by its identifier.</summary>
   /// <param name="zoneId">The zone identifier.</param>
-  /// <param name="settingId">The setting identifier (e.g., "min_tls_version"). Use <see cref="ZoneSettingIds"/> constants.</param>
+  /// <param name="settingId">The setting identifier. Use <see cref="ZoneSettingId"/> static properties for known settings.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The zone setting with its current value.</returns>
-  /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId"/> or <paramref name="settingId"/> is null.</exception>
-  /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId"/> or <paramref name="settingId"/> is empty or whitespace.</exception>
+  /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId"/> is null.</exception>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId"/> is empty or whitespace.</exception>
   /// <example>
   ///   <code>
-  ///   var setting = await zones.GetZoneSettingAsync(zoneId, ZoneSettingIds.MinTlsVersion);
+  ///   // Using the extensible enum (recommended)
+  ///   var setting = await zones.GetZoneSettingAsync(zoneId, ZoneSettingId.MinTlsVersion);
   ///   string version = setting.Value.GetString(); // "1.2"
   ///
-  ///   var cacheTtl = await zones.GetZoneSettingAsync(zoneId, ZoneSettingIds.BrowserCacheTtl);
+  ///   var cacheTtl = await zones.GetZoneSettingAsync(zoneId, ZoneSettingId.BrowserCacheTtl);
   ///   int ttlSeconds = cacheTtl.Value.GetInt32(); // 14400
+  ///
+  ///   // String values are implicitly converted to ZoneSettingId
+  ///   var custom = await zones.GetZoneSettingAsync(zoneId, "custom_setting");
   ///   </code>
   /// </example>
   /// <seealso href="https://developers.cloudflare.com/api/resources/zones/subresources/settings/" />
+  /// <seealso cref="ZoneSettingId"/>
   Task<ZoneSetting> GetZoneSettingAsync(
     string zoneId,
-    string settingId,
+    ZoneSettingId settingId,
     CancellationToken cancellationToken = default);
 
   /// <summary>Updates a zone setting.</summary>
   /// <typeparam name="T">The value type (string, int, or complex object).</typeparam>
   /// <param name="zoneId">The zone identifier.</param>
-  /// <param name="settingId">The setting identifier. Use <see cref="ZoneSettingIds"/> constants.</param>
+  /// <param name="settingId">The setting identifier. Use <see cref="ZoneSettingId"/> static properties for known settings.</param>
   /// <param name="value">The new value for the setting.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The updated zone setting.</returns>
-  /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId"/> or <paramref name="settingId"/> is null.</exception>
-  /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId"/> or <paramref name="settingId"/> is empty or whitespace.</exception>
+  /// <exception cref="ArgumentNullException">Thrown when <paramref name="zoneId"/> is null.</exception>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="zoneId"/> is empty or whitespace.</exception>
   /// <example>
   ///   <code>
-  ///   // Set minimum TLS version
-  ///   await zones.SetZoneSettingAsync(zoneId, ZoneSettingIds.MinTlsVersion, "1.2");
+  ///   // Using the extensible enum (recommended)
+  ///   await zones.SetZoneSettingAsync(zoneId, ZoneSettingId.MinTlsVersion, "1.2");
   ///
   ///   // Enable development mode
-  ///   await zones.SetZoneSettingAsync(zoneId, ZoneSettingIds.DevelopmentMode, "on");
+  ///   await zones.SetZoneSettingAsync(zoneId, ZoneSettingId.DevelopmentMode, "on");
   ///
   ///   // Set browser cache TTL to 4 hours
-  ///   await zones.SetZoneSettingAsync(zoneId, ZoneSettingIds.BrowserCacheTtl, 14400);
+  ///   await zones.SetZoneSettingAsync(zoneId, ZoneSettingId.BrowserCacheTtl, 14400);
+  ///
+  ///   // String values are implicitly converted to ZoneSettingId
+  ///   await zones.SetZoneSettingAsync(zoneId, "custom_setting", "value");
   ///   </code>
   /// </example>
   /// <seealso href="https://developers.cloudflare.com/api/resources/zones/subresources/settings/" />
+  /// <seealso cref="ZoneSettingId"/>
   Task<ZoneSetting> SetZoneSettingAsync<T>(
     string zoneId,
-    string settingId,
+    ZoneSettingId settingId,
     T value,
     CancellationToken cancellationToken = default);
 

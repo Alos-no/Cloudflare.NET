@@ -1,3 +1,7 @@
+// Suppress obsolete warnings for tests that use deprecated methods for bucket management.
+// The R2 client tests use the deprecated IAccountsApi methods for bucket lifecycle management.
+#pragma warning disable CS0618
+
 namespace Cloudflare.NET.R2.Tests.IntegrationTests;
 
 using System.Net;

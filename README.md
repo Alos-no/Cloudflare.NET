@@ -1,7 +1,7 @@
 # Cloudflare.NET SDK
 
 [![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml)
-[![Documentation](https://img.shields.io/badge/docs-cfnet.alos.no-27ae60)](https://cfnet.alos.no)
+[![Documentation](https://img.shields.io/badge/docs-cfnet.alos.no-27ae60)](https://alos.no/cfnet)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-27ae60)](https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt)
 
 [![NuGet (Cloudflare.NET.Api)](https://img.shields.io/nuget/v/Cloudflare.NET.Api?label=Cloudflare.NET.Api&color=27ae60)](https://www.nuget.org/packages/Cloudflare.NET.Api/)
@@ -10,7 +10,7 @@
 
 An unofficial, strongly-typed .NET SDK for the Cloudflare API. Built with testability and maintainability in mind.
 
-**[Documentation](https://cfnet.alos.no)** | **[Getting Started](https://cfnet.alos.no/articles/getting-started.html)** | **[API Reference](https://cfnet.alos.no/api/)**
+**[Documentation](https://alos.no/cfnet)** | **[Getting Started](https://alos.no/cfnet/articles/getting-started.html)** | **[API Reference](https://alos.no/cfnet/api/)**
 
 ## Packages
 
@@ -63,7 +63,7 @@ public class MyService(ICloudflareApiClient cf)
 
 ### 📚 Ready to dive in?
 
-**[Explore the Full Documentation →](https://cfnet.alos.no)**
+**[Explore the Full Documentation →](https://alos.no/cfnet)**
 
 *Comprehensive guides, configuration options, multi-account setup, and more.*
 
@@ -85,7 +85,7 @@ public class MyService(ICloudflareApiClient cf)
 | **R2 Client** | Upload, Download, Multipart, Presigned URLs, Batch Delete |
 | **Analytics** | GraphQL queries for traffic, security, and R2 metrics |
 
-See [API Coverage](https://cfnet.alos.no/articles/api-coverage.html) for full details and roadmap.
+See [API Coverage](https://alos.no/cfnet/articles/api-coverage.html) for full details and roadmap.
 
 ## Supported Frameworks
 
@@ -102,7 +102,7 @@ See [API Coverage](https://cfnet.alos.no/articles/api-coverage.html) for full de
 We welcome contributions! Whether it's bug reports, feature requests, or code contributions.
 
 - [Report an Issue](https://github.com/Alos-no/Cloudflare.NET/issues)
-- [View Documentation](https://cfnet.alos.no)
+- [View Documentation](https://alos.no/cfnet)
 
 ## License
 

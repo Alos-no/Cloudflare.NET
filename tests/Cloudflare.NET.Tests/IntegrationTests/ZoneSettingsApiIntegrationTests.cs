@@ -64,11 +64,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_SslSetting_ReturnsStringValue()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Ssl);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Ssl);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("ssl");
+    setting.Id.Value.Should().Be("ssl");
     setting.Value.ValueKind.Should().Be(System.Text.Json.JsonValueKind.String);
     var sslMode = setting.Value.GetString();
     sslMode.Should().BeOneOf(EnumTestHelpers.GetAllValues<SslMode>());
@@ -82,11 +82,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_BrowserCacheTtl_ReturnsIntegerValue()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.BrowserCacheTtl);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("browser_cache_ttl");
+    setting.Id.Value.Should().Be("browser_cache_ttl");
     setting.Value.ValueKind.Should().Be(System.Text.Json.JsonValueKind.Number);
     var ttlValue = setting.Value.GetInt32();
     ttlValue.Should().BeGreaterThanOrEqualTo(0, "TTL should be 0 or positive");
@@ -100,11 +100,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_AlwaysUseHttps_ReturnsOnOffValue()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysUseHttps);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.AlwaysUseHttps);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("always_use_https");
+    setting.Id.Value.Should().Be("always_use_https");
     var toggleValue = setting.Value.GetString();
     toggleValue.Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
   }
@@ -116,7 +116,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_ChecksEditableProperty()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Ssl);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Ssl);
 
     // Assert
     // SSL setting should be editable on most plans
@@ -124,17 +124,17 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   }
 
   /// <summary>
-  ///   I05: Verifies that using a constant from ZoneSettingIds works correctly.
+  ///   I05: Verifies that using a constant from ZoneSettingId works correctly.
   /// </summary>
   [IntegrationTest]
   public async Task GetZoneSettingAsync_UsingConstant_WorksCorrectly()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.MinTlsVersion);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("min_tls_version");
+    setting.Id.Value.Should().Be("min_tls_version");
     var tlsVersion = setting.Value.GetString();
     tlsVersion.Should().BeOneOf(EnumTestHelpers.GetAllValues<MinTlsVersion>());
   }
@@ -147,24 +147,24 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task SetZoneSettingAsync_MinTlsVersion_CanUpdateAndRevert()
   {
     // Arrange - Get current value
-    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion);
+    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.MinTlsVersion);
     var originalValue = originalSetting.Value.GetString();
 
     // Choose a different valid value to set
     var newValue = originalValue == "1.2" ? "1.0" : "1.2";
 
     // Act - Update to new value
-    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion, newValue);
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.MinTlsVersion, newValue);
 
     // Assert
     updatedSetting.Should().NotBeNull();
     updatedSetting.Value.GetString().Should().Be(newValue);
 
     // Cleanup - Revert to original
-    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion, originalValue!);
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.MinTlsVersion, originalValue!);
 
     // Verify revert
-    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion);
+    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.MinTlsVersion);
     revertedSetting.Value.GetString().Should().Be(originalValue);
   }
 
@@ -176,24 +176,24 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task SetZoneSettingAsync_BrowserCacheTtl_CanUpdateAndRevert()
   {
     // Arrange - Get current value
-    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl);
+    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.BrowserCacheTtl);
     var originalValue = originalSetting.Value.GetInt32();
 
     // Choose a different valid value (common TTL values)
     var newValue = originalValue == 14400 ? 7200 : 14400;
 
     // Act - Update to new value
-    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl, newValue);
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.BrowserCacheTtl, newValue);
 
     // Assert
     updatedSetting.Should().NotBeNull();
     updatedSetting.Value.GetInt32().Should().Be(newValue);
 
     // Cleanup - Revert to original
-    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl, originalValue);
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.BrowserCacheTtl, originalValue);
 
     // Verify revert
-    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl);
+    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.BrowserCacheTtl);
     revertedSetting.Value.GetInt32().Should().Be(originalValue);
   }
 
@@ -205,24 +205,24 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task SetZoneSettingAsync_Brotli_CanToggleAndRevert()
   {
     // Arrange - Get current value
-    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli);
+    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Brotli);
     var originalValue = originalSetting.Value.GetString();
 
     // Toggle to opposite value
     var newValue = originalValue == "on" ? "off" : "on";
 
     // Act - Toggle
-    var toggledSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli, newValue);
+    var toggledSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.Brotli, newValue);
 
     // Assert
     toggledSetting.Should().NotBeNull();
     toggledSetting.Value.GetString().Should().Be(newValue);
 
     // Cleanup - Revert
-    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli, originalValue!);
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.Brotli, originalValue!);
 
     // Verify revert
-    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Brotli);
+    var revertedSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Brotli);
     revertedSetting.Value.GetString().Should().Be(originalValue);
   }
 
@@ -233,21 +233,21 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task SetZoneSettingAsync_ReturnsUpdatedMetadata()
   {
     // Arrange
-    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysOnline);
+    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.AlwaysOnline);
     var originalValue = originalSetting.Value.GetString();
     var newValue = originalValue == "on" ? "off" : "on";
 
     // Act
-    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysOnline, newValue);
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.AlwaysOnline, newValue);
 
     // Assert
-    updatedSetting.Id.Should().Be("always_online");
+    updatedSetting.Id.Value.Should().Be("always_online");
     updatedSetting.Editable.Should().BeTrue();
     updatedSetting.ModifiedOn.Should().NotBeNull("modified_on should be updated");
     updatedSetting.ModifiedOn!.Value.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(5));
 
     // Cleanup
-    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.AlwaysOnline, originalValue!);
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.AlwaysOnline, originalValue!);
   }
 
   /// <summary>
@@ -258,16 +258,16 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task SetZoneSettingAsync_DevelopmentMode_CanEnable()
   {
     // Arrange
-    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode);
+    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.DevelopmentMode);
 
     // Act - Enable development mode
-    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "on");
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.DevelopmentMode, "on");
 
     // Assert
     updatedSetting.Value.GetString().Should().Be("on");
 
     // Cleanup - Disable development mode
-    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "off");
+    await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.DevelopmentMode, "off");
   }
 
   /// <summary>
@@ -277,10 +277,10 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task SetZoneSettingAsync_DevelopmentMode_CanDisable()
   {
     // Arrange
-    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode);
+    var originalSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.DevelopmentMode);
 
     // Act - Ensure development mode is off
-    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode, "off");
+    var updatedSetting = await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.DevelopmentMode, "off");
 
     // Assert
     updatedSetting.Value.GetString().Should().Be("off");
@@ -293,11 +293,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_DevelopmentMode_IncludesAllFields()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.DevelopmentMode);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.DevelopmentMode);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("development_mode");
+    setting.Id.Value.Should().Be("development_mode");
     setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
     setting.Editable.Should().BeTrue("development mode should be editable");
   }
@@ -309,7 +309,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_SslMode_ReturnsValidMode()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Ssl);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Ssl);
 
     // Assert
     setting.Should().NotBeNull();
@@ -325,11 +325,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_Tls13_ReturnsValidValue()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Tls13);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Tls13);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("tls_1_3");
+    setting.Id.Value.Should().Be("tls_1_3");
     var tls13Value = setting.Value.GetString();
     tls13Value.Should().BeOneOf(EnumTestHelpers.GetAllValues<Tls13Setting>());
   }
@@ -341,11 +341,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_SecurityLevel_ReturnsValidLevel()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.SecurityLevel);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.SecurityLevel);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("security_level");
+    setting.Id.Value.Should().Be("security_level");
     var level = setting.Value.GetString();
     level.Should().BeOneOf(EnumTestHelpers.GetAllValues<ZoneSecurityLevel>());
   }
@@ -381,7 +381,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var invalidSslMode = "not_a_valid_mode";
 
     // Act
-    var action = async () => await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingIds.Ssl, invalidSslMode);
+    var action = async () => await _sut.SetZoneSettingAsync(_zoneId, ZoneSettingId.Ssl, invalidSslMode);
 
     // Assert - API should reject the invalid value
     await action.Should().ThrowAsync<Exception>();
@@ -394,19 +394,19 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_MultipleSettings_AllReturn()
   {
     // Act
-    var sslSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Ssl);
-    var tlsSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.MinTlsVersion);
-    var cacheSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.BrowserCacheTtl);
+    var sslSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Ssl);
+    var tlsSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.MinTlsVersion);
+    var cacheSetting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.BrowserCacheTtl);
 
     // Assert
     sslSetting.Should().NotBeNull();
-    sslSetting.Id.Should().Be("ssl");
+    sslSetting.Id.Value.Should().Be("ssl");
 
     tlsSetting.Should().NotBeNull();
-    tlsSetting.Id.Should().Be("min_tls_version");
+    tlsSetting.Id.Value.Should().Be("min_tls_version");
 
     cacheSetting.Should().NotBeNull();
-    cacheSetting.Id.Should().Be("browser_cache_ttl");
+    cacheSetting.Id.Value.Should().Be("browser_cache_ttl");
   }
 
   /// <summary>
@@ -424,7 +424,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var nonExistentZoneId = "00000000000000000000000000000000";
 
     // Act
-    var action = async () => await _sut.GetZoneSettingAsync(nonExistentZoneId, ZoneSettingIds.Ssl);
+    var action = async () => await _sut.GetZoneSettingAsync(nonExistentZoneId, ZoneSettingId.Ssl);
 
     // Assert - Returns 403 to prevent zone enumeration attacks
     await action.Should().ThrowAsync<HttpRequestException>()
@@ -438,11 +438,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_Websockets_ReturnsOnOffValue()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Websockets);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Websockets);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("websockets");
+    setting.Id.Value.Should().Be("websockets");
     setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
   }
 
@@ -453,11 +453,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_Ipv6_ReturnsOnOffValue()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.Ipv6);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.Ipv6);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("ipv6");
+    setting.Id.Value.Should().Be("ipv6");
     setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
   }
 
@@ -468,11 +468,11 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
   public async Task GetZoneSettingAsync_ZeroRtt_ReturnsOnOffValue()
   {
     // Act
-    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingIds.ZeroRtt);
+    var setting = await _sut.GetZoneSettingAsync(_zoneId, ZoneSettingId.ZeroRtt);
 
     // Assert
     setting.Should().NotBeNull();
-    setting.Id.Should().Be("0rtt");
+    setting.Id.Value.Should().Be("0rtt");
     setting.Value.GetString().Should().BeOneOf(EnumTestHelpers.GetAllValues<SslToggle>());
   }
 
@@ -490,7 +490,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var malformedZoneId = "invalid-zone-id-format!!!";
 
     // Act
-    var action = async () => await _sut.GetZoneSettingAsync(malformedZoneId, ZoneSettingIds.Ssl);
+    var action = async () => await _sut.GetZoneSettingAsync(malformedZoneId, ZoneSettingId.Ssl);
 
     // Assert - Malformed ID fails at routing layer with 404 (error code 7003)
     await action.Should().ThrowAsync<HttpRequestException>()
@@ -511,7 +511,7 @@ public class ZoneSettingsApiIntegrationTests : IClassFixture<CloudflareApiTestFi
     var malformedZoneId = "invalid-zone-id-format!!!";
 
     // Act
-    var action = async () => await _sut.SetZoneSettingAsync(malformedZoneId, ZoneSettingIds.Ssl, "full");
+    var action = async () => await _sut.SetZoneSettingAsync(malformedZoneId, ZoneSettingId.Ssl, "full");
 
     // Assert - Malformed ID fails at routing layer with 404 (error code 7003)
     await action.Should().ThrowAsync<HttpRequestException>()

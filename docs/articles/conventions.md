@@ -77,7 +77,7 @@ Cursor-based pagination uses an opaque cursor string for continuation. This patt
 
 ```csharp
 // Iterate over all buckets automatically
-await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync())
 {
     Console.WriteLine($"Bucket: {bucket.Name}");
 }
@@ -87,7 +87,7 @@ await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
 
 ```csharp
 // Get first page
-var page = await cf.Accounts.ListR2BucketsAsync(new ListR2BucketsFilters
+var page = await cf.Accounts.Buckets.ListAsync(new ListR2BucketsFilters
 {
     PerPage = 50
 });
@@ -101,7 +101,7 @@ foreach (var bucket in page.Items)
 // Continue if more pages exist
 while (!string.IsNullOrEmpty(page.CursorInfo?.Cursor))
 {
-    page = await cf.Accounts.ListR2BucketsAsync(new ListR2BucketsFilters
+    page = await cf.Accounts.Buckets.ListAsync(new ListR2BucketsFilters
     {
         PerPage = 50,
         Cursor = page.CursorInfo.Cursor
@@ -281,6 +281,7 @@ if (bucket.StorageClass is { } sc && sc == R2StorageClass.InfrequentAccess)
 |------|---------|--------------|
 | `DnsRecordType` | DNS record type | `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `NS`, `SOA`, `PTR`, `SRV`, `HTTPS`, `SVCB`, `CAA`, `DS`, `DNSKEY`, etc. |
 | `ZoneStatus` | Zone activation status | `active`, `pending`, `initializing`, `moved`, `deleted`, `deactivated` |
+| `ZoneSettingId` | Zone setting identifier | `ssl`, `min_tls_version`, `always_use_https`, `brotli`, `http2`, `http3`, `development_mode`, `security_level`, etc. |
 
 #### Security & Firewall
 
