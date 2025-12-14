@@ -58,7 +58,7 @@
     <Authors>Alos</Authors>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Alos Engineering</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://cfnet.alos.no</PackageProjectUrl>
+    <PackageProjectUrl>https://alos.no/cfnet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Alos-no/Cloudflare.NET</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     

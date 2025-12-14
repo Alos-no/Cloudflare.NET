@@ -67,10 +67,18 @@
           href: accounts/r2/buckets.md
         - name: Custom Domains
           href: accounts/r2/custom-domains.md
+        - name: Managed Domains (r2.dev)
+          href: accounts/r2/managed-domains.md
         - name: CORS Configuration
           href: accounts/r2/cors.md
         - name: Lifecycle Policies
           href: accounts/r2/lifecycle.md
+        - name: Bucket Locks
+          href: accounts/r2/bucket-locks.md
+        - name: Sippy Migration
+          href: accounts/r2/sippy.md
+        - name: Temporary Credentials
+          href: accounts/r2/temp-credentials.md
     - name: Security
       items:
         - name: Access Rules

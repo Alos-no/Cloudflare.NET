@@ -9,16 +9,32 @@ public class DomainService(ICloudflareApiClient cf)
 {
     public async Task AttachDomainAsync(string bucket, string hostname, string zoneId)
     {
-        var result = await cf.Accounts.AttachCustomDomainAsync(bucket, hostname, zoneId);
+        var result = await cf.Accounts.Buckets.AttachCustomDomainAsync(bucket, hostname, zoneId);
         Console.WriteLine($"Status: {result.Status}");
     }
+}
+```
+
+## Listing Custom Domains
+
+List all custom domains attached to a bucket:
+
+```csharp
+var domains = await cf.Accounts.Buckets.ListCustomDomainsAsync("my-bucket");
+
+foreach (var domain in domains)
+{
+    Console.WriteLine($"Domain: {domain.Domain}");
+    Console.WriteLine($"  Enabled: {domain.Enabled}");
+    Console.WriteLine($"  Status: {domain.Status?.Ownership ?? "pending"}");
+    Console.WriteLine($"  Zone: {domain.ZoneName}");
 }
 ```
 
 ## Attaching a Custom Domain
 
 ```csharp
-var result = await cf.Accounts.AttachCustomDomainAsync(
+var result = await cf.Accounts.Buckets.AttachCustomDomainAsync(
     bucketName: "my-bucket",
     hostname: "cdn.example.com",
     zoneId: "your-zone-id"
@@ -38,7 +54,7 @@ Console.WriteLine($"Edge Hostname: {result.EdgeHostname}");
 ## Checking Domain Status
 
 ```csharp
-var status = await cf.Accounts.GetCustomDomainStatusAsync(
+var status = await cf.Accounts.Buckets.GetCustomDomainStatusAsync(
     bucketName: "my-bucket",
     hostname: "cdn.example.com"
 );
@@ -54,27 +70,59 @@ Console.WriteLine($"Status: {status.Status}");
 | `active` | Domain is active and serving traffic |
 | `failed` | Attachment failed (check DNS/zone config) |
 
+## Updating Custom Domain Configuration
+
+Update settings for an existing custom domain, such as enabling/disabling it or changing the minimum TLS version:
+
+```csharp
+// Disable a custom domain
+var result = await cf.Accounts.Buckets.UpdateCustomDomainAsync(
+    bucketName: "my-bucket",
+    hostname: "cdn.example.com",
+    new UpdateCustomDomainRequest(Enabled: false)
+);
+
+// Set minimum TLS version
+var result = await cf.Accounts.Buckets.UpdateCustomDomainAsync(
+    bucketName: "my-bucket",
+    hostname: "cdn.example.com",
+    new UpdateCustomDomainRequest(MinTls: "1.3")
+);
+
+// Enable with minimum TLS 1.2
+var result = await cf.Accounts.Buckets.UpdateCustomDomainAsync(
+    bucketName: "my-bucket",
+    hostname: "cdn.example.com",
+    new UpdateCustomDomainRequest(Enabled: true, MinTls: "1.2")
+);
+```
+
 ## Detaching a Custom Domain
 
 ```csharp
-await cf.Accounts.DetachCustomDomainAsync(
+await cf.Accounts.Buckets.DetachCustomDomainAsync(
     bucketName: "my-bucket",
     hostname: "cdn.example.com"
 );
 ```
 
-## Disabling Dev URL
-
-Disable the default `r2.dev` public URL:
-
-```csharp
-await cf.Accounts.DisableDevUrlAsync("my-bucket");
-```
-
-> [!NOTE]
-> After disabling the dev URL, content is only accessible via custom domains.
+> [!TIP]
+> To disable the r2.dev public URL for enhanced security, see [Managed Domains (r2.dev)](managed-domains.md).
 
 ## Models Reference
+
+### CustomDomain
+
+Returned when listing custom domains for a bucket:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Domain` | `string` | The custom domain hostname |
+| `Enabled` | `bool` | Whether the domain is enabled |
+| `Status` | `CustomDomainStatusObject?` | Ownership and SSL status |
+| `MinTls` | `string?` | Minimum TLS version (e.g., "1.2", "1.3") |
+| `ZoneId` | `string?` | The Zone ID the domain belongs to |
+| `ZoneName` | `string?` | The Zone name the domain belongs to |
 
 ### CustomDomainResponse
 
@@ -83,6 +131,13 @@ await cf.Accounts.DisableDevUrlAsync("my-bucket");
 | `Domain` | `string` | The custom domain hostname |
 | `Status` | `string` | Current status (`pending`, `active`, `failed`) |
 | `EdgeHostname` | `string?` | Cloudflare edge hostname for CNAME |
+
+### UpdateCustomDomainRequest
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Enabled` | `bool?` | Whether the domain should be enabled |
+| `MinTls` | `string?` | Minimum TLS version (e.g., "1.2", "1.3") |
 
 ## Common Patterns
 
@@ -95,13 +150,13 @@ public async Task<bool> AttachAndVerifyAsync(
     string zoneId,
     int maxAttempts = 10)
 {
-    await cf.Accounts.AttachCustomDomainAsync(bucket, hostname, zoneId);
+    await cf.Accounts.Buckets.AttachCustomDomainAsync(bucket, hostname, zoneId);
 
     for (int i = 0; i < maxAttempts; i++)
     {
         await Task.Delay(TimeSpan.FromSeconds(5));
 
-        var status = await cf.Accounts.GetCustomDomainStatusAsync(bucket, hostname);
+        var status = await cf.Accounts.Buckets.GetCustomDomainStatusAsync(bucket, hostname);
 
         if (status.Status == "active")
             return true;
@@ -120,13 +175,13 @@ public async Task<bool> AttachAndVerifyAsync(
 public async Task SetupCdnAsync(string bucket, string hostname, string zoneId)
 {
     // 1. Attach custom domain
-    await cf.Accounts.AttachCustomDomainAsync(bucket, hostname, zoneId);
+    await cf.Accounts.Buckets.AttachCustomDomainAsync(bucket, hostname, zoneId);
 
     // 2. Disable dev URL for security
-    await cf.Accounts.DisableDevUrlAsync(bucket);
+    await cf.Accounts.Buckets.DisableManagedDomainAsync(bucket);
 
     // 3. Configure CORS for web access
-    await cf.Accounts.SetBucketCorsAsync(bucket, new BucketCorsPolicy([
+    await cf.Accounts.Buckets.SetCorsAsync(bucket, new BucketCorsPolicy([
         new CorsRule(
             Allowed: new CorsAllowed(
                 Methods: ["GET", "HEAD"],
@@ -158,4 +213,5 @@ cdn.example.com CNAME <edge-hostname>
 ## Related
 
 - [Bucket Management](buckets.md) - Create and manage buckets
+- [Managed Domains (r2.dev)](managed-domains.md) - Enable/disable public access
 - [CORS Configuration](cors.md) - Configure cross-origin access

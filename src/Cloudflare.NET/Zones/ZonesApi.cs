@@ -252,15 +252,18 @@ public class ZonesApi : ApiResource, IZonesApi
   /// <inheritdoc />
   public async Task<ZoneSetting> GetZoneSettingAsync(
     string            zoneId,
-    string            settingId,
+    ZoneSettingId     settingId,
     CancellationToken cancellationToken = default)
   {
     ArgumentNullException.ThrowIfNull(zoneId);
     ArgumentException.ThrowIfNullOrWhiteSpace(zoneId);
-    ArgumentNullException.ThrowIfNull(settingId);
-    ArgumentException.ThrowIfNullOrWhiteSpace(settingId);
 
-    var endpoint = $"zones/{Uri.EscapeDataString(zoneId)}/settings/{Uri.EscapeDataString(settingId)}";
+    // The ZoneSettingId struct guarantees Value is never null (empty string at minimum)
+    var settingIdValue = settingId.Value;
+    if (string.IsNullOrWhiteSpace(settingIdValue))
+      throw new ArgumentException("Setting ID cannot be empty or whitespace.", nameof(settingId));
+
+    var endpoint = $"zones/{Uri.EscapeDataString(zoneId)}/settings/{Uri.EscapeDataString(settingIdValue)}";
 
     return await GetAsync<ZoneSetting>(endpoint, cancellationToken);
   }
@@ -268,16 +271,19 @@ public class ZonesApi : ApiResource, IZonesApi
   /// <inheritdoc />
   public async Task<ZoneSetting> SetZoneSettingAsync<T>(
     string            zoneId,
-    string            settingId,
+    ZoneSettingId     settingId,
     T                 value,
     CancellationToken cancellationToken = default)
   {
     ArgumentNullException.ThrowIfNull(zoneId);
     ArgumentException.ThrowIfNullOrWhiteSpace(zoneId);
-    ArgumentNullException.ThrowIfNull(settingId);
-    ArgumentException.ThrowIfNullOrWhiteSpace(settingId);
 
-    var endpoint = $"zones/{Uri.EscapeDataString(zoneId)}/settings/{Uri.EscapeDataString(settingId)}";
+    // The ZoneSettingId struct guarantees Value is never null (empty string at minimum)
+    var settingIdValue = settingId.Value;
+    if (string.IsNullOrWhiteSpace(settingIdValue))
+      throw new ArgumentException("Setting ID cannot be empty or whitespace.", nameof(settingId));
+
+    var endpoint = $"zones/{Uri.EscapeDataString(zoneId)}/settings/{Uri.EscapeDataString(settingIdValue)}";
     var request  = new UpdateZoneSettingRequest<T>(value);
 
     return await PatchAsync<ZoneSetting>(endpoint, request, cancellationToken);

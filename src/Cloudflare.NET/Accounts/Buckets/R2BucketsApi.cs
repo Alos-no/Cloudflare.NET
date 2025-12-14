@@ -1,0 +1,390 @@
+namespace Cloudflare.NET.Accounts.Buckets;
+
+using Core;
+using Core.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Models;
+
+/// <summary>Implements the API for managing Cloudflare R2 bucket resources.</summary>
+public class R2BucketsApi : ApiResource, IR2BucketsApi
+{
+  #region Properties & Fields - Non-Public
+
+  /// <summary>The Cloudflare Account ID.</summary>
+  private readonly string _accountId;
+
+  #endregion
+
+
+  #region Constructors
+
+  /// <summary>Initializes a new instance of the <see cref="R2BucketsApi" /> class.</summary>
+  /// <param name="httpClient">The HttpClient for making requests.</param>
+  /// <param name="options">The Cloudflare API options containing the account ID.</param>
+  /// <param name="loggerFactory">The factory to create loggers.</param>
+  public R2BucketsApi(HttpClient httpClient, IOptions<CloudflareApiOptions> options, ILoggerFactory loggerFactory)
+    : base(httpClient, loggerFactory.CreateLogger<R2BucketsApi>())
+  {
+    _accountId = options.Value.AccountId;
+  }
+
+  #endregion
+
+
+  #region Core Bucket Operations
+
+  /// <inheritdoc />
+  public async Task<R2Bucket> CreateAsync(
+    string            bucketName,
+    R2LocationHint?   locationHint      = null,
+    R2Jurisdiction?   jurisdiction      = null,
+    R2StorageClass?   storageClass      = null,
+    CancellationToken cancellationToken = default)
+  {
+    var requestBody = new CreateBucketRequest(bucketName, locationHint, storageClass);
+    var endpoint    = $"accounts/{_accountId}/r2/buckets";
+
+    // Jurisdiction must be passed as an HTTP header (cf-r2-jurisdiction) per Cloudflare API spec.
+    IEnumerable<KeyValuePair<string, string>>? headers = null;
+
+    if (jurisdiction is { } j)
+    {
+      headers = [new KeyValuePair<string, string>("cf-r2-jurisdiction", j.Value)];
+    }
+
+    return await PostAsync<R2Bucket>(endpoint, requestBody, headers, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<R2Bucket> GetAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}";
+
+    // TODO: Add support for cf-r2-jurisdiction header when needed.
+    // Currently the base GetAsync doesn't support custom headers.
+    // For jurisdictional buckets, this may need to be enhanced.
+
+    return await GetAsync<R2Bucket>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<CursorPaginatedResult<R2Bucket>> ListAsync(
+    ListR2BucketsFilters? filters           = null,
+    CancellationToken     cancellationToken = default)
+  {
+    var queryParams = new List<string>();
+
+    if (filters?.PerPage is not null)
+      queryParams.Add($"per_page={filters.PerPage}");
+
+    if (!string.IsNullOrEmpty(filters?.Cursor))
+      queryParams.Add($"cursor={filters.Cursor}");
+
+    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
+    var endpoint    = $"accounts/{_accountId}/r2/buckets{queryString}";
+
+    return await GetCursorPaginatedResultAsync<ListR2BucketsResponse, R2Bucket>(
+      endpoint,
+      response => response.Buckets,
+      cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public IAsyncEnumerable<R2Bucket> ListAllAsync(
+    ListR2BucketsFilters? filters           = null,
+    CancellationToken     cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets";
+
+    return GetCursorPaginatedAsync<ListR2BucketsResponse, R2Bucket>(
+      endpoint,
+      filters?.PerPage,
+      response => response.Buckets,
+      cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DeleteAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}";
+
+    await DeleteAsync<object>(endpoint, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region CORS Configuration
+
+  /// <inheritdoc />
+  public async Task<BucketCorsPolicy> GetCorsAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/cors";
+
+    return await GetAsync<BucketCorsPolicy>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task SetCorsAsync(
+    string            bucketName,
+    BucketCorsPolicy  corsPolicy,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/cors";
+
+    await PutAsync<object>(endpoint, corsPolicy, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DeleteCorsAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/cors";
+
+    await DeleteAsync<object>(endpoint, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region Lifecycle Configuration
+
+  /// <inheritdoc />
+  public async Task<BucketLifecyclePolicy> GetLifecycleAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/lifecycle";
+
+    return await GetAsync<BucketLifecyclePolicy>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task SetLifecycleAsync(
+    string                bucketName,
+    BucketLifecyclePolicy lifecyclePolicy,
+    CancellationToken     cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/lifecycle";
+
+    // Cloudflare R2 API requires the 'conditions' field to be present in each rule, even if empty.
+    // If conditions is null, we normalize it to an empty LifecycleRuleConditions object.
+    // Without this normalization, the API returns error 10040 "The JSON you provided was not well formed."
+    var normalizedRules = lifecyclePolicy.Rules.Select(rule =>
+      rule.Conditions is null
+        ? rule with { Conditions = new LifecycleRuleConditions() }
+        : rule
+    ).ToArray();
+
+    var normalizedPolicy = new BucketLifecyclePolicy(normalizedRules);
+
+    // Use custom serialization options that match Cloudflare R2 lifecycle API expectations (camelCase for lifecycle).
+    // Note: The R2 lifecycle API uses camelCase property names, unlike most Cloudflare APIs which use snake_case.
+    var lifecycleSerializerOptions = new System.Text.Json.JsonSerializerOptions
+    {
+      DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+    };
+    var jsonContent = System.Text.Json.JsonSerializer.Serialize(normalizedPolicy, lifecycleSerializerOptions);
+
+    await PutJsonAsync<object?>(endpoint, jsonContent, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DeleteLifecycleAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    // Cloudflare R2 does not have a DELETE endpoint for lifecycle policies.
+    // To remove the lifecycle policy, we PUT an empty rules array.
+    var emptyPolicy = new BucketLifecyclePolicy(Array.Empty<LifecycleRule>());
+
+    await SetLifecycleAsync(bucketName, emptyPolicy, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region Custom Domain Configuration
+
+  /// <inheritdoc />
+  public async Task<IReadOnlyList<CustomDomain>> ListCustomDomainsAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/custom";
+    var response = await GetAsync<ListCustomDomainsResponse>(endpoint, cancellationToken);
+
+    return response.Domains;
+  }
+
+  /// <inheritdoc />
+  public async Task<CustomDomainResponse> AttachCustomDomainAsync(
+    string            bucketName,
+    string            hostname,
+    string            zoneId,
+    CancellationToken cancellationToken = default)
+  {
+    var requestBody = new AttachCustomDomainRequest(hostname, true, zoneId);
+    var endpoint    = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/custom";
+
+    return await PostAsync<CustomDomainResponse>(endpoint, requestBody, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<CustomDomainResponse> GetCustomDomainStatusAsync(
+    string            bucketName,
+    string            hostname,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/custom/{Uri.EscapeDataString(hostname)}";
+
+    return await GetAsync<CustomDomainResponse>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<CustomDomainResponse> UpdateCustomDomainAsync(
+    string                    bucketName,
+    string                    hostname,
+    UpdateCustomDomainRequest request,
+    CancellationToken         cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/custom/{Uri.EscapeDataString(hostname)}";
+
+    return await PutAsync<CustomDomainResponse>(endpoint, request, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DetachCustomDomainAsync(
+    string            bucketName,
+    string            hostname,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/custom/{Uri.EscapeDataString(hostname)}";
+
+    await DeleteAsync<object>(endpoint, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region Managed Domain (r2.dev) Configuration
+
+  /// <inheritdoc />
+  public async Task<ManagedDomainResponse> GetManagedDomainAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/managed";
+
+    return await GetAsync<ManagedDomainResponse>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<ManagedDomainResponse> EnableManagedDomainAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default)
+  {
+    var requestBody = new SetManagedDomainRequest(true);
+    var endpoint    = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/managed";
+
+    return await PutAsync<ManagedDomainResponse>(endpoint, requestBody, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DisableManagedDomainAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var requestBody = new SetManagedDomainRequest(false);
+    var endpoint    = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/managed";
+
+    // We don't care about the result body, just success.
+    await PutAsync<object>(endpoint, requestBody, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region Bucket Lock Configuration
+
+  /// <inheritdoc />
+  public async Task<BucketLockPolicy> GetLockAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/lock";
+
+    return await GetAsync<BucketLockPolicy>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<BucketLockPolicy> SetLockAsync(
+    string            bucketName,
+    BucketLockPolicy  lockPolicy,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/lock";
+
+    return await PutAsync<BucketLockPolicy>(endpoint, lockPolicy, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DeleteLockAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    // Similar to lifecycle, we remove lock rules by setting an empty rules array.
+    var emptyPolicy = new BucketLockPolicy(Array.Empty<BucketLockRule>());
+
+    await SetLockAsync(bucketName, emptyPolicy, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region Sippy (Incremental Migration) Configuration
+
+  /// <inheritdoc />
+  public async Task<SippyConfig> GetSippyAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/sippy";
+
+    return await GetAsync<SippyConfig>(endpoint, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<SippyConfig> EnableSippyAsync(
+    string             bucketName,
+    EnableSippyRequest request,
+    CancellationToken  cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/sippy";
+
+    // The request contains the source configuration directly.
+    return await PutAsync<SippyConfig>(endpoint, request.SourceConfig, cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task DisableSippyAsync(string bucketName, CancellationToken cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/sippy";
+
+    await DeleteAsync<object>(endpoint, cancellationToken);
+  }
+
+  #endregion
+
+
+  #region Temporary Credentials
+
+  /// <inheritdoc />
+  public async Task<TempCredentials> CreateTempCredentialsAsync(
+    CreateTempCredentialsRequest request,
+    CancellationToken            cancellationToken = default)
+  {
+    var endpoint = $"accounts/{_accountId}/r2/temp-access-credentials";
+
+    return await PostAsync<TempCredentials>(endpoint, request, cancellationToken);
+  }
+
+  #endregion
+}

@@ -1,3 +1,7 @@
+// Suppress obsolete warnings for tests that validate backward-compatible deprecated methods.
+// These tests ensure the old API surface continues to work correctly through the delegation layer.
+#pragma warning disable CS0618
+
 namespace Cloudflare.NET.Tests.UnitTests;
 
 using System.Net;
@@ -12,13 +16,15 @@ using Moq.Protected;
 using Shared.Fixtures;
 using Xunit.Abstractions;
 
-/// <summary>Contains unit tests for the R2 bucket operations in the <see cref="AccountsApi" /> class.</summary>
+/// <summary>Contains unit tests for the legacy R2 bucket operations in the <see cref="AccountsApi" /> class.</summary>
 /// <remarks>
-///   This test class covers R2 bucket CRUD operations, custom domains, CORS policies, and lifecycle rules.
+///   This test class covers the deprecated R2 bucket methods on <see cref="AccountsApi"/> that delegate to the new
+///   <see cref="R2BucketsApi"/> implementation. These tests ensure backward compatibility.
+///   For tests of the new R2 Buckets API, see <see cref="R2BucketsApiUnitTests" />.
 ///   Account management operations are tested separately in <see cref="AccountManagementApiUnitTests" />.
 /// </remarks>
 [Trait("Category", TestConstants.TestCategories.Unit)]
-public class R2BucketApiUnitTests
+public class LegacyR2BucketApiUnitTests
 {
   #region Properties & Fields - Non-Public
 
@@ -30,7 +36,7 @@ public class R2BucketApiUnitTests
 
   #region Constructors
 
-  public R2BucketApiUnitTests(ITestOutputHelper output)
+  public LegacyR2BucketApiUnitTests(ITestOutputHelper output)
   {
     var loggerProvider = new XunitTestOutputLoggerProvider { Current = output };
     _loggerFactory = new LoggerFactory([loggerProvider]);

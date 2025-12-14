@@ -78,7 +78,7 @@
     },
 
     "sitemap": {
-      "baseUrl": "https://cfnet.alos.no",
+      "baseUrl": "https://alos.no/cfnet",
       "priority": 0.5,
       "changefreq": "weekly"
     },

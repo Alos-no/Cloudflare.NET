@@ -1,6 +1,7 @@
 ﻿namespace Cloudflare.NET.Accounts;
 
 using AccessRules;
+using Buckets;
 using Core;
 using Core.Internal;
 using Core.Models;
@@ -14,8 +15,8 @@ public class AccountsApi : ApiResource, IAccountsApi
 {
   #region Properties & Fields - Non-Public
 
-  /// <summary>The Cloudflare Account ID.</summary>
-  private readonly string _accountId;
+  /// <summary>The lazy-initialized R2 Buckets API resource.</summary>
+  private readonly Lazy<IR2BucketsApi> _buckets;
 
   /// <summary>The lazy-initialized Account Access Rules API resource.</summary>
   private readonly Lazy<IAccountAccessRulesApi> _accessRules;
@@ -24,6 +25,7 @@ public class AccountsApi : ApiResource, IAccountsApi
   private readonly Lazy<IAccountRulesetsApi> _rulesets;
 
   #endregion
+
 
   #region Constructors
 
@@ -34,14 +36,18 @@ public class AccountsApi : ApiResource, IAccountsApi
   public AccountsApi(HttpClient httpClient, IOptions<CloudflareApiOptions> options, ILoggerFactory loggerFactory)
     : base(httpClient, loggerFactory.CreateLogger<AccountsApi>())
   {
-    _accountId   = options.Value.AccountId;
+    _buckets     = new Lazy<IR2BucketsApi>(() => new R2BucketsApi(httpClient, options, loggerFactory));
     _accessRules = new Lazy<IAccountAccessRulesApi>(() => new AccountAccessRulesApi(httpClient, options, loggerFactory));
     _rulesets    = new Lazy<IAccountRulesetsApi>(() => new AccountRulesetsApi(httpClient, options, loggerFactory));
   }
 
   #endregion
 
+
   #region Properties Impl - Public
+
+  /// <inheritdoc />
+  public IR2BucketsApi Buckets => _buckets.Value;
 
   /// <inheritdoc />
   public IAccountAccessRulesApi AccessRules => _accessRules.Value;
@@ -51,173 +57,106 @@ public class AccountsApi : ApiResource, IAccountsApi
 
   #endregion
 
-  #region Methods Impl
+  #region Methods Impl - Legacy Bucket Operations (Delegating to Buckets API)
 
   /// <inheritdoc />
-  public async Task<CursorPaginatedResult<R2Bucket>> ListR2BucketsAsync(
+  [Obsolete("Use Buckets.ListAsync instead. This method will be removed in a future version.")]
+  public Task<CursorPaginatedResult<R2Bucket>> ListR2BucketsAsync(
     ListR2BucketsFilters? filters           = null,
-    CancellationToken     cancellationToken = default)
-  {
-    var queryParams = new List<string>();
-
-    if (filters?.PerPage is not null)
-      queryParams.Add($"per_page={filters.PerPage}");
-    if (!string.IsNullOrEmpty(filters?.Cursor))
-      queryParams.Add($"cursor={filters.Cursor}");
-
-    var queryString = queryParams.Count > 0 ? $"?{string.Join('&', queryParams)}" : string.Empty;
-    var endpoint    = $"accounts/{_accountId}/r2/buckets{queryString}";
-
-    return await GetCursorPaginatedResultAsync<ListR2BucketsResponse, R2Bucket>(
-      endpoint,
-      response => response.Buckets,
-      cancellationToken);
-  }
+    CancellationToken     cancellationToken = default) =>
+    Buckets.ListAsync(filters, cancellationToken);
 
   /// <inheritdoc />
-  public IAsyncEnumerable<R2Bucket> ListAllR2BucketsAsync(ListR2BucketsFilters? filters           = null,
-                                                          CancellationToken     cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets";
-    return GetCursorPaginatedAsync<ListR2BucketsResponse, R2Bucket>(
-      endpoint,
-      filters?.PerPage,
-      response => response.Buckets,
-      cancellationToken);
-  }
+  [Obsolete("Use Buckets.ListAllAsync instead. This method will be removed in a future version.")]
+  public IAsyncEnumerable<R2Bucket> ListAllR2BucketsAsync(
+    ListR2BucketsFilters? filters           = null,
+    CancellationToken     cancellationToken = default) =>
+    Buckets.ListAllAsync(filters, cancellationToken);
 
   /// <inheritdoc />
-  public async Task DisableDevUrlAsync(string bucketName, CancellationToken cancellationToken = default)
-  {
-    var requestBody = new SetManagedDomainRequest(false);
-    var endpoint    = $"accounts/{_accountId}/r2/buckets/{bucketName}/domains/managed";
-    // We don't care about the result body, just success.
-    await PutAsync<object>(endpoint, requestBody, cancellationToken);
-  }
+  [Obsolete("Use Buckets.DisableManagedDomainAsync instead. This method will be removed in a future version.")]
+  public Task DisableDevUrlAsync(string bucketName, CancellationToken cancellationToken = default) =>
+    Buckets.DisableManagedDomainAsync(bucketName, cancellationToken);
 
   /// <inheritdoc />
-  public async Task<CustomDomainResponse> AttachCustomDomainAsync(string            bucketName,
-                                                                  string            hostname,
-                                                                  string            zoneId,
-                                                                  CancellationToken cancellationToken = default)
-  {
-    var requestBody = new AttachCustomDomainRequest(hostname, true, zoneId);
-    var endpoint    = $"accounts/{_accountId}/r2/buckets/{bucketName}/domains/custom";
-    return await PostAsync<CustomDomainResponse>(endpoint, requestBody, cancellationToken);
-  }
+  [Obsolete("Use Buckets.AttachCustomDomainAsync instead. This method will be removed in a future version.")]
+  public Task<CustomDomainResponse> AttachCustomDomainAsync(
+    string            bucketName,
+    string            hostname,
+    string            zoneId,
+    CancellationToken cancellationToken = default) =>
+    Buckets.AttachCustomDomainAsync(bucketName, hostname, zoneId, cancellationToken);
 
   /// <inheritdoc />
-  public async Task<CustomDomainResponse> GetCustomDomainStatusAsync(string            bucketName,
-                                                                     string            hostname,
-                                                                     CancellationToken cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/domains/custom/{hostname}";
-    return await GetAsync<CustomDomainResponse>(endpoint, cancellationToken);
-  }
+  [Obsolete("Use Buckets.GetCustomDomainStatusAsync instead. This method will be removed in a future version.")]
+  public Task<CustomDomainResponse> GetCustomDomainStatusAsync(
+    string            bucketName,
+    string            hostname,
+    CancellationToken cancellationToken = default) =>
+    Buckets.GetCustomDomainStatusAsync(bucketName, hostname, cancellationToken);
 
   /// <inheritdoc />
-  public async Task DetachCustomDomainAsync(string bucketName, string hostname, CancellationToken cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/domains/custom/{hostname}";
-    await DeleteAsync<object>(endpoint, cancellationToken);
-  }
+  [Obsolete("Use Buckets.DetachCustomDomainAsync instead. This method will be removed in a future version.")]
+  public Task DetachCustomDomainAsync(
+    string            bucketName,
+    string            hostname,
+    CancellationToken cancellationToken = default) =>
+    Buckets.DetachCustomDomainAsync(bucketName, hostname, cancellationToken);
 
   /// <inheritdoc />
-  public async Task DeleteR2BucketAsync(string bucketName, CancellationToken cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}";
-    await DeleteAsync<object>(endpoint, cancellationToken);
-  }
+  [Obsolete("Use Buckets.DeleteAsync instead. This method will be removed in a future version.")]
+  public Task DeleteR2BucketAsync(string bucketName, CancellationToken cancellationToken = default) =>
+    Buckets.DeleteAsync(bucketName, cancellationToken);
 
   /// <inheritdoc />
-  public async Task<R2Bucket> CreateR2BucketAsync(
+  [Obsolete("Use Buckets.CreateAsync instead. This method will be removed in a future version.")]
+  public Task<R2Bucket> CreateR2BucketAsync(
     string            bucketName,
     R2LocationHint?   locationHint      = null,
     R2Jurisdiction?   jurisdiction      = null,
     R2StorageClass?   storageClass      = null,
-    CancellationToken cancellationToken = default)
-  {
-    var requestBody = new CreateBucketRequest(bucketName, locationHint, storageClass);
-    var endpoint    = $"accounts/{_accountId}/r2/buckets";
-
-    // Jurisdiction must be passed as an HTTP header (cf-r2-jurisdiction) per Cloudflare API spec
-    IEnumerable<KeyValuePair<string, string>>? headers = null;
-
-    if (jurisdiction is { } j)
-    {
-      headers = [new KeyValuePair<string, string>("cf-r2-jurisdiction", j.Value)];
-    }
-
-    return await PostAsync<R2Bucket>(endpoint, requestBody, headers, cancellationToken);
-  }
+    CancellationToken cancellationToken = default) =>
+    Buckets.CreateAsync(bucketName, locationHint, jurisdiction, storageClass, cancellationToken);
 
   /// <inheritdoc />
-  public async Task<BucketCorsPolicy> GetBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
-    return await GetAsync<BucketCorsPolicy>(endpoint, cancellationToken);
-  }
+  [Obsolete("Use Buckets.GetCorsAsync instead. This method will be removed in a future version.")]
+  public Task<BucketCorsPolicy> GetBucketCorsAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default) =>
+    Buckets.GetCorsAsync(bucketName, cancellationToken);
 
   /// <inheritdoc />
-  public async Task SetBucketCorsAsync(string            bucketName,
-                                       BucketCorsPolicy  corsPolicy,
-                                       CancellationToken cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
-    await PutAsync<object>(endpoint, corsPolicy, cancellationToken);
-  }
+  [Obsolete("Use Buckets.SetCorsAsync instead. This method will be removed in a future version.")]
+  public Task SetBucketCorsAsync(
+    string            bucketName,
+    BucketCorsPolicy  corsPolicy,
+    CancellationToken cancellationToken = default) =>
+    Buckets.SetCorsAsync(bucketName, corsPolicy, cancellationToken);
 
   /// <inheritdoc />
-  public async Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/cors";
-    await DeleteAsync<object>(endpoint, cancellationToken);
-  }
+  [Obsolete("Use Buckets.DeleteCorsAsync instead. This method will be removed in a future version.")]
+  public Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default) =>
+    Buckets.DeleteCorsAsync(bucketName, cancellationToken);
 
   /// <inheritdoc />
-  public async Task<BucketLifecyclePolicy> GetBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/lifecycle";
-    return await GetAsync<BucketLifecyclePolicy>(endpoint, cancellationToken);
-  }
+  [Obsolete("Use Buckets.GetLifecycleAsync instead. This method will be removed in a future version.")]
+  public Task<BucketLifecyclePolicy> GetBucketLifecycleAsync(
+    string            bucketName,
+    CancellationToken cancellationToken = default) =>
+    Buckets.GetLifecycleAsync(bucketName, cancellationToken);
 
   /// <inheritdoc />
-  public async Task SetBucketLifecycleAsync(string                bucketName,
-                                            BucketLifecyclePolicy lifecyclePolicy,
-                                            CancellationToken     cancellationToken = default)
-  {
-    var endpoint = $"accounts/{_accountId}/r2/buckets/{bucketName}/lifecycle";
-
-    // Cloudflare R2 API requires the 'conditions' field to be present in each rule, even if empty.
-    // If conditions is null, we normalize it to an empty LifecycleRuleConditions object.
-    // Without this normalization, the API returns error 10040 "The JSON you provided was not well formed."
-    var normalizedRules = lifecyclePolicy.Rules.Select(rule =>
-      rule.Conditions is null
-        ? rule with { Conditions = new LifecycleRuleConditions() }
-        : rule
-    ).ToArray();
-
-    var normalizedPolicy = new BucketLifecyclePolicy(normalizedRules);
-
-    // Use custom serialization options that match Cloudflare R2 lifecycle API expectations (camelCase for lifecycle)
-    // Note: The R2 lifecycle API uses camelCase property names, unlike most Cloudflare APIs which use snake_case
-    var lifecycleSerializerOptions = new System.Text.Json.JsonSerializerOptions
-    {
-      DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-    };
-    var jsonContent = System.Text.Json.JsonSerializer.Serialize(normalizedPolicy, lifecycleSerializerOptions);
-
-    await PutJsonAsync<object?>(endpoint, jsonContent, cancellationToken);
-  }
+  [Obsolete("Use Buckets.SetLifecycleAsync instead. This method will be removed in a future version.")]
+  public Task SetBucketLifecycleAsync(
+    string                bucketName,
+    BucketLifecyclePolicy lifecyclePolicy,
+    CancellationToken     cancellationToken = default) =>
+    Buckets.SetLifecycleAsync(bucketName, lifecyclePolicy, cancellationToken);
 
   /// <inheritdoc />
-  public async Task DeleteBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default)
-  {
-    // Cloudflare R2 does not have a DELETE endpoint for lifecycle policies.
-    // To remove the lifecycle policy, we PUT an empty rules array.
-    var emptyPolicy = new BucketLifecyclePolicy(Array.Empty<LifecycleRule>());
-    await SetBucketLifecycleAsync(bucketName, emptyPolicy, cancellationToken);
-  }
+  [Obsolete("Use Buckets.DeleteLifecycleAsync instead. This method will be removed in a future version.")]
+  public Task DeleteBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default) =>
+    Buckets.DeleteLifecycleAsync(bucketName, cancellationToken);
 
   #endregion
 

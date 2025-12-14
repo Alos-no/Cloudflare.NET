@@ -1,3 +1,7 @@
+// Suppress obsolete warnings for tests that validate backward-compatible deprecated methods.
+// These tests ensure the old API surface continues to work correctly through the delegation layer.
+#pragma warning disable CS0618
+
 namespace Cloudflare.NET.Tests.IntegrationTests;
 
 using System.Net;
@@ -136,10 +140,16 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       statusResult.Should().NotBeNull();
       statusResult.Status.Should()
                   .BeOneOf("pending", "active"); // Status depends on timing
+
+      // 3. Update Custom Domain (set minimum TLS version)
+      var updateRequest = new UpdateCustomDomainRequest(Enabled: true, MinTls: "1.2");
+      var updateResult = await _sut.Buckets.UpdateCustomDomainAsync(_bucketName, hostname, updateRequest);
+      updateResult.Should().NotBeNull();
+      updateResult.Domain.Should().Be(hostname);
     }
     finally
     {
-      // 3. Detach Custom Domain (Cleanup)
+      // 4. Detach Custom Domain (Cleanup)
       var detachAction = async () => await _sut.DetachCustomDomainAsync(_bucketName, hostname);
       await detachAction.Should().NotThrowAsync("the custom domain should be cleaned up successfully");
     }
@@ -770,6 +780,268 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
         // Cleanup may fail - that's OK for cleanup only
       }
     }
+  }
+
+  /// <summary>Verifies that GetAsync retrieves bucket properties for an existing bucket.</summary>
+  [IntegrationTest]
+  public async Task GetAsync_ReturnsBucketProperties()
+  {
+    // Arrange - The bucket is created in InitializeAsync
+
+    // Act
+    var result = await _sut.Buckets.GetAsync(_bucketName);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Name.Should().Be(_bucketName);
+    result.CreationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(10));
+  }
+
+  /// <summary>Verifies that GetAsync throws 404 for a non-existent bucket.</summary>
+  [IntegrationTest]
+  public async Task GetAsync_NonExistentBucket_ThrowsNotFound()
+  {
+    // Arrange
+    var nonExistentBucket = $"cfnet-nonexistent-{Guid.NewGuid():N}";
+
+    // Act
+    var action = async () => await _sut.Buckets.GetAsync(nonExistentBucket);
+
+    // Assert
+    var exception = await action.Should().ThrowAsync<HttpRequestException>();
+    exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
+  }
+
+  /// <summary>Verifies that ListCustomDomainsAsync returns the list of custom domains for a bucket.</summary>
+  [IntegrationTest]
+  public async Task ListCustomDomainsAsync_ReturnsCustomDomains()
+  {
+    // Arrange - Attach a custom domain first
+    var hostname = $"cfnet-list-{Guid.NewGuid():N}.{_settings.BaseDomain}";
+    var zoneId   = _settings.ZoneId;
+
+    try
+    {
+      await _sut.AttachCustomDomainAsync(_bucketName, hostname, zoneId);
+
+      // Act - List custom domains
+      var domains = await _sut.Buckets.ListCustomDomainsAsync(_bucketName);
+
+      // Assert
+      domains.Should().NotBeNull();
+      domains.Should().ContainSingle(d => d.Domain == hostname);
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DetachCustomDomainAsync(_bucketName, hostname);
+    }
+  }
+
+  /// <summary>Verifies that ListCustomDomainsAsync returns an empty list when no custom domains are attached.</summary>
+  [IntegrationTest]
+  public async Task ListCustomDomainsAsync_NoCustomDomains_ReturnsEmptyList()
+  {
+    // Arrange - Create a fresh bucket with no custom domains
+    var bucketName = $"cfnet-nodomain-bucket-{Guid.NewGuid():N}";
+    await _sut.CreateR2BucketAsync(bucketName);
+
+    try
+    {
+      // Act
+      var domains = await _sut.Buckets.ListCustomDomainsAsync(bucketName);
+
+      // Assert
+      domains.Should().NotBeNull();
+      domains.Should().BeEmpty();
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DeleteR2BucketAsync(bucketName);
+    }
+  }
+
+  /// <summary>Tests the full lifecycle of managed domain (r2.dev): get status, enable, and disable.</summary>
+  [IntegrationTest]
+  public async Task CanManageManagedDomainLifecycle()
+  {
+    // Arrange - Bucket is created in InitializeAsync
+
+    try
+    {
+      // Act & Assert
+
+      // 1. Get initial managed domain status
+      var initialStatus = await _sut.Buckets.GetManagedDomainAsync(_bucketName);
+      initialStatus.Should().NotBeNull();
+      initialStatus.BucketId.Should().NotBeNullOrEmpty();
+
+      // 2. Enable the managed domain
+      var enableResult = await _sut.Buckets.EnableManagedDomainAsync(_bucketName);
+      enableResult.Should().NotBeNull();
+      enableResult.Enabled.Should().BeTrue();
+      enableResult.Domain.Should().NotBeNullOrEmpty();
+      enableResult.Domain.Should().EndWith(".r2.dev");
+    }
+    finally
+    {
+      // 3. Disable managed domain (Cleanup)
+      var disableAction = async () => await _sut.Buckets.DisableManagedDomainAsync(_bucketName);
+      await disableAction.Should().NotThrowAsync("the managed domain should be disabled successfully");
+    }
+  }
+
+  /// <summary>Tests the full lifecycle of bucket lock: get, set, and delete lock rules.</summary>
+  [IntegrationTest]
+  public async Task CanManageBucketLockLifecycle()
+  {
+    // Arrange - Create a lock policy with age-based retention
+    var lockPolicy = new BucketLockPolicy(
+      new[]
+      {
+        new BucketLockRule(
+          "integration-test-lock-rule",
+          true,
+          "protected/",
+          BucketLockCondition.ForDays(1) // Minimal lock for testing
+        )
+      }
+    );
+
+    try
+    {
+      // Act & Assert
+
+      // 1. Get initial lock status (should be empty or no rules)
+      var initialLock = await _sut.Buckets.GetLockAsync(_bucketName);
+      initialLock.Should().NotBeNull();
+
+      // 2. Set lock rules
+      var setResult = await _sut.Buckets.SetLockAsync(_bucketName, lockPolicy);
+      setResult.Should().NotBeNull();
+      setResult.Rules.Should().HaveCount(1);
+      setResult.Rules[0].Id.Should().Be("integration-test-lock-rule");
+      setResult.Rules[0].Enabled.Should().BeTrue();
+      // Note: Cloudflare API does not echo back the Prefix field in responses
+
+      // 3. Get lock status to verify it was applied
+      var retrievedLock = await _sut.Buckets.GetLockAsync(_bucketName);
+      retrievedLock.Should().NotBeNull();
+      retrievedLock.Rules.Should().HaveCount(1);
+      retrievedLock.Rules[0].Id.Should().Be("integration-test-lock-rule");
+    }
+    finally
+    {
+      // 4. Delete lock rules (Cleanup)
+      var deleteAction = async () => await _sut.Buckets.DeleteLockAsync(_bucketName);
+      await deleteAction.Should().NotThrowAsync("the lock policy should be removed successfully");
+
+      // Verify it was deleted
+      var verifyDeleted = await _sut.Buckets.GetLockAsync(_bucketName);
+      verifyDeleted.Rules.Should().BeEmpty("the lock rules should have been removed");
+    }
+  }
+
+  /// <summary>Verifies that GetSippyAsync returns the Sippy configuration status for a bucket.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     Sippy is an incremental migration service. When not configured, the enabled property is false.
+  ///     This test does NOT configure Sippy as that would require external AWS/GCS credentials.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest]
+  public async Task GetSippyAsync_ReturnsDisabledStatusForNewBucket()
+  {
+    // Arrange - Create a fresh bucket with no Sippy configuration
+    var bucketName = $"cfnet-nosippy-bucket-{Guid.NewGuid():N}";
+    await _sut.CreateR2BucketAsync(bucketName);
+
+    try
+    {
+      // Act
+      var result = await _sut.Buckets.GetSippyAsync(bucketName);
+
+      // Assert
+      result.Should().NotBeNull();
+      result.Enabled.Should().BeFalse("Sippy is not configured on new buckets");
+      result.Source.Should().BeNull("no source is configured");
+      result.Destination.Should().BeNull("no destination is configured");
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.DeleteR2BucketAsync(bucketName);
+    }
+  }
+
+  /// <summary>Tests enabling and disabling Sippy incremental migration from AWS S3.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Sippy requires valid AWS S3 credentials to configure: https://developers.cloudflare.com/r2/data-migration/sippy/</item>
+  ///     <item>Without valid source credentials, the API will return an error when enabling Sippy</item>
+  ///   </list>
+  /// </remarks>
+  [Fact(Skip = "Requires valid AWS S3 credentials (access key and secret) for source bucket - not available in test environment")]
+  public async Task EnableSippyAsync_WithAwsSource_ConfiguresMigration()
+  {
+    // This test would enable Sippy migration from an AWS S3 bucket if credentials were available.
+    // The implementation is complete but skipped due to the external dependency requirement.
+
+    // Arrange
+    var awsSource = SippyAwsSource.Create(
+      bucket: "source-bucket-name",
+      region: "us-east-1",
+      accessKeyId: "AWS_ACCESS_KEY_ID",
+      secretAccessKey: "AWS_SECRET_ACCESS_KEY"
+    );
+    var request = new EnableSippyFromAwsRequest(awsSource);
+
+    // Act
+    var result = await _sut.Buckets.EnableSippyAsync(_bucketName, request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.Enabled.Should().BeTrue();
+    result.Source.Should().NotBeNull();
+    result.Source!.Provider.Should().Be(SippyProvider.Aws);
+
+    // Cleanup
+    await _sut.Buckets.DisableSippyAsync(_bucketName);
+  }
+
+  /// <summary>Tests creating temporary R2 access credentials.</summary>
+  /// <remarks>
+  ///   <para><b>Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Creating temp credentials requires a parent R2 Access Key ID: https://developers.cloudflare.com/api/resources/r2/subresources/temporary_credentials/</item>
+  ///     <item>R2 Access Keys are created in the Cloudflare dashboard under R2 > Manage R2 API Tokens</item>
+  ///     <item>The test environment does not have an R2 access key configured</item>
+  ///   </list>
+  /// </remarks>
+  [Fact(Skip = "Requires R2 Access Key ID (parentAccessKeyId) which is not available in test environment - R2 API keys are separate from API tokens")]
+  public async Task CreateTempCredentialsAsync_ReturnsTemporaryCredentials()
+  {
+    // This test would create temporary R2 credentials if an R2 Access Key was available.
+    // The implementation is complete but skipped due to the R2 API key requirement.
+
+    // Arrange
+    var request = new CreateTempCredentialsRequest(
+      Bucket: _bucketName,
+      ParentAccessKeyId: "R2_ACCESS_KEY_ID", // Requires actual R2 access key
+      Permission: TempCredentialPermission.ObjectReadWrite,
+      TtlSeconds: 3600
+    );
+
+    // Act
+    var result = await _sut.Buckets.CreateTempCredentialsAsync(request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.AccessKeyId.Should().NotBeNullOrEmpty();
+    result.SecretAccessKey.Should().NotBeNullOrEmpty();
+    result.SessionToken.Should().NotBeNullOrEmpty();
   }
 
   #endregion

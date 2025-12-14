@@ -201,13 +201,13 @@ public class BucketService(ICloudflareApiClient cf)
     // Basic bucket creation
     public async Task<R2Bucket> CreateBucketAsync(string name)
     {
-        return await cf.Accounts.CreateR2BucketAsync(name);
+        return await cf.Accounts.Buckets.CreateAsync(name);
     }
 
     // Create with location hint and jurisdiction
     public async Task<R2Bucket> CreateEuBucketAsync(string name)
     {
-        return await cf.Accounts.CreateR2BucketAsync(
+        return await cf.Accounts.Buckets.CreateAsync(
             name,
             locationHint: R2LocationHint.WestEurope,
             jurisdiction: R2Jurisdiction.EuropeanUnion
@@ -216,7 +216,7 @@ public class BucketService(ICloudflareApiClient cf)
 
     public async IAsyncEnumerable<R2Bucket> ListBucketsAsync()
     {
-        await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+        await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync())
         {
             // Access extensible enum properties with IntelliSense
             if (bucket.Location == R2LocationHint.WestEurope)
@@ -230,7 +230,7 @@ public class BucketService(ICloudflareApiClient cf)
 
     public async Task DeleteBucketAsync(string name)
     {
-        await cf.Accounts.DeleteR2BucketAsync(name);
+        await cf.Accounts.Buckets.DeleteAsync(name);
     }
 }
 ```

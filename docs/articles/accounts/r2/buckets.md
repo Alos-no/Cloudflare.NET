@@ -9,7 +9,7 @@ public class BucketService(ICloudflareApiClient cf)
 {
     public async Task<R2Bucket> CreateBucketAsync(string name)
     {
-        return await cf.Accounts.CreateR2BucketAsync(name);
+        return await cf.Accounts.Buckets.CreateAsync(name);
     }
 }
 ```
@@ -19,7 +19,7 @@ public class BucketService(ICloudflareApiClient cf)
 ### Basic Creation
 
 ```csharp
-var bucket = await cf.Accounts.CreateR2BucketAsync("my-new-bucket");
+var bucket = await cf.Accounts.Buckets.CreateAsync("my-new-bucket");
 
 Console.WriteLine($"Name: {bucket.Name}");
 Console.WriteLine($"Created: {bucket.CreationDate}");
@@ -33,7 +33,7 @@ Suggest a geographic region for bucket placement using [extensible enums](#r2loc
 
 ```csharp
 // Create bucket in Western Europe
-var bucket = await cf.Accounts.CreateR2BucketAsync(
+var bucket = await cf.Accounts.Buckets.CreateAsync(
     "eu-data-bucket",
     R2LocationHint.WestEurope
 );
@@ -45,7 +45,7 @@ Enforce data residency within a specific boundary:
 
 ```csharp
 // Create EU-jurisdictional bucket for GDPR compliance
-var bucket = await cf.Accounts.CreateR2BucketAsync(
+var bucket = await cf.Accounts.Buckets.CreateAsync(
     "gdpr-compliant-bucket",
     locationHint: R2LocationHint.WestEurope,
     jurisdiction: R2Jurisdiction.EuropeanUnion
@@ -61,7 +61,7 @@ Set the default storage class for new objects:
 
 ```csharp
 // Create bucket optimized for infrequent access
-var bucket = await cf.Accounts.CreateR2BucketAsync(
+var bucket = await cf.Accounts.Buckets.CreateAsync(
     "archive-bucket",
     locationHint: R2LocationHint.EastNorthAmerica,
     storageClass: R2StorageClass.InfrequentAccess
@@ -75,12 +75,36 @@ var bucket = await cf.Accounts.CreateR2BucketAsync(
 - Must start and end with a letter or number
 - Must be unique within your account
 
+## Getting Bucket Details
+
+Retrieve detailed information about a specific bucket:
+
+```csharp
+var bucket = await cf.Accounts.Buckets.GetAsync("my-bucket");
+
+Console.WriteLine($"Name: {bucket.Name}");
+Console.WriteLine($"Created: {bucket.CreationDate}");
+Console.WriteLine($"Location: {bucket.Location}");
+Console.WriteLine($"Storage Class: {bucket.StorageClass}");
+```
+
+### With Jurisdiction
+
+For buckets created with jurisdictional restrictions, specify the jurisdiction:
+
+```csharp
+var bucket = await cf.Accounts.Buckets.GetAsync(
+    "gdpr-compliant-bucket",
+    R2Jurisdiction.EuropeanUnion
+);
+```
+
 ## Listing Buckets
 
 ### List All Buckets
 
 ```csharp
-await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync())
 {
     Console.WriteLine($"{bucket.Name} - {bucket.Location ?? "default"}");
 }
@@ -89,7 +113,7 @@ await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
 ### List with Pagination
 
 ```csharp
-var page = await cf.Accounts.ListR2BucketsAsync(new ListR2BucketsFilters
+var page = await cf.Accounts.Buckets.ListAsync(new ListR2BucketsFilters
 {
     PerPage = 50
 });
@@ -102,7 +126,7 @@ foreach (var bucket in page.Items)
 // Get next page using cursor
 if (page.CursorInfo.Cursor is not null)
 {
-    var nextPage = await cf.Accounts.ListR2BucketsAsync(new ListR2BucketsFilters
+    var nextPage = await cf.Accounts.Buckets.ListAsync(new ListR2BucketsFilters
     {
         Cursor = page.CursorInfo.Cursor
     });
@@ -112,23 +136,15 @@ if (page.CursorInfo.Cursor is not null)
 ## Deleting Buckets
 
 ```csharp
-await cf.Accounts.DeleteR2BucketAsync("my-bucket");
+await cf.Accounts.Buckets.DeleteAsync("my-bucket");
 ```
 
 > [!WARNING]
 > The bucket must be empty before deletion. Use the R2 Client to clear the bucket first:
 > ```csharp
 > await r2.ClearBucketAsync("my-bucket");
-> await cf.Accounts.DeleteR2BucketAsync("my-bucket");
+> await cf.Accounts.Buckets.DeleteAsync("my-bucket");
 > ```
-
-## Disabling Dev URL
-
-Disable the public `r2.dev` URL for a bucket:
-
-```csharp
-await cf.Accounts.DisableDevUrlAsync("my-bucket");
-```
 
 ## Models Reference
 
@@ -215,17 +231,16 @@ new StorageClassTransition(
 ```csharp
 public async Task<R2Bucket?> CreateBucketIfNotExistsAsync(string name)
 {
-    // Check if bucket exists
-    await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+    // Check if bucket exists using GetAsync
+    try
     {
-        if (bucket.Name == name)
-        {
-            return bucket;
-        }
+        return await cf.Accounts.Buckets.GetAsync(name);
     }
-
-    // Create new bucket
-    return await cf.Accounts.CreateR2BucketAsync(name);
+    catch (CloudflareApiException ex) when (ex.Errors.Any(e => e.Code == 10006))
+    {
+        // Bucket not found, create it
+        return await cf.Accounts.Buckets.CreateAsync(name);
+    }
 }
 ```
 
@@ -236,7 +251,7 @@ public async Task<List<R2Bucket>> GetBucketsByLocationAsync(string location)
 {
     var buckets = new List<R2Bucket>();
 
-    await foreach (var bucket in cf.Accounts.ListAllR2BucketsAsync())
+    await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync())
     {
         if (bucket.Location == location)
         {
@@ -257,7 +272,7 @@ public async Task SafeDeleteBucketAsync(string name, IR2Client r2)
     await r2.ClearBucketAsync(name);
 
     // Then delete the bucket
-    await cf.Accounts.DeleteR2BucketAsync(name);
+    await cf.Accounts.Buckets.DeleteAsync(name);
 }
 ```
 
@@ -271,6 +286,10 @@ public async Task SafeDeleteBucketAsync(string name, IR2Client r2)
 ## Related
 
 - [Custom Domains](custom-domains.md) - Attach custom hostnames
+- [Managed Domains (r2.dev)](managed-domains.md) - Enable/disable public access
 - [CORS Configuration](cors.md) - Configure cross-origin access
 - [Lifecycle Policies](lifecycle.md) - Automatic object management
+- [Bucket Locks](bucket-locks.md) - Configure object retention
+- [Sippy Migration](sippy.md) - Incremental data migration
+- [Temporary Credentials](temp-credentials.md) - Scoped, time-limited access
 - [R2 Object Storage](../../r2/index.md) - Upload, download, and manage objects

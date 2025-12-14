@@ -87,7 +87,7 @@ public class ZoneSettingsApiUnitTests
     // Arrange
     const string zoneId = "zone-123";
     HttpRequestMessage? capturedRequest = null;
-    var successResponse = HttpFixtures.CreateSuccessResponse(TestDataFactory.CreateZoneSetting(id: ZoneSettingIds.MinTlsVersion, value: "1.2"));
+    var successResponse = HttpFixtures.CreateSuccessResponse(TestDataFactory.CreateZoneSetting(id: ZoneSettingId.MinTlsVersion, value: "1.2"));
     var mockHandler =
       HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
 
@@ -95,7 +95,7 @@ public class ZoneSettingsApiUnitTests
     var sut        = new ZonesApi(httpClient, _loggerFactory);
 
     // Act
-    await sut.GetZoneSettingAsync(zoneId, ZoneSettingIds.MinTlsVersion);
+    await sut.GetZoneSettingAsync(zoneId, ZoneSettingId.MinTlsVersion);
 
     // Assert
     capturedRequest.Should().NotBeNull();
@@ -298,7 +298,7 @@ public class ZoneSettingsApiUnitTests
 
     // Assert
     result.Should().NotBeNull();
-    result.Id.Should().Be("ssl");
+    result.Id.Value.Should().Be("ssl");
     result.Value.GetString().Should().Be("full");
     result.Editable.Should().BeTrue();
     result.ModifiedOn.Should().Be(new DateTime(2024, 1, 15, 10, 30, 0, DateTimeKind.Utc));
@@ -337,7 +337,7 @@ public class ZoneSettingsApiUnitTests
 
     // Assert
     result.Should().NotBeNull();
-    result.Id.Should().Be("browser_cache_ttl");
+    result.Id.Value.Should().Be("browser_cache_ttl");
     result.Value.GetInt32().Should().Be(14400);
     result.Editable.Should().BeTrue();
   }
@@ -744,22 +744,28 @@ public class ZoneSettingsApiUnitTests
       "zoneId");
   }
 
-  /// <summary>Verifies that GetZoneSettingAsync throws ArgumentNullException for null settingId.</summary>
+  /// <summary>
+  ///   Verifies that GetZoneSettingAsync throws ArgumentException for default (empty) settingId.
+  ///   Since ZoneSettingId is a struct, null cannot be passed directly. However, the default
+  ///   value (created via implicit conversion from null) has an empty Value which is validated.
+  /// </summary>
   [Fact]
-  public async Task GetZoneSettingAsync_NullSettingId_ThrowsArgumentNullException()
+  public async Task GetZoneSettingAsync_DefaultSettingId_ThrowsArgumentException()
   {
     // Arrange
     var mockHandler = HttpFixtures.GetMockHttpMessageHandler("{}", HttpStatusCode.OK);
     var httpClient  = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
     var sut         = new ZonesApi(httpClient, _loggerFactory);
 
-    // Act & Assert
-    await ParameterValidationTestHelpers.AssertThrowsArgumentNullAsync<ZoneSetting>(
-      () => sut.GetZoneSettingAsync("zone-123", null!),
-      "settingId");
+    // Act - default ZoneSettingId has empty Value
+    var action = () => sut.GetZoneSettingAsync("zone-123", default(ZoneSettingId));
+
+    // Assert - throws ArgumentException because the value is empty
+    var exception = await action.Should().ThrowAsync<ArgumentException>();
+    exception.Which.ParamName.Should().Be("settingId");
   }
 
-  /// <summary>Verifies that GetZoneSettingAsync throws ArgumentException for empty settingId.</summary>
+  /// <summary>Verifies that GetZoneSettingAsync throws ArgumentException for empty settingId string.</summary>
   [Fact]
   public async Task GetZoneSettingAsync_EmptySettingId_ThrowsArgumentException()
   {
@@ -768,7 +774,7 @@ public class ZoneSettingsApiUnitTests
     var httpClient  = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
     var sut         = new ZonesApi(httpClient, _loggerFactory);
 
-    // Act & Assert
+    // Act & Assert - empty string is implicitly converted to ZoneSettingId
     await ParameterValidationTestHelpers.AssertThrowsArgumentEmptyAsync<ZoneSetting>(
       () => sut.GetZoneSettingAsync("zone-123", ""),
       "settingId");
@@ -789,19 +795,25 @@ public class ZoneSettingsApiUnitTests
       "zoneId");
   }
 
-  /// <summary>Verifies that SetZoneSettingAsync throws ArgumentNullException for null settingId.</summary>
+  /// <summary>
+  ///   Verifies that SetZoneSettingAsync throws ArgumentException for default (empty) settingId.
+  ///   Since ZoneSettingId is a struct, null cannot be passed directly. However, the default
+  ///   value has an empty Value which is validated.
+  /// </summary>
   [Fact]
-  public async Task SetZoneSettingAsync_NullSettingId_ThrowsArgumentNullException()
+  public async Task SetZoneSettingAsync_DefaultSettingId_ThrowsArgumentException()
   {
     // Arrange
     var mockHandler = HttpFixtures.GetMockHttpMessageHandler("{}", HttpStatusCode.OK);
     var httpClient  = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
     var sut         = new ZonesApi(httpClient, _loggerFactory);
 
-    // Act & Assert
-    await ParameterValidationTestHelpers.AssertThrowsArgumentNullAsync<ZoneSetting>(
-      () => sut.SetZoneSettingAsync("zone-123", null!, "full"),
-      "settingId");
+    // Act - default ZoneSettingId has empty Value
+    var action = () => sut.SetZoneSettingAsync("zone-123", default(ZoneSettingId), "full");
+
+    // Assert - throws ArgumentException because the value is empty
+    var exception = await action.Should().ThrowAsync<ArgumentException>();
+    exception.Which.ParamName.Should().Be("settingId");
   }
 
   #endregion
