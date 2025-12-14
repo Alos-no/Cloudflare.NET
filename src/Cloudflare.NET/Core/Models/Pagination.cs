@@ -8,6 +8,10 @@ using System.Text.Json.Serialization;
 /// <param name="Count">The number of items in the current page.</param>
 /// <param name="TotalCount">The total number of items across all pages.</param>
 /// <param name="TotalPages">The total number of pages.</param>
+/// <param name="Cursor">
+///   Optional cursor for the next page. Some Cloudflare APIs (e.g., R2 Buckets) return cursor-based pagination
+///   information in the standard <c>result_info</c> field rather than a separate <c>cursor_result_info</c> field.
+/// </param>
 public sealed record ResultInfo(
   [property: JsonPropertyName("page")]
   int Page,
@@ -18,7 +22,9 @@ public sealed record ResultInfo(
   [property: JsonPropertyName("total_count")]
   int TotalCount,
   [property: JsonPropertyName("total_pages")]
-  int TotalPages
+  int TotalPages,
+  [property: JsonPropertyName("cursor")]
+  string? Cursor = null
 );
 
 /// <summary>Contains pagination information from a Cloudflare API list response that uses cursors.</summary>

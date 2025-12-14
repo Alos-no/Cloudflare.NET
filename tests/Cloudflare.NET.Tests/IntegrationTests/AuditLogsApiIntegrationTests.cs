@@ -72,7 +72,10 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     // Assert
     result.Should().NotBeNull("API should return a valid paginated result");
     result.Items.Should().NotBeNull("Items collection should not be null");
-    result.CursorInfo.Should().BeNull("audit logs endpoint does not return cursor pagination info");
+
+    // Audit logs endpoint returns cursor pagination info for navigating through results
+    result.CursorInfo.Should().NotBeNull("audit logs endpoint returns cursor pagination info");
+    result.CursorInfo!.Count.Should().BeGreaterThanOrEqualTo(0, "Count should be non-negative");
   }
 
   /// <summary>I02: Verifies that GetAccountAuditLogsAsync with limit returns at most the specified number of logs.</summary>
