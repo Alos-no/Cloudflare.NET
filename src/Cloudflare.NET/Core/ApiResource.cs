@@ -336,7 +336,17 @@ public abstract class ApiResource
       ? listExtractor(apiResponse.Result)
       : [];
 
-    return new CursorPaginatedResult<TItem>(items, apiResponse.CursorResultInfo);
+    // Some Cloudflare APIs (e.g., R2 Buckets) return cursor in the standard result_info field,
+    // while others use a separate cursor_result_info field. Create a unified CursorResultInfo.
+    var cursorInfo = apiResponse.CursorResultInfo
+      ?? (apiResponse.ResultInfo?.Cursor != null
+        ? new CursorResultInfo(
+            apiResponse.ResultInfo.Count,
+            apiResponse.ResultInfo.PerPage,
+            apiResponse.ResultInfo.Cursor)
+        : null);
+
+    return new CursorPaginatedResult<TItem>(items, cursorInfo);
   }
 
   /// <summary>Gets a paginated list of resources, automatically handling multiple pages of results.</summary>
@@ -443,9 +453,12 @@ public abstract class ApiResource
       foreach (var item in items)
         yield return item;
 
-      var resultInfo = apiResponse.CursorResultInfo;
-      if (resultInfo is not null && !string.IsNullOrEmpty(resultInfo.Cursor))
-        nextCursor = resultInfo.Cursor;
+      // Some Cloudflare APIs (e.g., R2 Buckets) return cursor in the standard result_info field,
+      // while others use a separate cursor_result_info field. Check both sources for the cursor.
+      var cursor = apiResponse.CursorResultInfo?.Cursor ?? apiResponse.ResultInfo?.Cursor;
+
+      if (!string.IsNullOrEmpty(cursor))
+        nextCursor = cursor;
       else
         hasMorePages = false;
     } while (hasMorePages);

@@ -212,6 +212,70 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
   }
 
+  /// <summary>
+  ///   Verifies that pagination works correctly when using a small page size to force multiple API requests.
+  ///   This test explicitly exercises the cursor-based pagination logic by creating enough buckets to span
+  ///   multiple pages and using a small <c>perPage</c> value to force the SDK to follow pagination cursors.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     This test was added to catch a bug where the SDK expected cursor pagination info in a
+  ///     <c>cursor_result_info</c> field, but the Cloudflare R2 API returns it in the standard
+  ///     <c>result_info</c> field. Without this test, pagination bugs would go undetected because
+  ///     typical test accounts have fewer than 20 buckets (the default page size).
+  ///   </para>
+  ///   <para>
+  ///     The test creates 3 buckets and uses <c>perPage: 2</c> to ensure at least 2 API requests
+  ///     are made, thereby exercising the pagination cursor handling.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest]
+  public async Task ListAllR2BucketsAsync_ShouldPaginateBeyondFirstPage()
+  {
+    // Arrange - Create 3 test buckets so we can force pagination with perPage=2
+    var testPrefix  = $"cfnet-page-test-{Guid.NewGuid():N}";
+    var bucketName1 = $"{testPrefix}-1";
+    var bucketName2 = $"{testPrefix}-2";
+    var bucketName3 = $"{testPrefix}-3";
+
+    await _sut.CreateR2BucketAsync(bucketName1);
+    await _sut.CreateR2BucketAsync(bucketName2);
+    await _sut.CreateR2BucketAsync(bucketName3);
+
+    var createdBucketNames = new[] { bucketName1, bucketName2, bucketName3 };
+
+    try
+    {
+      // Act - Use PerPage=2 to force multiple pages for 3+ buckets
+      var allBuckets = new List<R2Bucket>();
+      var filters    = new ListR2BucketsFilters(PerPage: 2);
+
+      await foreach (var bucket in _sut.ListAllR2BucketsAsync(filters))
+        allBuckets.Add(bucket);
+
+      // Assert - Must find all 3 test buckets across pages
+      var testBuckets = allBuckets.Where(b => b.Name.StartsWith(testPrefix)).ToList();
+
+      testBuckets.Should().HaveCount(3, "pagination should retrieve all buckets across multiple pages");
+      testBuckets.Select(b => b.Name).Should().BeEquivalentTo(createdBucketNames);
+    }
+    finally
+    {
+      // Cleanup - Delete all test buckets
+      foreach (var name in createdBucketNames)
+      {
+        try
+        {
+          await _sut.DeleteR2BucketAsync(name);
+        }
+        catch (HttpRequestException)
+        {
+          // Ignore cleanup errors
+        }
+      }
+    }
+  }
+
   /// <summary>Verifies that an R2 bucket can be created and then deleted successfully.</summary>
   [IntegrationTest]
   public async Task CanCreateAndDeleteR2Bucket()

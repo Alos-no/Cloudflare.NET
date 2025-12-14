@@ -469,29 +469,30 @@ public class LegacyR2BucketApiUnitTests
     var bucket2   = new R2Bucket("bucket2", DateTime.UtcNow, "loc", "jur", "class");
     var cursor    = "next_page_cursor";
 
-    // First page response with a cursor, matching the nested "buckets" structure.
+    // First page response with a cursor. The Cloudflare R2 API returns cursor pagination info
+    // in the standard "result_info" field, not a separate "cursor_result_info" field.
     var responsePage1 =
       JsonSerializer.Serialize(
         new
         {
-          success            = true,
-          errors             = Array.Empty<object>(),
-          messages           = Array.Empty<object>(),
-          result             = new { buckets = new[] { bucket1 } },
-          cursor_result_info = new { count   = 1, per_page = 1, cursor }
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket1 } },
+          result_info = new { count = 1, per_page = 1, cursor, page = 0, total_count = 0, total_pages = 0 }
         },
         _serializerOptions);
 
-    // Second page response without a cursor, matching the nested "buckets" structure.
+    // Second page response without a cursor (end of pagination).
     var responsePage2 =
       JsonSerializer.Serialize(
         new
         {
-          success            = true,
-          errors             = Array.Empty<object>(),
-          messages           = Array.Empty<object>(),
-          result             = new { buckets = new[] { bucket2 } },
-          cursor_result_info = new { count   = 1, per_page = 1, cursor = (string?)null }
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket2 } },
+          result_info = new { count = 1, per_page = 1, cursor = (string?)null, page = 0, total_count = 0, total_pages = 0 }
         },
         _serializerOptions);
 
