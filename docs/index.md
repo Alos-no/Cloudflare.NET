@@ -1,6 +1,8 @@
 ---
 _layout: landing
-title: Cloudflare.NET SDK
+title: Cloudflare.NET SDK | C# Client Library for Cloudflare API
+_description: "Cloudflare.NET is a comprehensive C# client library for the Cloudflare REST API. Manage DNS records, Zones, R2 storage, Workers, WAF rules, and security with strongly-typed .NET code. Supports .NET 8, 9, and 10."
+_keywords: "Cloudflare .NET SDK, Cloudflare C# library, Cloudflare API client, .NET Cloudflare, C# DNS management, Cloudflare R2 .NET, Cloudflare WAF C#"
 ---
 
 <style>
@@ -258,7 +260,7 @@ title: Cloudflare.NET SDK
 
 <div class="hero">
   <h1>Cloudflare.NET SDK</h1>
-  <p class="tagline">An unofficial, strongly-typed .NET SDK for the Cloudflare API. Built with testability and maintainability in mind.</p>
+  <p class="tagline">A comprehensive C# client library for the Cloudflare REST API. Cloudflare does not provide an official .NET SDK, this project aims to fill that gap.</p>
 
   <div class="badges">
     <a href="https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml"><img src="https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml/badge.svg" alt="Build Status"></a>

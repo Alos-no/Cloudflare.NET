@@ -208,7 +208,7 @@ await cf.Zones.GetZoneSettingAsync(zoneId, "ssl");
 Use <xref:Cloudflare.NET.Zones.Models.ZoneSettingId> static properties for type-safe setting identifiers.
 
 > [!NOTE]
-> This is not an exhaustive list. Cloudflare may add new settings at any time. Use string literals for settings not listed here—they will be implicitly converted to `ZoneSettingId`.
+> This is not an exhaustive list. Cloudflare may add new settings at any time. Use string literals for settings not listed here - they will be implicitly converted to `ZoneSettingId`.
 
 ### Security Settings
 

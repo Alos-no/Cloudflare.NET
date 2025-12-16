@@ -1,4 +1,4 @@
-# Cloudflare.NET SDK
+# Cloudflare.NET - .NET SDK for Cloudflare API
 
 [![.NET Build and Test](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml/badge.svg)](https://github.com/Alos-no/Cloudflare.NET/actions/workflows/CI.yml)
 [![Documentation](https://img.shields.io/badge/docs-alos.no%2Fcfnet-27ae60)](https://alos.no/cfnet)
@@ -8,7 +8,9 @@
 [![NuGet (Cloudflare.NET.R2)](https://img.shields.io/nuget/v/Cloudflare.NET.R2?label=Cloudflare.NET.R2&color=27ae60)](https://www.nuget.org/packages/Cloudflare.NET.R2/)
 [![NuGet (Cloudflare.NET.Analytics)](https://img.shields.io/nuget/v/Cloudflare.NET.Analytics?label=Cloudflare.NET.Analytics&color=27ae60)](https://www.nuget.org/packages/Cloudflare.NET.Analytics/)
 
-An unofficial, strongly-typed .NET SDK for the Cloudflare API. Built with testability and maintainability in mind.
+**Cloudflare.NET** is a comprehensive **C# client library** for the **Cloudflare REST API**. It provides strongly-typed access to Cloudflare services including DNS management, Zone configuration, R2 object storage, Workers, WAF rules, and more. Built with testability and maintainability in mind.
+
+> Cloudflare does not provide an official **.NET SDK** or **C# library**. This project aims to fill that gap with a community-maintained alternative.
 
 **[Documentation](https://alos.no/cfnet)** | **[Getting Started](https://alos.no/cfnet/articles/getting-started.html)** | **[API Reference](https://alos.no/cfnet/api/)**
 

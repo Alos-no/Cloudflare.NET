@@ -6,8 +6,8 @@
     <!-- NuGet Package Properties (common properties inherited from Directory.Build.props) -->
     <PackageId>Cloudflare.NET.Analytics</PackageId>
     <Version>1.1.1</Version>
-    <Description>An extension package for Cloudflare.NET that provides a strongly-typed client for the Cloudflare Analytics GraphQL API.</Description>
-    <PackageTags>cloudflare;api;sdk;alos;analytics;graphql</PackageTags>
+    <Description>Cloudflare Analytics GraphQL client for .NET. Query traffic, security, and R2 metrics from the Cloudflare Analytics API. Part of the Cloudflare.NET SDK.</Description>
+    <PackageTags>cloudflare;cloudflare-analytics;cloudflare-sdk;graphql;analytics-api;dotnet;csharp;traffic-analytics;security-analytics;metrics</PackageTags>
     
     <!-- 
       Strong naming disabled for this project because GraphQL.Client packages are not strong-named.
