@@ -49,7 +49,7 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
-  <!-- 
+  <!--
     Centralized NuGet Package Metadata
     These properties are shared across all packages in this solution.
     Individual projects override PackageId, Version, Description, and PackageTags as needed.

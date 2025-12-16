@@ -64,4 +64,4 @@ dotnet run
 - All resources created during the sample run are automatically cleaned up at the end.
 - Each scenario logs its actions and results to the console.
 - The sample uses the `Runner` utility to manage cleanup actions in reverse order.
-- For Custom Hostnames, ownership verification is displayed but not automated—in a real SaaS scenario, you would share these with your customer.
+- For Custom Hostnames, ownership verification is displayed but not automated - in a real SaaS scenario, you would share these with your customer.
