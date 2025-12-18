@@ -376,6 +376,86 @@ public class R2BucketsApiUnitTests
     allBuckets.Select(b => b.Name).Should().ContainInOrder("bucket1", "bucket2");
   }
 
+  /// <summary>
+  ///   Verifies that ListAllAsync constructs proper URLs without malformed query strings.
+  ///   This specifically tests that the second page request (with cursor but no perPage) doesn't
+  ///   produce a malformed URL like "?&amp;cursor=..." instead of "?cursor=...".
+  /// </summary>
+  [Fact]
+  public async Task ListAllAsync_ShouldConstructProperUrlsWithoutMalformedQueryStrings()
+  {
+    // Arrange
+    var bucket1 = new R2Bucket("bucket1", DateTime.UtcNow, "loc", null, "class");
+    var bucket2 = new R2Bucket("bucket2", DateTime.UtcNow, "loc", null, "class");
+    var cursor  = "next_page_cursor";
+
+    // First page response with a cursor (no perPage specified by user).
+    var responsePage1 =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket1 } },
+          result_info = new { count = 1, per_page = 10, cursor, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    // Second page response without a cursor (end of pagination).
+    var responsePage2 =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket2 } },
+          result_info = new { count = 1, per_page = 10, cursor = (string?)null, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    var capturedRequests = new List<HttpRequestMessage>();
+    var mockHandler      = new Mock<HttpMessageHandler>();
+    mockHandler.Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequests.Add(req))
+               .Returns((HttpRequestMessage req, CancellationToken _) =>
+               {
+                 if (req.RequestUri!.ToString().Contains(cursor))
+                   return Task.FromResult(
+                     new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage2) });
+
+                 return Task.FromResult(
+                   new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage1) });
+               });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = TestAccountId });
+    var sut        = new R2BucketsApi(httpClient, options, _loggerFactory);
+
+    // Act - ListAllAsync WITHOUT any filters (no perPage specified)
+    var allBuckets = new List<R2Bucket>();
+    await foreach (var bucket in sut.ListAllAsync())
+      allBuckets.Add(bucket);
+
+    // Assert - Verify URLs are properly formed
+    capturedRequests.Should().HaveCount(2);
+
+    // First request should not have any query string (no perPage, no cursor)
+    var firstRequestUri = capturedRequests[0].RequestUri!.ToString();
+    firstRequestUri.Should().NotContain("?&", "the first request should not have malformed query string");
+    firstRequestUri.Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets");
+
+    // Second request should have cursor as the only query param, properly formatted
+    var secondRequestUri = capturedRequests[1].RequestUri!.ToString();
+    secondRequestUri.Should().NotContain("?&", "the second request should not have malformed query string like '?&cursor='");
+    secondRequestUri.Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets?cursor={cursor}");
+
+    // Verify we got all buckets from both pages
+    allBuckets.Should().HaveCount(2);
+  }
+
   #endregion
 
 
