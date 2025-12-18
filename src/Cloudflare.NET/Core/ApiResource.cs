@@ -429,15 +429,25 @@ public abstract class ApiResource
   {
     var nextCursor   = (string?)null;
     var hasMorePages = true;
-    var separator    = baseUri.Contains('?') ? "&" : "?";
-    var perPageQuery = perPage.HasValue ? $"&per_page={perPage.Value}" : string.Empty;
 
     do
     {
       cancellationToken.ThrowIfCancellationRequested();
 
-      var cursorQuery = !string.IsNullOrEmpty(nextCursor) ? $"&cursor={nextCursor}" : string.Empty;
-      var requestUri  = $"{baseUri}{separator}{perPageQuery}{cursorQuery}";
+      // Build query parameters properly: first param uses ?, subsequent use &.
+      var queryParams = new List<string>();
+
+      if (perPage.HasValue)
+        queryParams.Add($"per_page={perPage.Value}");
+
+      if (!string.IsNullOrEmpty(nextCursor))
+        queryParams.Add($"cursor={nextCursor}");
+
+      var queryString = queryParams.Count > 0
+        ? (baseUri.Contains('?') ? "&" : "?") + string.Join("&", queryParams)
+        : string.Empty;
+
+      var requestUri = $"{baseUri}{queryString}";
 
       using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
       Logger.SendingRequest("GET", requestUri);
