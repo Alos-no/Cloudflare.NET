@@ -225,16 +225,13 @@ public static class ServiceCollectionExtensions
     // Register the factory for named clients. TryAdd ensures we don't replace an existing registration.
     services.TryAddSingleton<IR2ClientFactory, R2ClientFactory>();
 
-#if NET8_0_OR_GREATER
     // Register a keyed service for direct DI injection using [FromKeyedServices("name")].
-    // Keyed services are only available in .NET 8+.
     services.AddKeyedSingleton<IR2Client>(name, (serviceProvider, key) =>
     {
       var factory = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
       return factory.CreateClient((string)key!);
     });
-#endif
 
     return services;
   }

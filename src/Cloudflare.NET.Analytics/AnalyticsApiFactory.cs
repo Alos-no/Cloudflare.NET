@@ -89,12 +89,7 @@ public sealed class AnalyticsApiFactory : IAnalyticsApiFactory, IDisposable
   {
     ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
-#if NET7_0_OR_GREATER
     ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-    if (_disposed)
-      throw new ObjectDisposedException(nameof(AnalyticsApiFactory));
-#endif
 
     // Use GetOrAdd to ensure thread-safe creation of clients.
     return _clientCache.GetOrAdd(name, CreateClientCore).Api;

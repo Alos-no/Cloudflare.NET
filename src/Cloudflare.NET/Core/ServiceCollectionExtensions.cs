@@ -234,16 +234,13 @@ public static class ServiceCollectionExtensions
     // TryAdd ensures we don't replace an existing registration.
     services.TryAddSingleton<ICloudflareApiClientFactory, CloudflareApiClientFactory>();
 
-#if NET8_0_OR_GREATER
     // Register a keyed service for direct DI injection using [FromKeyedServices("name")].
-    // Keyed services are only available in .NET 8+.
     services.AddKeyedTransient<ICloudflareApiClient>(name, (serviceProvider, key) =>
     {
       var factory = serviceProvider.GetRequiredService<ICloudflareApiClientFactory>();
 
       return factory.CreateClient((string)key!);
     });
-#endif
 
     return services;
   }

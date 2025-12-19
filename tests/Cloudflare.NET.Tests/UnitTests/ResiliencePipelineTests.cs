@@ -339,6 +339,186 @@ public class ResiliencePipelineTests
   }
 
   /// <summary>
+  ///   Verifies that the retry strategy honors the Retry-After header when present on a 429 response.
+  /// </summary>
+  /// <remarks>
+  ///   The Polly HttpRetryStrategyOptions automatically honors the Retry-After header.
+  ///   This test verifies that the SDK's pipeline is correctly configured to do so.
+  /// </remarks>
+  [Fact]
+  public async Task Retry_WhenRetryAfterHeaderPresent_ShouldHonorRetryAfterDelay()
+  {
+    // Arrange
+    var stopwatch = new System.Diagnostics.Stopwatch();
+    var (client, handler) = SetupClient(
+      options =>
+      {
+        options.RateLimiting.IsEnabled  = true;
+        options.RateLimiting.MaxRetries = 1;
+      },
+      handler =>
+      {
+        // First response: 429 with Retry-After header indicating 1 second delay.
+        var response429 = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+        response429.Headers.Add("Retry-After", "1"); // 1 second delay.
+
+        handler.Protected()
+               .SetupSequence<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync(response429)
+               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+               {
+                 Content = new StringContent(HttpFixtures.CreateSuccessResponse<object?>(null))
+               });
+      });
+
+    // Act
+    stopwatch.Start();
+    var action = async () => await client.Accounts.DeleteR2BucketAsync("any-bucket");
+    await action.Should().NotThrowAsync();
+    stopwatch.Stop();
+
+    // Assert
+    // The retry should have waited at least the Retry-After duration (1 second).
+    // We use 900ms to account for timing variations but ensure significant delay occurred.
+    stopwatch.ElapsedMilliseconds.Should().BeGreaterThanOrEqualTo(900);
+
+    // Verify that the request was sent twice (1 initial + 1 retry).
+    handler.Protected().Verify(
+      "SendAsync",
+      Times.Exactly(2),
+      ItExpr.IsAny<HttpRequestMessage>(),
+      ItExpr.IsAny<CancellationToken>());
+  }
+
+  /// <summary>
+  ///   Verifies that when all retries are exhausted, the final error is propagated to the caller.
+  /// </summary>
+  [Fact]
+  public async Task Retry_WhenAllRetriesExhausted_ShouldThrowFinalException()
+  {
+    // Arrange
+    var (client, handler) = SetupClient(
+      options =>
+      {
+        // Configure 2 retries (total of 3 attempts).
+        options.RateLimiting.MaxRetries = 2;
+      },
+      handler =>
+      {
+        // All responses will be 503, forcing all retries to fail.
+        handler.Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .Returns((HttpRequestMessage req, CancellationToken _) =>
+               {
+                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                 {
+                   RequestMessage = req // Required for idempotency check.
+                 });
+               });
+      });
+
+    // Act
+    var action = async () => await client.Accounts.DeleteR2BucketAsync("any-bucket");
+
+    // Assert
+    // After all retries are exhausted, the final 503 should propagate as HttpRequestException.
+    await action.Should().ThrowAsync<HttpRequestException>()
+                .Where(ex => ex.StatusCode == HttpStatusCode.ServiceUnavailable);
+
+    // Verify that the request was sent exactly 3 times (1 initial + 2 retries).
+    handler.Protected().Verify(
+      "SendAsync",
+      Times.Exactly(3),
+      ItExpr.IsAny<HttpRequestMessage>(),
+      ItExpr.IsAny<CancellationToken>());
+  }
+
+  /// <summary>
+  ///   Verifies that 408 Request Timeout responses are retried as transient errors.
+  /// </summary>
+  [Fact]
+  public async Task Retry_When408RequestTimeout_ShouldRetryRequest()
+  {
+    // Arrange
+    var (client, handler) = SetupClient(
+      options =>
+      {
+        options.RateLimiting.MaxRetries = 1;
+      },
+      handler =>
+      {
+        // First response: 408 Request Timeout (server-side timeout, retriable).
+        // Second response: 200 OK (success).
+        handler.Protected()
+               .SetupSequence<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync(() =>
+               {
+                 var response = new HttpResponseMessage(HttpStatusCode.RequestTimeout);
+                 return response;
+               })
+               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+               {
+                 Content = new StringContent(HttpFixtures.CreateSuccessResponse<object?>(null))
+               });
+      });
+
+    // Act
+    var action = async () => await client.Accounts.DeleteR2BucketAsync("any-bucket");
+
+    // Assert
+    await action.Should().NotThrowAsync();
+
+    // Verify that the request was sent twice (1 initial + 1 retry).
+    handler.Protected().Verify(
+      "SendAsync",
+      Times.Exactly(2),
+      ItExpr.IsAny<HttpRequestMessage>(),
+      ItExpr.IsAny<CancellationToken>());
+  }
+
+  /// <summary>
+  ///   Verifies that idempotent methods (PUT, DELETE) are retried on transient errors.
+  /// </summary>
+  [Fact]
+  public async Task Retry_ForIdempotentDeleteMethod_ShouldRetryOnTransientError()
+  {
+    // Arrange
+    var (client, handler) = SetupClient(
+      options => { options.RateLimiting.MaxRetries = 1; },
+      handler =>
+      {
+        // First response: 503 Service Unavailable.
+        // Second response: 200 OK (success).
+        handler.Protected()
+               .SetupSequence<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync(() =>
+               {
+                 var response         = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+                 response.RequestMessage = new HttpRequestMessage(HttpMethod.Delete, "http://test");
+
+                 return response;
+               })
+               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+               {
+                 Content = new StringContent(HttpFixtures.CreateSuccessResponse<object?>(null))
+               });
+      });
+
+    // Act - DeleteR2BucketAsync uses DELETE, which is idempotent and should be retried.
+    var action = async () => await client.Accounts.DeleteR2BucketAsync("any-bucket");
+
+    // Assert
+    await action.Should().NotThrowAsync();
+
+    // Verify that the request was sent twice (1 initial + 1 retry).
+    handler.Protected().Verify(
+      "SendAsync",
+      Times.Exactly(2),
+      ItExpr.IsAny<HttpRequestMessage>(),
+      ItExpr.IsAny<CancellationToken>());
+  }
+
+  /// <summary>
   ///   A helper method to set up the DI container with a mock HttpMessageHandler and custom options for a single
   ///   test.
   /// </summary>

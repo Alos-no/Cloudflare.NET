@@ -55,7 +55,8 @@
     Individual projects override PackageId, Version, Description, and PackageTags as needed.
   -->
   <PropertyGroup>
-    <Authors>Alos</Authors>
+    <Authors>Alos Engineering</Authors>
+    <Company>Alos Engineering</Company>
     <Copyright>Copyright (c) $([System.DateTime]::Now.Year) Alos Engineering</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://alos.no/cfnet</PackageProjectUrl>
