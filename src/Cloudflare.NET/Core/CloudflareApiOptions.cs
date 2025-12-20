@@ -23,6 +23,20 @@ public class RateLimitingOptions
   /// <summary>Gets or sets the number of requests that can be queued when the concurrency limit is reached. Defaults to 50.</summary>
   public int QueueLimit { get; set; } = 50;
 
+  /// <summary>
+  ///   Gets or sets a value indicating whether proactive throttling based on server rate limit headers is enabled.
+  ///   When enabled, the client will automatically delay requests when the remaining quota falls below the threshold,
+  ///   preventing 429 responses before they occur. Defaults to <see langword="true" />.
+  /// </summary>
+  public bool EnableProactiveThrottling { get; set; } = true;
+
+  /// <summary>
+  ///   Gets or sets the threshold (0.0 to 1.0) at which proactive throttling begins.
+  ///   For example, 0.1 means throttling starts when only 10% of the quota remains.
+  ///   Defaults to 0.1 (10%).
+  /// </summary>
+  public double QuotaLowThreshold { get; set; } = 0.1;
+
   #endregion
 }
 

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Timeout;
+using RateLimitHeaders.Polly;
 using Validation;
 
 /// <summary>Provides extension methods for setting up the Cloudflare API client in an IServiceCollection.</summary>
@@ -331,7 +332,8 @@ public static class ServiceCollectionExtensions
     // Create name prefixes for this specific client's resilience components.
     var namePrefix = clientName is null ? "Cloudflare" : $"Cloudflare:{clientName}";
 
-    // The standard pipeline order is: Rate Limiter -> Total Timeout -> Retry -> Circuit Breaker -> Attempt Timeout.
+    // The standard pipeline order is:
+    // Rate Limiter -> Rate Limit Headers -> Total Timeout -> Retry -> Circuit Breaker -> Attempt Timeout.
     // Ref: https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience#standard-pipeline
 
     // 1. OUTERMOST: Client-side rate limiting to avoid sending requests that are likely to be throttled.
@@ -359,14 +361,27 @@ public static class ServiceCollectionExtensions
       }
     });
 
-    // 2. Total Request Timeout: An outer timeout that covers the entire operation, including all retries.
+    // 2. Rate Limit Headers: Proactive throttling based on server-returned rate limit headers.
+    // This processes headers like RateLimit-Remaining, RateLimit-Limit, and RateLimit-Reset to
+    // preemptively slow down requests before hitting 429 responses.
+    // Ref: https://alos.no/ratelimitheaders/articles/polly-integration.html
+    builder.AddRateLimitHeaders(options =>
+    {
+      // Enable proactive throttling to delay requests when quota is running low.
+      options.EnableProactiveThrottling = cfOptions.RateLimiting.EnableProactiveThrottling;
+
+      // Set the threshold at which throttling begins (e.g., 0.1 = 10% remaining).
+      options.QuotaLowThreshold = cfOptions.RateLimiting.QuotaLowThreshold;
+    });
+
+    // 3. Total Request Timeout: An outer timeout that covers the entire operation, including all retries.
     builder.AddTimeout(new HttpTimeoutStrategyOptions
     {
       Name    = $"{namePrefix}:TotalTimeout",
       Timeout = TimeSpan.FromSeconds(60)
     });
 
-    // 3. Retry Strategy: Handles transient failures. Only add when enabled.
+    // 4. Retry Strategy: Handles transient failures. Only add when enabled.
     // Polly v8 validates MaxRetryAttempts >= 1. If users set MaxRetries = 0 to disable retries,
     // we skip adding the retry component entirely to avoid validation failures.
     if (cfOptions.RateLimiting.MaxRetries > 0)
@@ -454,10 +469,10 @@ public static class ServiceCollectionExtensions
       builder.AddRetry(retryOptions);
     }
 
-    // 4. Circuit Breaker: Stops sending requests after too many consecutive failures. Defaults are sensible.
+    // 5. Circuit Breaker: Stops sending requests after too many consecutive failures. Defaults are sensible.
     builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions { Name = $"{namePrefix}:CircuitBreaker" });
 
-    // 5. INNERMOST: Per-attempt timeout, using our configurable value.
+    // 6. INNERMOST: Per-attempt timeout, using our configurable value.
     builder.AddTimeout(new HttpTimeoutStrategyOptions
     {
       Name    = $"{namePrefix}:AttemptTimeout",
