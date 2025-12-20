@@ -88,12 +88,7 @@ public sealed class R2ClientFactory : IR2ClientFactory, IDisposable
   {
     ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
-#if NET7_0_OR_GREATER
     ObjectDisposedException.ThrowIf(_disposed, this);
-#else
-    if (_disposed)
-      throw new ObjectDisposedException(nameof(R2ClientFactory));
-#endif
 
     // Use GetOrAdd to ensure thread-safe creation of clients.
     return _clientCache.GetOrAdd(name, CreateClientCore);

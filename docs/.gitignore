@@ -3,6 +3,7 @@ _site/
 
 # Generated API documentation (regenerated on build)
 api/*.yml
+api/.manifest
 !api/index.md
 
 # DocFX log files

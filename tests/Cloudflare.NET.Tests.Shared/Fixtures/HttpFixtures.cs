@@ -85,6 +85,39 @@ public static class HttpFixtures
     GetMockHttpMessageHandler(responseContent, statusCode, null);
 
 
+  /// <summary>Creates a mock <see cref="HttpMessageHandler" /> that returns a response with custom headers.</summary>
+  /// <param name="responseContent">The string content to return in the response.</param>
+  /// <param name="statusCode">The HTTP status code to return.</param>
+  /// <param name="headers">Custom headers to add to the response.</param>
+  /// <returns>A configured mock of <see cref="HttpMessageHandler" />.</returns>
+  public static Mock<HttpMessageHandler> GetMockHttpMessageHandlerWithHeaders(
+    string                                    responseContent,
+    HttpStatusCode                            statusCode,
+    IEnumerable<KeyValuePair<string, string>> headers)
+  {
+    var mockHandler = new Mock<HttpMessageHandler>();
+    var response = new HttpResponseMessage
+    {
+      StatusCode = statusCode,
+      Content    = new StringContent(responseContent, System.Text.Encoding.UTF8, "application/json")
+    };
+
+    // Add custom headers to the response.
+    foreach (var header in headers)
+      response.Headers.TryAddWithoutValidation(header.Key, header.Value);
+
+    mockHandler
+      .Protected()
+      .Setup<Task<HttpResponseMessage>>(
+        "SendAsync",
+        ItExpr.IsAny<HttpRequestMessage>(),
+        ItExpr.IsAny<CancellationToken>()
+      )
+      .ReturnsAsync(response);
+
+    return mockHandler;
+  }
+
   /// <summary>Creates a successful paginated Cloudflare API JSON response string.</summary>
   /// <typeparam name="T">The type of items in the result.</typeparam>
   /// <param name="result">The result items to embed in the response.</param>
