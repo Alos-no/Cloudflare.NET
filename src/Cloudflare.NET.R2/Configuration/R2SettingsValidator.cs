@@ -129,12 +129,13 @@ public class R2SettingsValidator : IValidateOptions<R2Settings>
         $"Set '{configPath}:SecretAccessKey' in your configuration or provide it programmatically. " +
         $"You can generate R2 API tokens in the Cloudflare dashboard under R2 > Manage R2 API Tokens.");
 
-    // Validate EndpointUrl contains the required placeholder for Account ID substitution.
+    // Validate EndpointUrl contains the required placeholder for Account ID substitution (if explicitly set).
     if (!string.IsNullOrWhiteSpace(options.EndpointUrl) && !options.EndpointUrl.Contains("{0}"))
       failures.Add(
         $"Cloudflare R2 EndpointUrl must contain a '{{0}}' placeholder for the Account ID. " +
-        $"The default value is '{R2Settings.DefaultEndpointUrl}'. " +
-        $"If you've customized '{configPath}:EndpointUrl', ensure it includes '{{0}}' where the Account ID should be inserted.");
+        $"When EndpointUrl is not set, it is automatically computed from Jurisdiction. " +
+        $"If you've customized '{configPath}:EndpointUrl', ensure it includes '{{0}}' where the Account ID should be inserted, " +
+        $"e.g., 'https://{{0}}.r2.cloudflarestorage.com'.");
 
     // Validate Region is provided (should never be empty with the default, but validate anyway).
     if (string.IsNullOrWhiteSpace(options.Region))

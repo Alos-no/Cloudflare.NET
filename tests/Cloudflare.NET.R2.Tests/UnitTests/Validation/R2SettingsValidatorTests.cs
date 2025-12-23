@@ -1,5 +1,6 @@
 namespace Cloudflare.NET.R2.Tests.UnitTests.Validation;
 
+using Accounts.Models;
 using Configuration;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -273,12 +274,18 @@ public class R2SettingsValidatorTests
   }
 
 
-  /// <summary>Verifies that the default EndpointUrl contains the required placeholder.</summary>
+  /// <summary>Verifies that GetEffectiveEndpointUrl computes correct URL for default jurisdiction.</summary>
   [Fact]
-  public void DefaultEndpointUrl_ContainsPlaceholder()
+  public void GetEffectiveEndpointUrl_DefaultJurisdiction_ReturnsCorrectUrl()
   {
+    // Arrange
+    var settings = new R2Settings();
+
+    // Act
+    var endpointUrl = settings.GetEffectiveEndpointUrl("test-account-id");
+
     // Assert
-    R2Settings.DefaultEndpointUrl.Should().Contain("{0}");
+    endpointUrl.Should().Be("https://test-account-id.r2.cloudflarestorage.com");
   }
 
 
@@ -290,10 +297,224 @@ public class R2SettingsValidatorTests
     var settings = new R2Settings();
 
     // Assert
-    settings.EndpointUrl.Should().Be(R2Settings.DefaultEndpointUrl);
+    settings.EndpointUrl.Should().BeNull();
     settings.Region.Should().Be(R2Settings.DefaultRegion);
-    settings.EndpointUrl.Should().Be("https://{0}.r2.cloudflarestorage.com");
     settings.Region.Should().Be("auto");
+    settings.Jurisdiction.Should().Be(R2Jurisdiction.Default);
+  }
+
+  #endregion
+
+
+  #region GetEffectiveEndpointUrl Jurisdiction Tests
+
+  /// <summary>Verifies that GetEffectiveEndpointUrl computes correct URL for EU jurisdiction.</summary>
+  [Fact]
+  public void GetEffectiveEndpointUrl_EuJurisdiction_ReturnsEuEndpoint()
+  {
+    // Arrange
+    var settings = new R2Settings
+    {
+      Jurisdiction = R2Jurisdiction.EuropeanUnion
+    };
+
+    // Act
+    var endpointUrl = settings.GetEffectiveEndpointUrl("test-account");
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.eu.r2.cloudflarestorage.com");
+  }
+
+
+  /// <summary>Verifies that GetEffectiveEndpointUrl computes correct URL for FedRAMP jurisdiction.</summary>
+  [Fact]
+  public void GetEffectiveEndpointUrl_FedRampJurisdiction_ReturnsFedRampEndpoint()
+  {
+    // Arrange
+    var settings = new R2Settings
+    {
+      Jurisdiction = R2Jurisdiction.FedRamp
+    };
+
+    // Act
+    var endpointUrl = settings.GetEffectiveEndpointUrl("test-account");
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.fedramp.r2.cloudflarestorage.com");
+  }
+
+
+  /// <summary>Verifies that explicit EndpointUrl takes precedence over Jurisdiction.</summary>
+  [Fact]
+  public void GetEffectiveEndpointUrl_WithExplicitEndpointUrl_OverridesJurisdiction()
+  {
+    // Arrange
+    var settings = new R2Settings
+    {
+      Jurisdiction = R2Jurisdiction.EuropeanUnion,
+      EndpointUrl  = "https://{0}.custom.endpoint.com"
+    };
+
+    // Act
+    var endpointUrl = settings.GetEffectiveEndpointUrl("test-account");
+
+    // Assert - Explicit EndpointUrl should override Jurisdiction
+    endpointUrl.Should().Be("https://test-account.custom.endpoint.com");
+  }
+
+
+  /// <summary>Verifies that GetEffectiveEndpointUrl throws when accountId is null.</summary>
+  [Fact]
+  public void GetEffectiveEndpointUrl_NullAccountId_ThrowsArgumentException()
+  {
+    // Arrange
+    var settings = new R2Settings();
+
+    // Act
+    var action = () => settings.GetEffectiveEndpointUrl(null!);
+
+    // Assert
+    action.Should().Throw<ArgumentException>()
+          .WithParameterName("accountId");
+  }
+
+
+  /// <summary>Verifies that GetEffectiveEndpointUrl throws when accountId is empty.</summary>
+  [Fact]
+  public void GetEffectiveEndpointUrl_EmptyAccountId_ThrowsArgumentException()
+  {
+    // Arrange
+    var settings = new R2Settings();
+
+    // Act
+    var action = () => settings.GetEffectiveEndpointUrl("");
+
+    // Assert
+    action.Should().Throw<ArgumentException>()
+          .WithParameterName("accountId");
+  }
+
+
+  /// <summary>Verifies that GetEffectiveEndpointUrl throws when accountId is whitespace.</summary>
+  [Fact]
+  public void GetEffectiveEndpointUrl_WhitespaceAccountId_ThrowsArgumentException()
+  {
+    // Arrange
+    var settings = new R2Settings();
+
+    // Act
+    var action = () => settings.GetEffectiveEndpointUrl("   ");
+
+    // Assert
+    action.Should().Throw<ArgumentException>()
+          .WithParameterName("accountId");
+  }
+
+
+  /// <summary>Verifies GetEffectiveEndpointUrl with all known jurisdictions.</summary>
+  [Theory]
+  [InlineData("default", "https://acct.r2.cloudflarestorage.com")]
+  [InlineData("eu", "https://acct.eu.r2.cloudflarestorage.com")]
+  [InlineData("fedramp", "https://acct.fedramp.r2.cloudflarestorage.com")]
+  public void GetEffectiveEndpointUrl_WithVariousJurisdictions_ReturnsCorrectEndpoints(
+    string jurisdictionValue,
+    string expectedUrl)
+  {
+    // Arrange
+    var settings = new R2Settings
+    {
+      Jurisdiction = new R2Jurisdiction(jurisdictionValue)
+    };
+
+    // Act
+    var endpointUrl = settings.GetEffectiveEndpointUrl("acct");
+
+    // Assert
+    endpointUrl.Should().Be(expectedUrl);
+  }
+
+  #endregion
+
+
+  #region GetEndpointUrlForJurisdiction Static Method Tests
+
+  /// <summary>Verifies that GetEndpointUrlForJurisdiction returns correct URL for Default.</summary>
+  [Fact]
+  public void GetEndpointUrlForJurisdiction_Default_ReturnsGlobalEndpoint()
+  {
+    // Act
+    var endpointUrl = R2Settings.GetEndpointUrlForJurisdiction("test-account", R2Jurisdiction.Default);
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.r2.cloudflarestorage.com");
+  }
+
+
+  /// <summary>Verifies that GetEndpointUrlForJurisdiction returns correct URL for EU.</summary>
+  [Fact]
+  public void GetEndpointUrlForJurisdiction_EuropeanUnion_ReturnsEuEndpoint()
+  {
+    // Act
+    var endpointUrl = R2Settings.GetEndpointUrlForJurisdiction("test-account", R2Jurisdiction.EuropeanUnion);
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.eu.r2.cloudflarestorage.com");
+  }
+
+
+  /// <summary>Verifies that GetEndpointUrlForJurisdiction returns correct URL for FedRAMP.</summary>
+  [Fact]
+  public void GetEndpointUrlForJurisdiction_FedRamp_ReturnsFedRampEndpoint()
+  {
+    // Act
+    var endpointUrl = R2Settings.GetEndpointUrlForJurisdiction("test-account", R2Jurisdiction.FedRamp);
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.fedramp.r2.cloudflarestorage.com");
+  }
+
+
+  /// <summary>Verifies that GetEndpointUrlForJurisdiction ignores the settings instance jurisdiction.</summary>
+  [Fact]
+  public void GetEndpointUrlForJurisdiction_IgnoresSettingsJurisdiction()
+  {
+    // Arrange - Settings has EU, but we're asking for FedRAMP
+    var settings = new R2Settings
+    {
+      Jurisdiction = R2Jurisdiction.EuropeanUnion
+    };
+
+    // Act - Static method ignores instance settings
+    var endpointUrl = R2Settings.GetEndpointUrlForJurisdiction("test-account", R2Jurisdiction.FedRamp);
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.fedramp.r2.cloudflarestorage.com");
+  }
+
+
+  /// <summary>Verifies that GetEndpointUrlForJurisdiction throws when accountId is null.</summary>
+  [Fact]
+  public void GetEndpointUrlForJurisdiction_NullAccountId_ThrowsArgumentException()
+  {
+    // Act
+    var action = () => R2Settings.GetEndpointUrlForJurisdiction(null!, R2Jurisdiction.Default);
+
+    // Assert
+    action.Should().Throw<ArgumentException>()
+          .WithParameterName("accountId");
+  }
+
+
+  /// <summary>Verifies that GetEndpointUrlForJurisdiction throws when accountId is empty.</summary>
+  [Fact]
+  public void GetEndpointUrlForJurisdiction_EmptyAccountId_ThrowsArgumentException()
+  {
+    // Act
+    var action = () => R2Settings.GetEndpointUrlForJurisdiction("", R2Jurisdiction.Default);
+
+    // Assert
+    action.Should().Throw<ArgumentException>()
+          .WithParameterName("accountId");
   }
 
   #endregion

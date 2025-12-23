@@ -196,15 +196,16 @@ public class R2ConfigurationValidationTests
 
   #region Default Values Tests
 
-  /// <summary>Verifies that EndpointUrl has a sensible default value.</summary>
+  /// <summary>Verifies that EndpointUrl is null by default (computed from Jurisdiction).</summary>
   [Fact]
-  public void R2Settings_HasDefaultEndpointUrl()
+  public void R2Settings_HasNullEndpointUrlByDefault()
   {
     // Arrange
     var settings = new R2Settings();
 
-    // Assert
-    settings.EndpointUrl.Should().Be("https://{0}.r2.cloudflarestorage.com");
+    // Assert - EndpointUrl is null, endpoint is computed from Jurisdiction
+    settings.EndpointUrl.Should().BeNull();
+    settings.GetEffectiveEndpointUrl("test-account").Should().Be("https://test-account.r2.cloudflarestorage.com");
   }
 
 
@@ -274,7 +275,7 @@ public class R2ConfigurationValidationTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act - Creating the client should fail with CloudflareR2ConfigurationException
-    var action = () => factory.CreateClient(clientName);
+    var action = () => factory.GetClient(clientName);
 
     // Assert
     action.Should().Throw<CloudflareR2ConfigurationException>()
@@ -303,7 +304,7 @@ public class R2ConfigurationValidationTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act
-    var action = () => factory.CreateClient(clientName);
+    var action = () => factory.GetClient(clientName);
 
     // Assert - Should report multiple errors
     action.Should().Throw<CloudflareR2ConfigurationException>()
