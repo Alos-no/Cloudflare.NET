@@ -84,8 +84,8 @@ public static class ServiceCollectionExtensions
       var r2Settings         = sp.GetRequiredService<IOptions<R2Settings>>().Value;
       var cloudflareSettings = sp.GetRequiredService<IOptions<CloudflareApiOptions>>().Value;
 
-      // Build the endpoint URL with the Account ID.
-      var endpointUrl = string.Format(r2Settings.EndpointUrl, cloudflareSettings.AccountId);
+      // Build the endpoint URL, respecting jurisdiction configuration.
+      var endpointUrl = r2Settings.GetEffectiveEndpointUrl(cloudflareSettings.AccountId);
 
       var config = new AmazonS3Config
       {
@@ -185,7 +185,8 @@ public static class ServiceCollectionExtensions
   /// services.AddCloudflareR2Client("primary", options => {
   ///     options.AccessKeyId = "primary-key";
   ///     options.SecretAccessKey = "primary-secret";
-  ///     // EndpointUrl defaults to "https://{0}.r2.cloudflarestorage.com"
+  ///     // Jurisdiction defaults to R2Jurisdiction.Default (global endpoint)
+  ///     // Set options.Jurisdiction = R2Jurisdiction.EuropeanUnion for EU buckets
   /// });
   /// 
   /// // Use via factory
@@ -230,7 +231,7 @@ public static class ServiceCollectionExtensions
     {
       var factory = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
-      return factory.CreateClient((string)key!);
+      return factory.GetClient((string)key!);
     });
 
     return services;

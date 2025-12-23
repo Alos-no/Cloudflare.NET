@@ -179,4 +179,62 @@ public readonly struct R2Jurisdiction : IExtensibleEnum<R2Jurisdiction>, IEquata
   public override string ToString() => Value;
 
   #endregion
+
+
+  #region S3 Endpoint Helpers
+
+  /// <summary>
+  ///   Gets the S3-compatible endpoint URL for this jurisdiction.
+  /// </summary>
+  /// <param name="accountId">The Cloudflare account ID.</param>
+  /// <returns>The full S3 endpoint URL for this jurisdiction.</returns>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="accountId" /> is null or whitespace.</exception>
+  /// <example>
+  ///   <code>
+  ///   var endpoint = R2Jurisdiction.EuropeanUnion.GetS3EndpointUrl("abc123");
+  ///   // Returns: "https://abc123.eu.r2.cloudflarestorage.com"
+  ///
+  ///   var defaultEndpoint = R2Jurisdiction.Default.GetS3EndpointUrl("abc123");
+  ///   // Returns: "https://abc123.r2.cloudflarestorage.com"
+  ///   </code>
+  /// </example>
+  public string GetS3EndpointUrl(string accountId)
+  {
+    ArgumentException.ThrowIfNullOrWhiteSpace(accountId);
+
+    var subdomain = GetS3Subdomain();
+
+    return subdomain is null
+      ? $"https://{accountId}.r2.cloudflarestorage.com"
+      : $"https://{accountId}.{subdomain}.r2.cloudflarestorage.com";
+  }
+
+
+  /// <summary>
+  ///   Gets the S3 endpoint subdomain for this jurisdiction, or <c>null</c> for the default jurisdiction.
+  /// </summary>
+  /// <returns>
+  ///   The subdomain string (e.g., <c>"eu"</c>, <c>"fedramp"</c>) for jurisdictional endpoints,
+  ///   or <c>null</c> for the default (global) jurisdiction.
+  /// </returns>
+  /// <example>
+  ///   <code>
+  ///   R2Jurisdiction.EuropeanUnion.GetS3Subdomain(); // Returns: "eu"
+  ///   R2Jurisdiction.FedRamp.GetS3Subdomain();       // Returns: "fedramp"
+  ///   R2Jurisdiction.Default.GetS3Subdomain();       // Returns: null
+  ///   </code>
+  /// </example>
+  public string? GetS3Subdomain()
+  {
+    // Default jurisdiction has no subdomain.
+    if (string.IsNullOrEmpty(Value) ||
+        string.Equals(Value, "default", StringComparison.OrdinalIgnoreCase))
+    {
+      return null;
+    }
+
+    return Value.ToLowerInvariant();
+  }
+
+  #endregion
 }

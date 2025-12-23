@@ -1,5 +1,6 @@
 namespace Cloudflare.NET.R2.Tests.UnitTests;
 
+using Accounts.Models;
 using Core;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +34,7 @@ public class NamedR2ClientTests
 
   /// <summary>Verifies that the factory can create a named R2 client with the correct configuration.</summary>
   [Fact]
-  public void CreateClient_WithRegisteredName_ReturnsClient()
+  public void GetClient_WithRegisteredName_ReturnsClient()
   {
     // Arrange
     const string clientName = "primary";
@@ -60,7 +61,7 @@ public class NamedR2ClientTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act
-    var client = factory.CreateClient(clientName);
+    var client = factory.GetClient(clientName);
 
     // Assert
     client.Should().NotBeNull();
@@ -73,7 +74,7 @@ public class NamedR2ClientTests
   ///   (missing R2 settings).
   /// </summary>
   [Fact]
-  public void CreateClient_WithUnregisteredName_ThrowsConfigurationException()
+  public void GetClient_WithUnregisteredName_ThrowsConfigurationException()
   {
     // Arrange
     const string registeredName   = "primary";
@@ -98,7 +99,7 @@ public class NamedR2ClientTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act
-    var action = () => factory.CreateClient(unregisteredName);
+    var action = () => factory.GetClient(unregisteredName);
 
     // Assert - Now uses CloudflareR2ConfigurationException with clear error message
     action.Should().Throw<Exceptions.CloudflareR2ConfigurationException>()
@@ -108,7 +109,7 @@ public class NamedR2ClientTests
 
   /// <summary>Verifies that the factory throws when the Cloudflare Account ID is missing for the named client.</summary>
   [Fact]
-  public void CreateClient_WithMissingAccountId_ThrowsConfigurationException()
+  public void GetClient_WithMissingAccountId_ThrowsConfigurationException()
   {
     // Arrange
     const string clientName = "primary";
@@ -127,7 +128,7 @@ public class NamedR2ClientTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act
-    var action = () => factory.CreateClient(clientName);
+    var action = () => factory.GetClient(clientName);
 
     // Assert - Now uses CloudflareR2ConfigurationException with clear error message from shared validator
     action.Should().Throw<Exceptions.CloudflareR2ConfigurationException>()
@@ -137,7 +138,7 @@ public class NamedR2ClientTests
 
   /// <summary>Verifies that the factory caches clients and returns the same instance for the same name.</summary>
   [Fact]
-  public void CreateClient_CalledTwiceWithSameName_ReturnsCachedInstance()
+  public void GetClient_CalledTwiceWithSameName_ReturnsCachedInstance()
   {
     // Arrange
     const string clientName = "primary";
@@ -161,8 +162,8 @@ public class NamedR2ClientTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act
-    var client1 = factory.CreateClient(clientName);
-    var client2 = factory.CreateClient(clientName);
+    var client1 = factory.GetClient(clientName);
+    var client2 = factory.GetClient(clientName);
 
     // Assert
     client1.Should().BeSameAs(client2);
@@ -174,7 +175,7 @@ public class NamedR2ClientTests
   [InlineData(null)]
   [InlineData("")]
   [InlineData("   ")]
-  public void CreateClient_WithNullOrEmptyName_ThrowsArgumentException(string? invalidName)
+  public void GetClient_WithNullOrEmptyName_ThrowsArgumentException(string? invalidName)
   {
     // Arrange
     var services = CreateServiceCollection();
@@ -191,7 +192,7 @@ public class NamedR2ClientTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act
-    var action = () => factory.CreateClient(invalidName!);
+    var action = () => factory.GetClient(invalidName!);
 
     // Assert
     action.Should().Throw<ArgumentException>();
@@ -264,7 +265,7 @@ public class NamedR2ClientTests
 
   /// <summary>Verifies that multiple named R2 clients can be registered and resolved independently.</summary>
   [Fact]
-  public void CreateClient_WithMultipleNames_ReturnsDistinctClients()
+  public void GetClient_WithMultipleNames_ReturnsDistinctClients()
   {
     // Arrange
     const string primaryName = "primary";
@@ -304,8 +305,8 @@ public class NamedR2ClientTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Act
-    var primaryClient = factory.CreateClient(primaryName);
-    var backupClient  = factory.CreateClient(backupName);
+    var primaryClient = factory.GetClient(primaryName);
+    var backupClient  = factory.GetClient(backupName);
 
     // Assert
     primaryClient.Should().NotBeNull();
@@ -354,7 +355,7 @@ public class NamedR2ClientTests
     // Act
     var defaultClient = serviceProvider.GetRequiredService<IR2Client>();
     var factory       = serviceProvider.GetRequiredService<IR2ClientFactory>();
-    var namedClient   = factory.CreateClient("named");
+    var namedClient   = factory.GetClient("named");
 
     // Assert
     defaultClient.Should().NotBeNull();
@@ -388,16 +389,182 @@ public class NamedR2ClientTests
     var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
 
     // Create a client to populate the cache.
-    var client = factory.CreateClient(clientName);
+    var client = factory.GetClient(clientName);
     client.Should().NotBeNull();
 
     // Act
     ((IDisposable)factory).Dispose();
 
     // Assert - after disposal, creating a new client should throw.
-    var action = () => factory.CreateClient(clientName);
+    var action = () => factory.GetClient(clientName);
     action.Should().Throw<ObjectDisposedException>();
   }
+
+
+  #region Named Client with Jurisdiction Tests
+
+  /// <summary>
+  ///   Verifies that a named client can be configured with a specific jurisdiction.
+  /// </summary>
+  [Fact]
+  public void GetClient_WithConfiguredJurisdiction_ReturnsClient()
+  {
+    // Arrange
+    const string clientName = "eu-primary";
+
+    var services = CreateServiceCollection();
+
+    services.AddCloudflareApiClient(clientName, options =>
+    {
+      options.AccountId = "test-account-id";
+      options.ApiToken  = "test-token";
+    });
+
+    services.AddCloudflareR2Client(clientName, options =>
+    {
+      options.AccessKeyId     = "test-access-key";
+      options.SecretAccessKey = "test-secret-key";
+      options.Jurisdiction    = R2Jurisdiction.EuropeanUnion;
+    });
+
+    var serviceProvider = services.BuildServiceProvider();
+    var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
+
+    // Act
+    var client = factory.GetClient(clientName);
+
+    // Assert
+    client.Should().NotBeNull();
+    client.Should().BeOfType<R2Client>();
+  }
+
+
+  /// <summary>
+  ///   Verifies that multiple named clients with different jurisdictions can coexist.
+  /// </summary>
+  [Fact]
+  public void GetClient_MultipleClientsWithDifferentJurisdictions_CoexistCorrectly()
+  {
+    // Arrange
+    const string euClient      = "eu-primary";
+    const string fedRampClient = "fedramp-primary";
+
+    var services = CreateServiceCollection();
+
+    // EU client
+    services.AddCloudflareApiClient(euClient, options =>
+    {
+      options.AccountId = "test-account-id";
+      options.ApiToken  = "test-token";
+    });
+
+    services.AddCloudflareR2Client(euClient, options =>
+    {
+      options.AccessKeyId     = "test-access-key";
+      options.SecretAccessKey = "test-secret-key";
+      options.Jurisdiction    = R2Jurisdiction.EuropeanUnion;
+    });
+
+    // FedRAMP client
+    services.AddCloudflareApiClient(fedRampClient, options =>
+    {
+      options.AccountId = "test-account-id";
+      options.ApiToken  = "test-token";
+    });
+
+    services.AddCloudflareR2Client(fedRampClient, options =>
+    {
+      options.AccessKeyId     = "test-access-key";
+      options.SecretAccessKey = "test-secret-key";
+      options.Jurisdiction    = R2Jurisdiction.FedRamp;
+    });
+
+    var serviceProvider = services.BuildServiceProvider();
+    var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
+
+    // Act
+    var euR2Client      = factory.GetClient(euClient);
+    var fedRampR2Client = factory.GetClient(fedRampClient);
+
+    // Assert
+    euR2Client.Should().NotBeNull();
+    fedRampR2Client.Should().NotBeNull();
+    euR2Client.Should().NotBeSameAs(fedRampR2Client);
+  }
+
+
+  /// <summary>
+  ///   Verifies that a named client without explicit jurisdiction uses the default jurisdiction.
+  /// </summary>
+  [Fact]
+  public void GetClient_WithoutExplicitJurisdiction_UsesDefaultJurisdiction()
+  {
+    // Arrange
+    const string clientName = "default-jurisdiction";
+
+    var services = CreateServiceCollection();
+
+    services.AddCloudflareApiClient(clientName, options =>
+    {
+      options.AccountId = "test-account-id";
+      options.ApiToken  = "test-token";
+    });
+
+    services.AddCloudflareR2Client(clientName, options =>
+    {
+      options.AccessKeyId     = "test-access-key";
+      options.SecretAccessKey = "test-secret-key";
+      // Jurisdiction not set - should default to R2Jurisdiction.Default
+    });
+
+    var serviceProvider = services.BuildServiceProvider();
+    var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
+
+    // Act
+    var client = factory.GetClient(clientName);
+
+    // Assert
+    client.Should().NotBeNull();
+    client.Should().BeOfType<R2Client>();
+  }
+
+
+  /// <summary>
+  ///   Verifies that keyed services work with jurisdiction-configured named clients.
+  /// </summary>
+  [Fact]
+  public void KeyedServices_WithJurisdictionConfiguredClient_ResolvesCorrectly()
+  {
+    // Arrange
+    const string clientName = "eu-keyed";
+
+    var services = CreateServiceCollection();
+
+    services.AddCloudflareApiClient(clientName, options =>
+    {
+      options.AccountId = "test-account-id";
+      options.ApiToken  = "test-token";
+    });
+
+    services.AddCloudflareR2Client(clientName, options =>
+    {
+      options.AccessKeyId     = "test-access-key";
+      options.SecretAccessKey = "test-secret-key";
+      options.Jurisdiction    = R2Jurisdiction.EuropeanUnion;
+    });
+
+    var serviceProvider = services.BuildServiceProvider();
+
+    // Act
+    var client = serviceProvider.GetKeyedService<IR2Client>(clientName);
+
+    // Assert
+    client.Should().NotBeNull();
+    client.Should().BeOfType<R2Client>();
+  }
+
+  #endregion
+
 
   /// <summary>Creates a service collection with common test dependencies.</summary>
   private ServiceCollection CreateServiceCollection()

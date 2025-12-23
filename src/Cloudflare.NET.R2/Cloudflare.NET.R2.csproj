@@ -5,7 +5,7 @@
 
     <!-- NuGet Package Properties (common properties inherited from Directory.Build.props) -->
     <PackageId>Cloudflare.NET.R2</PackageId>
-    <Version>1.1.1</Version>
+    <Version>2.0.0</Version>
     <Description>Cloudflare R2 storage client for .NET. High-level S3-compatible API with multipart uploads, presigned URLs, batch operations, and automatic retry handling. Part of the Cloudflare.NET SDK.</Description>
     <PackageTags>cloudflare;cloudflare-r2;cloudflare-sdk;r2-storage;s3-compatible;object-storage;dotnet;csharp;multipart-upload;presigned-urls;blob-storage</PackageTags>
   </PropertyGroup>
