@@ -49,7 +49,7 @@ public class MyService(ICloudflareApiClient cf)
 
 - **CI/CD Pipeline** · Every commit triggers automated builds and tests; releases published automatically to NuGet
 
-- **Resilience Built-in** · Automatic retries, circuit breaker, rate limiting, and configurable timeouts via Polly
+- **Resilience Built-in** · Automatic retries, circuit breaker, proactive throttling based on rate limit headers, and configurable timeouts via Polly
 
 - **Multi-account Support** · Named clients and keyed services for managing multiple Cloudflare accounts
 

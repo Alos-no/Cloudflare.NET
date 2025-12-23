@@ -49,13 +49,25 @@ public record R2Bucket(
 );
 
 /// <summary>Defines the filtering and pagination options for listing R2 Buckets.</summary>
-/// <param name="PerPage">The number of buckets to return per page.</param>
+/// <param name="PerPage">The number of buckets to return per page (1-1000).</param>
 /// <param name="Cursor">The cursor for the next page of results.</param>
+/// <param name="NameContains">Filter to only return buckets with this phrase in their name.</param>
+/// <param name="Order">The field to order buckets by. Currently only "name" is supported.</param>
+/// <param name="Direction">The direction to order buckets: "asc" (ascending) or "desc" (descending).</param>
+/// <param name="StartAfter">The bucket name to start searching after. Buckets are ordered lexicographically.</param>
 public record ListR2BucketsFilters(
   [property: JsonPropertyName("per_page")]
   int? PerPage = null,
   [property: JsonPropertyName("cursor")]
-  string? Cursor = null
+  string? Cursor = null,
+  [property: JsonPropertyName("name_contains")]
+  string? NameContains = null,
+  [property: JsonPropertyName("order")]
+  string? Order = null,
+  [property: JsonPropertyName("direction")]
+  string? Direction = null,
+  [property: JsonPropertyName("start_after")]
+  string? StartAfter = null
 );
 
 /// <summary>Represents the nested response structure for listing R2 buckets.</summary>

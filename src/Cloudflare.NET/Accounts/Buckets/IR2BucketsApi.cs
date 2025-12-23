@@ -11,6 +11,13 @@ using Models;
 ///     and Sippy (incremental migration) configuration.
 ///   </para>
 /// </summary>
+/// <remarks>
+///   <para>
+///     <strong>Jurisdictional Buckets:</strong> Buckets created with a jurisdiction (e.g.,
+///     <see cref="R2Jurisdiction.EuropeanUnion" />) require the <c>jurisdiction</c> parameter on all
+///     bucket-specific operations. See <see cref="R2Jurisdiction" /> for details.
+///   </para>
+/// </remarks>
 /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/" />
 public interface IR2BucketsApi
 {
@@ -35,6 +42,14 @@ public interface IR2BucketsApi
   ///   A task that represents the asynchronous operation. The task result contains the <see cref="R2Bucket" /> from
   ///   the Cloudflare API, detailing the created bucket.
   /// </returns>
+  /// <remarks>
+  ///   <para>
+  ///     <strong>Important:</strong> If you create a bucket with a jurisdiction (e.g.,
+  ///     <see cref="R2Jurisdiction.EuropeanUnion" />), you <strong>must</strong> pass the same jurisdiction
+  ///     value to all subsequent API operations on this bucket. Store the jurisdiction value and reuse it.
+  ///   </para>
+  ///   <para>Once created, a bucket's jurisdiction cannot be changed.</para>
+  /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/create/" />
   Task<R2Bucket> CreateAsync(
     string            bucketName,
@@ -46,13 +61,12 @@ public interface IR2BucketsApi
   /// <summary>Gets the properties of an existing R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket to retrieve (3-64 characters).</param>
   /// <param name="jurisdiction">
-  ///   Optional jurisdictional restriction for buckets with data residency requirements.
-  ///   Use <see cref="R2Jurisdiction" /> constants.
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
   /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the <see cref="R2Bucket" />
-  ///   with the bucket's properties.
+  ///   with the bucket's properties, including its <see cref="R2Bucket.Jurisdiction" />.
   /// </returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/get/" />
   Task<R2Bucket> GetAsync(
@@ -62,27 +76,74 @@ public interface IR2BucketsApi
 
   /// <summary>Lists R2 buckets in the account, allowing for manual pagination control.</summary>
   /// <param name="filters">Optional filters for pagination.</param>
+  /// <param name="jurisdiction">
+  ///   Optional filter to return only buckets in this jurisdiction.
+  ///   When null, returns all buckets regardless of jurisdiction.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A single page of R2 buckets along with pagination information.</returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/list/" />
   Task<CursorPaginatedResult<R2Bucket>> ListAsync(
     ListR2BucketsFilters? filters           = null,
+    R2Jurisdiction?       jurisdiction      = null,
     CancellationToken     cancellationToken = default);
 
   /// <summary>Lists all R2 buckets in the account, automatically handling cursor-based pagination.</summary>
   /// <param name="filters">Optional filters for pagination. The cursor will be ignored.</param>
+  /// <param name="jurisdiction">
+  ///   Optional filter to return only buckets in this jurisdiction.
+  ///   When null, returns all buckets regardless of jurisdiction.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An asynchronous stream of all R2 buckets in the account.</returns>
   IAsyncEnumerable<R2Bucket> ListAllAsync(
     ListR2BucketsFilters? filters           = null,
+    R2Jurisdiction?       jurisdiction      = null,
     CancellationToken     cancellationToken = default);
 
   /// <summary>Deletes an R2 bucket. The bucket must be empty before it can be deleted.</summary>
   /// <param name="bucketName">The name of the bucket to delete.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/delete/" />
-  Task DeleteAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task DeleteAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
+
+  /// <summary>Updates properties of an existing R2 bucket.</summary>
+  /// <param name="bucketName">The name of the bucket to update (3-64 characters).</param>
+  /// <param name="storageClass">
+  ///   The new default storage class for newly uploaded objects. This does not change the storage class
+  ///   of existing objects. Use <see cref="R2StorageClass" /> constants (e.g., <see cref="R2StorageClass.InfrequentAccess" />).
+  /// </param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>
+  ///   A task that represents the asynchronous operation. The task result contains the updated <see cref="R2Bucket" />
+  ///   with the bucket's properties, including the new <see cref="R2Bucket.StorageClass" />.
+  /// </returns>
+  /// <remarks>
+  ///   <para>
+  ///     Currently, the only property that can be updated is the default storage class for new objects.
+  ///     Existing objects in the bucket retain their original storage class; use lifecycle rules to
+  ///     transition them if needed.
+  ///   </para>
+  ///   <para>
+  ///     The bucket's location hint and jurisdiction cannot be changed after creation.
+  ///   </para>
+  /// </remarks>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/edit/" />
+  Task<R2Bucket> UpdateAsync(
+    string            bucketName,
+    R2StorageClass    storageClass,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   #endregion
 
@@ -91,28 +152,47 @@ public interface IR2BucketsApi
 
   /// <summary>Gets the CORS policy for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
   ///   <see cref="BucketCorsPolicy" /> with the current CORS rules.
   /// </returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/get/" />
-  Task<BucketCorsPolicy> GetCorsAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task<BucketCorsPolicy> GetCorsAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   /// <summary>Sets or updates the CORS policy for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
   /// <param name="corsPolicy">The CORS policy to apply to the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/update/" />
-  Task SetCorsAsync(string bucketName, BucketCorsPolicy corsPolicy, CancellationToken cancellationToken = default);
+  Task SetCorsAsync(
+    string            bucketName,
+    BucketCorsPolicy  corsPolicy,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   /// <summary>Deletes the CORS policy for an R2 bucket, removing all CORS rules.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/delete/" />
-  Task DeleteCorsAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task DeleteCorsAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   #endregion
 
@@ -121,6 +201,9 @@ public interface IR2BucketsApi
 
   /// <summary>Gets the lifecycle policy for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -131,11 +214,17 @@ public interface IR2BucketsApi
   ///   incomplete multipart uploads. A bucket can have up to 1000 lifecycle rules.
   /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/get/" />
-  Task<BucketLifecyclePolicy> GetLifecycleAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task<BucketLifecyclePolicy> GetLifecycleAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   /// <summary>Sets or updates the lifecycle policy for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
   /// <param name="lifecyclePolicy">The lifecycle policy to apply to the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <remarks>
@@ -157,10 +246,14 @@ public interface IR2BucketsApi
   Task SetLifecycleAsync(
     string                bucketName,
     BucketLifecyclePolicy lifecyclePolicy,
+    R2Jurisdiction?       jurisdiction      = null,
     CancellationToken     cancellationToken = default);
 
   /// <summary>Deletes the lifecycle policy for an R2 bucket, removing all lifecycle rules.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <remarks>
@@ -168,7 +261,10 @@ public interface IR2BucketsApi
   ///   by setting an empty rules array.
   /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/r2/buckets/object-lifecycles/" />
-  Task DeleteLifecycleAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task DeleteLifecycleAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   #endregion
 
@@ -177,6 +273,9 @@ public interface IR2BucketsApi
 
   /// <summary>Lists all custom domains attached to an R2 bucket.</summary>
   /// <param name="bucketName">The name of the R2 bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains a list of
@@ -185,12 +284,16 @@ public interface IR2BucketsApi
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/" />
   Task<IReadOnlyList<CustomDomain>> ListCustomDomainsAsync(
     string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
     CancellationToken cancellationToken = default);
 
   /// <summary>Attaches a custom domain to an R2 bucket, allowing it to be served from a custom hostname.</summary>
   /// <param name="bucketName">The name of the R2 bucket.</param>
   /// <param name="hostname">The custom hostname to attach (e.g., "files.example.com").</param>
   /// <param name="zoneId">The ID of the zone the hostname belongs to.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -201,11 +304,15 @@ public interface IR2BucketsApi
     string            bucketName,
     string            hostname,
     string            zoneId,
+    R2Jurisdiction?   jurisdiction      = null,
     CancellationToken cancellationToken = default);
 
   /// <summary>Gets the current status of a custom domain attached to a bucket, including ownership and SSL status.</summary>
   /// <param name="bucketName">The name of the R2 bucket.</param>
   /// <param name="hostname">The custom hostname to check.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -214,12 +321,16 @@ public interface IR2BucketsApi
   Task<CustomDomainResponse> GetCustomDomainStatusAsync(
     string            bucketName,
     string            hostname,
+    R2Jurisdiction?   jurisdiction      = null,
     CancellationToken cancellationToken = default);
 
   /// <summary>Updates the configuration of a custom domain attached to a bucket.</summary>
   /// <param name="bucketName">The name of the R2 bucket.</param>
   /// <param name="hostname">The custom hostname to update.</param>
   /// <param name="request">The update request with new domain settings.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -229,16 +340,21 @@ public interface IR2BucketsApi
     string                    bucketName,
     string                    hostname,
     UpdateCustomDomainRequest request,
+    R2Jurisdiction?           jurisdiction      = null,
     CancellationToken         cancellationToken = default);
 
   /// <summary>Detaches a custom domain from an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
   /// <param name="hostname">The custom hostname to detach.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   Task DetachCustomDomainAsync(
     string            bucketName,
     string            hostname,
+    R2Jurisdiction?   jurisdiction      = null,
     CancellationToken cancellationToken = default);
 
   #endregion
@@ -248,6 +364,9 @@ public interface IR2BucketsApi
 
   /// <summary>Gets the current state of public access over the bucket's R2-managed (r2.dev) domain.</summary>
   /// <param name="bucketName">The name of the R2 bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -256,10 +375,14 @@ public interface IR2BucketsApi
   /// <seealso href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/" />
   Task<ManagedDomainResponse> GetManagedDomainAsync(
     string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
     CancellationToken cancellationToken = default);
 
   /// <summary>Enables the public r2.dev URL for a given bucket.</summary>
   /// <param name="bucketName">The name of the bucket to modify.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -267,13 +390,20 @@ public interface IR2BucketsApi
   /// </returns>
   Task<ManagedDomainResponse> EnableManagedDomainAsync(
     string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
     CancellationToken cancellationToken = default);
 
   /// <summary>Disables the public r2.dev URL for a given bucket.</summary>
   /// <param name="bucketName">The name of the bucket to modify.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
-  Task DisableManagedDomainAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task DisableManagedDomainAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   #endregion
 
@@ -282,6 +412,9 @@ public interface IR2BucketsApi
 
   /// <summary>Gets the lock rules for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -292,11 +425,17 @@ public interface IR2BucketsApi
   ///   If multiple rules apply to the same prefix or object key, the strictest retention requirement takes precedence.
   /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/r2/buckets/bucket-locks/" />
-  Task<BucketLockPolicy> GetLockAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task<BucketLockPolicy> GetLockAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   /// <summary>Sets or updates the lock rules for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
   /// <param name="lockPolicy">The lock policy to apply to the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -319,18 +458,25 @@ public interface IR2BucketsApi
   /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/r2/buckets/bucket-locks/" />
   Task<BucketLockPolicy> SetLockAsync(
-    string           bucketName,
-    BucketLockPolicy lockPolicy,
+    string            bucketName,
+    BucketLockPolicy  lockPolicy,
+    R2Jurisdiction?   jurisdiction      = null,
     CancellationToken cancellationToken = default);
 
   /// <summary>Deletes all lock rules for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <remarks>
   ///   This method removes the lock policy by setting an empty rules array, similar to lifecycle policy deletion.
   /// </remarks>
-  Task DeleteLockAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task DeleteLockAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   #endregion
 
@@ -339,6 +485,9 @@ public interface IR2BucketsApi
 
   /// <summary>Gets the Sippy (incremental migration) configuration for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -349,11 +498,17 @@ public interface IR2BucketsApi
   ///   to R2 as it's requested, helping avoid upfront egress fees during migration.
   /// </remarks>
   /// <seealso href="https://developers.cloudflare.com/r2/data-migration/sippy/" />
-  Task<SippyConfig> GetSippyAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task<SippyConfig> GetSippyAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   /// <summary>Enables or updates Sippy (incremental migration) for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
   /// <param name="request">The Sippy configuration to apply.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -374,14 +529,21 @@ public interface IR2BucketsApi
   Task<SippyConfig> EnableSippyAsync(
     string              bucketName,
     EnableSippyRequest  request,
+    R2Jurisdiction?     jurisdiction      = null,
     CancellationToken   cancellationToken = default);
 
   /// <summary>Disables Sippy (incremental migration) for an R2 bucket.</summary>
   /// <param name="bucketName">The name of the bucket.</param>
+  /// <param name="jurisdiction">
+  ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A task that represents the asynchronous operation.</returns>
   /// <seealso href="https://developers.cloudflare.com/r2/data-migration/sippy/" />
-  Task DisableSippyAsync(string bucketName, CancellationToken cancellationToken = default);
+  Task DisableSippyAsync(
+    string            bucketName,
+    R2Jurisdiction?   jurisdiction      = null,
+    CancellationToken cancellationToken = default);
 
   #endregion
 

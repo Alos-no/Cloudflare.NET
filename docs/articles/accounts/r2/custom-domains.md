@@ -15,6 +15,13 @@ public class DomainService(ICloudflareApiClient cf)
 }
 ```
 
+> [!NOTE]
+> **Jurisdictional Buckets:** If your bucket was created with a jurisdiction (e.g., `R2Jurisdiction.EuropeanUnion`), you must pass the jurisdiction parameter to all custom domain operations. See [Working with Jurisdictional Buckets](buckets.md#working-with-jurisdictional-buckets).
+>
+> ```csharp
+> await cf.Accounts.Buckets.AttachCustomDomainAsync("my-eu-bucket", hostname, zoneId, R2Jurisdiction.EuropeanUnion);
+> ```
+
 ## Listing Custom Domains
 
 List all custom domains attached to a bucket:

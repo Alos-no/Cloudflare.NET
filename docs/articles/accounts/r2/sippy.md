@@ -23,6 +23,13 @@ public class MigrationService(ICloudflareApiClient cf)
 }
 ```
 
+> [!NOTE]
+> **Jurisdictional Buckets:** If your bucket was created with a jurisdiction (e.g., `R2Jurisdiction.EuropeanUnion`), you must pass the jurisdiction parameter to all Sippy operations. See [Working with Jurisdictional Buckets](buckets.md#working-with-jurisdictional-buckets).
+>
+> ```csharp
+> await cf.Accounts.Buckets.EnableSippyAsync("my-eu-bucket", request, R2Jurisdiction.EuropeanUnion);
+> ```
+
 ## Supported Sources
 
 Sippy supports migration from:

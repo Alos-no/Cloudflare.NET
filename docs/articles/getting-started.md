@@ -55,7 +55,9 @@ Configure your Cloudflare credentials in `appsettings.json`:
       "IsEnabled": true,
       "MaxRetries": 3,
       "PermitLimit": 25,
-      "QueueLimit": 10
+      "QueueLimit": 10,
+      "EnableProactiveThrottling": true,
+      "QuotaLowThreshold": 0.1
     }
   },
   "R2": {
@@ -64,6 +66,9 @@ Configure your Cloudflare credentials in `appsettings.json`:
   }
 }
 ```
+
+> [!TIP]
+> **Proactive Throttling**: When `EnableProactiveThrottling` is enabled (default: `true`), the SDK automatically delays requests when the remaining API quota falls below `QuotaLowThreshold` (default: 10%). This prevents 429 errors before they occur by reading rate limit headers from Cloudflare's responses.
 
 > [!NOTE]
 > Never commit API tokens or secrets to source control. Use [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) for development and environment variables or a managed Key Vault for production.
@@ -92,6 +97,8 @@ builder.Services.AddCloudflareApiClient(options =>
     options.AccountId = "your-account-id";
     options.DefaultTimeout = TimeSpan.FromSeconds(30);
     options.RateLimiting.IsEnabled = true;
+    options.RateLimiting.EnableProactiveThrottling = true;  // Delay requests when quota is low
+    options.RateLimiting.QuotaLowThreshold = 0.1;           // Throttle at 10% remaining
 });
 ```
 

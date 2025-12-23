@@ -16,6 +16,25 @@ using Core.Json;
 ///     This is an extensible enum that provides IntelliSense for known values while allowing custom values
 ///     for new jurisdictions that may be added to the Cloudflare API in the future.
 ///   </para>
+///   <para><strong>Important: When to Pass Jurisdiction to API Methods</strong></para>
+///   <para>
+///     If you create a bucket with a jurisdiction (e.g., <see cref="EuropeanUnion" /> or <see cref="FedRamp" />),
+///     you <strong>must pass the same jurisdiction value to all subsequent API operations</strong> on that bucket.
+///     Without it, the API returns error 10006 "The specified bucket does not exist" even though the bucket exists.
+///   </para>
+///   <para>
+///     The jurisdiction is required for:
+///     <c>GetAsync</c>, <c>DeleteAsync</c>, all CORS operations, all lifecycle operations, all custom domain
+///     operations, all managed domain operations, all lock operations, and all Sippy operations.
+///   </para>
+///   <para>
+///     The jurisdiction is <em>not</em> required for: <c>ListAsync</c> / <c>ListAllAsync</c> (returns all buckets
+///     with their jurisdiction in the response) and <c>CreateTempCredentialsAsync</c> (bucket is in the request body).
+///   </para>
+///   <para>
+///     <strong>Best Practice:</strong> Store the jurisdiction value when creating a bucket and reuse it for all
+///     subsequent operations on that bucket.
+///   </para>
 ///   <para>
 ///     When accessing jurisdictional buckets via the S3 API, you must specify the jurisdiction in the endpoint:
 ///     <c>https://{account_id}.{jurisdiction}.r2.cloudflarestorage.com</c>
@@ -27,11 +46,13 @@ using Core.Json;
 /// </remarks>
 /// <example>
 ///   <code>
-///   // Using a known jurisdiction with IntelliSense
-///   var jurisdiction = R2Jurisdiction.EuropeanUnion;
+///   // Create an EU jurisdiction bucket
+///   var bucket = await api.Buckets.CreateAsync("my-bucket", jurisdiction: R2Jurisdiction.EuropeanUnion);
 ///
-///   // Using implicit conversion from string
-///   R2Jurisdiction customJurisdiction = "new-jurisdiction";
+///   // IMPORTANT: Pass the same jurisdiction for all subsequent operations
+///   var details = await api.Buckets.GetAsync("my-bucket", R2Jurisdiction.EuropeanUnion);
+///   await api.Buckets.SetCorsAsync("my-bucket", corsPolicy, R2Jurisdiction.EuropeanUnion);
+///   await api.Buckets.DeleteAsync("my-bucket", R2Jurisdiction.EuropeanUnion);
 ///   </code>
 /// </example>
 /// <seealso href="https://developers.cloudflare.com/r2/reference/data-location/" />

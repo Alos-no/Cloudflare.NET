@@ -50,11 +50,41 @@ public abstract class ApiResource
   /// <param name="requestUri">The URI to send the request to.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The deserialized "result" object from the API response.</returns>
-  protected async Task<TResult> GetAsync<TResult>(string requestUri, CancellationToken cancellationToken = default)
+  protected Task<TResult> GetAsync<TResult>(string requestUri, CancellationToken cancellationToken = default) =>
+    GetAsync<TResult>(requestUri, null, cancellationToken);
+
+  /// <summary>Sends a GET request with optional custom headers to the specified URI.</summary>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="headers">Optional custom headers to include in the request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> GetAsync<TResult>(
+    string                                      requestUri,
+    IEnumerable<KeyValuePair<string, string>>?  headers,
+    CancellationToken                           cancellationToken = default)
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("GET", requestUri);
-    var response = await HttpClient.GetAsync(requestUri, cancellationToken);
+
+    HttpResponseMessage response;
+
+    if (headers is null)
+    {
+      response = await HttpClient.GetAsync(requestUri, cancellationToken);
+    }
+    else
+    {
+      using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+      foreach (var header in headers)
+      {
+        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+      }
+
+      response = await HttpClient.SendAsync(request, cancellationToken);
+    }
+
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
@@ -81,11 +111,46 @@ public abstract class ApiResource
   /// <param name="payload">The object to serialize as the JSON request body.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The deserialized "result" object from the API response.</returns>
-  protected async Task<TResult> PutAsync<TResult>(string requestUri, object? payload, CancellationToken cancellationToken = default)
+  protected Task<TResult> PutAsync<TResult>(string requestUri, object? payload, CancellationToken cancellationToken = default) =>
+    PutAsync<TResult>(requestUri, payload, null, cancellationToken);
+
+  /// <summary>Sends a PUT request with a JSON payload and optional custom headers to the specified URI.</summary>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="payload">The object to serialize as the JSON request body.</param>
+  /// <param name="headers">Optional custom headers to include in the request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> PutAsync<TResult>(
+    string                                      requestUri,
+    object?                                     payload,
+    IEnumerable<KeyValuePair<string, string>>?  headers,
+    CancellationToken                           cancellationToken = default)
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("PUT", requestUri);
-    var response = await HttpClient.PutAsJsonAsync(requestUri, payload, _serializerOptions, cancellationToken);
+
+    HttpResponseMessage response;
+
+    if (headers is null)
+    {
+      response = await HttpClient.PutAsJsonAsync(requestUri, payload, _serializerOptions, cancellationToken);
+    }
+    else
+    {
+      var jsonContent = JsonSerializer.Serialize(payload, _serializerOptions);
+      var content     = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+      using var request = new HttpRequestMessage(HttpMethod.Put, requestUri) { Content = content };
+
+      foreach (var header in headers)
+      {
+        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+      }
+
+      response = await HttpClient.SendAsync(request, cancellationToken);
+    }
+
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
@@ -154,14 +219,49 @@ public abstract class ApiResource
   /// <param name="jsonContent">The pre-serialized JSON string to send as the request body.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The deserialized "result" object from the API response.</returns>
-  protected async Task<TResult> PutJsonAsync<TResult>(string            requestUri,
-                                                      string            jsonContent,
-                                                      CancellationToken cancellationToken = default)
+  protected Task<TResult> PutJsonAsync<TResult>(string requestUri, string jsonContent, CancellationToken cancellationToken = default) =>
+    PutJsonAsync<TResult>(requestUri, jsonContent, null, cancellationToken);
+
+  /// <summary>Sends a PUT request with a pre-serialized JSON string and optional custom headers to the specified URI.</summary>
+  /// <remarks>
+  ///   Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case). The caller is
+  ///   responsible for serializing the payload to JSON.
+  /// </remarks>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="jsonContent">The pre-serialized JSON string to send as the request body.</param>
+  /// <param name="headers">Optional custom headers to include in the request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> PutJsonAsync<TResult>(
+    string                                      requestUri,
+    string                                      jsonContent,
+    IEnumerable<KeyValuePair<string, string>>?  headers,
+    CancellationToken                           cancellationToken = default)
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("PUT", requestUri);
-    var content  = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
-    var response = await HttpClient.PutAsync(requestUri, content, cancellationToken);
+
+    var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+    HttpResponseMessage response;
+
+    if (headers is null)
+    {
+      response = await HttpClient.PutAsync(requestUri, content, cancellationToken);
+    }
+    else
+    {
+      using var request = new HttpRequestMessage(HttpMethod.Put, requestUri) { Content = content };
+
+      foreach (var header in headers)
+      {
+        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+      }
+
+      response = await HttpClient.SendAsync(request, cancellationToken);
+    }
+
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
@@ -171,13 +271,48 @@ public abstract class ApiResource
   /// <param name="payload">The object to serialize as the JSON request body.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The deserialized "result" object from the API response.</returns>
-  protected async Task<TResult> PatchAsync<TResult>(string            requestUri,
-                                                    object?           payload,
-                                                    CancellationToken cancellationToken = default)
+  protected Task<TResult> PatchAsync<TResult>(string            requestUri,
+                                              object?           payload,
+                                              CancellationToken cancellationToken = default) =>
+    PatchAsync<TResult>(requestUri, payload, null, cancellationToken);
+
+  /// <summary>Sends a PATCH request with a JSON payload and optional custom headers to the specified URI.</summary>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="payload">The object to serialize as the JSON request body.</param>
+  /// <param name="headers">Optional custom headers to include in the request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> PatchAsync<TResult>(
+    string                                      requestUri,
+    object?                                     payload,
+    IEnumerable<KeyValuePair<string, string>>?  headers,
+    CancellationToken                           cancellationToken = default)
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("PATCH", requestUri);
-    var response = await HttpClient.PatchAsJsonAsync(requestUri, payload, _serializerOptions, cancellationToken);
+
+    HttpResponseMessage response;
+
+    if (headers is null)
+    {
+      response = await HttpClient.PatchAsJsonAsync(requestUri, payload, _serializerOptions, cancellationToken);
+    }
+    else
+    {
+      var jsonContent = JsonSerializer.Serialize(payload, _serializerOptions);
+      var content     = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+      using var request = new HttpRequestMessage(HttpMethod.Patch, requestUri) { Content = content };
+
+      foreach (var header in headers)
+      {
+        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+      }
+
+      response = await HttpClient.SendAsync(request, cancellationToken);
+    }
+
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
@@ -186,11 +321,41 @@ public abstract class ApiResource
   /// <param name="requestUri">The URI to send the request to.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>The deserialized "result" object from the API response.</returns>
-  protected async Task<TResult> DeleteAsync<TResult>(string requestUri, CancellationToken cancellationToken = default)
+  protected Task<TResult> DeleteAsync<TResult>(string requestUri, CancellationToken cancellationToken = default) =>
+    DeleteAsync<TResult>(requestUri, null, cancellationToken);
+
+  /// <summary>Sends a DELETE request with optional custom headers to the specified URI.</summary>
+  /// <typeparam name="TResult">The expected type of the "result" object in the JSON response.</typeparam>
+  /// <param name="requestUri">The URI to send the request to.</param>
+  /// <param name="headers">Optional custom headers to include in the request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>The deserialized "result" object from the API response.</returns>
+  protected async Task<TResult> DeleteAsync<TResult>(
+    string                                      requestUri,
+    IEnumerable<KeyValuePair<string, string>>?  headers,
+    CancellationToken                           cancellationToken = default)
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("DELETE", requestUri);
-    var response = await HttpClient.DeleteAsync(requestUri, cancellationToken);
+
+    HttpResponseMessage response;
+
+    if (headers is null)
+    {
+      response = await HttpClient.DeleteAsync(requestUri, cancellationToken);
+    }
+    else
+    {
+      using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
+
+      foreach (var header in headers)
+      {
+        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+      }
+
+      response = await HttpClient.SendAsync(request, cancellationToken);
+    }
+
     return await ProcessResponse<TResult>(response, cancellationToken);
   }
 
@@ -305,16 +470,51 @@ public abstract class ApiResource
   /// <param name="listExtractor">A function to extract the list of items from the wrapper object.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A result object containing the items for the page and the cursor metadata.</returns>
-  protected async Task<CursorPaginatedResult<TItem>> GetCursorPaginatedResultAsync<TWrapper, TItem>(
+  protected Task<CursorPaginatedResult<TItem>> GetCursorPaginatedResultAsync<TWrapper, TItem>(
     string                               requestUri,
     Func<TWrapper, IReadOnlyList<TItem>> listExtractor,
-    CancellationToken                    cancellationToken = default)
+    CancellationToken                    cancellationToken = default) =>
+    GetCursorPaginatedResultAsync(requestUri, listExtractor, null, cancellationToken);
+
+  /// <summary>
+  ///   Gets a single page of results from a cursor-based paginated endpoint where the item list is nested within a
+  ///   wrapper object in the API response, with optional custom headers.
+  /// </summary>
+  /// <typeparam name="TWrapper">The type of the wrapper object in the 'result' field.</typeparam>
+  /// <typeparam name="TItem">The type of the item in the list.</typeparam>
+  /// <param name="requestUri">The full request URI for the API endpoint.</param>
+  /// <param name="listExtractor">A function to extract the list of items from the wrapper object.</param>
+  /// <param name="headers">Optional custom headers to include in the request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A result object containing the items for the page and the cursor metadata.</returns>
+  protected async Task<CursorPaginatedResult<TItem>> GetCursorPaginatedResultAsync<TWrapper, TItem>(
+    string                                      requestUri,
+    Func<TWrapper, IReadOnlyList<TItem>>        listExtractor,
+    IEnumerable<KeyValuePair<string, string>>?  headers,
+    CancellationToken                           cancellationToken = default)
   {
     using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
     Logger.SendingRequest("GET", requestUri);
 
-    var httpResponse = await HttpClient.GetAsync(requestUri, cancellationToken);
-    var apiResponse  = await ProcessAndDeserializeAsync<TWrapper>(httpResponse, cancellationToken);
+    HttpResponseMessage httpResponse;
+
+    if (headers is null)
+    {
+      httpResponse = await HttpClient.GetAsync(requestUri, cancellationToken);
+    }
+    else
+    {
+      using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+      foreach (var header in headers)
+      {
+        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+      }
+
+      httpResponse = await HttpClient.SendAsync(request, cancellationToken);
+    }
+
+    var apiResponse = await ProcessAndDeserializeAsync<TWrapper>(httpResponse, cancellationToken);
 
     var items = apiResponse.Result is not null
       ? listExtractor(apiResponse.Result)
@@ -405,11 +605,31 @@ public abstract class ApiResource
   /// <param name="listExtractor">A function to extract the list of items from the wrapper object.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An asynchronous stream of items.</returns>
+  protected IAsyncEnumerable<TItem> GetCursorPaginatedAsync<TWrapper, TItem>(
+    string                               baseUri,
+    int?                                 perPage,
+    Func<TWrapper, IReadOnlyList<TItem>> listExtractor,
+    CancellationToken                    cancellationToken) =>
+    GetCursorPaginatedAsync(baseUri, perPage, listExtractor, null, cancellationToken);
+
+  /// <summary>
+  ///   Gets a paginated list of resources using cursor-based pagination where the item list is nested within a
+  ///   wrapper object, with optional custom headers. This is the core implementation.
+  /// </summary>
+  /// <typeparam name="TWrapper">The type of the wrapper object in the 'result' field.</typeparam>
+  /// <typeparam name="TItem">The type of the item in the list.</typeparam>
+  /// <param name="baseUri">The base request URI, without any cursor or per_page parameters.</param>
+  /// <param name="perPage">The number of items to request per page.</param>
+  /// <param name="listExtractor">A function to extract the list of items from the wrapper object.</param>
+  /// <param name="headers">Optional custom headers to include in each paginated request.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An asynchronous stream of items.</returns>
   protected async IAsyncEnumerable<TItem> GetCursorPaginatedAsync<TWrapper, TItem>(
-    string                                     baseUri,
-    int?                                       perPage,
-    Func<TWrapper, IReadOnlyList<TItem>>       listExtractor,
-    [EnumeratorCancellation] CancellationToken cancellationToken)
+    string                                      baseUri,
+    int?                                        perPage,
+    Func<TWrapper, IReadOnlyList<TItem>>        listExtractor,
+    IEnumerable<KeyValuePair<string, string>>?  headers,
+    [EnumeratorCancellation] CancellationToken  cancellationToken)
   {
     var nextCursor   = (string?)null;
     var hasMorePages = true;
@@ -436,7 +656,24 @@ public abstract class ApiResource
       using var scope = Logger.BeginScope("RequestUri: {RequestUri}", requestUri);
       Logger.SendingRequest("GET", requestUri);
 
-      var httpResponse = await HttpClient.GetAsync(requestUri, cancellationToken);
+      HttpResponseMessage httpResponse;
+
+      if (headers is null)
+      {
+        httpResponse = await HttpClient.GetAsync(requestUri, cancellationToken);
+      }
+      else
+      {
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+        foreach (var header in headers)
+        {
+          request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+        }
+
+        httpResponse = await HttpClient.SendAsync(request, cancellationToken);
+      }
+
       var apiResponse =
         await ProcessAndDeserializeAsync<TWrapper>(httpResponse, cancellationToken);
 

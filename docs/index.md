@@ -350,7 +350,7 @@ public class MyService(ICloudflareApiClient cf)
         </div>
         <h4>Resilience Built-in</h4>
       </div>
-      <p>Production-ready resilience via Polly: automatic retries with exponential backoff, circuit breaker for fault tolerance, rate limiting to respect API limits, and configurable timeouts per request.</p>
+      <p>Production-ready resilience via Polly: automatic retries with exponential backoff, circuit breaker for fault tolerance, proactive throttling based on rate limit headers, and configurable timeouts per request.</p>
     </div>
     <div class="feature-item">
       <div class="feature-header">
