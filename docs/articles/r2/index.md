@@ -59,6 +59,8 @@ public class StorageService(IR2Client r2)
 | **Intelligent Uploads** | Auto-selects single-part or multipart based on file size |
 | **Multipart Uploads** | Handle files up to 5 TiB with parallel part uploads |
 | **Presigned URLs** | Generate secure URLs for direct browser uploads |
+| **Jurisdiction Support** | EU, FedRAMP, and default global endpoints |
+| **Named Clients** | Multi-account scenarios with `IR2ClientFactory` |
 | **Operation Metrics** | Track Class A/B operations, ingress, and egress bytes |
 | **Error Handling** | Rich exceptions with partial metrics for debugging |
 
@@ -194,6 +196,30 @@ catch (CloudflareR2ListException<S3Object> ex)
 | `s3:PutObject` | Upload objects |
 | `s3:DeleteObject` | Delete objects |
 | `s3:ListBucket` | List objects |
+
+## Jurisdictions
+
+R2 supports jurisdictional restrictions for data residency compliance. Use `IR2ClientFactory` to create clients for different jurisdictions:
+
+```csharp
+public class MultiRegionService(IR2ClientFactory factory)
+{
+    public async Task ReplicateToEuAsync(string bucket, string key, Stream data)
+    {
+        // Create a client for the EU jurisdiction
+        var euClient = factory.GetClient(R2Jurisdiction.EuropeanUnion);
+        await euClient.UploadAsync(bucket, key, data);
+    }
+}
+```
+
+| Jurisdiction | Endpoint |
+|--------------|----------|
+| `Default` | `https://{account_id}.r2.cloudflarestorage.com` |
+| `EuropeanUnion` | `https://{account_id}.eu.r2.cloudflarestorage.com` |
+| `FedRamp` | `https://{account_id}.fedramp.r2.cloudflarestorage.com` |
+
+See [R2 Object Storage](../r2-client.md#jurisdiction-support) for detailed jurisdiction documentation.
 
 ## Related
 

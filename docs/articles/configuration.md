@@ -50,11 +50,23 @@ The `R2Settings` class provides configuration for the S3-compatible R2 client:
 |----------|------|---------|-------------|
 | `AccessKeyId` | `string` | *Required* | R2 Access Key ID |
 | `SecretAccessKey` | `string` | *Required* | R2 Secret Access Key |
-| `EndpointUrl` | `string` | `https://{0}.r2.cloudflarestorage.com` | R2 endpoint URL template |
+| `Jurisdiction` | `R2Jurisdiction` | `Default` | Target jurisdiction (determines S3 endpoint) |
+| `EndpointUrl` | `string` | *Auto-computed* | R2 endpoint URL template (overrides `Jurisdiction` if set) |
 | `Region` | `string` | `auto` | AWS region (always "auto" for R2) |
 
 > [!NOTE]
 > The R2 client uses separate credentials from the REST API. You need to create R2 API tokens in the Cloudflare dashboard under R2 > Manage R2 API Tokens.
+
+### Jurisdiction to Endpoint Mapping
+
+| Jurisdiction | JSON Value | S3 Endpoint |
+|--------------|------------|-------------|
+| Default | `"default"` | `https://{account_id}.r2.cloudflarestorage.com` |
+| European Union | `"eu"` | `https://{account_id}.eu.r2.cloudflarestorage.com` |
+| FedRAMP | `"fedramp"` | `https://{account_id}.fedramp.r2.cloudflarestorage.com` |
+
+> [!TIP]
+> When `Jurisdiction` is set and `EndpointUrl` is not specified, the endpoint is automatically computed from the jurisdiction. If you explicitly set `EndpointUrl`, it takes precedence over `Jurisdiction`.
 
 ### R2 Configuration Example
 
@@ -65,12 +77,104 @@ The `R2Settings` class provides configuration for the S3-compatible R2 client:
   },
   "R2": {
     "AccessKeyId": "your-r2-access-key-id",
-    "SecretAccessKey": "your-r2-secret-access-key",
-    "EndpointUrl": "https://{0}.r2.cloudflarestorage.com",
-    "Region": "auto"
+    "SecretAccessKey": "your-r2-secret-access-key"
   }
 }
 ```
+
+### R2 with Jurisdiction
+
+```json
+{
+  "Cloudflare": {
+    "AccountId": "your-cloudflare-account-id"
+  },
+  "R2": {
+    "AccessKeyId": "your-r2-access-key-id",
+    "SecretAccessKey": "your-r2-secret-access-key",
+    "Jurisdiction": "eu"
+  }
+}
+```
+
+### Named R2 Clients (Multi-Account)
+
+For multi-account R2 scenarios, register named clients with separate configurations:
+
+**JSON Configuration:**
+
+```json
+{
+  "Cloudflare": {
+    "AccountId": "primary-account-id"
+  },
+  "Cloudflare:backup": {
+    "AccountId": "backup-account-id"
+  },
+  "R2": {
+    "AccessKeyId": "primary-r2-key",
+    "SecretAccessKey": "primary-r2-secret"
+  },
+  "R2:backup": {
+    "AccessKeyId": "backup-r2-key",
+    "SecretAccessKey": "backup-r2-secret",
+    "Jurisdiction": "eu"
+  }
+}
+```
+
+```csharp
+// Program.cs - Register named clients from configuration
+builder.Services.AddCloudflareR2Client(builder.Configuration);              // Default client
+builder.Services.AddCloudflareR2Client("backup", builder.Configuration);    // Named "backup" client
+```
+
+**Code-Based Configuration:**
+
+```csharp
+// Program.cs - Register with inline configuration
+builder.Services.AddCloudflareR2Client(options =>
+{
+    options.AccessKeyId = "primary-key";
+    options.SecretAccessKey = "primary-secret";
+});
+
+builder.Services.AddCloudflareR2Client("eu-storage", options =>
+{
+    options.AccessKeyId = "eu-key";
+    options.SecretAccessKey = "eu-secret";
+    options.Jurisdiction = R2Jurisdiction.EuropeanUnion;
+});
+```
+
+**Usage with IR2ClientFactory:**
+
+```csharp
+public class StorageService(IR2ClientFactory factory)
+{
+    public async Task ReplicateAsync(string bucket, string key, Stream data)
+    {
+        // Upload to primary account (default client)
+        var primaryClient = factory.GetClient(R2Jurisdiction.Default);
+        await primaryClient.UploadAsync(bucket, key, data);
+
+        // Upload to backup account (named client)
+        data.Position = 0;
+        var backupClient = factory.GetClient("backup");
+        await backupClient.UploadAsync("backup-bucket", key, data);
+    }
+
+    // Override jurisdiction for a named client
+    public async Task UploadToBackupEuAsync(string key, Stream data)
+    {
+        var client = factory.GetClient("backup", R2Jurisdiction.EuropeanUnion);
+        await client.UploadAsync("eu-bucket", key, data);
+    }
+}
+```
+
+> [!TIP]
+> The same R2 credentials work across all jurisdictions within an account—only the S3 endpoint differs. Use `factory.GetClient(name, jurisdiction)` to override the configured jurisdiction at runtime.
 
 ## Resilience Pipeline
 

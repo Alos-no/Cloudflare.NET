@@ -26,6 +26,75 @@ dotnet add package Cloudflare.NET.R2
 builder.Services.AddCloudflareR2Client(builder.Configuration);
 ```
 
+## Jurisdiction Support
+
+R2 supports jurisdictional restrictions that ensure data stays within specific geographic regions. The SDK provides full support for jurisdictions through configuration and the `IR2ClientFactory`.
+
+### Available Jurisdictions
+
+| Jurisdiction | Description | Endpoint |
+|--------------|-------------|----------|
+| `Default` | No restriction (global) | `https://{account_id}.r2.cloudflarestorage.com` |
+| `EuropeanUnion` | EU data residency | `https://{account_id}.eu.r2.cloudflarestorage.com` |
+| `FedRamp` | FedRAMP compliance | `https://{account_id}.fedramp.r2.cloudflarestorage.com` |
+
+### Configuration-Based Jurisdiction
+
+Set the jurisdiction in your configuration to use it as the default:
+
+```json
+{
+  "R2": {
+    "AccessKeyId": "...",
+    "SecretAccessKey": "...",
+    "Jurisdiction": "eu"
+  }
+}
+```
+
+### Runtime Jurisdiction with IR2ClientFactory
+
+Use `IR2ClientFactory` to create clients for different jurisdictions at runtime:
+
+```csharp
+public class MultiJurisdictionService(IR2ClientFactory factory)
+{
+    // Get client for specific jurisdiction using default credentials
+    public async Task UploadToEuAsync(string bucket, string key, Stream data)
+    {
+        var euClient = factory.GetClient(R2Jurisdiction.EuropeanUnion);
+        await euClient.UploadAsync(bucket, key, data);
+    }
+
+    // Get client for specific jurisdiction using named credentials
+    public async Task UploadToProdEuAsync(string bucket, string key, Stream data)
+    {
+        var client = factory.GetClient("production", R2Jurisdiction.EuropeanUnion);
+        await client.UploadAsync(bucket, key, data);
+    }
+}
+```
+
+> [!NOTE]
+> The same R2 credentials work across all jurisdictions within an account—only the S3 endpoint differs. Clients are cached by `(name, jurisdiction)` tuple and reused.
+
+### Named Clients
+
+For multi-account scenarios, register named R2 clients:
+
+```csharp
+// Registration
+services.AddCloudflareR2Client("production", config);
+services.AddCloudflareR2Client("staging", config);
+
+// Usage
+public class StorageService(IR2ClientFactory factory)
+{
+    public IR2Client Production => factory.GetClient("production");
+    public IR2Client Staging => factory.GetClient("staging");
+}
+```
+
 ## Basic Operations
 
 ### Upload Objects
