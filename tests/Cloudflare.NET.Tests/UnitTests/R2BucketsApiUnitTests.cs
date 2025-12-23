@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 /// <remarks>
 ///   This test class covers all R2 bucket operations including:
 ///   <list type="bullet">
-///     <item><description>Core bucket CRUD operations (Create, Get, List, Delete)</description></item>
+///     <item><description>Core bucket CRUD operations (Create, Get, List, Update, Delete)</description></item>
 ///     <item><description>CORS policy management</description></item>
 ///     <item><description>Lifecycle policy management</description></item>
 ///     <item><description>Custom domain management</description></item>
@@ -266,6 +266,56 @@ public class R2BucketsApiUnitTests
     capturedRequest!.RequestUri!.OriginalString.Should().Contain("my%20bucket%2Bspecial");
   }
 
+  /// <summary>Verifies that GetAsync with jurisdiction sends the cf-r2-jurisdiction header.</summary>
+  [Fact]
+  public async Task GetAsync_WithJurisdiction_SendsJurisdictionHeader()
+  {
+    // Arrange
+    var bucketName     = "eu-bucket";
+    var expectedResult = new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "weur", R2Jurisdiction.EuropeanUnion, "Standard");
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var result = await sut.GetAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Get);
+
+    // Verify jurisdiction header is sent
+    capturedRequest.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue(
+      "jurisdiction should be passed as 'cf-r2-jurisdiction' HTTP header for jurisdictional buckets");
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
+  }
+
+  /// <summary>Verifies that GetAsync without jurisdiction does NOT send the header.</summary>
+  [Fact]
+  public async Task GetAsync_WithoutJurisdiction_DoesNotSendHeader()
+  {
+    // Arrange
+    var bucketName      = "standard-bucket";
+    var expectedResult  = new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "wnam", null, "Standard");
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var result = await sut.GetAsync(bucketName);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+
+    // Verify jurisdiction header is NOT present
+    capturedRequest!.Headers.TryGetValues("cf-r2-jurisdiction", out _).Should().BeFalse(
+      "jurisdiction header should not be sent when jurisdiction is null");
+  }
+
   #endregion
 
 
@@ -289,9 +339,9 @@ public class R2BucketsApiUnitTests
     capturedRequest!.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets");
   }
 
-  /// <summary>Verifies that ListAsync constructs the correct URI with all filters applied.</summary>
+  /// <summary>Verifies that ListAsync constructs the correct URI with pagination filters.</summary>
   [Fact]
-  public async Task ListAsync_ShouldConstructCorrectRequestUri_WithAllFilters()
+  public async Task ListAsync_ShouldConstructCorrectRequestUri_WithPaginationFilters()
   {
     // Arrange
     var filters         = new ListR2BucketsFilters(50, "abc123def");
@@ -306,6 +356,182 @@ public class R2BucketsApiUnitTests
     // Assert
     capturedRequest.Should().NotBeNull();
     capturedRequest!.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets?per_page=50&cursor=abc123def");
+  }
+
+  /// <summary>Verifies that ListAsync includes the NameContains filter in the query string.</summary>
+  [Fact]
+  public async Task ListAsync_WithNameContainsFilter_ShouldConstructCorrectRequestUri()
+  {
+    // Arrange
+    var filters         = new ListR2BucketsFilters(NameContains: "backup");
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(filters);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets?name_contains=backup");
+  }
+
+  /// <summary>Verifies that ListAsync includes the Order filter in the query string.</summary>
+  [Fact]
+  public async Task ListAsync_WithOrderFilter_ShouldConstructCorrectRequestUri()
+  {
+    // Arrange
+    var filters         = new ListR2BucketsFilters(Order: "name");
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(filters);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets?order=name");
+  }
+
+  /// <summary>Verifies that ListAsync includes the Direction filter in the query string.</summary>
+  [Fact]
+  public async Task ListAsync_WithDirectionFilter_ShouldConstructCorrectRequestUri()
+  {
+    // Arrange
+    var filters         = new ListR2BucketsFilters(Direction: "desc");
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(filters);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets?direction=desc");
+  }
+
+  /// <summary>Verifies that ListAsync includes the StartAfter filter in the query string.</summary>
+  [Fact]
+  public async Task ListAsync_WithStartAfterFilter_ShouldConstructCorrectRequestUri()
+  {
+    // Arrange
+    var filters         = new ListR2BucketsFilters(StartAfter: "my-bucket");
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(filters);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets?start_after=my-bucket");
+  }
+
+  /// <summary>Verifies that ListAsync constructs the correct URI with all filter parameters.</summary>
+  [Fact]
+  public async Task ListAsync_WithAllFilters_ShouldConstructCorrectRequestUri()
+  {
+    // Arrange
+    var filters = new ListR2BucketsFilters(
+      PerPage: 50,
+      Cursor: "cursor123",
+      NameContains: "backup",
+      Order: "name",
+      Direction: "asc",
+      StartAfter: "archive"
+    );
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(filters);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    var uri = capturedRequest!.RequestUri!.ToString();
+    uri.Should().Contain("per_page=50");
+    uri.Should().Contain("cursor=cursor123");
+    uri.Should().Contain("name_contains=backup");
+    uri.Should().Contain("order=name");
+    uri.Should().Contain("direction=asc");
+    uri.Should().Contain("start_after=archive");
+  }
+
+  /// <summary>Verifies that ListAsync URL-encodes special characters in filter values.</summary>
+  [Fact]
+  public async Task ListAsync_WithSpecialCharactersInFilters_ShouldUrlEncodeValues()
+  {
+    // Arrange
+    var filters         = new ListR2BucketsFilters(NameContains: "backup+archive", StartAfter: "my bucket/test");
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(filters);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    var uri = capturedRequest!.RequestUri!.OriginalString;
+    uri.Should().Contain("name_contains=backup%2Barchive");
+    uri.Should().Contain("start_after=my%20bucket%2Ftest");
+  }
+
+  /// <summary>Verifies that ListAsync sends the jurisdiction header when specified.</summary>
+  [Fact]
+  public async Task ListAsync_WithJurisdiction_ShouldSendJurisdictionHeader()
+  {
+    // Arrange
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(jurisdiction: R2Jurisdiction.EuropeanUnion);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue(
+      "jurisdiction should be passed as 'cf-r2-jurisdiction' HTTP header");
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
+  }
+
+  /// <summary>Verifies that ListAsync sends both filters and jurisdiction correctly.</summary>
+  [Fact]
+  public async Task ListAsync_WithFiltersAndJurisdiction_ShouldSendBoth()
+  {
+    // Arrange
+    var filters         = new ListR2BucketsFilters(PerPage: 25, NameContains: "eu-data");
+    var successResponse = HttpFixtures.CreateSuccessResponse(new ListR2BucketsResponse(Array.Empty<R2Bucket>()));
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.ListAsync(filters, R2Jurisdiction.EuropeanUnion);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+
+    // Verify query parameters
+    var uri = capturedRequest!.RequestUri!.ToString();
+    uri.Should().Contain("per_page=25");
+    uri.Should().Contain("name_contains=eu-data");
+
+    // Verify jurisdiction header
+    capturedRequest.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue();
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
   }
 
   /// <summary>Verifies that ListAllAsync handles pagination correctly.</summary>
@@ -456,6 +682,245 @@ public class R2BucketsApiUnitTests
     allBuckets.Should().HaveCount(2);
   }
 
+  /// <summary>Verifies that ListAllAsync includes filter parameters in the base URL.</summary>
+  [Fact]
+  public async Task ListAllAsync_WithFilters_ShouldIncludeFiltersInBaseUrl()
+  {
+    // Arrange
+    var bucket1 = new R2Bucket("backup-bucket1", DateTime.UtcNow, "loc", null, "class");
+
+    var responsePage =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket1 } },
+          result_info = new { count = 1, per_page = 50, cursor = (string?)null, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(responsePage, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var allBuckets = new List<R2Bucket>();
+    await foreach (var bucket in sut.ListAllAsync(new ListR2BucketsFilters(
+      PerPage: 50,
+      NameContains: "backup",
+      Order: "name",
+      Direction: "desc"
+    )))
+      allBuckets.Add(bucket);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    var uri = capturedRequest!.RequestUri!.ToString();
+    uri.Should().Contain("name_contains=backup");
+    uri.Should().Contain("order=name");
+    uri.Should().Contain("direction=desc");
+    uri.Should().Contain("per_page=50");
+    allBuckets.Should().HaveCount(1);
+  }
+
+  /// <summary>Verifies that ListAllAsync preserves filters across pagination requests.</summary>
+  [Fact]
+  public async Task ListAllAsync_WithFilters_ShouldPreserveFiltersAcrossPagination()
+  {
+    // Arrange
+    var bucket1 = new R2Bucket("backup-1", DateTime.UtcNow, "loc", null, "class");
+    var bucket2 = new R2Bucket("backup-2", DateTime.UtcNow, "loc", null, "class");
+    var cursor  = "page2_cursor";
+
+    // First page response with a cursor
+    var responsePage1 =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket1 } },
+          result_info = new { count = 1, per_page = 1, cursor, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    // Second page response without a cursor (end of pagination)
+    var responsePage2 =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket2 } },
+          result_info = new { count = 1, per_page = 1, cursor = (string?)null, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    var capturedRequests = new List<HttpRequestMessage>();
+    var mockHandler      = new Mock<HttpMessageHandler>();
+    mockHandler.Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+               .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequests.Add(req))
+               .Returns((HttpRequestMessage req, CancellationToken _) =>
+               {
+                 if (req.RequestUri!.ToString().Contains(cursor))
+                   return Task.FromResult(
+                     new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage2) });
+
+                 return Task.FromResult(
+                   new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage1) });
+               });
+
+    var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
+    var options    = Options.Create(new CloudflareApiOptions { AccountId = TestAccountId });
+    var sut        = new R2BucketsApi(httpClient, options, _loggerFactory);
+
+    // Act
+    var allBuckets = new List<R2Bucket>();
+    await foreach (var bucket in sut.ListAllAsync(new ListR2BucketsFilters(
+      PerPage: 1,
+      NameContains: "backup",
+      Order: "name",
+      Direction: "asc"
+    )))
+      allBuckets.Add(bucket);
+
+    // Assert
+    capturedRequests.Should().HaveCount(2);
+
+    // First request should have all filters
+    var firstUri = capturedRequests[0].RequestUri!.ToString();
+    firstUri.Should().Contain("name_contains=backup");
+    firstUri.Should().Contain("order=name");
+    firstUri.Should().Contain("direction=asc");
+    firstUri.Should().NotContain("cursor");
+
+    // Second request should have cursor appended to the filtered URL
+    var secondUri = capturedRequests[1].RequestUri!.ToString();
+    secondUri.Should().Contain("name_contains=backup");
+    secondUri.Should().Contain("order=name");
+    secondUri.Should().Contain("direction=asc");
+    secondUri.Should().Contain($"cursor={cursor}");
+
+    allBuckets.Should().HaveCount(2);
+    allBuckets.Select(b => b.Name).Should().ContainInOrder("backup-1", "backup-2");
+  }
+
+  /// <summary>Verifies that ListAllAsync sends the jurisdiction header when specified.</summary>
+  [Fact]
+  public async Task ListAllAsync_WithJurisdiction_ShouldSendJurisdictionHeader()
+  {
+    // Arrange
+    var bucket = new R2Bucket("eu-bucket", DateTime.UtcNow, "weur", R2Jurisdiction.EuropeanUnion, "Standard");
+
+    var responsePage =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket } },
+          result_info = new { count = 1, per_page = 50, cursor = (string?)null, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(responsePage, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var allBuckets = new List<R2Bucket>();
+    await foreach (var b in sut.ListAllAsync(jurisdiction: R2Jurisdiction.EuropeanUnion))
+      allBuckets.Add(b);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue(
+      "jurisdiction should be passed as 'cf-r2-jurisdiction' HTTP header");
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
+  }
+
+  /// <summary>Verifies that ListAllAsync sends both filters and jurisdiction correctly.</summary>
+  [Fact]
+  public async Task ListAllAsync_WithFiltersAndJurisdiction_ShouldSendBoth()
+  {
+    // Arrange
+    var bucket = new R2Bucket("eu-backup", DateTime.UtcNow, "weur", R2Jurisdiction.EuropeanUnion, "Standard");
+
+    var responsePage =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket } },
+          result_info = new { count = 1, per_page = 25, cursor = (string?)null, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(responsePage, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var allBuckets = new List<R2Bucket>();
+    await foreach (var b in sut.ListAllAsync(
+      new ListR2BucketsFilters(PerPage: 25, NameContains: "backup"),
+      R2Jurisdiction.EuropeanUnion))
+      allBuckets.Add(b);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+
+    // Verify query parameters
+    var uri = capturedRequest!.RequestUri!.ToString();
+    uri.Should().Contain("name_contains=backup");
+
+    // Verify jurisdiction header
+    capturedRequest.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue();
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
+  }
+
+  /// <summary>Verifies that ListAllAsync URL-encodes special characters in filter values.</summary>
+  [Fact]
+  public async Task ListAllAsync_WithSpecialCharactersInFilters_ShouldUrlEncodeValues()
+  {
+    // Arrange
+    var bucket = new R2Bucket("test-bucket", DateTime.UtcNow, "loc", null, "class");
+
+    var responsePage =
+      JsonSerializer.Serialize(
+        new
+        {
+          success     = true,
+          errors      = Array.Empty<object>(),
+          messages    = Array.Empty<object>(),
+          result      = new { buckets = new[] { bucket } },
+          result_info = new { count = 1, per_page = 50, cursor = (string?)null, page = 0, total_count = 0, total_pages = 0 }
+        },
+        _serializerOptions);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(responsePage, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var allBuckets = new List<R2Bucket>();
+    await foreach (var b in sut.ListAllAsync(new ListR2BucketsFilters(
+      NameContains: "data+backup",
+      StartAfter: "bucket with spaces"
+    )))
+      allBuckets.Add(b);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    var uri = capturedRequest!.RequestUri!.OriginalString;
+    uri.Should().Contain("name_contains=data%2Bbackup");
+    uri.Should().Contain("start_after=bucket%20with%20spaces");
+  }
+
   #endregion
 
 
@@ -479,6 +944,183 @@ public class R2BucketsApiUnitTests
     capturedRequest.Should().NotBeNull();
     capturedRequest!.Method.Should().Be(HttpMethod.Delete);
     capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets/{bucketName}");
+  }
+
+  /// <summary>Verifies that DeleteAsync with jurisdiction sends the cf-r2-jurisdiction header.</summary>
+  [Fact]
+  public async Task DeleteAsync_WithJurisdiction_SendsJurisdictionHeader()
+  {
+    // Arrange
+    var bucketName      = "eu-bucket-to-delete";
+    var successResponse = HttpFixtures.CreateSuccessResponse<object?>(null);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    await sut.DeleteAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Delete);
+
+    // Verify jurisdiction header is sent
+    capturedRequest.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue(
+      "jurisdiction should be passed as 'cf-r2-jurisdiction' HTTP header for jurisdictional buckets");
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
+  }
+
+  #endregion
+
+
+  #region Core Bucket Operations - UpdateAsync
+
+  /// <summary>Verifies that UpdateAsync sends a correctly formatted PATCH request with cf-r2-storage-class header.</summary>
+  [Fact]
+  public async Task UpdateAsync_SendsCorrectRequest()
+  {
+    // Arrange
+    var bucketName     = "test-bucket";
+    var storageClass   = R2StorageClass.InfrequentAccess;
+    var expectedResult = new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "wnam", null, storageClass);
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var result = await sut.UpdateAsync(bucketName, storageClass);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Patch);
+    capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets/{bucketName}");
+
+    // Verify cf-r2-storage-class is passed as HTTP header (follows same pattern as cf-r2-jurisdiction)
+    capturedRequest.Headers.TryGetValues("cf-r2-storage-class", out var storageClassValues).Should().BeTrue(
+      "cf-r2-storage-class should be passed as HTTP header");
+    storageClassValues.Should().ContainSingle().Which.Should().Be("InfrequentAccess");
+  }
+
+  /// <summary>Verifies that UpdateAsync with jurisdiction sends both storage_class and jurisdiction headers.</summary>
+  [Fact]
+  public async Task UpdateAsync_WithJurisdiction_SendsBothHeaders()
+  {
+    // Arrange
+    var bucketName     = "eu-bucket";
+    var storageClass   = R2StorageClass.Standard;
+    var expectedResult = new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "weur", R2Jurisdiction.EuropeanUnion, storageClass);
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var result = await sut.UpdateAsync(bucketName, storageClass, R2Jurisdiction.EuropeanUnion);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Method.Should().Be(HttpMethod.Patch);
+
+    // Verify cf-r2-storage-class header
+    capturedRequest.Headers.TryGetValues("cf-r2-storage-class", out var storageClassValues).Should().BeTrue(
+      "cf-r2-storage-class should be passed as HTTP header");
+    storageClassValues.Should().ContainSingle().Which.Should().Be("Standard");
+
+    // Verify cf-r2-jurisdiction header
+    capturedRequest.Headers.TryGetValues("cf-r2-jurisdiction", out var jurisdictionValues).Should().BeTrue(
+      "jurisdiction should be passed as 'cf-r2-jurisdiction' HTTP header for jurisdictional buckets");
+    jurisdictionValues.Should().ContainSingle().Which.Should().Be("eu");
+  }
+
+  /// <summary>Verifies that UpdateAsync without jurisdiction does NOT send the jurisdiction header.</summary>
+  [Fact]
+  public async Task UpdateAsync_WithoutJurisdiction_DoesNotSendJurisdictionHeader()
+  {
+    // Arrange
+    var bucketName     = "standard-bucket";
+    var storageClass   = R2StorageClass.InfrequentAccess;
+    var expectedResult = new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "wnam", null, storageClass);
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var result = await sut.UpdateAsync(bucketName, storageClass);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+
+    // Verify cf-r2-storage-class header is present
+    capturedRequest!.Headers.TryGetValues("cf-r2-storage-class", out _).Should().BeTrue(
+      "cf-r2-storage-class should be passed as HTTP header");
+
+    // Verify jurisdiction header is NOT present
+    capturedRequest.Headers.TryGetValues("cf-r2-jurisdiction", out _).Should().BeFalse(
+      "jurisdiction header should not be sent when jurisdiction is null");
+  }
+
+  /// <summary>Verifies that UpdateAsync URL-encodes special characters in bucket names.</summary>
+  [Fact]
+  public async Task UpdateAsync_UrlEncodesBucketName()
+  {
+    // Arrange
+    var bucketName     = "my bucket+special";
+    var storageClass   = R2StorageClass.Standard;
+    var expectedResult = new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "wnam", null, storageClass);
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    HttpRequestMessage? capturedRequest = null;
+    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+
+    // Act
+    var result = await sut.UpdateAsync(bucketName, storageClass);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+    // Verify the bucket name is URL-encoded using OriginalString to avoid automatic decoding
+    capturedRequest!.RequestUri!.OriginalString.Should().Contain("my%20bucket%2Bspecial");
+  }
+
+  /// <summary>Verifies that UpdateAsync sends an empty body (storage_class is in header, not body).</summary>
+  [Fact]
+  public async Task UpdateAsync_SendsEmptyBody()
+  {
+    // Arrange
+    var bucketName     = "test-bucket";
+    var storageClass   = R2StorageClass.InfrequentAccess;
+    var expectedResult = new R2Bucket(bucketName, DateTime.Parse("2024-01-01T00:00:00Z").ToUniversalTime(), "wnam", null, storageClass);
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var sut = CreateSut(successResponse, callback: (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
+
+    // Act
+    var result = await sut.UpdateAsync(bucketName, storageClass);
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedRequest.Should().NotBeNull();
+
+    // Verify the body is empty (storage_class is passed via cf-r2-storage-class header)
+    capturedJsonBody.Should().NotBeNull();
+    using var doc = JsonDocument.Parse(capturedJsonBody!);
+    doc.RootElement.EnumerateObject().Should().BeEmpty(
+      "storage_class should be in HTTP header, not in request body");
+
+    // Verify the header is present
+    capturedRequest!.Headers.TryGetValues("cf-r2-storage-class", out var values).Should().BeTrue();
+    values.Should().ContainSingle().Which.Should().Be("InfrequentAccess");
   }
 
   #endregion
@@ -710,8 +1352,13 @@ public class R2BucketsApiUnitTests
     var expectedResult  = new CustomDomainResponse(hostname, null, "pending_validation");
     var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
 
-    HttpRequestMessage? capturedRequest = null;
-    var sut = CreateSut(successResponse, callback: (req, _) => capturedRequest = req);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+    var sut = CreateSut(successResponse, callback: (req, _) =>
+    {
+      capturedRequest  = req;
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
 
     // Act
     var result = await sut.AttachCustomDomainAsync(bucketName, hostname, zoneId);
@@ -721,7 +1368,8 @@ public class R2BucketsApiUnitTests
     capturedRequest.Should().NotBeNull();
     capturedRequest!.Method.Should().Be(HttpMethod.Post);
     capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets/{bucketName}/domains/custom");
-    var content = await capturedRequest.Content!.ReadFromJsonAsync<AttachCustomDomainRequest>();
+    capturedJsonBody.Should().NotBeNull();
+    var content = JsonSerializer.Deserialize<AttachCustomDomainRequest>(capturedJsonBody!, _serializerOptions);
     content.Should().BeEquivalentTo(new AttachCustomDomainRequest(hostname, true, zoneId));
   }
 

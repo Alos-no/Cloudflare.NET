@@ -876,6 +876,168 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
 
+  /// <summary>
+  ///   Verifies the full lifecycle of an EU jurisdiction bucket: create, get, and delete.
+  ///   This test validates that the cf-r2-jurisdiction header is correctly sent for all operations.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     EU jurisdiction buckets require the <c>cf-r2-jurisdiction: eu</c> header for all API operations.
+  ///     Without this header, the API returns 404 "bucket does not exist" even for valid bucket names.
+  ///   </para>
+  ///   <para>
+  ///     This test may be skipped if the Cloudflare account does not have EU jurisdiction enabled.
+  ///     Enable EU jurisdiction in the Cloudflare dashboard under R2 > Data Location settings.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest]
+  public async Task CanManageEuJurisdictionBucketLifecycle()
+  {
+    // Arrange
+    var bucketName = $"cfnet-eu-bucket-{Guid.NewGuid():N}";
+
+    try
+    {
+      // Act - Create bucket with EU jurisdiction
+      var createResult = await _sut.Buckets.CreateAsync(
+        bucketName,
+        locationHint: R2LocationHint.WestEurope,
+        jurisdiction: R2Jurisdiction.EuropeanUnion
+      );
+
+      // Assert - Creation should succeed
+      createResult.Should().NotBeNull();
+      createResult.Name.Should().Be(bucketName);
+      createResult.Jurisdiction.Should().NotBeNull("EU buckets should have jurisdiction set");
+      createResult.Jurisdiction!.Value.Should().Be(R2Jurisdiction.EuropeanUnion);
+
+      // Act - Get the bucket with jurisdiction header (THIS IS THE CRITICAL TEST)
+      // Without jurisdiction header, this would return 404
+      var getResult = await _sut.Buckets.GetAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+
+      // Assert - Get should succeed when jurisdiction is specified
+      getResult.Should().NotBeNull();
+      getResult.Name.Should().Be(bucketName);
+
+      // Act - Verify that getting WITHOUT jurisdiction fails with 404
+      // This confirms the jurisdiction header is actually required
+      var getWithoutJurisdiction = async () => await _sut.Buckets.GetAsync(bucketName);
+      var exception = await getWithoutJurisdiction.Should().ThrowAsync<HttpRequestException>(
+        "accessing EU jurisdiction bucket without jurisdiction header should fail");
+      exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound,
+        "EU buckets return 404 when accessed without cf-r2-jurisdiction header");
+    }
+    finally
+    {
+      // Cleanup - Delete with jurisdiction header
+      try
+      {
+        await _sut.Buckets.DeleteAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      }
+      catch (HttpRequestException)
+      {
+        // Ignore cleanup errors
+      }
+    }
+  }
+
+  /// <summary>
+  ///   Verifies that CORS operations work correctly on EU jurisdiction buckets.
+  /// </summary>
+  [IntegrationTest]
+  public async Task CanManageCorsOnEuJurisdictionBucket()
+  {
+    // Arrange
+    var bucketName = $"cfnet-eu-cors-{Guid.NewGuid():N}";
+    var corsPolicy = new BucketCorsPolicy([
+      new CorsRule(
+        new CorsAllowed(["GET"], ["*"]),
+        "EU CORS Test"
+      )
+    ]);
+
+    try
+    {
+      // Create EU jurisdiction bucket
+      await _sut.Buckets.CreateAsync(
+        bucketName,
+        locationHint: R2LocationHint.WestEurope,
+        jurisdiction: R2Jurisdiction.EuropeanUnion
+      );
+
+      // Act - Set CORS with jurisdiction
+      var setAction = async () => await _sut.Buckets.SetCorsAsync(bucketName, corsPolicy, R2Jurisdiction.EuropeanUnion);
+      await setAction.Should().NotThrowAsync("setting CORS on EU bucket with jurisdiction should succeed");
+
+      // Act - Get CORS with jurisdiction
+      var retrievedCors = await _sut.Buckets.GetCorsAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      retrievedCors.Should().NotBeNull();
+      retrievedCors.Rules.Should().HaveCount(1);
+      retrievedCors.Rules[0].Id.Should().Be("EU CORS Test");
+
+      // Act - Delete CORS with jurisdiction
+      var deleteAction = async () => await _sut.Buckets.DeleteCorsAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      await deleteAction.Should().NotThrowAsync("deleting CORS on EU bucket with jurisdiction should succeed");
+    }
+    finally
+    {
+      // Cleanup
+      try
+      {
+        await _sut.Buckets.DeleteAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      }
+      catch (HttpRequestException)
+      {
+        // Ignore cleanup errors
+      }
+    }
+  }
+
+  /// <summary>
+  ///   Verifies that managed domain operations work correctly on EU jurisdiction buckets.
+  /// </summary>
+  [IntegrationTest]
+  public async Task CanManageManagedDomainOnEuJurisdictionBucket()
+  {
+    // Arrange
+    var bucketName = $"cfnet-eu-domain-{Guid.NewGuid():N}";
+
+    try
+    {
+      // Create EU jurisdiction bucket
+      await _sut.Buckets.CreateAsync(
+        bucketName,
+        locationHint: R2LocationHint.WestEurope,
+        jurisdiction: R2Jurisdiction.EuropeanUnion
+      );
+
+      // Act - Get managed domain status with jurisdiction
+      var status = await _sut.Buckets.GetManagedDomainAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      status.Should().NotBeNull();
+
+      // Act - Enable managed domain with jurisdiction
+      var enableResult = await _sut.Buckets.EnableManagedDomainAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      enableResult.Should().NotBeNull();
+      enableResult.Enabled.Should().BeTrue();
+
+      // Act - Disable managed domain with jurisdiction
+      var disableAction = async () => await _sut.Buckets.DisableManagedDomainAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      await disableAction.Should().NotThrowAsync();
+    }
+    finally
+    {
+      // Cleanup
+      try
+      {
+        await _sut.Buckets.DeleteAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      }
+      catch (HttpRequestException)
+      {
+        // Ignore cleanup errors
+      }
+    }
+  }
+
   /// <summary>Verifies that ListCustomDomainsAsync returns the list of custom domains for a bucket.</summary>
   [IntegrationTest]
   public async Task ListCustomDomainsAsync_ReturnsCustomDomains()
@@ -1106,6 +1268,175 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     result.AccessKeyId.Should().NotBeNullOrEmpty();
     result.SecretAccessKey.Should().NotBeNullOrEmpty();
     result.SessionToken.Should().NotBeNullOrEmpty();
+  }
+
+  /// <summary>
+  ///   Verifies that UpdateAsync can change the default storage class of a bucket from Standard to InfrequentAccess.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     The storage_class is passed as an HTTP header (not in the request body) per the Cloudflare API spec.
+  ///     This test verifies the SDK correctly sends the header and parses the response.
+  ///   </para>
+  /// </remarks>
+  [IntegrationTest]
+  public async Task UpdateAsync_CanChangeStorageClassToInfrequentAccess()
+  {
+    // Arrange - Create a bucket with Standard storage class
+    var bucketName = $"cfnet-update-bucket-{Guid.NewGuid():N}";
+    await _sut.Buckets.CreateAsync(
+      bucketName,
+      locationHint: R2LocationHint.WestNorthAmerica,
+      storageClass: R2StorageClass.Standard
+    );
+
+    try
+    {
+      // Act - Update to InfrequentAccess
+      var result = await _sut.Buckets.UpdateAsync(bucketName, R2StorageClass.InfrequentAccess);
+
+      // Assert
+      result.Should().NotBeNull();
+      result.Name.Should().Be(bucketName);
+      result.StorageClass.Should().NotBeNull("the response should include the new storage class");
+      result.StorageClass!.Value.Should().Be(R2StorageClass.InfrequentAccess,
+        "the storage class should be updated to InfrequentAccess");
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.Buckets.DeleteAsync(bucketName);
+    }
+  }
+
+  /// <summary>
+  ///   Verifies that UpdateAsync can change the storage class back to Standard from InfrequentAccess.
+  /// </summary>
+  [IntegrationTest]
+  public async Task UpdateAsync_CanChangeStorageClassBackToStandard()
+  {
+    // Arrange - Create a bucket with InfrequentAccess storage class
+    var bucketName = $"cfnet-update-std-bucket-{Guid.NewGuid():N}";
+    await _sut.Buckets.CreateAsync(
+      bucketName,
+      locationHint: R2LocationHint.WestEurope,
+      storageClass: R2StorageClass.InfrequentAccess
+    );
+
+    try
+    {
+      // Verify initial storage class
+      var initial = await _sut.Buckets.GetAsync(bucketName);
+      initial.StorageClass!.Value.Should().Be(R2StorageClass.InfrequentAccess);
+
+      // Act - Update back to Standard
+      var result = await _sut.Buckets.UpdateAsync(bucketName, R2StorageClass.Standard);
+
+      // Assert
+      result.Should().NotBeNull();
+      result.Name.Should().Be(bucketName);
+      result.StorageClass.Should().NotBeNull();
+      result.StorageClass!.Value.Should().Be(R2StorageClass.Standard,
+        "the storage class should be updated back to Standard");
+
+      // Verify by getting the bucket again
+      var verify = await _sut.Buckets.GetAsync(bucketName);
+      verify.StorageClass!.Value.Should().Be(R2StorageClass.Standard);
+    }
+    finally
+    {
+      // Cleanup
+      await _sut.Buckets.DeleteAsync(bucketName);
+    }
+  }
+
+  /// <summary>
+  ///   Verifies that UpdateAsync works correctly on EU jurisdiction buckets.
+  /// </summary>
+  [IntegrationTest]
+  public async Task UpdateAsync_WorksOnEuJurisdictionBucket()
+  {
+    // Arrange
+    var bucketName = $"cfnet-update-eu-{Guid.NewGuid():N}";
+
+    try
+    {
+      // Create EU jurisdiction bucket with Standard storage class
+      await _sut.Buckets.CreateAsync(
+        bucketName,
+        locationHint: R2LocationHint.WestEurope,
+        jurisdiction: R2Jurisdiction.EuropeanUnion,
+        storageClass: R2StorageClass.Standard
+      );
+
+      // Act - Update to InfrequentAccess with jurisdiction header
+      var result = await _sut.Buckets.UpdateAsync(
+        bucketName,
+        R2StorageClass.InfrequentAccess,
+        R2Jurisdiction.EuropeanUnion
+      );
+
+      // Assert
+      result.Should().NotBeNull();
+      result.Name.Should().Be(bucketName);
+      result.StorageClass.Should().NotBeNull();
+      result.StorageClass!.Value.Should().Be(R2StorageClass.InfrequentAccess);
+      result.Jurisdiction.Should().NotBeNull();
+      result.Jurisdiction!.Value.Should().Be(R2Jurisdiction.EuropeanUnion);
+    }
+    finally
+    {
+      // Cleanup with jurisdiction
+      try
+      {
+        await _sut.Buckets.DeleteAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      }
+      catch (HttpRequestException)
+      {
+        // Ignore cleanup errors
+      }
+    }
+  }
+
+  /// <summary>
+  ///   Verifies that UpdateAsync without jurisdiction on an EU bucket returns 404.
+  /// </summary>
+  [IntegrationTest]
+  public async Task UpdateAsync_WithoutJurisdictionOnEuBucket_ThrowsNotFound()
+  {
+    // Arrange
+    var bucketName = $"cfnet-update-eu-nojuris-{Guid.NewGuid():N}";
+
+    try
+    {
+      // Create EU jurisdiction bucket
+      await _sut.Buckets.CreateAsync(
+        bucketName,
+        locationHint: R2LocationHint.WestEurope,
+        jurisdiction: R2Jurisdiction.EuropeanUnion
+      );
+
+      // Act - Try to update WITHOUT jurisdiction header
+      var action = async () => await _sut.Buckets.UpdateAsync(bucketName, R2StorageClass.InfrequentAccess);
+
+      // Assert - Should fail because jurisdiction is required for EU buckets
+      var exception = await action.Should().ThrowAsync<HttpRequestException>(
+        "updating EU bucket without jurisdiction header should fail");
+      exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound,
+        "EU buckets return 404 when accessed without cf-r2-jurisdiction header");
+    }
+    finally
+    {
+      // Cleanup with jurisdiction
+      try
+      {
+        await _sut.Buckets.DeleteAsync(bucketName, R2Jurisdiction.EuropeanUnion);
+      }
+      catch (HttpRequestException)
+      {
+        // Ignore cleanup errors
+      }
+    }
   }
 
   #endregion

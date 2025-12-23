@@ -21,6 +21,13 @@ public class CorsService(ICloudflareApiClient cf)
 }
 ```
 
+> [!NOTE]
+> **Jurisdictional Buckets:** If your bucket was created with a jurisdiction (e.g., `R2Jurisdiction.EuropeanUnion`), you must pass the jurisdiction parameter to all CORS operations. See [Working with Jurisdictional Buckets](buckets.md#working-with-jurisdictional-buckets).
+>
+> ```csharp
+> await cf.Accounts.Buckets.SetCorsAsync("my-eu-bucket", corsPolicy, R2Jurisdiction.EuropeanUnion);
+> ```
+
 ## Setting CORS Policy
 
 ### Basic CORS for Web Access

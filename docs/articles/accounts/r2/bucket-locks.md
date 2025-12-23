@@ -22,6 +22,13 @@ public class RetentionService(ICloudflareApiClient cf)
 }
 ```
 
+> [!NOTE]
+> **Jurisdictional Buckets:** If your bucket was created with a jurisdiction (e.g., `R2Jurisdiction.EuropeanUnion`), you must pass the jurisdiction parameter to all bucket lock operations. See [Working with Jurisdictional Buckets](buckets.md#working-with-jurisdictional-buckets).
+>
+> ```csharp
+> await cf.Accounts.Buckets.SetLockAsync("my-eu-bucket", policy, R2Jurisdiction.EuropeanUnion);
+> ```
+
 ## Getting Lock Policy
 
 Retrieve the current lock rules for a bucket:

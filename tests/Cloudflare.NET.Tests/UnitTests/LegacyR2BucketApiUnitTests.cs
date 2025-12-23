@@ -550,11 +550,18 @@ public class LegacyR2BucketApiUnitTests
     var zoneId     = "test-zone-id";
 
     // The initial POST response does not include an EdgeHostname. It is null.
-    var                 expectedResult  = new CustomDomainResponse(hostname, null, "pending_validation");
-    var                 successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
-    HttpRequestMessage? capturedRequest = null;
+    var                 expectedResult   = new CustomDomainResponse(hostname, null, "pending_validation");
+    var                 successResponse  = HttpFixtures.CreateSuccessResponse(expectedResult);
+    HttpRequestMessage? capturedRequest  = null;
+    string?             capturedJsonBody = null;
+
+    // Capture content in callback before request is disposed
     var mockHandler =
-      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) => capturedRequest = req);
+      HttpFixtures.GetMockHttpMessageHandler(successResponse, HttpStatusCode.OK, (req, _) =>
+      {
+        capturedRequest  = req;
+        capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+      });
 
     var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("https://api.cloudflare.com/client/v4/") };
     var options    = Options.Create(new CloudflareApiOptions { AccountId = accountId });
@@ -564,13 +571,13 @@ public class LegacyR2BucketApiUnitTests
     var result = await sut.AttachCustomDomainAsync(bucketName, hostname, zoneId);
 
     // Assert
-    // This will now pass as the expected EdgeHostname is correctly null.
     result.Should().BeEquivalentTo(expectedResult);
     capturedRequest.Should().NotBeNull();
     capturedRequest!.Method.Should().Be(HttpMethod.Post);
     capturedRequest.RequestUri!.ToString().Should()
                    .Be($"https://api.cloudflare.com/client/v4/accounts/{accountId}/r2/buckets/{bucketName}/domains/custom");
-    var content = await capturedRequest.Content!.ReadFromJsonAsync<AttachCustomDomainRequest>();
+    capturedJsonBody.Should().NotBeNull();
+    var content = System.Text.Json.JsonSerializer.Deserialize<AttachCustomDomainRequest>(capturedJsonBody!, _serializerOptions);
     content.Should().BeEquivalentTo(new AttachCustomDomainRequest(hostname, true, zoneId));
   }
 

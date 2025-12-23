@@ -64,19 +64,19 @@ public class AccountsApi : ApiResource, IAccountsApi
   public Task<CursorPaginatedResult<R2Bucket>> ListR2BucketsAsync(
     ListR2BucketsFilters? filters           = null,
     CancellationToken     cancellationToken = default) =>
-    Buckets.ListAsync(filters, cancellationToken);
+    Buckets.ListAsync(filters, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.ListAllAsync instead. This method will be removed in a future version.")]
   public IAsyncEnumerable<R2Bucket> ListAllR2BucketsAsync(
     ListR2BucketsFilters? filters           = null,
     CancellationToken     cancellationToken = default) =>
-    Buckets.ListAllAsync(filters, cancellationToken);
+    Buckets.ListAllAsync(filters, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.DisableManagedDomainAsync instead. This method will be removed in a future version.")]
   public Task DisableDevUrlAsync(string bucketName, CancellationToken cancellationToken = default) =>
-    Buckets.DisableManagedDomainAsync(bucketName, cancellationToken);
+    Buckets.DisableManagedDomainAsync(bucketName, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.AttachCustomDomainAsync instead. This method will be removed in a future version.")]
@@ -85,7 +85,7 @@ public class AccountsApi : ApiResource, IAccountsApi
     string            hostname,
     string            zoneId,
     CancellationToken cancellationToken = default) =>
-    Buckets.AttachCustomDomainAsync(bucketName, hostname, zoneId, cancellationToken);
+    Buckets.AttachCustomDomainAsync(bucketName, hostname, zoneId, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.GetCustomDomainStatusAsync instead. This method will be removed in a future version.")]
@@ -93,7 +93,7 @@ public class AccountsApi : ApiResource, IAccountsApi
     string            bucketName,
     string            hostname,
     CancellationToken cancellationToken = default) =>
-    Buckets.GetCustomDomainStatusAsync(bucketName, hostname, cancellationToken);
+    Buckets.GetCustomDomainStatusAsync(bucketName, hostname, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.DetachCustomDomainAsync instead. This method will be removed in a future version.")]
@@ -101,12 +101,12 @@ public class AccountsApi : ApiResource, IAccountsApi
     string            bucketName,
     string            hostname,
     CancellationToken cancellationToken = default) =>
-    Buckets.DetachCustomDomainAsync(bucketName, hostname, cancellationToken);
+    Buckets.DetachCustomDomainAsync(bucketName, hostname, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.DeleteAsync instead. This method will be removed in a future version.")]
   public Task DeleteR2BucketAsync(string bucketName, CancellationToken cancellationToken = default) =>
-    Buckets.DeleteAsync(bucketName, cancellationToken);
+    Buckets.DeleteAsync(bucketName, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.CreateAsync instead. This method will be removed in a future version.")]
@@ -123,7 +123,7 @@ public class AccountsApi : ApiResource, IAccountsApi
   public Task<BucketCorsPolicy> GetBucketCorsAsync(
     string            bucketName,
     CancellationToken cancellationToken = default) =>
-    Buckets.GetCorsAsync(bucketName, cancellationToken);
+    Buckets.GetCorsAsync(bucketName, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.SetCorsAsync instead. This method will be removed in a future version.")]
@@ -131,19 +131,19 @@ public class AccountsApi : ApiResource, IAccountsApi
     string            bucketName,
     BucketCorsPolicy  corsPolicy,
     CancellationToken cancellationToken = default) =>
-    Buckets.SetCorsAsync(bucketName, corsPolicy, cancellationToken);
+    Buckets.SetCorsAsync(bucketName, corsPolicy, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.DeleteCorsAsync instead. This method will be removed in a future version.")]
   public Task DeleteBucketCorsAsync(string bucketName, CancellationToken cancellationToken = default) =>
-    Buckets.DeleteCorsAsync(bucketName, cancellationToken);
+    Buckets.DeleteCorsAsync(bucketName, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.GetLifecycleAsync instead. This method will be removed in a future version.")]
   public Task<BucketLifecyclePolicy> GetBucketLifecycleAsync(
     string            bucketName,
     CancellationToken cancellationToken = default) =>
-    Buckets.GetLifecycleAsync(bucketName, cancellationToken);
+    Buckets.GetLifecycleAsync(bucketName, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.SetLifecycleAsync instead. This method will be removed in a future version.")]
@@ -151,12 +151,12 @@ public class AccountsApi : ApiResource, IAccountsApi
     string                bucketName,
     BucketLifecyclePolicy lifecyclePolicy,
     CancellationToken     cancellationToken = default) =>
-    Buckets.SetLifecycleAsync(bucketName, lifecyclePolicy, cancellationToken);
+    Buckets.SetLifecycleAsync(bucketName, lifecyclePolicy, null, cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.DeleteLifecycleAsync instead. This method will be removed in a future version.")]
   public Task DeleteBucketLifecycleAsync(string bucketName, CancellationToken cancellationToken = default) =>
-    Buckets.DeleteLifecycleAsync(bucketName, cancellationToken);
+    Buckets.DeleteLifecycleAsync(bucketName, null, cancellationToken);
 
   #endregion
 

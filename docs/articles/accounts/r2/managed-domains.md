@@ -15,6 +15,13 @@ public class ManagedDomainService(ICloudflareApiClient cf)
 }
 ```
 
+> [!NOTE]
+> **Jurisdictional Buckets:** If your bucket was created with a jurisdiction (e.g., `R2Jurisdiction.EuropeanUnion`), you must pass the jurisdiction parameter to all managed domain operations. See [Working with Jurisdictional Buckets](buckets.md#working-with-jurisdictional-buckets).
+>
+> ```csharp
+> await cf.Accounts.Buckets.EnableManagedDomainAsync("my-eu-bucket", R2Jurisdiction.EuropeanUnion);
+> ```
+
 ## Getting Managed Domain Status
 
 Check if the r2.dev public URL is enabled for a bucket:

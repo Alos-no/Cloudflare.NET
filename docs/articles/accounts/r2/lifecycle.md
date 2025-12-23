@@ -21,6 +21,13 @@ public class LifecycleService(ICloudflareApiClient cf)
 }
 ```
 
+> [!NOTE]
+> **Jurisdictional Buckets:** If your bucket was created with a jurisdiction (e.g., `R2Jurisdiction.EuropeanUnion`), you must pass the jurisdiction parameter to all lifecycle operations. See [Working with Jurisdictional Buckets](buckets.md#working-with-jurisdictional-buckets).
+>
+> ```csharp
+> await cf.Accounts.Buckets.SetLifecycleAsync("my-eu-bucket", lifecyclePolicy, R2Jurisdiction.EuropeanUnion);
+> ```
+
 ## Setting Lifecycle Policy
 
 ### Auto-Delete After Age

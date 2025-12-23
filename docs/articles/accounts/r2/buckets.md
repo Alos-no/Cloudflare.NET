@@ -55,6 +55,9 @@ var bucket = await cf.Accounts.Buckets.CreateAsync(
 // https://{account_id}.eu.r2.cloudflarestorage.com
 ```
 
+> [!IMPORTANT]
+> **If you create a bucket with a jurisdiction, you must pass the same jurisdiction value to ALL subsequent API operations on that bucket.** Without it, the API returns error 10006 "The specified bucket does not exist" even though the bucket exists. See [Working with Jurisdictional Buckets](#working-with-jurisdictional-buckets) for details.
+
 ### With Storage Class
 
 Set the default storage class for new objects:
@@ -133,6 +136,44 @@ if (page.CursorInfo.Cursor is not null)
 }
 ```
 
+### Filter by Jurisdiction
+
+List only buckets in a specific jurisdiction:
+
+```csharp
+// List only EU jurisdiction buckets
+await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync(
+    jurisdiction: R2Jurisdiction.EuropeanUnion))
+{
+    Console.WriteLine($"EU Bucket: {bucket.Name}");
+}
+```
+
+### Filtering and Sorting
+
+Use `ListR2BucketsFilters` to filter by name and control sort order:
+
+```csharp
+// Find buckets containing "backup" in their name, sorted descending
+await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync(
+    new ListR2BucketsFilters
+    {
+        NameContains = "backup",
+        Order = "name",
+        Direction = "desc"
+    }))
+{
+    Console.WriteLine(bucket.Name);
+}
+
+// Paginate starting after a specific bucket (lexicographic order)
+var page = await cf.Accounts.Buckets.ListAsync(new ListR2BucketsFilters
+{
+    PerPage = 100,
+    StartAfter = "my-bucket"
+});
+```
+
 ## Deleting Buckets
 
 ```csharp
@@ -145,6 +186,60 @@ await cf.Accounts.Buckets.DeleteAsync("my-bucket");
 > await r2.ClearBucketAsync("my-bucket");
 > await cf.Accounts.Buckets.DeleteAsync("my-bucket");
 > ```
+
+## Updating Buckets
+
+Update the default storage class for new objects uploaded to a bucket:
+
+```csharp
+// Change storage class to Infrequent Access
+var updated = await cf.Accounts.Buckets.UpdateAsync(
+    "my-bucket",
+    R2StorageClass.InfrequentAccess
+);
+
+Console.WriteLine($"Storage Class: {updated.StorageClass}");
+```
+
+### With Jurisdiction
+
+For buckets created with jurisdictional restrictions, specify the jurisdiction:
+
+```csharp
+var updated = await cf.Accounts.Buckets.UpdateAsync(
+    "gdpr-compliant-bucket",
+    R2StorageClass.InfrequentAccess,
+    R2Jurisdiction.EuropeanUnion
+);
+```
+
+> [!NOTE]
+> - Only the default storage class can be updated after bucket creation
+> - Changing the storage class only affects **new** objects uploaded after the update
+> - Existing objects retain their original storage class; use [lifecycle rules](lifecycle.md) to transition them
+> - The bucket's location hint and jurisdiction cannot be changed after creation
+
+### Common Use Cases
+
+**Migrate to cost-optimized storage:**
+
+```csharp
+// Transition archive buckets to Infrequent Access for lower storage costs
+var archiveBuckets = new[] { "logs-2023", "backups-old", "cold-storage" };
+
+foreach (var bucketName in archiveBuckets)
+{
+    await cf.Accounts.Buckets.UpdateAsync(bucketName, R2StorageClass.InfrequentAccess);
+    Console.WriteLine($"Updated {bucketName} to Infrequent Access");
+}
+```
+
+**Restore active bucket to Standard storage:**
+
+```csharp
+// When data needs frequent access again
+await cf.Accounts.Buckets.UpdateAsync("reactivated-bucket", R2StorageClass.Standard);
+```
 
 ## Models Reference
 
@@ -221,8 +316,126 @@ new StorageClassTransition(
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `PerPage` | `int?` | Number of buckets per page |
+| `PerPage` | `int?` | Number of buckets per page (1-1000) |
 | `Cursor` | `string?` | Cursor for next page |
+| `NameContains` | `string?` | Filter to buckets containing this phrase |
+| `Order` | `string?` | Field to order by (currently only `"name"`) |
+| `Direction` | `string?` | Sort direction: `"asc"` or `"desc"` |
+| `StartAfter` | `string?` | Start listing after this bucket name (lexicographic) |
+
+## Working with Jurisdictional Buckets
+
+Buckets created with a jurisdiction restriction (e.g., `R2Jurisdiction.EuropeanUnion` or `R2Jurisdiction.FedRamp`) have special requirements for API access.
+
+### When Jurisdiction is Required
+
+| Operation | Jurisdiction Required? |
+|-----------|----------------------|
+| `CreateAsync` | Pass jurisdiction to create a jurisdictional bucket |
+| `GetAsync` | **Yes** - Required for jurisdictional buckets |
+| `UpdateAsync` | **Yes** - Required for jurisdictional buckets |
+| `DeleteAsync` | **Yes** - Required for jurisdictional buckets |
+| `ListAsync` / `ListAllAsync` | Optional filter - pass to list only buckets in that jurisdiction |
+| All CORS operations | **Yes** - Required for jurisdictional buckets |
+| All Lifecycle operations | **Yes** - Required for jurisdictional buckets |
+| All Custom Domain operations | **Yes** - Required for jurisdictional buckets |
+| All Managed Domain operations | **Yes** - Required for jurisdictional buckets |
+| All Lock operations | **Yes** - Required for jurisdictional buckets |
+| All Sippy operations | **Yes** - Required for jurisdictional buckets |
+| `CreateTempCredentialsAsync` | No - Bucket is specified in request body |
+
+### Best Practice: Store and Reuse Jurisdiction
+
+```csharp
+public class JurisdictionalBucketService(ICloudflareApiClient cf)
+{
+    // Store the jurisdiction when creating the bucket
+    public async Task<(R2Bucket Bucket, R2Jurisdiction? Jurisdiction)> CreateBucketAsync(
+        string name,
+        R2Jurisdiction? jurisdiction = null)
+    {
+        var bucket = await cf.Accounts.Buckets.CreateAsync(
+            name,
+            jurisdiction: jurisdiction
+        );
+
+        // Return both the bucket and the jurisdiction for later use
+        return (bucket, jurisdiction);
+    }
+
+    // Always pass jurisdiction for subsequent operations
+    public async Task ConfigureBucketAsync(
+        string bucketName,
+        R2Jurisdiction? jurisdiction,
+        BucketCorsPolicy corsPolicy)
+    {
+        // All these operations need the jurisdiction parameter
+        await cf.Accounts.Buckets.SetCorsAsync(bucketName, corsPolicy, jurisdiction);
+        await cf.Accounts.Buckets.EnableManagedDomainAsync(bucketName, jurisdiction);
+    }
+
+    public async Task DeleteBucketAsync(string bucketName, R2Jurisdiction? jurisdiction)
+    {
+        await cf.Accounts.Buckets.DeleteAsync(bucketName, jurisdiction);
+    }
+}
+```
+
+### Discovering Jurisdiction from Existing Buckets
+
+If you don't know a bucket's jurisdiction, retrieve it from the `ListAsync` response:
+
+```csharp
+// ListAsync returns all buckets with their jurisdiction
+await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync())
+{
+    Console.WriteLine($"{bucket.Name}: {bucket.Jurisdiction?.Value ?? "default"}");
+
+    // Now you can use the jurisdiction for subsequent operations
+    if (bucket.Jurisdiction is not null)
+    {
+        var details = await cf.Accounts.Buckets.GetAsync(
+            bucket.Name,
+            bucket.Jurisdiction
+        );
+    }
+}
+```
+
+### Filtering Buckets by Jurisdiction
+
+To list only buckets in a specific jurisdiction, pass the optional `jurisdiction` parameter:
+
+```csharp
+// List only EU jurisdiction buckets
+await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync(
+    jurisdiction: R2Jurisdiction.EuropeanUnion))
+{
+    Console.WriteLine($"EU Bucket: {bucket.Name}");
+}
+
+// List only FedRAMP jurisdiction buckets
+var fedRampBuckets = await cf.Accounts.Buckets.ListAsync(
+    jurisdiction: R2Jurisdiction.FedRamp);
+```
+
+### Common Error: Missing Jurisdiction
+
+If you forget to pass jurisdiction for a jurisdictional bucket, you'll receive:
+
+```
+Error 10006: The specified bucket does not exist
+```
+
+This error is misleading - the bucket exists, but the API can't find it without the jurisdiction header. Solution: pass the jurisdiction parameter:
+
+```csharp
+// This fails for EU jurisdiction buckets:
+var bucket = await cf.Accounts.Buckets.GetAsync("my-eu-bucket");  // Error 10006!
+
+// This works:
+var bucket = await cf.Accounts.Buckets.GetAsync("my-eu-bucket", R2Jurisdiction.EuropeanUnion);
+```
 
 ## Common Patterns
 
