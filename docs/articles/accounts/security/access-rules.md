@@ -103,7 +103,7 @@ var page = await cf.Accounts.AccessRules.ListAsync(
         PerPage = 50
     });
 
-Console.WriteLine($"Total rules: {page.ResultInfo.TotalCount}");
+Console.WriteLine($"Total rules: {page.PageInfo.TotalCount}");
 
 foreach (var rule in page.Items)
 {

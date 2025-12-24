@@ -17,6 +17,7 @@ Page-based pagination uses `page` and `per_page` parameters. This pattern is use
 - Access Rules (Zone and Account)
 - Zone Lockdown Rules
 - User-Agent Rules
+- Workers KV Namespaces
 
 #### Automatic Pagination
 
@@ -46,11 +47,11 @@ var page = await cf.Zones.ListDnsRecordsAsync(zoneId, new ListDnsRecordsFilters
 });
 
 // Access pagination info
-Console.WriteLine($"Page {page.ResultInfo.Page} of {page.ResultInfo.TotalPages}");
-Console.WriteLine($"Total records: {page.ResultInfo.TotalCount}");
+Console.WriteLine($"Page {page.PageInfo.Page} of {page.PageInfo.TotalPages}");
+Console.WriteLine($"Total records: {page.PageInfo.TotalCount}");
 
 // Iterate manually
-while (page.ResultInfo.Page < page.ResultInfo.TotalPages)
+while (page.PageInfo.Page < page.PageInfo.TotalPages)
 {
     foreach (var record in page.Items)
     {
@@ -60,7 +61,7 @@ while (page.ResultInfo.Page < page.ResultInfo.TotalPages)
     // Get next page
     page = await cf.Zones.ListDnsRecordsAsync(zoneId, new ListDnsRecordsFilters
     {
-        Page = page.ResultInfo.Page + 1,
+        Page = page.PageInfo.Page + 1,
         PerPage = 50
     });
 }
@@ -72,6 +73,7 @@ Cursor-based pagination uses an opaque cursor string for continuation. This patt
 
 - R2 Buckets
 - Rulesets (Zone and Account)
+- Workers KV Keys
 
 #### Automatic Pagination
 

@@ -81,7 +81,7 @@ var page = await cf.Zones.ListZonesAsync(new ListZonesFilters
     PerPage = 50
 });
 
-Console.WriteLine($"Found {page.ResultInfo.TotalCount} zones");
+Console.WriteLine($"Found {page.PageInfo.TotalCount} zones");
 
 foreach (var zone in page.Items)
 {

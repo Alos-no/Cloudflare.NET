@@ -28,6 +28,7 @@ public class AccountService(ICloudflareApiClient cf)
 | [Audit Logs](audit-logs.md) | `cf.AuditLogs` | View account activity logs |
 | [Turnstile](turnstile.md) | `cf.Turnstile` | Manage Turnstile widgets |
 | [R2 Buckets](r2/buckets.md) | `cf.Accounts` | Create and manage R2 buckets |
+| [Workers KV](workers/kv.md) | `cf.Accounts.Kv` | Global key-value storage |
 | [Access Rules](security/access-rules.md) | `cf.Accounts.AccessRules` | Account-level IP access control |
 | [Rulesets](security/rulesets.md) | `cf.Accounts.Rulesets` | Account-level WAF rules |
 
@@ -68,6 +69,9 @@ Console.WriteLine($"2FA Required: {account.Settings?.EnforceTwofactor}");
 - [CORS Configuration](r2/cors.md) - Configure cross-origin access
 - [Lifecycle Policies](r2/lifecycle.md) - Automatic object expiration
 
+### Workers
+- [Workers KV](workers/kv.md) - Global low-latency key-value storage
+
 ### Security
 - [Access Rules](security/access-rules.md) - Account-level IP firewall rules
 - [WAF Rulesets](security/rulesets.md) - Account-level WAF custom rules
@@ -83,6 +87,7 @@ Console.WriteLine($"2FA Required: {account.Settings?.EnforceTwofactor}");
 | Audit Logs | Audit Logs | Read |
 | Turnstile | Turnstile | Read/Write |
 | R2 Buckets | Workers R2 Storage | Read/Write |
+| Workers KV | Workers KV Storage | Read/Write |
 | Access Rules | Account Firewall Access Rules | Read/Write |
 | Rulesets | Account Rulesets | Read/Write |
 

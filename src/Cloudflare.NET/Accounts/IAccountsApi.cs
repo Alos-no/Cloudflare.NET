@@ -3,6 +3,7 @@
 using AccessRules;
 using Buckets;
 using Core.Models;
+using Kv;
 using Models;
 using Rulesets;
 
@@ -29,6 +30,11 @@ public interface IAccountsApi
   /// <summary>Gets the API for managing account-level Rulesets (e.g., WAF Custom Rules).</summary>
   /// <remarks>Corresponds to the `/accounts/{account_id}/rulesets` endpoint family.</remarks>
   IAccountRulesetsApi Rulesets { get; }
+
+  /// <summary>Gets the API for managing Workers KV namespaces and key-value pairs.</summary>
+  /// <remarks>Corresponds to the `/accounts/{account_id}/storage/kv/namespaces` endpoint family.</remarks>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/kv/" />
+  IKvApi Kv { get; }
 
   /// <summary>Creates a new R2 bucket within the configured account with optional location and storage settings.</summary>
   /// <param name="bucketName">The desired name for the new bucket. Must be unique.</param>
