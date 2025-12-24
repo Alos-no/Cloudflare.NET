@@ -5,6 +5,7 @@ using Buckets;
 using Core;
 using Core.Internal;
 using Core.Models;
+using Kv;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models;
@@ -24,6 +25,9 @@ public class AccountsApi : ApiResource, IAccountsApi
   /// <summary>The lazy-initialized Account Rulesets API resource.</summary>
   private readonly Lazy<IAccountRulesetsApi> _rulesets;
 
+  /// <summary>The lazy-initialized Workers KV API resource.</summary>
+  private readonly Lazy<IKvApi> _kv;
+
   #endregion
 
 
@@ -39,6 +43,7 @@ public class AccountsApi : ApiResource, IAccountsApi
     _buckets     = new Lazy<IR2BucketsApi>(() => new R2BucketsApi(httpClient, options, loggerFactory));
     _accessRules = new Lazy<IAccountAccessRulesApi>(() => new AccountAccessRulesApi(httpClient, options, loggerFactory));
     _rulesets    = new Lazy<IAccountRulesetsApi>(() => new AccountRulesetsApi(httpClient, options, loggerFactory));
+    _kv          = new Lazy<IKvApi>(() => new KvApi(httpClient, options, loggerFactory));
   }
 
   #endregion
@@ -54,6 +59,9 @@ public class AccountsApi : ApiResource, IAccountsApi
 
   /// <inheritdoc />
   public IAccountRulesetsApi Rulesets => _rulesets.Value;
+
+  /// <inheritdoc />
+  public IKvApi Kv => _kv.Value;
 
   #endregion
 

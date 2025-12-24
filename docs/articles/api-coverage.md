@@ -53,6 +53,7 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 <tr><td>API Tokens</td><td>8</td><td>Create, verify, and manage API tokens</td></tr>
 <tr><td>DNS Records</td><td>12</td><td>Full DNS lifecycle including batch and BIND import/export</td></tr>
 <tr><td>R2 Buckets</td><td>22</td><td>Bucket management, CORS, lifecycle, domains, and Sippy</td></tr>
+<tr><td>Workers KV</td><td>19</td><td>Namespace and key-value CRUD, metadata, bulk operations</td></tr>
 <tr><td>Subscriptions</td><td>6</td><td>Account, zone, and user subscription details</td></tr>
 <tr><td>Turnstile</td><td>5</td><td>CAPTCHA widget configuration and secret rotation</td></tr>
 <tr><td>User</td><td>11</td><td>Profile, invitations, and membership management</td></tr>
@@ -457,7 +458,86 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 
 ---
 
-## Workers
+## Workers KV
+
+### Namespace Operations
+
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Namespaces</td><td><code>Kv.ListAsync</code></td><td><code>GET /accounts/{id}/storage/kv/namespaces</code></td><td>✅</td></tr>
+<tr><td>List All Namespaces</td><td><code>Kv.ListAllAsync</code></td><td><code>GET /accounts/{id}/storage/kv/namespaces</code> (auto)</td><td>✅</td></tr>
+<tr><td>Create Namespace</td><td><code>Kv.CreateAsync</code></td><td><code>POST /accounts/{id}/storage/kv/namespaces</code></td><td>✅</td></tr>
+<tr><td>Get Namespace</td><td><code>Kv.GetAsync</code></td><td><code>GET /accounts/{id}/storage/kv/namespaces/{ns_id}</code></td><td>✅</td></tr>
+<tr><td>Rename Namespace</td><td><code>Kv.RenameAsync</code></td><td><code>PUT /accounts/{id}/storage/kv/namespaces/{ns_id}</code></td><td>✅</td></tr>
+<tr><td>Delete Namespace</td><td><code>Kv.DeleteAsync</code></td><td><code>DELETE /accounts/{id}/storage/kv/namespaces/{ns_id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+
+### Key Operations
+
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Keys</td><td><code>Kv.ListKeysAsync</code></td><td><code>GET .../namespaces/{ns_id}/keys</code></td><td>✅</td></tr>
+<tr><td>List All Keys</td><td><code>Kv.ListAllKeysAsync</code></td><td><code>GET .../namespaces/{ns_id}/keys</code> (auto)</td><td>✅</td></tr>
+</tbody>
+</table>
+
+### Value Operations
+
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Value</td><td><code>Kv.GetValueAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Value (with exp)</td><td><code>Kv.GetValueWithExpirationAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Value (bytes)</td><td><code>Kv.GetValueBytesAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Value (bytes+exp)</td><td><code>Kv.GetValueBytesWithExpirationAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Metadata</td><td><code>Kv.GetMetadataAsync</code></td><td><code>GET .../namespaces/{ns_id}/metadata/{key}</code></td><td>✅</td></tr>
+<tr><td>Write Value</td><td><code>Kv.WriteValueAsync</code></td><td><code>PUT .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Delete Value</td><td><code>Kv.DeleteValueAsync</code></td><td><code>DELETE .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+
+### Bulk Operations
+
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Bulk Write</td><td><code>Kv.BulkWriteAsync</code></td><td><code>PUT .../namespaces/{ns_id}/bulk</code></td><td>✅</td></tr>
+<tr><td>Bulk Delete</td><td><code>Kv.BulkDeleteAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/delete</code></td><td>✅</td></tr>
+<tr><td>Bulk Get</td><td><code>Kv.BulkGetAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/get</code></td><td>✅</td></tr>
+<tr><td>Bulk Get (metadata)</td><td><code>Kv.BulkGetWithMetadataAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/get</code></td><td>✅</td></tr>
+</tbody>
+</table>
+
+---
+
+## Workers Route
 
 <table class="api-table">
 <colgroup>

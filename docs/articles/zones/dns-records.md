@@ -92,7 +92,7 @@ var page = await cf.Dns.ListDnsRecordsAsync(zoneId, new ListDnsRecordsFilters
     PerPage = 100
 });
 
-Console.WriteLine($"Total records: {page.ResultInfo.TotalCount}");
+Console.WriteLine($"Total records: {page.PageInfo.TotalCount}");
 
 foreach (var record in page.Items)
 {

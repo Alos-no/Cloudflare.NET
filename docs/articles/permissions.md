@@ -80,6 +80,19 @@ Cloudflare uses a permission-based system for API tokens. To adhere to the princ
 </tbody>
 </table>
 
+### Workers KV
+
+<table class="permissions-table">
+<thead><tr><th>Feature</th><th>Permission</th><th>Level</th></tr></thead>
+<tbody>
+<tr><td>KV Namespaces (read)</td><td>Workers KV Storage</td><td>Account: Read</td></tr>
+<tr><td>KV Namespaces (write)</td><td>Workers KV Storage</td><td>Account: Write</td></tr>
+<tr><td>KV Keys (read)</td><td>Workers KV Storage</td><td>Account: Read</td></tr>
+<tr><td>KV Values (read/write)</td><td>Workers KV Storage</td><td>Account: Write</td></tr>
+<tr><td>KV Bulk Operations</td><td>Workers KV Storage</td><td>Account: Write</td></tr>
+</tbody>
+</table>
+
 ### Account Security
 
 <table class="permissions-table">

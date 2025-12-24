@@ -5,7 +5,7 @@
 
     <!-- NuGet Package Properties (common properties inherited from Directory.Build.props) -->
     <PackageId>Cloudflare.NET.Api</PackageId>
-    <Version>3.1.0</Version>
+    <Version>3.2.0</Version>
     <Description>Cloudflare.NET - A comprehensive C# client library for the Cloudflare REST API. Manage DNS records, Zones, R2 buckets, Workers, WAF rules, Turnstile, and security features with strongly-typed .NET code.</Description>
     <PackageTags>cloudflare;cloudflare-api;cloudflare-sdk;cloudflare-client;dotnet;csharp;dns;r2;waf;firewall;zone;workers;turnstile;api-client;rest-client</PackageTags>
   </PropertyGroup>

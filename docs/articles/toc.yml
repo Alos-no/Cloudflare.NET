@@ -79,6 +79,10 @@
           href: accounts/r2/sippy.md
         - name: Temporary Credentials
           href: accounts/r2/temp-credentials.md
+    - name: Workers
+      items:
+        - name: Workers KV
+          href: accounts/workers/kv.md
     - name: Security
       items:
         - name: Access Rules
