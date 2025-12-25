@@ -72,39 +72,100 @@ public class D1ApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IA
   #region Methods Impl
 
   /// <summary>Asynchronously creates the D1 database required for the tests. This runs once before any tests in this class.</summary>
+  /// <remarks>
+  ///   The D1 REST API is known to have transient failures (502, 503, 500 errors) that are not caused by our code.
+  ///   Cloudflare has acknowledged these issues but has not resolved them (see GitHub issue #7780).
+  ///   This method implements retry logic to handle these transient failures during fixture setup.
+  /// </remarks>
   public async Task InitializeAsync()
   {
     // Create a new D1 database for the test run.
-    var db = await _sut.CreateAsync(_databaseName);
+    // Retry up to 5 times to handle transient D1 API failures (502, 503, 500 errors).
+    const int maxRetries = 5;
+    D1Database? db = null;
+
+    for (var attempt = 1; attempt <= maxRetries; attempt++)
+    {
+      try
+      {
+        db = await _sut.CreateAsync(_databaseName);
+        break; // Success - exit retry loop.
+      }
+      catch (HttpRequestException ex) when (attempt < maxRetries && IsTransientError(ex))
+      {
+        _output.WriteLine($"D1 API transient error on attempt {attempt}/{maxRetries}: {ex.Message}. Retrying...");
+      }
+    }
+
+    if (db is null)
+      throw new InvalidOperationException($"Failed to create D1 database after {maxRetries} attempts");
+
     _databaseId = db.Uuid;
 
     _output.WriteLine($"Created test database: {_databaseId} ({_databaseName})");
 
     // Create a test table for query operations.
-    await _sut.QueryAsync(_databaseId, """
-      CREATE TABLE IF NOT EXISTS test_users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE,
-        created_at TEXT DEFAULT (datetime('now'))
-      )
-    """);
+    // Also retry this operation for transient failures.
+    for (var attempt = 1; attempt <= maxRetries; attempt++)
+    {
+      try
+      {
+        await _sut.QueryAsync(_databaseId, """
+          CREATE TABLE IF NOT EXISTS test_users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE,
+            created_at TEXT DEFAULT (datetime('now'))
+          )
+        """);
+        break; // Success - exit retry loop.
+      }
+      catch (HttpRequestException ex) when (attempt < maxRetries && IsTransientError(ex))
+      {
+        _output.WriteLine($"D1 API transient error creating table on attempt {attempt}/{maxRetries}: {ex.Message}. Retrying...");
+      }
+    }
 
     _output.WriteLine("Created test_users table");
   }
 
+  /// <summary>Determines if the given exception represents a transient D1 API error that should be retried.</summary>
+  /// <param name="ex">The HTTP request exception to check.</param>
+  /// <returns><c>true</c> if the error is transient and should be retried; otherwise, <c>false</c>.</returns>
+  private static bool IsTransientError(HttpRequestException ex)
+  {
+    // D1 API is known to return 500, 502, and 503 errors transiently.
+    // These are Cloudflare infrastructure issues, not problems with our requests.
+    return ex.StatusCode is HttpStatusCode.InternalServerError
+      or HttpStatusCode.BadGateway
+      or HttpStatusCode.ServiceUnavailable
+      or HttpStatusCode.GatewayTimeout;
+  }
+
   /// <summary>Asynchronously deletes the D1 database after all tests in this class have run.</summary>
   /// <remarks>
-  ///   If cleanup fails, the exception propagates to the test framework. This ensures we are immediately
+  ///   If cleanup fails after retries, the exception propagates to the test framework. This ensures we are immediately
   ///   aware of any issues with resource cleanup rather than silently logging and continuing.
   /// </remarks>
   public async Task DisposeAsync()
   {
-    // Clean up the D1 database. Let any exceptions propagate - we want deterministic failure visibility.
+    // Clean up the D1 database with retry logic for transient D1 API failures.
     if (!string.IsNullOrEmpty(_databaseId))
     {
-      await _sut.DeleteAsync(_databaseId);
-      _output.WriteLine($"Deleted test database: {_databaseId}");
+      const int maxRetries = 5;
+      for (var attempt = 1; attempt <= maxRetries; attempt++)
+      {
+        try
+        {
+          await _sut.DeleteAsync(_databaseId);
+          _output.WriteLine($"Deleted test database: {_databaseId}");
+          break; // Success - exit retry loop.
+        }
+        catch (HttpRequestException ex) when (attempt < maxRetries && IsTransientError(ex))
+        {
+          _output.WriteLine($"D1 API transient error deleting database on attempt {attempt}/{maxRetries}: {ex.Message}. Retrying...");
+        }
+      }
     }
   }
 
