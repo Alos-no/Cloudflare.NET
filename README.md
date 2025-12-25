@@ -84,6 +84,7 @@ public class MyService(ICloudflareApiClient cf)
 | **Users** | Profile Management, Memberships, Invitations, Audit Logs, API Tokens, Subscriptions |
 | **Workers** | Routes (zone-scoped) |
 | **Workers KV** | Namespace CRUD, Key-Value CRUD, Metadata, Expiration, Bulk Operations |
+| **D1 Database** | Database CRUD, SQL Queries, Raw Queries, Export/Import |
 | **Turnstile** | Widget CRUD, Secret Rotation |
 | **R2 Client** | Upload, Download, Multipart, Presigned URLs, Batch Delete |
 | **Analytics** | GraphQL queries for traffic, security, and R2 metrics |
