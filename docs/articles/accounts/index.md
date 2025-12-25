@@ -29,6 +29,7 @@ public class AccountService(ICloudflareApiClient cf)
 | [Turnstile](turnstile.md) | `cf.Turnstile` | Manage Turnstile widgets |
 | [R2 Buckets](r2/buckets.md) | `cf.Accounts` | Create and manage R2 buckets |
 | [Workers KV](workers/kv.md) | `cf.Accounts.Kv` | Global key-value storage |
+| [D1 Databases](d1.md) | `cf.Accounts.D1` | Serverless SQL databases |
 | [Access Rules](security/access-rules.md) | `cf.Accounts.AccessRules` | Account-level IP access control |
 | [Rulesets](security/rulesets.md) | `cf.Accounts.Rulesets` | Account-level WAF rules |
 
@@ -72,6 +73,9 @@ Console.WriteLine($"2FA Required: {account.Settings?.EnforceTwofactor}");
 ### Workers
 - [Workers KV](workers/kv.md) - Global low-latency key-value storage
 
+### D1 Databases
+- [D1 Serverless Database](d1.md) - Serverless SQL databases with SQLite
+
 ### Security
 - [Access Rules](security/access-rules.md) - Account-level IP firewall rules
 - [WAF Rulesets](security/rulesets.md) - Account-level WAF custom rules
@@ -88,6 +92,7 @@ Console.WriteLine($"2FA Required: {account.Settings?.EnforceTwofactor}");
 | Turnstile | Turnstile | Read/Write |
 | R2 Buckets | Workers R2 Storage | Read/Write |
 | Workers KV | Workers KV Storage | Read/Write |
+| D1 Databases | D1 | Read/Write |
 | Access Rules | Account Firewall Access Rules | Read/Write |
 | Rulesets | Account Rulesets | Read/Write |
 

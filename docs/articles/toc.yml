@@ -11,39 +11,6 @@
   href: conventions.md
 
 - name: REST API
-- name: Zones API
-  href: zones/index.md
-  items:
-    - name: Overview
-      href: zones/index.md
-    - name: Zone Management
-      href: zones/zone-management.md
-    - name: Zone Holds
-      href: zones/zone-holds.md
-    - name: Zone Settings
-      href: zones/zone-settings.md
-    - name: DNS Records
-      href: zones/dns-records.md
-    - name: DNS Scanning
-      href: zones/dns-scanning.md
-    - name: Worker Routes
-      href: zones/worker-routes.md
-    - name: Cache Purge
-      href: zones/cache-purge.md
-    - name: Custom Hostnames (SaaS)
-      href: zones/custom-hostnames.md
-    - name: Security
-      items:
-        - name: Access Rules
-          href: zones/security/access-rules.md
-        - name: WAF Rulesets
-          href: zones/security/rulesets.md
-        - name: Zone Lockdown
-          href: zones/security/lockdown.md
-        - name: User-Agent Rules
-          href: zones/security/ua-rules.md
-    - name: Subscriptions
-      href: subscriptions.md
 - name: Accounts API
   href: accounts/index.md
   items:
@@ -51,38 +18,34 @@
       href: accounts/index.md
     - name: Account Management
       href: accounts/account-management.md
-    - name: Members
-      href: accounts/members.md
-    - name: Roles
-      href: accounts/roles.md
     - name: API Tokens
       href: accounts/api-tokens.md
     - name: Audit Logs
       href: accounts/audit-logs.md
-    - name: Turnstile
-      href: accounts/turnstile.md
+    - name: D1 Databases
+      href: accounts/d1.md
+    - name: Members
+      href: accounts/members.md
     - name: R2 Buckets
       items:
-        - name: Bucket Management
-          href: accounts/r2/buckets.md
-        - name: Custom Domains
-          href: accounts/r2/custom-domains.md
-        - name: Managed Domains (r2.dev)
-          href: accounts/r2/managed-domains.md
-        - name: CORS Configuration
-          href: accounts/r2/cors.md
-        - name: Lifecycle Policies
-          href: accounts/r2/lifecycle.md
         - name: Bucket Locks
           href: accounts/r2/bucket-locks.md
+        - name: Bucket Management
+          href: accounts/r2/buckets.md
+        - name: CORS Configuration
+          href: accounts/r2/cors.md
+        - name: Custom Domains
+          href: accounts/r2/custom-domains.md
+        - name: Lifecycle Policies
+          href: accounts/r2/lifecycle.md
+        - name: Managed Domains (r2.dev)
+          href: accounts/r2/managed-domains.md
         - name: Sippy Migration
           href: accounts/r2/sippy.md
         - name: Temporary Credentials
           href: accounts/r2/temp-credentials.md
-    - name: Workers
-      items:
-        - name: Workers KV
-          href: accounts/workers/kv.md
+    - name: Roles
+      href: accounts/roles.md
     - name: Security
       items:
         - name: Access Rules
@@ -91,42 +54,64 @@
           href: accounts/security/rulesets.md
     - name: Subscriptions
       href: subscriptions.md
+    - name: Turnstile
+      href: accounts/turnstile.md
+    - name: Workers
+      items:
+        - name: Workers KV
+          href: accounts/workers/kv.md
 - name: User API
   href: user/index.md
   items:
     - name: Overview
       href: user/index.md
-    - name: Profile
-      href: user/profile.md
-    - name: Memberships
-      href: user/memberships.md
-    - name: Invitations
-      href: user/invitations.md
     - name: API Tokens
       href: user/api-tokens.md
     - name: Audit Logs
       href: user/audit-logs.md
+    - name: Invitations
+      href: user/invitations.md
+    - name: Memberships
+      href: user/memberships.md
+    - name: Profile
+      href: user/profile.md
     - name: Subscriptions
       href: subscriptions.md
-
-- name: Extension Packages
-- name: R2 Object Storage
-  href: r2/index.md
+- name: Zones API
+  href: zones/index.md
   items:
     - name: Overview
-      href: r2/index.md
-    - name: Uploading Objects
-      href: r2/uploads.md
-    - name: Downloading Objects
-      href: r2/downloads.md
-    - name: Deleting Objects
-      href: r2/deletes.md
-    - name: Listing Objects
-      href: r2/listing.md
-    - name: Multipart Uploads
-      href: r2/multipart.md
-    - name: Presigned URLs
-      href: r2/presigned-urls.md
+      href: zones/index.md
+    - name: Cache Purge
+      href: zones/cache-purge.md
+    - name: Custom Hostnames (SaaS)
+      href: zones/custom-hostnames.md
+    - name: DNS Records
+      href: zones/dns-records.md
+    - name: DNS Scanning
+      href: zones/dns-scanning.md
+    - name: Security
+      items:
+        - name: Access Rules
+          href: zones/security/access-rules.md
+        - name: User-Agent Rules
+          href: zones/security/ua-rules.md
+        - name: WAF Rulesets
+          href: zones/security/rulesets.md
+        - name: Zone Lockdown
+          href: zones/security/lockdown.md
+    - name: Subscriptions
+      href: subscriptions.md
+    - name: Worker Routes
+      href: zones/worker-routes.md
+    - name: Zone Holds
+      href: zones/zone-holds.md
+    - name: Zone Management
+      href: zones/zone-management.md
+    - name: Zone Settings
+      href: zones/zone-settings.md
+
+- name: Extension Packages
 - name: Analytics API
   href: analytics/index.md
   items:
@@ -134,6 +119,23 @@
       href: analytics/index.md
     - name: GraphQL Queries
       href: analytics/graphql.md
+- name: R2 Object Storage
+  href: r2/index.md
+  items:
+    - name: Overview
+      href: r2/index.md
+    - name: Deleting Objects
+      href: r2/deletes.md
+    - name: Downloading Objects
+      href: r2/downloads.md
+    - name: Listing Objects
+      href: r2/listing.md
+    - name: Multipart Uploads
+      href: r2/multipart.md
+    - name: Presigned URLs
+      href: r2/presigned-urls.md
+    - name: Uploading Objects
+      href: r2/uploads.md
 
 - name: Reference
 - name: API Coverage

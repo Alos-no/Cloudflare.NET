@@ -93,6 +93,18 @@ Cloudflare uses a permission-based system for API tokens. To adhere to the princ
 </tbody>
 </table>
 
+### D1 Databases
+
+<table class="permissions-table">
+<thead><tr><th>Feature</th><th>Permission</th><th>Level</th></tr></thead>
+<tbody>
+<tr><td>D1 Databases (read)</td><td>D1</td><td>Account: Read</td></tr>
+<tr><td>D1 Databases (write)</td><td>D1</td><td>Account: Write</td></tr>
+<tr><td>D1 Queries</td><td>D1</td><td>Account: Write</td></tr>
+<tr><td>D1 Export/Import</td><td>D1</td><td>Account: Write</td></tr>
+</tbody>
+</table>
+
 ### Account Security
 
 <table class="permissions-table">

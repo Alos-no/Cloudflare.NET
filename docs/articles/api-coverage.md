@@ -54,6 +54,7 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 <tr><td>DNS Records</td><td>12</td><td>Full DNS lifecycle including batch and BIND import/export</td></tr>
 <tr><td>R2 Buckets</td><td>22</td><td>Bucket management, CORS, lifecycle, domains, and Sippy</td></tr>
 <tr><td>Workers KV</td><td>19</td><td>Namespace and key-value CRUD, metadata, bulk operations</td></tr>
+<tr><td>D1 Databases</td><td>11</td><td>Database CRUD, SQL queries, export/import operations</td></tr>
 <tr><td>Subscriptions</td><td>6</td><td>Account, zone, and user subscription details</td></tr>
 <tr><td>Turnstile</td><td>5</td><td>CAPTCHA widget configuration and secret rotation</td></tr>
 <tr><td>User</td><td>11</td><td>Profile, invitations, and membership management</td></tr>
@@ -532,6 +533,66 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 <tr><td>Bulk Delete</td><td><code>Kv.BulkDeleteAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/delete</code></td><td>✅</td></tr>
 <tr><td>Bulk Get</td><td><code>Kv.BulkGetAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/get</code></td><td>✅</td></tr>
 <tr><td>Bulk Get (metadata)</td><td><code>Kv.BulkGetWithMetadataAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/get</code></td><td>✅</td></tr>
+</tbody>
+</table>
+
+---
+
+## D1 Databases
+
+### Database Operations
+
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Databases</td><td><code>D1.ListAsync</code></td><td><code>GET /accounts/{id}/d1/database</code></td><td>✅</td></tr>
+<tr><td>List All Databases</td><td><code>D1.ListAllAsync</code></td><td><code>GET /accounts/{id}/d1/database</code> (auto)</td><td>✅</td></tr>
+<tr><td>Create Database</td><td><code>D1.CreateAsync</code></td><td><code>POST /accounts/{id}/d1/database</code></td><td>✅</td></tr>
+<tr><td>Get Database</td><td><code>D1.GetAsync</code></td><td><code>GET /accounts/{id}/d1/database/{uuid}</code></td><td>✅</td></tr>
+<tr><td>Update Database</td><td><code>D1.UpdateAsync</code></td><td><code>PATCH /accounts/{id}/d1/database/{uuid}</code></td><td>✅</td></tr>
+<tr><td>Delete Database</td><td><code>D1.DeleteAsync</code></td><td><code>DELETE /accounts/{id}/d1/database/{uuid}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+
+### Query Operations
+
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Execute Query</td><td><code>D1.QueryAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/query</code></td><td>✅</td></tr>
+<tr><td>Execute Query (typed)</td><td><code>D1.QueryAsync&lt;T&gt;</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/query</code></td><td>✅</td></tr>
+<tr><td>Execute Query (raw)</td><td><code>D1.QueryRawAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/raw</code></td><td>✅</td></tr>
+</tbody>
+</table>
+
+### Export/Import Operations
+
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Start Export</td><td><code>D1.StartExportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/export</code></td><td>✅</td></tr>
+<tr><td>Poll Export</td><td><code>D1.PollExportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/export</code></td><td>✅</td></tr>
+<tr><td>Start Import</td><td><code>D1.StartImportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/import</code></td><td>✅</td></tr>
+<tr><td>Complete Import</td><td><code>D1.CompleteImportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/import</code></td><td>✅</td></tr>
+<tr><td>Poll Import</td><td><code>D1.PollImportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/import</code></td><td>✅</td></tr>
 </tbody>
 </table>
 
