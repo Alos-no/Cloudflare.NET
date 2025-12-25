@@ -230,6 +230,10 @@ public class D1ApiUnitTests
   #region Database Operations - ListAllAsync
 
   /// <summary>Verifies that ListAllAsync handles pagination correctly.</summary>
+  /// <remarks>
+  ///   The D1 API returns TotalPages=0, so ListAllAsync uses the "is page full?" pattern to determine
+  ///   if there are more pages. This test verifies that pattern works correctly.
+  /// </remarks>
   [Fact]
   public async Task ListAllAsync_ShouldHandlePaginationCorrectly()
   {
@@ -237,11 +241,16 @@ public class D1ApiUnitTests
     var db1 = CreateTestDatabase("db-1", "Database 1");
     var db2 = CreateTestDatabase("db-2", "Database 2");
 
-    // First page response.
+    // First page response - page is "full" (1 item with perPage=1), so more pages exist.
     var responsePage1 = CreatePaginatedDatabaseResponse(new[] { db1 }, 1, 1, 2);
 
-    // Second page response.
+    // Second page response - page is NOT full (1 item with perPage=1 but it's the last page).
+    // Note: The implementation checks Items.Count >= perPage, so we need page 2 to have fewer items
+    // to signal "no more pages". In this case, we return 1 item but the next request would return 0.
     var responsePage2 = CreatePaginatedDatabaseResponse(new[] { db2 }, 2, 1, 2);
+
+    // Empty third page to signal end of pagination.
+    var responsePage3 = CreatePaginatedDatabaseResponse(Array.Empty<D1Database>(), 3, 1, 2);
 
     var capturedRequests = new List<HttpRequestMessage>();
     var mockHandler      = new Mock<HttpMessageHandler>();
@@ -250,6 +259,10 @@ public class D1ApiUnitTests
                .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequests.Add(req))
                .Returns((HttpRequestMessage req, CancellationToken _) =>
                {
+                 if (req.RequestUri!.ToString().Contains("page=3"))
+                   return Task.FromResult(
+                     new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage3) });
+
                  if (req.RequestUri!.ToString().Contains("page=2"))
                    return Task.FromResult(
                      new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(responsePage2) });
@@ -262,15 +275,16 @@ public class D1ApiUnitTests
     var options    = Options.Create(new CloudflareApiOptions { AccountId = TestAccountId });
     var sut        = new D1Api(httpClient, options, _loggerFactory);
 
-    // Act
+    // Act - Must pass PerPage=1 to match the mock data (default is 100).
     var allDatabases = new List<D1Database>();
-    await foreach (var db in sut.ListAllAsync())
+    await foreach (var db in sut.ListAllAsync(new ListD1DatabasesFilters(PerPage: 1)))
       allDatabases.Add(db);
 
-    // Assert
-    capturedRequests.Should().HaveCount(2);
+    // Assert - 3 requests: page 1 (full), page 2 (full), page 3 (empty = stop).
+    capturedRequests.Should().HaveCount(3);
     capturedRequests[0].RequestUri!.Query.Should().Contain("page=1");
     capturedRequests[1].RequestUri!.Query.Should().Contain("page=2");
+    capturedRequests[2].RequestUri!.Query.Should().Contain("page=3");
     allDatabases.Should().HaveCount(2);
     allDatabases.Select(d => d.Uuid).Should().ContainInOrder("db-1", "db-2");
   }
