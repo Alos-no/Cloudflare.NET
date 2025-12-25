@@ -402,9 +402,13 @@ public class KvApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IA
     // Act
     await _sut.DeleteValueAsync(_namespaceId, key);
 
-    // Assert - Value should no longer exist
-    var afterDelete = await _sut.GetValueAsync(_namespaceId, key);
-    afterDelete.Should().BeNull("the key should be deleted");
+    // Assert - Value should no longer exist (retry for eventual consistency)
+    const int maxRetries = 10;
+    string? afterDelete = value;
+    for (var attempt = 1; attempt <= maxRetries && afterDelete is not null; attempt++)
+      afterDelete = await _sut.GetValueAsync(_namespaceId, key);
+
+    afterDelete.Should().BeNull($"the key should be deleted after {maxRetries} retries");
   }
 
   /// <summary>Verifies that deleting a non-existent key does not throw an error.</summary>
