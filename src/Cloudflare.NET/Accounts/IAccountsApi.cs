@@ -3,6 +3,7 @@
 using AccessRules;
 using Buckets;
 using Core.Models;
+using D1;
 using Kv;
 using Models;
 using Rulesets;
@@ -35,6 +36,19 @@ public interface IAccountsApi
   /// <remarks>Corresponds to the `/accounts/{account_id}/storage/kv/namespaces` endpoint family.</remarks>
   /// <seealso href="https://developers.cloudflare.com/api/resources/kv/" />
   IKvApi Kv { get; }
+
+  /// <summary>Gets the API for managing D1 serverless SQL databases.</summary>
+  /// <remarks>
+  ///   <para>Corresponds to the `/accounts/{account_id}/d1/database` endpoint family.</para>
+  ///   <para>
+  ///     D1 is Cloudflare's native serverless SQL database built on SQLite. The REST API
+  ///     is subject to global Cloudflare API rate limits and is best suited for administrative
+  ///     operations. For high-throughput query access, consider using a Worker with D1 bindings.
+  ///   </para>
+  /// </remarks>
+  /// <seealso href="https://developers.cloudflare.com/api/resources/d1/" />
+  /// <seealso href="https://developers.cloudflare.com/d1/" />
+  ID1Api D1 { get; }
 
   /// <summary>Creates a new R2 bucket within the configured account with optional location and storage settings.</summary>
   /// <param name="bucketName">The desired name for the new bucket. Must be unique.</param>

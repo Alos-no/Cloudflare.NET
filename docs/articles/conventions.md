@@ -18,6 +18,7 @@ Page-based pagination uses `page` and `per_page` parameters. This pattern is use
 - Zone Lockdown Rules
 - User-Agent Rules
 - Workers KV Namespaces
+- D1 Databases
 
 #### Automatic Pagination
 
@@ -284,6 +285,12 @@ if (bucket.StorageClass is { } sc && sc == R2StorageClass.InfrequentAccess)
 | `DnsRecordType` | DNS record type | `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `NS`, `SOA`, `PTR`, `SRV`, `HTTPS`, `SVCB`, `CAA`, `DS`, `DNSKEY`, etc. |
 | `ZoneStatus` | Zone activation status | `active`, `pending`, `initializing`, `moved`, `deleted`, `deactivated` |
 | `ZoneSettingId` | Zone setting identifier | `ssl`, `min_tls_version`, `always_use_https`, `brotli`, `http2`, `http3`, `development_mode`, `security_level`, etc. |
+
+#### D1 Databases
+
+| Type | Purpose | Known Values |
+|------|---------|--------------|
+| `D1Jurisdiction` | D1 data residency | `eu`, `fedramp` |
 
 #### Security & Firewall
 
