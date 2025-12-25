@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Zone Lockdown | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Zone Lockdown | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/lockdown.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="zone-lockdown">Zone Lockdown</h1>
+
+<p>Zone Lockdown restricts access to specific URLs to a list of allowed IP addresses. This is useful for protecting admin panels, staging environments, or internal APIs.</p>
+<h2 id="overview">Overview</h2>
+<p>Access the Zone Lockdown API through <code>cf.Zones.Lockdown</code>:</p>
+<pre><code class="lang-csharp">public class LockdownService(ICloudflareApiClient cf)
+{
+    public async Task LockAdminPanelAsync(string zoneId, IEnumerable&lt;string&gt; allowedIps)
+    {
+        await cf.Zones.Lockdown.CreateAsync(zoneId,
+            new CreateLockdownRequest(
+                Urls: [&quot;/admin/*&quot;, &quot;/wp-admin/*&quot;],
+                Configurations: allowedIps.Select(ip =&gt;
+                    new LockdownConfiguration(LockdownTarget.Ip, ip)).ToList(),
+                Description: &quot;Admin panel lockdown&quot;
+            ));
+    }
+}
+</code></pre>
+<h2 id="creating-lockdown-rules">Creating Lockdown Rules</h2>
+<h3 id="lock-urls-to-specific-ips">Lock URLs to Specific IPs</h3>
+<pre><code class="lang-csharp">var lockdown = await cf.Zones.Lockdown.CreateAsync(zoneId,
+    new CreateLockdownRequest(
+        Urls: [&quot;/admin/*&quot;],
+        Configurations: [
+            new LockdownConfiguration(LockdownTarget.Ip, &quot;203.0.113.1&quot;),
+            new LockdownConfiguration(LockdownTarget.Ip, &quot;203.0.113.2&quot;)
+        ],
+        Description: &quot;Admin access restricted to office IPs&quot;
+    ));
+</code></pre>
+<h3 id="lock-urls-to-ip-ranges">Lock URLs to IP Ranges</h3>
+<pre><code class="lang-csharp">var lockdown = await cf.Zones.Lockdown.CreateAsync(zoneId,
+    new CreateLockdownRequest(
+        Urls: [&quot;/api/internal/*&quot;],
+        Configurations: [
+            new LockdownConfiguration(LockdownTarget.IpRange, &quot;10.0.0.0/8&quot;),
+            new LockdownConfiguration(LockdownTarget.IpRange, &quot;192.168.0.0/16&quot;)
+        ],
+        Description: &quot;Internal API - private networks only&quot;
+    ));
+</code></pre>
+<h3 id="multiple-url-patterns">Multiple URL Patterns</h3>
+<pre><code class="lang-csharp">var lockdown = await cf.Zones.Lockdown.CreateAsync(zoneId,
+    new CreateLockdownRequest(
+        Urls: [
+            &quot;/admin/*&quot;,
+            &quot;/wp-admin/*&quot;,
+            &quot;/dashboard/*&quot;,
+            &quot;/_internal/*&quot;
+        ],
+        Configurations: [
+            new LockdownConfiguration(LockdownTarget.Ip, &quot;203.0.113.1&quot;)
+        ],
+        Description: &quot;All admin areas locked&quot;
+    ));
+</code></pre>
+<h2 id="listing-lockdown-rules">Listing Lockdown Rules</h2>
+<h3 id="list-all-rules">List All Rules</h3>
+<pre><code class="lang-csharp">await foreach (var lockdown in cf.Zones.Lockdown.ListAllAsync(zoneId))
+{
+    Console.WriteLine($&quot;{lockdown.Id}: {string.Join(&quot;, &quot;, lockdown.Urls)}&quot;);
+    Console.WriteLine($&quot;  Paused: {lockdown.Paused}&quot;);
+}
+</code></pre>
+<h3 id="list-with-pagination">List with Pagination</h3>
+<pre><code class="lang-csharp">var page = await cf.Zones.Lockdown.ListAsync(zoneId,
+    new ListLockdownFilters { PerPage = 50 });
+
+foreach (var lockdown in page.Items)
+{
+    Console.WriteLine($&quot;{lockdown.Description ?? &quot;No description&quot;}&quot;);
+}
+</code></pre>
+<h2 id="getting-a-specific-rule">Getting a Specific Rule</h2>
+<pre><code class="lang-csharp">var lockdown = await cf.Zones.Lockdown.GetAsync(zoneId, lockdownId);
+
+Console.WriteLine($&quot;URLs: {string.Join(&quot;, &quot;, lockdown.Urls)}&quot;);
+Console.WriteLine($&quot;Allowed:&quot;);
+foreach (var config in lockdown.Configurations)
+{
+    Console.WriteLine($&quot;  {config.Target}: {config.Value}&quot;);
+}
+</code></pre>
+<h2 id="updating-lockdown-rules">Updating Lockdown Rules</h2>
+<pre><code class="lang-csharp">var updated = await cf.Zones.Lockdown.UpdateAsync(zoneId, lockdownId,
+    new UpdateLockdownRequest(
+        Urls: [&quot;/admin/*&quot;, &quot;/super-admin/*&quot;],
+        Configurations: [
+            new LockdownConfiguration(LockdownTarget.Ip, &quot;203.0.113.1&quot;),
+            new LockdownConfiguration(LockdownTarget.Ip, &quot;203.0.113.3&quot;)  // Added new IP
+        ],
+        Description: &quot;Updated admin lockdown&quot;
+    ));
+</code></pre>
+<h3 id="pause-a-lockdown-rule">Pause a Lockdown Rule</h3>
+<pre><code class="lang-csharp">var updated = await cf.Zones.Lockdown.UpdateAsync(zoneId, lockdownId,
+    new UpdateLockdownRequest(Paused: true));
+</code></pre>
+<h2 id="deleting-lockdown-rules">Deleting Lockdown Rules</h2>
+<pre><code class="lang-csharp">await cf.Zones.Lockdown.DeleteAsync(zoneId, lockdownId);
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="lockdown">Lockdown</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Unique identifier</td>
+</tr>
+<tr>
+<td><code>Urls</code></td>
+<td><code>IReadOnlyList&lt;string&gt;</code></td>
+<td>URL patterns to lock</td>
+</tr>
+<tr>
+<td><code>Configurations</code></td>
+<td><code>IReadOnlyList&lt;LockdownConfiguration&gt;</code></td>
+<td>Allowed IPs/ranges</td>
+</tr>
+<tr>
+<td><code>Paused</code></td>
+<td><code>bool</code></td>
+<td>Whether the rule is paused</td>
+</tr>
+<tr>
+<td><code>Description</code></td>
+<td><code>string?</code></td>
+<td>Optional description</td>
+</tr>
+<tr>
+<td><code>CreatedOn</code></td>
+<td><code>DateTimeOffset?</code></td>
+<td>Creation timestamp</td>
+</tr>
+<tr>
+<td><code>ModifiedOn</code></td>
+<td><code>DateTimeOffset?</code></td>
+<td>Last modification</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lockdownconfiguration">LockdownConfiguration</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Target</code></td>
+<td><code>LockdownTarget</code></td>
+<td>Target type (extensible enum)</td>
+</tr>
+<tr>
+<td><code>Value</code></td>
+<td><code>string</code></td>
+<td>IP address or CIDR range</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lockdowntarget-extensible-enum">LockdownTarget (Extensible Enum)</h3>
+<p>The target type for zone lockdown configurations. This is an <a href="../../conventions.html#extensible-enums">extensible enum</a> that supports custom values for forward compatibility.</p>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ip</code></td>
+<td>Single IPv4 or IPv6 address</td>
+</tr>
+<tr>
+<td><code>IpRange</code></td>
+<td>CIDR notation range</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// Using known values
+new LockdownConfiguration(LockdownTarget.Ip, &quot;192.0.2.1&quot;)
+new LockdownConfiguration(LockdownTarget.IpRange, &quot;10.0.0.0/8&quot;)
+
+// Future-proof: accepts unknown values from API
+LockdownTarget customTarget = &quot;new-target-type&quot;;
+</code></pre>
+<h2 id="url-pattern-syntax">URL Pattern Syntax</h2>
+<ul>
+<li><code>*</code> matches any sequence of characters</li>
+<li><code>/admin/*</code> matches <code>/admin/</code>, <code>/admin/users</code>, <code>/admin/settings/advanced</code></li>
+<li><code>/api/v1/*</code> matches any path starting with <code>/api/v1/</code></li>
+<li>Patterns are case-insensitive</li>
+</ul>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="staging-environment-lockdown">Staging Environment Lockdown</h3>
+<pre><code class="lang-csharp">public async Task LockStagingAsync(string zoneId)
+{
+    await cf.Zones.Lockdown.CreateAsync(zoneId,
+        new CreateLockdownRequest(
+            Urls: [&quot;/*&quot;],  // Lock entire site
+            Configurations: [
+                new LockdownConfiguration(LockdownTarget.IpRange, &quot;10.0.0.0/8&quot;)
+            ],
+            Description: &quot;Staging - internal access only&quot;
+        ));
+}
+</code></pre>
+<h3 id="dynamic-ip-management">Dynamic IP Management</h3>
+<pre><code class="lang-csharp">public async Task AddAllowedIpAsync(string zoneId, string lockdownId, string newIp)
+{
+    var current = await cf.Zones.Lockdown.GetAsync(zoneId, lockdownId);
+
+    var configs = current.Configurations.ToList();
+    configs.Add(new LockdownConfiguration(LockdownTarget.Ip, newIp));
+
+    await cf.Zones.Lockdown.UpdateAsync(zoneId, lockdownId,
+        new UpdateLockdownRequest(
+            Urls: current.Urls.ToList(),
+            Configurations: configs
+        ));
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Firewall Services</td>
+<td>Zone</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/lockdown.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

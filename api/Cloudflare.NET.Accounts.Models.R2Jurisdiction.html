@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Struct R2Jurisdiction | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Struct R2Jurisdiction | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Represents a jurisdictional restriction for R2 bucket data storage.    Jurisdictions provide a guarantee that objects stored in the bucket will remain within a specific   geographic or regulatory boundary. Unlike location hints, jurisdictions are enforced constraints.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Accounts_Models_R2Jurisdiction.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Accounts.Models.R2Jurisdiction%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction">
+
+
+
+  <h1 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction" class="text-break">
+Struct R2Jurisdiction  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Accounts.html">Accounts</a>.<a class="xref" href="Cloudflare.NET.Accounts.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a jurisdictional restriction for R2 bucket data storage.</p>
+<p>
+  Jurisdictions provide a guarantee that objects stored in the bucket will remain within a specific
+  geographic or regulatory boundary. Unlike location hints, jurisdictions are enforced constraints.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ExtensibleEnumConverter&lt;R2Jurisdiction&gt;))]
+public readonly struct R2Jurisdiction : IExtensibleEnum&lt;R2Jurisdiction&gt;, IEquatable&lt;R2Jurisdiction&gt;</code></pre>
+  </div>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Core.Json.IExtensibleEnum-1.html">IExtensibleEnum</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Create an EU jurisdiction bucket
+var bucket = await api.Buckets.CreateAsync("my-bucket", jurisdiction: R2Jurisdiction.EuropeanUnion);
+
+// IMPORTANT: Pass the same jurisdiction for all subsequent operations
+var details = await api.Buckets.GetAsync("my-bucket", R2Jurisdiction.EuropeanUnion);
+await api.Buckets.SetCorsAsync("my-bucket", corsPolicy, R2Jurisdiction.EuropeanUnion);
+await api.Buckets.DeleteAsync("my-bucket", R2Jurisdiction.EuropeanUnion);</code></pre>
+
+
+  <h2 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  This is an extensible enum that provides IntelliSense for known values while allowing custom values
+  for new jurisdictions that may be added to the Cloudflare API in the future.
+</p>
+<p><strong>Important: When to Pass Jurisdiction to API Methods</strong></p>
+<p>
+  If you create a bucket with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a> or <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_FedRamp">FedRamp</a>),
+  you <strong>must pass the same jurisdiction value to all subsequent API operations</strong> on that bucket.
+  Without it, the API returns error 10006 "The specified bucket does not exist" even though the bucket exists.
+</p>
+<p>
+  The jurisdiction is required for:
+  <code>GetAsync</code>, <code>DeleteAsync</code>, all CORS operations, all lifecycle operations, all custom domain
+  operations, all managed domain operations, all lock operations, and all Sippy operations.
+</p>
+<p>
+  The jurisdiction is <em>not</em> required for: <code>ListAsync</code> / <code>ListAllAsync</code> (returns all buckets
+  with their jurisdiction in the response) and <code>CreateTempCredentialsAsync</code> (bucket is in the request body).
+</p>
+<p>
+  <strong>Best Practice:</strong> Store the jurisdiction value when creating a bucket and reuse it for all
+  subsequent operations on that bucket.
+</p>
+<p>
+  When accessing jurisdictional buckets via the S3 API, you must specify the jurisdiction in the endpoint:
+  <code>https://{account_id}.{jurisdiction}.r2.cloudflarestorage.com</code>
+</p>
+<p>
+  The <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_FedRamp">FedRamp</a> jurisdiction requires Enterprise customer status. Contact your Cloudflare
+  account team for access.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction__ctor_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction__ctor_System_String_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.#ctor(System.String)">
+  R2Jurisdiction(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a> with the specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public R2Jurisdiction(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value representing the jurisdiction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Default_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Default*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Default" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Default">
+  Default
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>No jurisdictional restriction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2Jurisdiction Default { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Default_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Data may be stored in any Cloudflare data center globally.
+This is the default when no jurisdiction is specified.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.EuropeanUnion*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.EuropeanUnion">
+  EuropeanUnion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>European Union jurisdiction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2Jurisdiction EuropeanUnion { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Objects are guaranteed to be stored within the European Union, helping meet GDPR
+  and other EU data residency requirements.
+</p>
+<p>
+  When using the S3 API, use the endpoint: <code>https://{account_id}.eu.r2.cloudflarestorage.com</code>
+</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_FedRamp_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.FedRamp*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_FedRamp" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.FedRamp">
+  FedRamp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>FedRAMP jurisdiction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2Jurisdiction FedRamp { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_FedRamp_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Objects are stored in compliance with FedRAMP (Federal Risk and Authorization Management Program)
+  requirements for U.S. federal government data.
+</p>
+<p>
+  This jurisdiction requires Enterprise customer status. Contact your Cloudflare account team
+  or Cloudflare Support for access.
+</p>
+<p>
+  When using the S3 API, use the endpoint: <code>https://{account_id}.fedramp.r2.cloudflarestorage.com</code>
+</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Value_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Value*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Value" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the underlying string value of this jurisdiction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Create_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Create*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Create_System_String_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Create(System.String)">
+  Create(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new instance of the extensible enum from the specified string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2Jurisdiction Create(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value to wrap.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd><p>A new instance of <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a> containing the specified value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Equals_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Equals_Cloudflare_NET_Accounts_Models_R2Jurisdiction_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Equals(Cloudflare.NET.Accounts.Models.R2Jurisdiction)">
+  Equals(R2Jurisdiction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(R2Jurisdiction other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd><p>An object to compare with this object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current object is equal to the <code class="paramref">other</code> parameter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Equals_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_Equals_System_Object_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare with the current instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> and this instance are the same type and represent the same value; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetHashCode_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.GetHashCode*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetHashCode" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit signed integer that is the hash code for this instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetS3EndpointUrl_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.GetS3EndpointUrl*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetS3EndpointUrl_System_String_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.GetS3EndpointUrl(System.String)">
+  GetS3EndpointUrl(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the S3-compatible endpoint URL for this jurisdiction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetS3EndpointUrl(string accountId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The Cloudflare account ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full S3 endpoint URL for this jurisdiction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetS3EndpointUrl_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var endpoint = R2Jurisdiction.EuropeanUnion.GetS3EndpointUrl("abc123");
+// Returns: "https://abc123.eu.r2.cloudflarestorage.com"
+
+var defaultEndpoint = R2Jurisdiction.Default.GetS3EndpointUrl("abc123");
+// Returns: "https://abc123.r2.cloudflarestorage.com"</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetS3Subdomain_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.GetS3Subdomain*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetS3Subdomain" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.GetS3Subdomain">
+  GetS3Subdomain()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L227"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the S3 endpoint subdomain for this jurisdiction, or <code>null</code> for the default jurisdiction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? GetS3Subdomain()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The subdomain string (e.g., <code>&quot;eu&quot;</code>, <code>&quot;fedramp&quot;</code>) for jurisdictional endpoints,
+or <code>null</code> for the default (global) jurisdiction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_GetS3Subdomain_examples">Examples</h4>
+  <pre><code class="lang-csharp">R2Jurisdiction.EuropeanUnion.GetS3Subdomain(); // Returns: "eu"
+R2Jurisdiction.FedRamp.GetS3Subdomain();       // Returns: "fedramp"
+R2Jurisdiction.Default.GetS3Subdomain();       // Returns: null</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_ToString_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.ToString*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_ToString" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the fully qualified type name of this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The fully qualified type name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Equality_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Equality*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Equality_Cloudflare_NET_Accounts_Models_R2Jurisdiction_Cloudflare_NET_Accounts_Models_R2Jurisdiction_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Equality(Cloudflare.NET.Accounts.Models.R2Jurisdiction,Cloudflare.NET.Accounts.Models.R2Jurisdiction)">
+  operator ==(R2Jurisdiction, R2Jurisdiction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L153"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a> values are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(R2Jurisdiction left, R2Jurisdiction right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Implicit_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Implicit*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Implicit_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_String" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Implicit(Cloudflare.NET.Accounts.Models.R2Jurisdiction)~System.String">
+  implicit operator string(R2Jurisdiction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts an <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a> to its string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator string(R2Jurisdiction jurisdiction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd><p>The jurisdiction to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Implicit_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Implicit*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Implicit_System_String__Cloudflare_NET_Accounts_Models_R2Jurisdiction" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Implicit(System.String)~Cloudflare.NET.Accounts.Models.R2Jurisdiction">
+  implicit operator R2Jurisdiction(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a string to an <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator R2Jurisdiction(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Inequality_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Inequality*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_R2Jurisdiction_op_Inequality_Cloudflare_NET_Accounts_Models_R2Jurisdiction_Cloudflare_NET_Accounts_Models_R2Jurisdiction_" data-uid="Cloudflare.NET.Accounts.Models.R2Jurisdiction.op_Inequality(Cloudflare.NET.Accounts.Models.R2Jurisdiction,Cloudflare.NET.Accounts.Models.R2Jurisdiction)">
+  operator !=(R2Jurisdiction, R2Jurisdiction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a> values are not equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(R2Jurisdiction left, R2Jurisdiction right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/r2/reference/data-location/">https://developers.cloudflare.com/r2/reference/data-location/</a></span></div>
+      <div><span><a href="https://developers.cloudflare.com/data-localization/how-to/r2/">https://developers.cloudflare.com/data-localization/how-to/r2/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2Jurisdiction.cs/#L60" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

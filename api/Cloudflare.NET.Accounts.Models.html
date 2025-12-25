@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace Cloudflare.NET.Accounts.Models | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace Cloudflare.NET.Accounts.Models | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.Models">
+
+  <h1 id="Cloudflare_NET_Accounts_Models" data-uid="Cloudflare.NET.Accounts.Models" class="text-break">Namespace Cloudflare.NET.Accounts.Models</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.AbortMultipartUploadsTransition.html">AbortMultipartUploadsTransition</a></dt>
+      <dd><p>Represents a transition to abort incomplete multipart uploads.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.Account.html">Account</a></dt>
+      <dd><p>Represents a Cloudflare account, the top-level container for zones and resources.</p>
+<p>
+  Accounts own zones, Workers, R2 buckets, and other Cloudflare resources.
+  Multiple users can be members of the same account with different permission levels.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.AccountManagedBy.html">AccountManagedBy</a></dt>
+      <dd><p>Parent organization information for accounts managed within an organizational hierarchy.</p>
+<p>
+  This is used by enterprise customers to organize multiple accounts under a parent organization.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.AccountSettings.html">AccountSettings</a></dt>
+      <dd><p>Account settings including security and administrative configurations.</p>
+<p>
+  These settings apply to all members and resources within the account.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.AttachCustomDomainRequest.html">AttachCustomDomainRequest</a></dt>
+      <dd><p>Defines the request payload for attaching a custom domain to a bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.BucketCorsPolicy.html">BucketCorsPolicy</a></dt>
+      <dd><p>Represents the CORS policy for an R2 bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLifecyclePolicy.html">BucketLifecyclePolicy</a></dt>
+      <dd><p>Represents the lifecycle policy for an R2 bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockCondition.html">BucketLockCondition</a></dt>
+      <dd><p>Represents the condition that determines how long objects are locked.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockPolicy.html">BucketLockPolicy</a></dt>
+      <dd><p>Represents the bucket lock policy containing all lock rules for a bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockRule.html">BucketLockRule</a></dt>
+      <dd><p>Represents a single bucket lock rule.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CorsAllowed.html">CorsAllowed</a></dt>
+      <dd><p>Defines the allowed HTTP methods, origins, and headers for a CORS rule.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CorsRule.html">CorsRule</a></dt>
+      <dd><p>Represents a single CORS rule for an R2 bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CreateAccountRequest.html">CreateAccountRequest</a></dt>
+      <dd><p>Request to create a new Cloudflare account.</p>
+<p>
+  <b>Note:</b> This operation is only available to tenant administrators.
+  Standard users cannot create accounts via the API.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CreateBucketRequest.html">CreateBucketRequest</a></dt>
+      <dd><p>Defines the request payload for creating an R2 bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CreateTempCredentialsRequest.html">CreateTempCredentialsRequest</a></dt>
+      <dd><p>Defines the request payload for creating temporary R2 access credentials.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomain.html">CustomDomain</a></dt>
+      <dd><p>Represents a custom domain in the list of custom domains for a bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponse.html">CustomDomainResponse</a></dt>
+      <dd><p>Represents the response from attaching or querying a custom domain. The custom converter handles the
+polymorphic 'status' field. The EdgeHostname may be null in some responses.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponseConverter.html">CustomDomainResponseConverter</a></dt>
+      <dd><p>A custom JSON converter for the CustomDomainResponse record. It handles the case where the &quot;status&quot; field from
+the Cloudflare API can be either a simple string (on creation) or a complex object (when querying an existing
+domain).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainStatusObject.html">CustomDomainStatusObject</a></dt>
+      <dd><p>This helper record models the nested 'status' object returned by the Cloudflare API when querying an existing
+custom domain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.DeleteAccountResult.html">DeleteAccountResult</a></dt>
+      <dd><p>Result of deleting an account.</p>
+<p>
+  Contains the identifier of the deleted account to confirm successful deletion.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.DeleteObjectsTransition.html">DeleteObjectsTransition</a></dt>
+      <dd><p>Represents a transition to delete objects.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.EnableSippyFromAwsRequest.html">EnableSippyFromAwsRequest</a></dt>
+      <dd><p>Request to enable Sippy migration from AWS S3.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.EnableSippyFromGcsRequest.html">EnableSippyFromGcsRequest</a></dt>
+      <dd><p>Request to enable Sippy migration from Google Cloud Storage.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.EnableSippyRequest.html">EnableSippyRequest</a></dt>
+      <dd><p>Base class for Sippy enable requests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.LifecycleCondition.html">LifecycleCondition</a></dt>
+      <dd><p>Represents a condition that triggers a lifecycle transition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.LifecycleRule.html">LifecycleRule</a></dt>
+      <dd><p>Represents a single lifecycle rule for an R2 bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.LifecycleRuleConditions.html">LifecycleRuleConditions</a></dt>
+      <dd><p>Represents the filtering conditions for which objects a lifecycle rule applies to.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.ListAccountsFilters.html">ListAccountsFilters</a></dt>
+      <dd><p>Filtering and pagination options for listing accounts.</p>
+<p>
+  All properties are optional. When not specified, API defaults are used.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.ListCustomDomainsResponse.html">ListCustomDomainsResponse</a></dt>
+      <dd><p>Represents the response wrapper for listing custom domains.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.ListR2BucketsFilters.html">ListR2BucketsFilters</a></dt>
+      <dd><p>Defines the filtering and pagination options for listing R2 Buckets.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.ListR2BucketsResponse.html">ListR2BucketsResponse</a></dt>
+      <dd><p>Represents the nested response structure for listing R2 buckets.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.ManagedDomainResponse.html">ManagedDomainResponse</a></dt>
+      <dd><p>Represents the response for the R2-managed (r2.dev) domain configuration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a></dt>
+      <dd><p>Represents an R2 bucket returned by the Cloudflare API.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.SetManagedDomainRequest.html">SetManagedDomainRequest</a></dt>
+      <dd><p>Defines the request payload for enabling or disabling the r2.dev subdomain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.SippyAwsSource.html">SippyAwsSource</a></dt>
+      <dd><p>Represents the source bucket configuration for Sippy migration from AWS S3.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.SippyConfig.html">SippyConfig</a></dt>
+      <dd><p>Represents the current Sippy configuration for a bucket.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.SippyDestination.html">SippyDestination</a></dt>
+      <dd><p>Represents the destination R2 bucket configuration for Sippy.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.SippyGcsSource.html">SippyGcsSource</a></dt>
+      <dd><p>Represents the source bucket configuration for Sippy migration from Google Cloud Storage.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.SippySourceInfo.html">SippySourceInfo</a></dt>
+      <dd><p>Represents the source configuration returned by the API.
+This is a read-only representation without sensitive credential data.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.StorageClassTransition.html">StorageClassTransition</a></dt>
+      <dd><p>Represents a transition to change the storage class of objects.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.TempCredentials.html">TempCredentials</a></dt>
+      <dd><p>Represents the temporary access credentials returned by the API.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.UpdateAccountRequest.html">UpdateAccountRequest</a></dt>
+      <dd><p>Request to update an existing Cloudflare account.</p>
+<p>
+  Both the name and settings can be updated in a single request.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.UpdateCustomDomainRequest.html">UpdateCustomDomainRequest</a></dt>
+      <dd><p>Defines the request payload for updating a custom domain configuration.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.AccountType.html">AccountType</a></dt>
+      <dd><p>Represents the type of a Cloudflare account.</p>
+<p>
+  Account types indicate the tier or category of the account,
+  such as standard or enterprise.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+      <dd><p>Represents a jurisdictional restriction for R2 bucket data storage.</p>
+<p>
+  Jurisdictions provide a guarantee that objects stored in the bucket will remain within a specific
+  geographic or regulatory boundary. Unlike location hints, jurisdictions are enforced constraints.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2LocationHint.html">R2LocationHint</a></dt>
+      <dd><p>Represents a location hint for R2 bucket placement.</p>
+<p>
+  Location hints provide a suggestion for the geographic region where the bucket's data should be stored.
+  Cloudflare will attempt to honor this hint, but data may be placed in a nearby region if the specified
+  location is unavailable.
+</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.R2StorageClass.html">R2StorageClass</a></dt>
+      <dd><p>Represents a storage class for R2 objects.</p>
+<p>
+  Storage classes determine the cost and access characteristics of stored objects.
+  Different classes offer trade-offs between storage cost and retrieval latency/cost.
+</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.IEnableSippySource.html">IEnableSippySource</a></dt>
+      <dd><p>Base interface for Sippy enable requests.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockConditionType.html">BucketLockConditionType</a></dt>
+      <dd><p>Defines the condition type for bucket lock rules.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.LifecycleConditionType.html">LifecycleConditionType</a></dt>
+      <dd><p>Defines the condition type for lifecycle rule transitions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.SippyProvider.html">SippyProvider</a></dt>
+      <dd><p>Defines the supported cloud storage providers for Sippy migrations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.TempCredentialPermission.html">TempCredentialPermission</a></dt>
+      <dd><p>Defines the permission levels for temporary R2 credentials.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

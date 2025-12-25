@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class R2BucketsApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class R2BucketsApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Implements the API for managing Cloudflare R2 bucket resources.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Accounts_Buckets_R2BucketsApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Accounts.Buckets.R2BucketsApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi">
+
+
+
+  <h1 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi" class="text-break">
+Class R2BucketsApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Accounts.html">Accounts</a>.<a class="xref" href="Cloudflare.NET.Accounts.Buckets.html">Buckets</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements the API for managing Cloudflare R2 bucket resources.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class R2BucketsApi : ApiResource, IR2BucketsApi</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Core.ApiResource.html">ApiResource</a></div>
+      <div><span class="xref">R2BucketsApi</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.Buckets.IR2BucketsApi.html">IR2BucketsApi</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_HttpClient">ApiResource.HttpClient</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_Logger">ApiResource.Logger</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetStringAsync_System_String_System_Threading_CancellationToken_">ApiResource.GetStringAsync(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync__1_System_String_System_IO_Stream_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostMultipartFileAsync&lt;TResult&gt;(string, Stream, string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetPagePaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessResponse__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessResponse&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi__ctor_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi__ctor_System_Net_Http_HttpClient_Microsoft_Extensions_Options_IOptions_Cloudflare_NET_Core_CloudflareApiOptions__Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Options.IOptions{Cloudflare.NET.Core.CloudflareApiOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
+  R2BucketsApi(HttpClient, IOptions&lt;CloudflareApiOptions&gt;, ILoggerFactory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.html">R2BucketsApi</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public R2BucketsApi(HttpClient httpClient, IOptions&lt;CloudflareApiOptions&gt; options, ILoggerFactory loggerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd><p>The HttpClient for making requests.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptions-1">IOptions</a>&lt;<a class="xref" href="Cloudflare.NET.Core.CloudflareApiOptions.html">CloudflareApiOptions</a>&gt;</dt>
+    <dd><p>The Cloudflare API options containing the account ID.</p>
+</dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The factory to create loggers.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_AttachCustomDomainAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.AttachCustomDomainAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_AttachCustomDomainAsync_System_String_System_String_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.AttachCustomDomainAsync(System.String,System.String,System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  AttachCustomDomainAsync(string, string, string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L317"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attaches a custom domain to an R2 bucket, allowing it to be served from a custom hostname.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CustomDomainResponse&gt; AttachCustomDomainAsync(string bucketName, string hostname, string zoneId, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the R2 bucket.</p>
+</dd>
+    <dt><code>hostname</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The custom hostname to attach (e.g., &quot;files.example.com&quot;).</p>
+</dd>
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone the hostname belongs to.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponse.html">CustomDomainResponse</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponse.html">CustomDomainResponse</a> from the API.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_CreateAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.CreateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_CreateAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2LocationHint__System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Nullable_Cloudflare_NET_Accounts_Models_R2StorageClass__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.CreateAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2LocationHint},System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Nullable{Cloudflare.NET.Accounts.Models.R2StorageClass},System.Threading.CancellationToken)">
+  CreateAsync(string, R2LocationHint?, R2Jurisdiction?, R2StorageClass?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new R2 bucket within the configured account with optional location and storage settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Bucket&gt; CreateAsync(string bucketName, R2LocationHint? locationHint = null, R2Jurisdiction? jurisdiction = null, R2StorageClass? storageClass = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The desired name for the new bucket. Must be 3-64 characters and unique.</p>
+</dd>
+    <dt><code>locationHint</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2LocationHint.html">R2LocationHint</a>?</dt>
+    <dd><p>Optional location hint suggesting where the bucket's data should be stored.
+Use <a class="xref" href="Cloudflare.NET.Accounts.Models.R2LocationHint.html">R2LocationHint</a> constants (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2LocationHint.html#Cloudflare_NET_Accounts_Models_R2LocationHint_EastNorthAmerica">EastNorthAmerica</a>).</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p>Optional jurisdictional restriction guaranteeing data residency.
+Use <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a> constants (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>storageClass</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2StorageClass.html">R2StorageClass</a>?</dt>
+    <dd><p>Optional default storage class for new objects.
+Use <a class="xref" href="Cloudflare.NET.Accounts.Models.R2StorageClass.html">R2StorageClass</a> constants (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2StorageClass.html#Cloudflare_NET_Accounts_Models_R2StorageClass_InfrequentAccess">InfrequentAccess</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a> from
+the Cloudflare API, detailing the created bucket.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_CreateAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2LocationHint__System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Nullable_Cloudflare_NET_Accounts_Models_R2StorageClass__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  <strong>Important:</strong> If you create a bucket with a jurisdiction (e.g.,
+  <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>), you <strong>must</strong> pass the same jurisdiction
+  value to all subsequent API operations on this bucket. Store the jurisdiction value and reuse it.
+</p>
+<p>Once created, a bucket's jurisdiction cannot be changed.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/create/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/create/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_CreateTempCredentialsAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.CreateTempCredentialsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_CreateTempCredentialsAsync_Cloudflare_NET_Accounts_Models_CreateTempCredentialsRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.CreateTempCredentialsAsync(Cloudflare.NET.Accounts.Models.CreateTempCredentialsRequest,System.Threading.CancellationToken)">
+  CreateTempCredentialsAsync(CreateTempCredentialsRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L506"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates temporary access credentials for R2 that can be optionally scoped to specific buckets or prefixes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;TempCredentials&gt; CreateTempCredentialsAsync(CreateTempCredentialsRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.CreateTempCredentialsRequest.html">CreateTempCredentialsRequest</a></dt>
+    <dd><p>The request specifying the credentials to create.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.TempCredentials.html">TempCredentials</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.TempCredentials.html">TempCredentials</a> with the temporary access credentials.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_CreateTempCredentialsAsync_Cloudflare_NET_Accounts_Models_CreateTempCredentialsRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Temporary credentials are useful for granting limited, time-bound access to R2 resources
+without exposing your main API credentials. The credentials include an access key ID,
+secret access key, and session token.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/temporary_credentials/">https://developers.cloudflare.com/api/resources/r2/subresources/temporary_credentials/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  DeleteAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an R2 bucket. The bucket must be empty before it can be deleted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket to delete.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/delete/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteCorsAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteCorsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteCorsAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteCorsAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  DeleteCorsAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the CORS policy for an R2 bucket, removing all CORS rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteCorsAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/delete/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteLifecycleAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteLifecycleAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteLifecycleAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteLifecycleAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  DeleteLifecycleAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L286"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the lifecycle policy for an R2 bucket, removing all lifecycle rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteLifecycleAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteLifecycleAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Cloudflare R2 does not have a dedicated DELETE endpoint for lifecycle policies. This method removes the policy
+by setting an empty rules array.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/r2/buckets/object-lifecycles/">https://developers.cloudflare.com/r2/buckets/object-lifecycles/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteLockAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteLockAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteLockAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DeleteLockAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  DeleteLockAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L446"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes all lock rules for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteLockAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DeleteLockAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method removes the lock policy by setting an empty rules array, similar to lifecycle policy deletion.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DetachCustomDomainAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DetachCustomDomainAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DetachCustomDomainAsync_System_String_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DetachCustomDomainAsync(System.String,System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  DetachCustomDomainAsync(string, string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L359"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Detaches a custom domain from an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DetachCustomDomainAsync(string bucketName, string hostname, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>hostname</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The custom hostname to detach.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DisableManagedDomainAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DisableManagedDomainAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DisableManagedDomainAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DisableManagedDomainAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  DisableManagedDomainAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L402"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Disables the public r2.dev URL for a given bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DisableManagedDomainAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket to modify.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DisableSippyAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DisableSippyAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_DisableSippyAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.DisableSippyAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  DisableSippyAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L489"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Disables Sippy (incremental migration) for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DisableSippyAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/r2/data-migration/sippy/">https://developers.cloudflare.com/r2/data-migration/sippy/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_EnableManagedDomainAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.EnableManagedDomainAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_EnableManagedDomainAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.EnableManagedDomainAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  EnableManagedDomainAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L389"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables the public r2.dev URL for a given bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ManagedDomainResponse&gt; EnableManagedDomainAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket to modify.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.ManagedDomainResponse.html">ManagedDomainResponse</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.ManagedDomainResponse.html">ManagedDomainResponse</a> with the updated status.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_EnableSippyAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.EnableSippyAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_EnableSippyAsync_System_String_Cloudflare_NET_Accounts_Models_EnableSippyRequest_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.EnableSippyAsync(System.String,Cloudflare.NET.Accounts.Models.EnableSippyRequest,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  EnableSippyAsync(string, EnableSippyRequest, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L475"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables or updates Sippy (incremental migration) for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SippyConfig&gt; EnableSippyAsync(string bucketName, EnableSippyRequest request, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.EnableSippyRequest.html">EnableSippyRequest</a></dt>
+    <dd><p>The Sippy configuration to apply.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.SippyConfig.html">SippyConfig</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.SippyConfig.html">SippyConfig</a> with the applied configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_EnableSippyAsync_System_String_Cloudflare_NET_Accounts_Models_EnableSippyRequest_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Sippy supports migration from:</p>
+<ul><li>Amazon S3</li><li>Google Cloud Storage (GCS)</li></ul>
+<p>
+  When enabled, objects not found in R2 are simultaneously returned from the source bucket
+  and copied to R2 for future requests.
+</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/r2/data-migration/sippy/">https://developers.cloudflare.com/r2/data-migration/sippy/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  GetAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the properties of an existing R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Bucket&gt; GetAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket to retrieve (3-64 characters).</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a>
+with the bucket's properties, including its <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html#Cloudflare_NET_Accounts_Models_R2Bucket_Jurisdiction">Jurisdiction</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/get/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetCorsAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetCorsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetCorsAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetCorsAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  GetCorsAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the CORS policy for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BucketCorsPolicy&gt; GetCorsAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketCorsPolicy.html">BucketCorsPolicy</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketCorsPolicy.html">BucketCorsPolicy</a> with the current CORS rules.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/get/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetCustomDomainStatusAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetCustomDomainStatusAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetCustomDomainStatusAsync_System_String_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetCustomDomainStatusAsync(System.String,System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  GetCustomDomainStatusAsync(string, string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L332"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current status of a custom domain attached to a bucket, including ownership and SSL status.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CustomDomainResponse&gt; GetCustomDomainStatusAsync(string bucketName, string hostname, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the R2 bucket.</p>
+</dd>
+    <dt><code>hostname</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The custom hostname to check.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponse.html">CustomDomainResponse</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponse.html">CustomDomainResponse</a> with the latest status.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetLifecycleAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetLifecycleAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetLifecycleAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetLifecycleAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  GetLifecycleAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L242"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the lifecycle policy for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BucketLifecyclePolicy&gt; GetLifecycleAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLifecyclePolicy.html">BucketLifecyclePolicy</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLifecyclePolicy.html">BucketLifecyclePolicy</a> with the current lifecycle rules.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetLifecycleAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Lifecycle rules determine object retention, automatic deletion, storage class transitions, and cleanup of
+incomplete multipart uploads. A bucket can have up to 1000 lifecycle rules.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/get/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetLockAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetLockAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetLockAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetLockAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  GetLockAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L421"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the lock rules for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BucketLockPolicy&gt; GetLockAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockPolicy.html">BucketLockPolicy</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockPolicy.html">BucketLockPolicy</a> with the current lock rules.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetLockAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Bucket locks prevent the deletion and overwriting of objects for a specified period or indefinitely.
+If multiple rules apply to the same prefix or object key, the strictest retention requirement takes precedence.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/r2/buckets/bucket-locks/">https://developers.cloudflare.com/r2/buckets/bucket-locks/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetManagedDomainAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetManagedDomainAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetManagedDomainAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetManagedDomainAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  GetManagedDomainAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L377"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current state of public access over the bucket's R2-managed (r2.dev) domain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ManagedDomainResponse&gt; GetManagedDomainAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the R2 bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.ManagedDomainResponse.html">ManagedDomainResponse</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.ManagedDomainResponse.html">ManagedDomainResponse</a> with the r2.dev domain status.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetSippyAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetSippyAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetSippyAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.GetSippyAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  GetSippyAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L463"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the Sippy (incremental migration) configuration for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SippyConfig&gt; GetSippyAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.SippyConfig.html">SippyConfig</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.SippyConfig.html">SippyConfig</a> with the current Sippy configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_GetSippyAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Sippy is an incremental migration service that copies data from cloud storage providers (AWS S3, GCS)
+to R2 as it's requested, helping avoid upfront egress fees during migration.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/r2/data-migration/sippy/">https://developers.cloudflare.com/r2/data-migration/sippy/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_ListAllAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.ListAllAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_ListAllAsync_Cloudflare_NET_Accounts_Models_ListR2BucketsFilters_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.ListAllAsync(Cloudflare.NET.Accounts.Models.ListR2BucketsFilters,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  ListAllAsync(ListR2BucketsFilters?, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all R2 buckets in the account, automatically handling cursor-based pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IAsyncEnumerable&lt;R2Bucket&gt; ListAllAsync(ListR2BucketsFilters? filters = null, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.ListR2BucketsFilters.html">ListR2BucketsFilters</a></dt>
+    <dd><p>Optional filters for pagination. The cursor will be ignored.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p>Optional filter to return only buckets in this jurisdiction.
+When null, returns all buckets regardless of jurisdiction.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a>&gt;</dt>
+    <dd><p>An asynchronous stream of all R2 buckets in the account.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_ListAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.ListAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_ListAsync_Cloudflare_NET_Accounts_Models_ListR2BucketsFilters_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.ListAsync(Cloudflare.NET.Accounts.Models.ListR2BucketsFilters,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  ListAsync(ListR2BucketsFilters?, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists R2 buckets in the account, allowing for manual pagination control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CursorPaginatedResult&lt;R2Bucket&gt;&gt; ListAsync(ListR2BucketsFilters? filters = null, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.ListR2BucketsFilters.html">ListR2BucketsFilters</a></dt>
+    <dd><p>Optional filters for pagination.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p>Optional filter to return only buckets in this jurisdiction.
+When null, returns all buckets regardless of jurisdiction.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a>&gt;&gt;</dt>
+    <dd><p>A single page of R2 buckets along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/list/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_ListCustomDomainsAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.ListCustomDomainsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_ListCustomDomainsAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.ListCustomDomainsAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  ListCustomDomainsAsync(string, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L304"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all custom domains attached to an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;CustomDomain&gt;&gt; ListCustomDomainsAsync(string bucketName, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the R2 bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomain.html">CustomDomain</a>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a list of
+<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomain.html">CustomDomain</a> objects representing all custom domains for the bucket.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/domains/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetCorsAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.SetCorsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetCorsAsync_System_String_Cloudflare_NET_Accounts_Models_BucketCorsPolicy_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.SetCorsAsync(System.String,Cloudflare.NET.Accounts.Models.BucketCorsPolicy,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  SetCorsAsync(string, BucketCorsPolicy, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets or updates the CORS policy for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task SetCorsAsync(string bucketName, BucketCorsPolicy corsPolicy, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>corsPolicy</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.BucketCorsPolicy.html">BucketCorsPolicy</a></dt>
+    <dd><p>The CORS policy to apply to the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/update/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/cors/methods/update/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetLifecycleAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.SetLifecycleAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetLifecycleAsync_System_String_Cloudflare_NET_Accounts_Models_BucketLifecyclePolicy_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.SetLifecycleAsync(System.String,Cloudflare.NET.Accounts.Models.BucketLifecyclePolicy,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  SetLifecycleAsync(string, BucketLifecyclePolicy, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets or updates the lifecycle policy for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task SetLifecycleAsync(string bucketName, BucketLifecyclePolicy lifecyclePolicy, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>lifecyclePolicy</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLifecyclePolicy.html">BucketLifecyclePolicy</a></dt>
+    <dd><p>The lifecycle policy to apply to the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetLifecycleAsync_System_String_Cloudflare_NET_Accounts_Models_BucketLifecyclePolicy_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Lifecycle rules can perform the following actions:</p>
+<ul><li>Delete objects after a specified age or on a specific date</li><li>Abort incomplete multipart uploads after a specified age</li><li>Transition objects to Infrequent Access storage class</li></ul>
+<p>Rules are processed within 24 hours of being set. Maximum of 1000 rules per bucket.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/update/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/subresources/lifecycle/methods/update/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetLockAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.SetLockAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetLockAsync_System_String_Cloudflare_NET_Accounts_Models_BucketLockPolicy_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.SetLockAsync(System.String,Cloudflare.NET.Accounts.Models.BucketLockPolicy,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  SetLockAsync(string, BucketLockPolicy, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L433"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets or updates the lock rules for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BucketLockPolicy&gt; SetLockAsync(string bucketName, BucketLockPolicy lockPolicy, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket.</p>
+</dd>
+    <dt><code>lockPolicy</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockPolicy.html">BucketLockPolicy</a></dt>
+    <dd><p>The lock policy to apply to the bucket.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockPolicy.html">BucketLockPolicy</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.BucketLockPolicy.html">BucketLockPolicy</a> with the applied lock rules.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_SetLockAsync_System_String_Cloudflare_NET_Accounts_Models_BucketLockPolicy_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Lock rules can have the following condition types:</p>
+<ul><li>Age-based: Retention for a specific duration in seconds</li><li>Date-based: Retention until a specific date</li><li>Indefinite: Permanent locking without expiration</li></ul>
+<p>Maximum of 1000 lock rules per bucket configuration.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/r2/buckets/bucket-locks/">https://developers.cloudflare.com/r2/buckets/bucket-locks/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_UpdateAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.UpdateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_UpdateAsync_System_String_Cloudflare_NET_Accounts_Models_R2StorageClass_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.UpdateAsync(System.String,Cloudflare.NET.Accounts.Models.R2StorageClass,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  UpdateAsync(string, R2StorageClass, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates properties of an existing R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Bucket&gt; UpdateAsync(string bucketName, R2StorageClass storageClass, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket to update (3-64 characters).</p>
+</dd>
+    <dt><code>storageClass</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2StorageClass.html">R2StorageClass</a></dt>
+    <dd><p>The new default storage class for newly uploaded objects. This does not change the storage class
+of existing objects. Use <a class="xref" href="Cloudflare.NET.Accounts.Models.R2StorageClass.html">R2StorageClass</a> constants (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2StorageClass.html#Cloudflare_NET_Accounts_Models_R2StorageClass_InfrequentAccess">InfrequentAccess</a>).</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the updated <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html">R2Bucket</a>
+with the bucket's properties, including the new <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Bucket.html#Cloudflare_NET_Accounts_Models_R2Bucket_StorageClass">StorageClass</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_UpdateAsync_System_String_Cloudflare_NET_Accounts_Models_R2StorageClass_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Currently, the only property that can be updated is the default storage class for new objects.
+  Existing objects in the bucket retain their original storage class; use lifecycle rules to
+  transition them if needed.
+</p>
+<p>
+  The bucket's location hint and jurisdiction cannot be changed after creation.
+</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/edit/">https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/edit/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_UpdateCustomDomainAsync_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.UpdateCustomDomainAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Buckets_R2BucketsApi_UpdateCustomDomainAsync_System_String_System_String_Cloudflare_NET_Accounts_Models_UpdateCustomDomainRequest_System_Nullable_Cloudflare_NET_Accounts_Models_R2Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.UpdateCustomDomainAsync(System.String,System.String,Cloudflare.NET.Accounts.Models.UpdateCustomDomainRequest,System.Nullable{Cloudflare.NET.Accounts.Models.R2Jurisdiction},System.Threading.CancellationToken)">
+  UpdateCustomDomainAsync(string, string, UpdateCustomDomainRequest, R2Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L345"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the configuration of a custom domain attached to a bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CustomDomainResponse&gt; UpdateCustomDomainAsync(string bucketName, string hostname, UpdateCustomDomainRequest request, R2Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the R2 bucket.</p>
+</dd>
+    <dt><code>hostname</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The custom hostname to update.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.UpdateCustomDomainRequest.html">UpdateCustomDomainRequest</a></dt>
+    <dd><p>The update request with new domain settings.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a>?</dt>
+    <dd><p><strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html#Cloudflare_NET_Accounts_Models_R2Jurisdiction_EuropeanUnion">EuropeanUnion</a>).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponse.html">CustomDomainResponse</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the
+<a class="xref" href="Cloudflare.NET.Accounts.Models.CustomDomainResponse.html">CustomDomainResponse</a> with the updated configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Buckets/R2BucketsApi.cs/#L10" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DnsApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DnsApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Implements the API for managing DNS records in Cloudflare zones.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Dns_DnsApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Dns.DnsApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Dns.DnsApi">
+
+
+
+  <h1 id="Cloudflare_NET_Dns_DnsApi" data-uid="Cloudflare.NET.Dns.DnsApi" class="text-break">
+Class DnsApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Dns.html">Dns</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements the API for managing DNS records in Cloudflare zones.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class DnsApi : ApiResource, IDnsApi</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Core.ApiResource.html">ApiResource</a></div>
+      <div><span class="xref">DnsApi</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Dns.IDnsApi.html">IDnsApi</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_HttpClient">ApiResource.HttpClient</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_Logger">ApiResource.Logger</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetStringAsync_System_String_System_Threading_CancellationToken_">ApiResource.GetStringAsync(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync__1_System_String_System_IO_Stream_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostMultipartFileAsync&lt;TResult&gt;(string, Stream, string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetPagePaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessResponse__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessResponse&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi__ctor_" data-uid="Cloudflare.NET.Dns.DnsApi.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi__ctor_System_Net_Http_HttpClient_Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="Cloudflare.NET.Dns.DnsApi.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory)">
+  DnsApi(HttpClient, ILoggerFactory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Cloudflare.NET.Dns.DnsApi.html">DnsApi</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DnsApi(HttpClient httpClient, ILoggerFactory loggerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd><p>The HttpClient for making API requests.</p>
+</dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The factory to create loggers.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_BatchDnsRecordsAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.BatchDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_BatchDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.BatchDnsRecordsAsync(System.String,Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest,System.Threading.CancellationToken)">
+  BatchDnsRecordsAsync(string, BatchDnsRecordsRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs batch DNS record operations in a single API call.</p>
+<p>
+  <strong>Execution Order:</strong> Deletes → Patches → Puts → Posts.
+  This order allows you to delete a record and re-create it with the same name in one batch.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;BatchDnsRecordsResult&gt; BatchDnsRecordsAsync(string zoneId, BatchDnsRecordsRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.html">BatchDnsRecordsRequest</a></dt>
+    <dd><p>The batch request containing operations to perform.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchDnsRecordsResult.html">BatchDnsRecordsResult</a>&gt;</dt>
+    <dd><p>The result containing the outcome of each operation type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_BatchDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var batch = new BatchDnsRecordsRequest(
+  Deletes: [new BatchDeleteOperation("old-record-id")],
+  Posts: [new CreateDnsRecordRequest(DnsRecordType.A, "new.example.com", "192.0.2.1")]
+);
+var result = await dns.BatchDnsRecordsAsync(zoneId, batch);
+Console.WriteLine($"Deleted: {result.Deletes?.Count ?? 0}, Created: {result.Posts?.Count ?? 0}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/batch/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/batch/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_CreateCnameRecordAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.CreateCnameRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_CreateCnameRecordAsync_System_String_System_String_System_String_System_Boolean_System_Int32_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.CreateCnameRecordAsync(System.String,System.String,System.String,System.Boolean,System.Int32,System.Threading.CancellationToken)">
+  CreateCnameRecordAsync(string, string, string, bool, int, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a CNAME record (convenience method).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord&gt; CreateCnameRecordAsync(string zoneId, string name, string target, bool proxied = false, int ttl = 1, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The hostname for the CNAME record (e.g., &quot;cdn.example.com&quot;).</p>
+</dd>
+    <dt><code>target</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The target hostname the CNAME points to.</p>
+</dd>
+    <dt><code>proxied</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether to proxy the record through Cloudflare.</p>
+</dd>
+    <dt><code>ttl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Time to live in seconds. Default: 1 (automatic).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>The newly created CNAME record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_CreateCnameRecordAsync_System_String_System_String_System_String_System_Boolean_System_Int32_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var record = await dns.CreateCnameRecordAsync(zoneId, "cdn.example.com", "cdn.provider.com", proxied: true);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code>, <code class="paramref">name</code>, or <code class="paramref">target</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when any required string parameter is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_CreateDnsRecordAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.CreateDnsRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_CreateDnsRecordAsync_System_String_Cloudflare_NET_Dns_Models_CreateDnsRecordRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.CreateDnsRecordAsync(System.String,Cloudflare.NET.Dns.Models.CreateDnsRecordRequest,System.Threading.CancellationToken)">
+  CreateDnsRecordAsync(string, CreateDnsRecordRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new DNS record of any type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord&gt; CreateDnsRecordAsync(string zoneId, CreateDnsRecordRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Dns.Models.CreateDnsRecordRequest.html">CreateDnsRecordRequest</a></dt>
+    <dd><p>The DNS record creation request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>The newly created DNS record with its assigned ID.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_CreateDnsRecordAsync_System_String_Cloudflare_NET_Dns_Models_CreateDnsRecordRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var request = new CreateDnsRecordRequest(DnsRecordType.A, "www.example.com", "192.0.2.1", Proxied: true);
+var record = await dns.CreateDnsRecordAsync(zoneId, request);
+Console.WriteLine($"Created record with ID: {record.Id}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/create/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/create/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_DeleteDnsRecordAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.DeleteDnsRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_DeleteDnsRecordAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.DeleteDnsRecordAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteDnsRecordAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a DNS record by its ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteDnsRecordAsync(string zoneId, string dnsRecordId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>dnsRecordId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The DNS record identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_DeleteDnsRecordAsync_System_String_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await dns.DeleteDnsRecordAsync(zoneId, recordId);
+Console.WriteLine("Record deleted successfully.");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">dnsRecordId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when any required string parameter is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/delete/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_ExportDnsRecordsAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.ExportDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_ExportDnsRecordsAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.ExportDnsRecordsAsync(System.String,System.Threading.CancellationToken)">
+  ExportDnsRecordsAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exports DNS records in BIND zone file format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;string&gt; ExportDnsRecordsAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A string containing the zone's records in BIND format.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_ExportDnsRecordsAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var bindContent = await dns.ExportDnsRecordsAsync(zoneId);
+await File.WriteAllTextAsync("zone.txt", bindContent);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/export/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/export/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_FindDnsRecordByNameAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.FindDnsRecordByNameAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_FindDnsRecordByNameAsync_System_String_System_String_System_Nullable_Cloudflare_NET_Dns_Models_DnsRecordType__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.FindDnsRecordByNameAsync(System.String,System.String,System.Nullable{Cloudflare.NET.Dns.Models.DnsRecordType},System.Threading.CancellationToken)">
+  FindDnsRecordByNameAsync(string, string, DnsRecordType?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a DNS record by its hostname within a zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord?&gt; FindDnsRecordByNameAsync(string zoneId, string hostname, DnsRecordType? type = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>hostname</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The fully qualified domain name to search for.</p>
+</dd>
+    <dt><code>type</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a>?</dt>
+    <dd><p>Optional: filter by record type to avoid ambiguity when multiple record types exist for the same name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>The matching DNS record, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if not found.
+If multiple records match (e.g., both A and AAAA), returns the first one.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_FindDnsRecordByNameAsync_System_String_System_String_System_Nullable_Cloudflare_NET_Dns_Models_DnsRecordType__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var record = await dns.FindDnsRecordByNameAsync(zoneId, "www.example.com");
+if (record != null)
+{
+  Console.WriteLine($"Found: {record.Content}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">hostname</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">hostname</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_GetDnsRecordAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.GetDnsRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_GetDnsRecordAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.GetDnsRecordAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetDnsRecordAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a DNS record by its unique identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord&gt; GetDnsRecordAsync(string zoneId, string dnsRecordId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>dnsRecordId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The DNS record identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>The DNS record with all its properties.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_GetDnsRecordAsync_System_String_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var record = await dns.GetDnsRecordAsync(zoneId, recordId);
+Console.WriteLine($"{record.Name}: {record.Content}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">dnsRecordId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">dnsRecordId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/get/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_GetDnsRecordScanReviewAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.GetDnsRecordScanReviewAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_GetDnsRecordScanReviewAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.GetDnsRecordScanReviewAsync(System.String,System.Threading.CancellationToken)">
+  GetDnsRecordScanReviewAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets DNS records discovered by scanning that are pending review.</p>
+<p>
+  These records are temporary until accepted or rejected via
+  <a class="xref" href="Cloudflare.NET.Dns.IDnsApi.html#Cloudflare_NET_Dns_IDnsApi_SubmitDnsRecordScanReviewAsync_System_String_Cloudflare_NET_Dns_Models_DnsScanReviewRequest_System_Threading_CancellationToken_">SubmitDnsRecordScanReviewAsync(string, DnsScanReviewRequest, CancellationToken)</a>.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;DnsRecord&gt;&gt; GetDnsRecordScanReviewAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;&gt;</dt>
+    <dd><p>List of scanned DNS records pending review.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_GetDnsRecordScanReviewAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var pending = await dns.GetDnsRecordScanReviewAsync(zoneId);
+foreach (var record in pending)
+{
+  Console.WriteLine($"{record.Type} {record.Name} -&gt; {record.Content}");
+}</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_GetDnsRecordScanReviewAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Records expire after 30 days if not reviewed. Use
+<a class="xref" href="Cloudflare.NET.Dns.IDnsApi.html#Cloudflare_NET_Dns_IDnsApi_SubmitDnsRecordScanReviewAsync_System_String_Cloudflare_NET_Dns_Models_DnsScanReviewRequest_System_Threading_CancellationToken_">SubmitDnsRecordScanReviewAsync(string, DnsScanReviewRequest, CancellationToken)</a> to accept or reject records.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/scan/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/scan/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_ImportDnsRecordsAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.ImportDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_ImportDnsRecordsAsync_System_String_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.ImportDnsRecordsAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+  ImportDnsRecordsAsync(string, string, bool, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Imports DNS records from BIND zone file format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsImportResult&gt; ImportDnsRecordsAsync(string zoneId, string bindContent, bool proxied = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>bindContent</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The BIND zone file content as a string.</p>
+</dd>
+    <dt><code>proxied</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether to proxy imported records through Cloudflare.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsImportResult.html">DnsImportResult</a>&gt;</dt>
+    <dd><p>A result object with a summary of the import operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_ImportDnsRecordsAsync_System_String_System_String_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var bindContent = await File.ReadAllTextAsync("zone.txt");
+var result = await dns.ImportDnsRecordsAsync(zoneId, bindContent, proxied: true);
+Console.WriteLine($"Added: {result.RecordsAdded}, Parsed: {result.TotalRecordsParsed}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">bindContent</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/import/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/import/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_ListAllDnsRecordsAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.ListAllDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_ListAllDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.ListAllDnsRecordsAsync(System.String,Cloudflare.NET.Dns.Models.ListDnsRecordsFilters,System.Threading.CancellationToken)">
+  ListAllDnsRecordsAsync(string, ListDnsRecordsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all DNS records, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IAsyncEnumerable&lt;DnsRecord&gt; ListAllDnsRecordsAsync(string zoneId, ListDnsRecordsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Dns.Models.ListDnsRecordsFilters.html">ListDnsRecordsFilters</a></dt>
+    <dd><p>Optional filters for sorting and matching. Pagination options will be managed internally.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>An asynchronous stream of all matching DNS records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_ListAllDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await foreach (var record in dns.ListAllDnsRecordsAsync(zoneId))
+{
+  Console.WriteLine($"{record.Name} ({record.Type}): {record.Content}");
+}</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_ListAllDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method automatically handles pagination by making multiple API requests as needed.
+The <a class="xref" href="Cloudflare.NET.Dns.Models.ListDnsRecordsFilters.html#Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_Page">Page</a> and <a class="xref" href="Cloudflare.NET.Dns.Models.ListDnsRecordsFilters.html#Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_PerPage">PerPage</a> properties
+are managed internally and will be ignored if provided.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/list/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_ListDnsRecordsAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.ListDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_ListDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.ListDnsRecordsAsync(System.String,Cloudflare.NET.Dns.Models.ListDnsRecordsFilters,System.Threading.CancellationToken)">
+  ListDnsRecordsAsync(string, ListDnsRecordsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists DNS records with filtering and pagination support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;PagePaginatedResult&lt;DnsRecord&gt;&gt; ListDnsRecordsAsync(string zoneId, ListDnsRecordsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Dns.Models.ListDnsRecordsFilters.html">ListDnsRecordsFilters</a></dt>
+    <dd><p>Optional filters for pagination, sorting, and matching.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;&gt;</dt>
+    <dd><p>A single page of DNS records along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_ListDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Get first page of A records
+var result = await dns.ListDnsRecordsAsync(zoneId, new ListDnsRecordsFilters(Type: DnsRecordType.A));
+foreach (var record in result.Items)
+{
+  Console.WriteLine($"{record.Name}: {record.Content}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/list/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_PatchDnsRecordAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.PatchDnsRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_PatchDnsRecordAsync_System_String_System_String_Cloudflare_NET_Dns_Models_PatchDnsRecordRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.PatchDnsRecordAsync(System.String,System.String,Cloudflare.NET.Dns.Models.PatchDnsRecordRequest,System.Threading.CancellationToken)">
+  PatchDnsRecordAsync(string, string, PatchDnsRecordRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Partially updates a DNS record (PATCH).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord&gt; PatchDnsRecordAsync(string zoneId, string dnsRecordId, PatchDnsRecordRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>dnsRecordId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The DNS record identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Dns.Models.PatchDnsRecordRequest.html">PatchDnsRecordRequest</a></dt>
+    <dd><p>The fields to update. Only non-null fields will be changed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>The updated DNS record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_PatchDnsRecordAsync_System_String_System_String_Cloudflare_NET_Dns_Models_PatchDnsRecordRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Change only the content
+var patch = new PatchDnsRecordRequest(Content: "192.0.2.100");
+var updated = await dns.PatchDnsRecordAsync(zoneId, recordId, patch);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when any required parameter is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when any required string parameter is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/edit/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/edit/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_SubmitDnsRecordScanReviewAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.SubmitDnsRecordScanReviewAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_SubmitDnsRecordScanReviewAsync_System_String_Cloudflare_NET_Dns_Models_DnsScanReviewRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.SubmitDnsRecordScanReviewAsync(System.String,Cloudflare.NET.Dns.Models.DnsScanReviewRequest,System.Threading.CancellationToken)">
+  SubmitDnsRecordScanReviewAsync(string, DnsScanReviewRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L295"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Accepts or rejects scanned DNS records.</p>
+<p>
+  Accepted records become permanent DNS records in the zone.
+  Rejected records are discarded.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsScanReviewResult&gt; SubmitDnsRecordScanReviewAsync(string zoneId, DnsScanReviewRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsScanReviewRequest.html">DnsScanReviewRequest</a></dt>
+    <dd><p>The accept/reject decisions.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsScanReviewResult.html">DnsScanReviewResult</a>&gt;</dt>
+    <dd><p>Counts of accepted and rejected records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_SubmitDnsRecordScanReviewAsync_System_String_Cloudflare_NET_Dns_Models_DnsScanReviewRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Get pending records from scan review queue
+var pending = await dns.GetDnsRecordScanReviewAsync(zoneId);
+
+// Accept A and AAAA records (pass full record objects), reject others (pass just IDs)
+var accepts = pending
+  .Where(r =&gt; r.Type == DnsRecordType.A || r.Type == DnsRecordType.AAAA)
+  .ToList();
+
+var rejects = pending
+  .Where(r =&gt; r.Type != DnsRecordType.A &amp;&amp; r.Type != DnsRecordType.AAAA)
+  .Select(r =&gt; r.Id)
+  .ToList();
+
+var result = await dns.SubmitDnsRecordScanReviewAsync(zoneId,
+  new DnsScanReviewRequest { Accepts = accepts, Rejects = rejects });
+
+Console.WriteLine($"Accepted: {result.Accepts}, Rejected: {result.Rejects}");</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_SubmitDnsRecordScanReviewAsync_System_String_Cloudflare_NET_Dns_Models_DnsScanReviewRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/scan/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/scan/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_TriggerDnsRecordScanAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.TriggerDnsRecordScanAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_TriggerDnsRecordScanAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.TriggerDnsRecordScanAsync(System.String,System.Threading.CancellationToken)">
+  TriggerDnsRecordScanAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L268"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Triggers an asynchronous DNS record scan for the zone.</p>
+<p>
+  The scan discovers existing DNS records by querying authoritative nameservers.
+  Results are placed in a review queue accessible via <a class="xref" href="Cloudflare.NET.Dns.IDnsApi.html#Cloudflare_NET_Dns_IDnsApi_GetDnsRecordScanReviewAsync_System_String_System_Threading_CancellationToken_">GetDnsRecordScanReviewAsync(string, CancellationToken)</a>.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task TriggerDnsRecordScanAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_TriggerDnsRecordScanAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Trigger scan
+await dns.TriggerDnsRecordScanAsync(zoneId);
+
+// Wait briefly for initial results (in production, use polling)
+await Task.Delay(TimeSpan.FromSeconds(5));
+
+// Get scanned records for review
+var pending = await dns.GetDnsRecordScanReviewAsync(zoneId);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_TriggerDnsRecordScanAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  This operation runs asynchronously. The method returns immediately while the scan
+  continues in the background. Poll <a class="xref" href="Cloudflare.NET.Dns.IDnsApi.html#Cloudflare_NET_Dns_IDnsApi_GetDnsRecordScanReviewAsync_System_String_System_Threading_CancellationToken_">GetDnsRecordScanReviewAsync(string, CancellationToken)</a> to
+  check for results.
+</p>
+<p>
+  Scanned records remain in the review queue for 30 days before automatic expiration.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/scan/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/scan/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Dns_DnsApi_UpdateDnsRecordAsync_" data-uid="Cloudflare.NET.Dns.DnsApi.UpdateDnsRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_DnsApi_UpdateDnsRecordAsync_System_String_System_String_Cloudflare_NET_Dns_Models_UpdateDnsRecordRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Dns.DnsApi.UpdateDnsRecordAsync(System.String,System.String,Cloudflare.NET.Dns.Models.UpdateDnsRecordRequest,System.Threading.CancellationToken)">
+  UpdateDnsRecordAsync(string, string, UpdateDnsRecordRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fully replaces a DNS record (PUT).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord&gt; UpdateDnsRecordAsync(string zoneId, string dnsRecordId, UpdateDnsRecordRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>dnsRecordId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The DNS record identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Dns.Models.UpdateDnsRecordRequest.html">UpdateDnsRecordRequest</a></dt>
+    <dd><p>The complete record data to replace with.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>The updated DNS record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_UpdateDnsRecordAsync_System_String_System_String_Cloudflare_NET_Dns_Models_UpdateDnsRecordRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var request = new UpdateDnsRecordRequest(DnsRecordType.A, "www.example.com", "192.0.2.100");
+var updated = await dns.UpdateDnsRecordAsync(zoneId, recordId, request);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_DnsApi_UpdateDnsRecordAsync_System_String_System_String_Cloudflare_NET_Dns_Models_UpdateDnsRecordRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This operation performs a complete replacement. Use <a class="xref" href="Cloudflare.NET.Dns.IDnsApi.html#Cloudflare_NET_Dns_IDnsApi_PatchDnsRecordAsync_System_String_System_String_Cloudflare_NET_Dns_Models_PatchDnsRecordRequest_System_Threading_CancellationToken_">PatchDnsRecordAsync(string, string, PatchDnsRecordRequest, CancellationToken)</a>
+for partial updates when you only want to change specific fields.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when any required parameter is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when any required string parameter is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/update/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/update/</a></span></div>
+    </dd>
+  </dl>
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/DnsApi.cs/#L10" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

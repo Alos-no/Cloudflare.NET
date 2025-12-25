@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Sippy (Incremental Migration) | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Sippy (Incremental Migration) | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/sippy.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-sippy-incremental-migration">R2 Sippy (Incremental Migration)</h1>
+
+<p>Sippy is Cloudflare's incremental migration service that helps you migrate data from other cloud storage providers to R2 without upfront egress fees. When enabled, objects not found in R2 are fetched from the source bucket, returned to the client, and copied to R2 for future requests.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class MigrationService(ICloudflareApiClient cf)
+{
+    public async Task EnableMigrationAsync(string bucket, string sourceBucket, string region)
+    {
+        var request = new EnableSippyFromAwsRequest(
+            SippyAwsSource.Create(
+                sourceBucket,
+                region,
+                Environment.GetEnvironmentVariable(&quot;AWS_ACCESS_KEY_ID&quot;)!,
+                Environment.GetEnvironmentVariable(&quot;AWS_SECRET_ACCESS_KEY&quot;)!
+            )
+        );
+
+        await cf.Accounts.Buckets.EnableSippyAsync(bucket, request);
+    }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Jurisdictional Buckets:</strong> If your bucket was created with a jurisdiction (e.g., <code>R2Jurisdiction.EuropeanUnion</code>), you must pass the jurisdiction parameter to all Sippy operations. See <a href="buckets.html#working-with-jurisdictional-buckets">Working with Jurisdictional Buckets</a>.</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.EnableSippyAsync(&quot;my-eu-bucket&quot;, request, R2Jurisdiction.EuropeanUnion);
+</code></pre>
+</div>
+<h2 id="supported-sources">Supported Sources</h2>
+<p>Sippy supports migration from:</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Source Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Amazon S3</td>
+<td><code>SippyAwsSource</code></td>
+</tr>
+<tr>
+<td>Google Cloud Storage</td>
+<td><code>SippyGcsSource</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="getting-sippy-status">Getting Sippy Status</h2>
+<p>Check if Sippy is enabled and view the configuration:</p>
+<pre><code class="lang-csharp">var config = await cf.Accounts.Buckets.GetSippyAsync(&quot;my-bucket&quot;);
+
+Console.WriteLine($&quot;Sippy Enabled: {config.Enabled}&quot;);
+
+if (config.Source is not null)
+{
+    Console.WriteLine($&quot;Source Provider: {config.Source.Provider}&quot;);
+    Console.WriteLine($&quot;Source Bucket: {config.Source.Bucket}&quot;);
+    Console.WriteLine($&quot;Source URL: {config.Source.BucketUrl}&quot;);
+}
+
+if (config.Destination is not null)
+{
+    Console.WriteLine($&quot;Destination: {config.Destination.Bucket}&quot;);
+}
+</code></pre>
+<h2 id="enabling-migration-from-aws-s3">Enabling Migration from AWS S3</h2>
+<p>Configure Sippy to migrate data from an Amazon S3 bucket:</p>
+<pre><code class="lang-csharp">var awsSource = SippyAwsSource.Create(
+    bucket: &quot;my-source-bucket&quot;,
+    region: &quot;us-east-1&quot;,
+    accessKeyId: &quot;AKIAIOSFODNN7EXAMPLE&quot;,
+    secretAccessKey: &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;
+);
+
+var request = new EnableSippyFromAwsRequest(awsSource);
+
+var result = await cf.Accounts.Buckets.EnableSippyAsync(&quot;my-r2-bucket&quot;, request);
+
+Console.WriteLine($&quot;Migration enabled: {result.Enabled}&quot;);
+</code></pre>
+<h3 id="aws-iam-policy">AWS IAM Policy</h3>
+<p>The source credentials need at minimum these permissions:</p>
+<pre><code class="lang-json">{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;s3:GetObject&quot;,
+        &quot;s3:ListBucket&quot;
+      ],
+      &quot;Resource&quot;: [
+        &quot;arn:aws:s3:::my-source-bucket&quot;,
+        &quot;arn:aws:s3:::my-source-bucket/*&quot;
+      ]
+    }
+  ]
+}
+</code></pre>
+<h2 id="enabling-migration-from-google-cloud-storage">Enabling Migration from Google Cloud Storage</h2>
+<p>Configure Sippy to migrate data from a GCS bucket:</p>
+<pre><code class="lang-csharp">var gcsSource = SippyGcsSource.Create(
+    bucket: &quot;my-gcs-bucket&quot;,
+    clientEmail: &quot;sippy@my-project.iam.gserviceaccount.com&quot;,
+    privateKey: &quot;-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n&quot;
+);
+
+var request = new EnableSippyFromGcsRequest(gcsSource);
+
+var result = await cf.Accounts.Buckets.EnableSippyAsync(&quot;my-r2-bucket&quot;, request);
+</code></pre>
+<h3 id="gcs-service-account-permissions">GCS Service Account Permissions</h3>
+<p>The service account needs:</p>
+<ul>
+<li><code>storage.objects.get</code> - Read objects</li>
+<li><code>storage.objects.list</code> - List bucket contents</li>
+</ul>
+<h2 id="disabling-sippy">Disabling Sippy</h2>
+<p>Disable incremental migration when migration is complete:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.DisableSippyAsync(&quot;my-bucket&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Disabling Sippy does not delete any objects already copied to R2. Objects already in R2 remain accessible.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="sippyconfig">SippyConfig</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td>Whether Sippy is enabled</td>
+</tr>
+<tr>
+<td><code>Source</code></td>
+<td><code>SippySourceInfo?</code></td>
+<td>Source bucket information</td>
+</tr>
+<tr>
+<td><code>Destination</code></td>
+<td><code>SippyDestination?</code></td>
+<td>Destination R2 bucket information</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sippysourceinfo">SippySourceInfo</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Provider</code></td>
+<td><code>SippyProvider?</code></td>
+<td>Source provider (aws, gcs)</td>
+</tr>
+<tr>
+<td><code>Bucket</code></td>
+<td><code>string?</code></td>
+<td>Source bucket name</td>
+</tr>
+<tr>
+<td><code>BucketUrl</code></td>
+<td><code>string?</code></td>
+<td>Full URL of source bucket</td>
+</tr>
+<tr>
+<td><code>Region</code></td>
+<td><code>string?</code></td>
+<td>Source region (for AWS)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sippyawssource">SippyAwsSource</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Provider</code></td>
+<td><code>SippyProvider</code></td>
+<td>Always <code>Aws</code></td>
+</tr>
+<tr>
+<td><code>Bucket</code></td>
+<td><code>string</code></td>
+<td>AWS S3 bucket name</td>
+</tr>
+<tr>
+<td><code>Region</code></td>
+<td><code>string?</code></td>
+<td>AWS region (e.g., &quot;us-east-1&quot;)</td>
+</tr>
+<tr>
+<td><code>AccessKeyId</code></td>
+<td><code>string?</code></td>
+<td>AWS access key ID</td>
+</tr>
+<tr>
+<td><code>SecretAccessKey</code></td>
+<td><code>string?</code></td>
+<td>AWS secret access key</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sippygcssource">SippyGcsSource</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Provider</code></td>
+<td><code>SippyProvider</code></td>
+<td>Always <code>Gcs</code></td>
+</tr>
+<tr>
+<td><code>Bucket</code></td>
+<td><code>string</code></td>
+<td>GCS bucket name</td>
+</tr>
+<tr>
+<td><code>ClientEmail</code></td>
+<td><code>string?</code></td>
+<td>Service account email</td>
+</tr>
+<tr>
+<td><code>PrivateKey</code></td>
+<td><code>string?</code></td>
+<td>Service account private key</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sippyprovider">SippyProvider</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Aws</code></td>
+<td>Amazon Web Services S3</td>
+</tr>
+<tr>
+<td><code>Gcs</code></td>
+<td>Google Cloud Storage</td>
+</tr>
+<tr>
+<td><code>R2</code></td>
+<td>Cloudflare R2 (destination only)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="migration-workflow">Migration Workflow</h3>
+<pre><code class="lang-csharp">public async Task MigrateFromAwsAsync(
+    string r2Bucket,
+    string awsBucket,
+    string awsRegion,
+    string awsAccessKeyId,
+    string awsSecretKey)
+{
+    // 1. Enable Sippy
+    var source = SippyAwsSource.Create(awsBucket, awsRegion, awsAccessKeyId, awsSecretKey);
+    await cf.Accounts.Buckets.EnableSippyAsync(r2Bucket, new EnableSippyFromAwsRequest(source));
+
+    Console.WriteLine($&quot;Sippy enabled. Objects will be migrated on-demand.&quot;);
+    Console.WriteLine(&quot;Update your application to point to R2.&quot;);
+    Console.WriteLine(&quot;Once migration is complete, disable Sippy.&quot;);
+}
+</code></pre>
+<h3 id="check-migration-status">Check Migration Status</h3>
+<pre><code class="lang-csharp">public async Task&lt;bool&gt; IsMigrationActiveAsync(string bucket)
+{
+    var config = await cf.Accounts.Buckets.GetSippyAsync(bucket);
+    return config.Enabled;
+}
+</code></pre>
+<h3 id="environment-based-configuration">Environment-Based Configuration</h3>
+<pre><code class="lang-csharp">public async Task ConfigureMigrationAsync(string r2Bucket)
+{
+    var provider = Environment.GetEnvironmentVariable(&quot;MIGRATION_SOURCE_PROVIDER&quot;);
+
+    EnableSippyRequest request = provider switch
+    {
+        &quot;aws&quot; =&gt; new EnableSippyFromAwsRequest(SippyAwsSource.Create(
+            Environment.GetEnvironmentVariable(&quot;AWS_SOURCE_BUCKET&quot;)!,
+            Environment.GetEnvironmentVariable(&quot;AWS_REGION&quot;)!,
+            Environment.GetEnvironmentVariable(&quot;AWS_ACCESS_KEY_ID&quot;)!,
+            Environment.GetEnvironmentVariable(&quot;AWS_SECRET_ACCESS_KEY&quot;)!
+        )),
+        &quot;gcs&quot; =&gt; new EnableSippyFromGcsRequest(SippyGcsSource.Create(
+            Environment.GetEnvironmentVariable(&quot;GCS_SOURCE_BUCKET&quot;)!,
+            Environment.GetEnvironmentVariable(&quot;GCS_CLIENT_EMAIL&quot;)!,
+            Environment.GetEnvironmentVariable(&quot;GCS_PRIVATE_KEY&quot;)!
+        )),
+        _ =&gt; throw new InvalidOperationException($&quot;Unknown provider: {provider}&quot;)
+    };
+
+    await cf.Accounts.Buckets.EnableSippyAsync(r2Bucket, request);
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers R2 Storage</td>
+<td>Account</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-sippy-works">How Sippy Works</h2>
+<ol>
+<li><strong>Request arrives</strong>: Client requests an object from R2</li>
+<li><strong>Check R2</strong>: If object exists in R2, return it immediately</li>
+<li><strong>Fetch from source</strong>: If not in R2, fetch from the source bucket</li>
+<li><strong>Return and copy</strong>: Return object to client while copying to R2</li>
+<li><strong>Future requests</strong>: Object now served directly from R2</li>
+</ol>
+<pre><code>     Client Request
+           │
+           ▼
+    ┌─────────────┐
+    │     R2      │
+    │   Bucket    │
+    └─────────────┘
+           │
+     Object exists?
+         / \
+       Yes  No
+        │    │
+        │    ▼
+        │  ┌─────────────┐
+        │  │   Source    │──── Fetch object
+        │  │   Bucket    │
+        │  └─────────────┘
+        │         │
+        │         ▼
+        │    Copy to R2
+        │         │
+        └────┬────┘
+             │
+             ▼
+     Return to Client
+</code></pre>
+<h2 id="important-notes">Important Notes</h2>
+<ol>
+<li><strong>Egress costs</strong>: You pay source provider egress fees only for objects not yet in R2</li>
+<li><strong>Latency</strong>: First request for uncached objects has higher latency (fetching from source)</li>
+<li><strong>Credentials</strong>: Source credentials are stored securely but never returned in API responses</li>
+<li><strong>Consistency</strong>: Objects are copied as-is; metadata is preserved</li>
+<li><strong>Overwrite</strong>: Objects already in R2 are not overwritten by source objects</li>
+</ol>
+<h2 id="migration-best-practices">Migration Best Practices</h2>
+<ol>
+<li><strong>Pre-warm</strong> frequently accessed objects by requesting them before cutover</li>
+<li><strong>Monitor</strong> R2 usage metrics to track migration progress</li>
+<li><strong>Validate</strong> critical objects after migration</li>
+<li><strong>Disable</strong> Sippy only after confirming all necessary data is in R2</li>
+<li><strong>Update</strong> application endpoints gradually during migration</li>
+</ol>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="buckets.html">Bucket Management</a> - Create and manage buckets</li>
+<li><a href="../../r2/index.html">R2 Object Storage</a> - Upload and download objects</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/sippy.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

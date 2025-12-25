@@ -1,0 +1,2455 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Struct ZoneSettingId | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Struct ZoneSettingId | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Represents a zone setting identifier.    Zone settings control various aspects of zone behavior including security,   performance, caching, and network configuration.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Zones_Models_ZoneSettingId.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Zones.Models.ZoneSettingId%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId">
+
+
+
+  <h1 id="Cloudflare_NET_Zones_Models_ZoneSettingId" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId" class="text-break">
+Struct ZoneSettingId  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Zones.html">Zones</a>.<a class="xref" href="Cloudflare.NET.Zones.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a zone setting identifier.</p>
+<p>
+  Zone settings control various aspects of zone behavior including security,
+  performance, caching, and network configuration.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ExtensibleEnumConverter&lt;ZoneSettingId&gt;))]
+public readonly struct ZoneSettingId : IExtensibleEnum&lt;ZoneSettingId&gt;, IEquatable&lt;ZoneSettingId&gt;</code></pre>
+  </div>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Core.Json.IExtensibleEnum-1.html">IExtensibleEnum</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Cloudflare_NET_Zones_Models_ZoneSettingId_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Using a known setting with IntelliSense
+var setting = await zones.GetZoneSettingAsync(zoneId, ZoneSettingId.MinTlsVersion);
+
+// Using implicit conversion from string for new/unknown settings
+ZoneSettingId customSetting = "new_setting";
+var result = await zones.GetZoneSettingAsync(zoneId, customSetting);</code></pre>
+
+
+  <h2 id="Cloudflare_NET_Zones_Models_ZoneSettingId_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  This is an extensible enum that provides IntelliSense for known values while allowing custom values
+  for new settings that may be added to the Cloudflare API in the future.
+</p>
+<p>
+  Use the static properties for known settings (e.g., <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html#Cloudflare_NET_Zones_Models_ZoneSettingId_Ssl">Ssl</a>, <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html#Cloudflare_NET_Zones_Models_ZoneSettingId_MinTlsVersion">MinTlsVersion</a>)
+  or create custom values using the constructor or implicit string conversion.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId__ctor_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId__ctor_System_String_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.#ctor(System.String)">
+  ZoneSettingId(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L419"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a> with the specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ZoneSettingId(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value representing the setting identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_AdvancedDdos_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AdvancedDdos*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_AdvancedDdos" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AdvancedDdos">
+  AdvancedDdos
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Advanced DDoS protection (Business/Enterprise plans only).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId AdvancedDdos { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_AdvancedDdos_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>This setting may not be editable on all plans.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Aegis_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Aegis*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Aegis" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Aegis">
+  Aegis
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Aegis - dedicated egress IPs for layer 7 WAF and CDN.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Aegis { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Aegis_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: Editable structure.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_AlwaysOnline_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AlwaysOnline*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_AlwaysOnline" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AlwaysOnline">
+  AlwaysOnline
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Always Online - serve cached content from Internet Archive if origin is offline.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId AlwaysOnline { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_AlwaysOnline_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Shows a cached version of your site when your origin server is unavailable.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_AlwaysUseHttps_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AlwaysUseHttps*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_AlwaysUseHttps" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AlwaysUseHttps">
+  AlwaysUseHttps
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Always use HTTPS - enforce HTTPS connections.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId AlwaysUseHttps { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_AlwaysUseHttps_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>When enabled, any HTTP request is redirected to HTTPS with a 301 redirect.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_AutomaticHttpsRewrites_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AutomaticHttpsRewrites*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_AutomaticHttpsRewrites" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AutomaticHttpsRewrites">
+  AutomaticHttpsRewrites
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Automatic HTTPS Rewrites - automatically rewrite HTTP links to HTTPS.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId AutomaticHttpsRewrites { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_AutomaticHttpsRewrites_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Helps fix mixed content issues by rewriting insecure URLs in HTML responses.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_AutomaticPlatformOptimization_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AutomaticPlatformOptimization*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_AutomaticPlatformOptimization" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.AutomaticPlatformOptimization">
+  AutomaticPlatformOptimization
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Automatic Platform Optimization (APO) settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId AutomaticPlatformOptimization { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_AutomaticPlatformOptimization_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: Editable structure containing APO caching and optimization settings.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Brotli_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Brotli*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Brotli" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Brotli">
+  Brotli
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Brotli compression for supported clients.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Brotli { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Brotli_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Applies Brotli compression to speed up page load times for supported browsers.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_BrowserCacheTtl_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.BrowserCacheTtl*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_BrowserCacheTtl" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.BrowserCacheTtl">
+  BrowserCacheTtl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Browser cache TTL in seconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId BrowserCacheTtl { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_BrowserCacheTtl_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: integer (seconds); 0 = respect origin headers</p>
+<p>Specifies how long browsers should cache assets from your site.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_BrowserCheck_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.BrowserCheck*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_BrowserCheck" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.BrowserCheck">
+  BrowserCheck
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Browser integrity check.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId BrowserCheck { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_BrowserCheck_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Evaluates incoming HTTP headers against known threats and blocks malicious requests.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_CacheLevel_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.CacheLevel*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_CacheLevel" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.CacheLevel">
+  CacheLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L230"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cache level - controls caching behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId CacheLevel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_CacheLevel_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "bypass", "basic", "simplified", "aggressive", "cache_everything"</p>
+<p>Determines how Cloudflare caches content from your origin.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html#Cloudflare_NET_Zones_Models_ZoneSettingId_CacheLevel">CacheLevel</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_ChallengeTtl_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ChallengeTtl*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_ChallengeTtl" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ChallengeTtl">
+  ChallengeTtl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Challenge passage TTL in seconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId ChallengeTtl { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_ChallengeTtl_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: integer (seconds)</p>
+<p>Specifies how long a visitor can browse your site after completing a challenge. Recommended: 15-45 minutes.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ciphers_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Ciphers*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ciphers" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Ciphers">
+  Ciphers
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>TLS cipher suite allowlist in BoringSSL format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Ciphers { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ciphers_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: Custom cipher list (array of strings).</p>
+<p>Allows specifying which cipher suites are permitted for TLS connections.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_DevelopmentMode_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.DevelopmentMode*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_DevelopmentMode" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.DevelopmentMode">
+  DevelopmentMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L237"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Development mode - bypass cache for 3 hours.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId DevelopmentMode { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_DevelopmentMode_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Temporarily bypasses Cloudflare's cache to see changes immediately during development.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_EarlyHints_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.EarlyHints*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_EarlyHints" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.EarlyHints">
+  EarlyHints
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L244"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Early Hints - HTTP 103 response with Link headers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId EarlyHints { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_EarlyHints_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Sends HTTP 103 responses to preload assets before the main response arrives.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_EmailObfuscation_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.EmailObfuscation*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_EmailObfuscation" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.EmailObfuscation">
+  EmailObfuscation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Email obfuscation - hide email addresses from bots.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId EmailObfuscation { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_EmailObfuscation_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Obfuscates email addresses on your website to prevent harvesting by bots.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_FontSettings_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.FontSettings*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_FontSettings" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.FontSettings">
+  FontSettings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Fonts delivery optimization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId FontSettings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_FontSettings_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: Editable structure containing font optimization settings.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_H2Prioritization_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.H2Prioritization*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_H2Prioritization" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.H2Prioritization">
+  H2Prioritization
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>HTTP/2 Edge Prioritization optimization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId H2Prioritization { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_H2Prioritization_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables advanced HTTP/2 prioritization for improved performance.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_HotlinkProtection_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.HotlinkProtection*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_HotlinkProtection" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.HotlinkProtection">
+  HotlinkProtection
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L262"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Hotlink protection - prevent image theft.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId HotlinkProtection { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_HotlinkProtection_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Prevents other websites from embedding images hosted on your site.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Http2_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Http2*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Http2" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Http2">
+  Http2
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L269"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>HTTP/2 protocol support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Http2 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Http2_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables HTTP/2 protocol for visitors connecting to your site through Cloudflare.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Http3_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Http3*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Http3" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Http3">
+  Http3
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>HTTP/3 protocol support (with QUIC).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Http3 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Http3_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables HTTP/3 protocol for improved performance on unreliable networks.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_ImageResizing_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ImageResizing*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_ImageResizing" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ImageResizing">
+  ImageResizing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L283"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Image Resizing - on-demand image transformation service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId ImageResizing { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_ImageResizing_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Allows resizing, cropping, and converting images on-the-fly.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_IpGeolocation_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.IpGeolocation*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_IpGeolocation" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.IpGeolocation">
+  IpGeolocation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L345"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>IP geolocation header.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId IpGeolocation { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_IpGeolocation_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Adds the CF-IPCountry header containing visitor's country code to requests.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ipv6_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Ipv6*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ipv6" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Ipv6">
+  Ipv6
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L352"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>IPv6 compatibility for subdomains.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Ipv6 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ipv6_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables IPv6 support for your zone.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_MinTlsVersion_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.MinTlsVersion*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_MinTlsVersion" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.MinTlsVersion">
+  MinTlsVersion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Minimum TLS version requirement.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId MinTlsVersion { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_MinTlsVersion_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "1.0", "1.1", "1.2", "1.3"</p>
+<p>Specifies the minimum TLS protocol version clients must support to connect.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Mirage_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Mirage*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Mirage" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Mirage">
+  Mirage
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L290"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Mirage - image optimization for mobile devices.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Mirage { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Mirage_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Optimizes image loading for mobile visitors with slow connections.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Nel_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Nel*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Nel" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Nel">
+  Nel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L359"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Network Error Logging (NEL) reporting (Beta).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Nel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Nel_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables Network Error Logging for visibility into connectivity issues.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_OpportunisticEncryption_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OpportunisticEncryption*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_OpportunisticEncryption" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OpportunisticEncryption">
+  OpportunisticEncryption
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opportunistic encryption support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId OpportunisticEncryption { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_OpportunisticEncryption_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables opportunistic encryption for browsers that support it.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_OpportunisticOnion_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OpportunisticOnion*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_OpportunisticOnion" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OpportunisticOnion">
+  OpportunisticOnion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opportunistic Onion - Alt-Svc header for Tor connections.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId OpportunisticOnion { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_OpportunisticOnion_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Adds Alt-Svc header to allow Tor connections to your website.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_OrangeToOrange_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OrangeToOrange*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_OrangeToOrange" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OrangeToOrange">
+  OrangeToOrange
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L366"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Orange to Orange - CNAME to other Cloudflare zones.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId OrangeToOrange { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_OrangeToOrange_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Allows CNAME records pointing to other Cloudflare-proxied domains.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_OriginErrorPagePassThru_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OriginErrorPagePassThru*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_OriginErrorPagePassThru" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OriginErrorPagePassThru">
+  OriginErrorPagePassThru
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L373"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Origin error page pass-through.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId OriginErrorPagePassThru { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_OriginErrorPagePassThru_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Passes through error pages from your origin instead of showing Cloudflare error pages.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_OriginMaxHttpVersion_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OriginMaxHttpVersion*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_OriginMaxHttpVersion" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.OriginMaxHttpVersion">
+  OriginMaxHttpVersion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L380"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum HTTP version to origin.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId OriginMaxHttpVersion { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_OriginMaxHttpVersion_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "1", "2"</p>
+<p>Sets the maximum HTTP version Cloudflare uses when connecting to your origin.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Polish_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Polish*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Polish" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Polish">
+  Polish
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L298"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Image optimization (Polish).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Polish { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Polish_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "off", "lossless", "lossy"</p>
+<p>Optimizes images by removing metadata and applying compression.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Cloudflare.NET.Zones.PolishSetting.html">PolishSetting</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_PrefetchPreload_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.PrefetchPreload*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_PrefetchPreload" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.PrefetchPreload">
+  PrefetchPreload
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L305"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Prefetch Preload - prefetch URLs from response headers (Enterprise only).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId PrefetchPreload { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_PrefetchPreload_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Prefetches URLs specified in Link headers to improve page load times.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_ProxyReadTimeout_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ProxyReadTimeout*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_ProxyReadTimeout" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ProxyReadTimeout">
+  ProxyReadTimeout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L387"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Proxy read timeout duration in seconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId ProxyReadTimeout { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_ProxyReadTimeout_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: integer (seconds)</p>
+<p>Maximum time Cloudflare waits for a response from your origin.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_PseudoIpv4_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.PseudoIpv4*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_PseudoIpv4" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.PseudoIpv4">
+  PseudoIpv4
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L395"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pseudo IPv4 header setting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId PseudoIpv4 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_PseudoIpv4_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "off", "add_header", "overwrite_header"</p>
+<p>Adds a pseudo IPv4 address for applications that don't support IPv6.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Cloudflare.NET.Zones.PseudoIpv4Setting.html">PseudoIpv4Setting</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_ResponseBuffering_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ResponseBuffering*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_ResponseBuffering" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ResponseBuffering">
+  ResponseBuffering
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L402"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Response buffering behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId ResponseBuffering { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_ResponseBuffering_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Controls whether Cloudflare buffers responses before sending to visitors.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_RocketLoader_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.RocketLoader*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_RocketLoader" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.RocketLoader">
+  RocketLoader
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L312"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rocket Loader - JavaScript optimization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId RocketLoader { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_RocketLoader_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Improves page rendering by asynchronously loading JavaScript.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_SecurityHeaders_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SecurityHeaders*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_SecurityHeaders" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SecurityHeaders">
+  SecurityHeaders
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Security headers configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId SecurityHeaders { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_SecurityHeaders_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: Editable structure containing security header settings.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_SecurityLevel_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SecurityLevel*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_SecurityLevel" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SecurityLevel">
+  SecurityLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Security level - controls how aggressive Cloudflare challenges visitors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId SecurityLevel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_SecurityLevel_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "off", "essentially_off", "low", "medium", "high", "under_attack"</p>
+<p>Higher levels challenge more visitors based on threat reputation.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Cloudflare.NET.Zones.ZoneSecurityLevel.html">ZoneSecurityLevel</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_ServerSideExcludes_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ServerSideExcludes*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_ServerSideExcludes" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ServerSideExcludes">
+  ServerSideExcludes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Server-side excludes - hide content from suspicious visitors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId ServerSideExcludes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_ServerSideExcludes_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Hides specific content from visitors with a bad IP reputation.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_SortQueryStringForCache_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SortQueryStringForCache*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_SortQueryStringForCache" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SortQueryStringForCache">
+  SortQueryStringForCache
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L319"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sort query string for cache - normalize query parameters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId SortQueryStringForCache { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_SortQueryStringForCache_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Sorts query string parameters alphabetically for improved cache hit ratio.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ssl_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Ssl*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ssl" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Ssl">
+  Ssl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SSL/TLS encryption mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Ssl { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Ssl_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "off", "flexible", "full", "strict"</p>
+<p>Controls how traffic is encrypted between visitors, Cloudflare, and your origin server.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Cloudflare.NET.Zones.SslMode.html">SslMode</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_SslRecommender_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SslRecommender*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_SslRecommender" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.SslRecommender">
+  SslRecommender
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SSL Recommender - automated SSL/TLS mode recommendation emails.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId SslRecommender { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_SslRecommender_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Receives email recommendations for optimal SSL/TLS configuration.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Tls13_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Tls13*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Tls13" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Tls13">
+  Tls13
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>TLS 1.3 encryption support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Tls13 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Tls13_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on", "off", "zrt" (with 0-RTT)</p>
+<p>Enables TLS 1.3 protocol for improved security and performance.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="Cloudflare.NET.Zones.Tls13Setting.html">Tls13Setting</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_TlsClientAuth_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.TlsClientAuth*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_TlsClientAuth" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.TlsClientAuth">
+  TlsClientAuth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>TLS client certificate authentication (Enterprise only).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId TlsClientAuth { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_TlsClientAuth_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Requires clients to present a valid TLS certificate to connect.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_TrueClientIpHeader_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.TrueClientIpHeader*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_TrueClientIpHeader" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.TrueClientIpHeader">
+  TrueClientIpHeader
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>True-Client-IP header support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId TrueClientIpHeader { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_TrueClientIpHeader_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Sends the visitor's original IP address to your origin in the True-Client-IP header.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Value_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Value*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Value" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the underlying string value of this setting identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Waf_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Waf*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Waf" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Waf">
+  Waf
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L192"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Web Application Firewall.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Waf { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Waf_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables the Cloudflare Web Application Firewall (WAF) for the zone.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Webp_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Webp*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Webp" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Webp">
+  Webp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L326"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>WebP image format delivery.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Webp { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Webp_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Converts images to WebP format for browsers that support it.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Websockets_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Websockets*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Websockets" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Websockets">
+  Websockets
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L409"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>WebSocket connection support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Websockets { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_Websockets_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Enables WebSocket connections through Cloudflare.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_ZeroRtt_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ZeroRtt*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_ZeroRtt" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ZeroRtt">
+  ZeroRtt
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L333"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>0-RTT Connection Resumption (Zero Round Trip Time).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId ZeroRtt { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ZoneSettingId_ZeroRtt_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Value: "on" / "off"</p>
+<p>Allows TLS 1.3 connections to resume without a round trip, reducing latency.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Create_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Create*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Create_System_String_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Create(System.String)">
+  Create(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L431"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new instance of the extensible enum from the specified string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ZoneSettingId Create(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value to wrap.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd><p>A new instance of <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a> containing the specified value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Equals_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Equals_Cloudflare_NET_Zones_Models_ZoneSettingId_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Equals(Cloudflare.NET.Zones.Models.ZoneSettingId)">
+  Equals(ZoneSettingId)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L458"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(ZoneSettingId other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd><p>An object to compare with this object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current object is equal to the <code class="paramref">other</code> parameter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_Equals_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_Equals_System_Object_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L462"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare with the current instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> and this instance are the same type and represent the same value; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_GetHashCode_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.GetHashCode*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_GetHashCode" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L465"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit signed integer that is the hash code for this instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_ToString_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ToString*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_ToString" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L473"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the fully qualified type name of this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The fully qualified type name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Equality_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Equality*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Equality_Cloudflare_NET_Zones_Models_ZoneSettingId_Cloudflare_NET_Zones_Models_ZoneSettingId_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Equality(Cloudflare.NET.Zones.Models.ZoneSettingId,Cloudflare.NET.Zones.Models.ZoneSettingId)">
+  operator ==(ZoneSettingId, ZoneSettingId)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L447"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a> values are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(ZoneSettingId left, ZoneSettingId right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Implicit_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Implicit*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Implicit_Cloudflare_NET_Zones_Models_ZoneSettingId__System_String" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Implicit(Cloudflare.NET.Zones.Models.ZoneSettingId)~System.String">
+  implicit operator string(ZoneSettingId)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L444"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a> to its string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator string(ZoneSettingId settingId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>settingId</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd><p>The setting identifier to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Implicit_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Implicit*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Implicit_System_String__Cloudflare_NET_Zones_Models_ZoneSettingId" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Implicit(System.String)~Cloudflare.NET.Zones.Models.ZoneSettingId">
+  implicit operator ZoneSettingId(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L440"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a string to a <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator ZoneSettingId(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Inequality_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Inequality*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ZoneSettingId_op_Inequality_Cloudflare_NET_Zones_Models_ZoneSettingId_Cloudflare_NET_Zones_Models_ZoneSettingId_" data-uid="Cloudflare.NET.Zones.Models.ZoneSettingId.op_Inequality(Cloudflare.NET.Zones.Models.ZoneSettingId,Cloudflare.NET.Zones.Models.ZoneSettingId)">
+  operator !=(ZoneSettingId, ZoneSettingId)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L450"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a> values are not equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(ZoneSettingId left, ZoneSettingId right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/api/resources/zones/subresources/settings/">https://developers.cloudflare.com/api/resources/zones/subresources/settings/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneSettingId.cs/#L35" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

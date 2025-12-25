@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class KvApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class KvApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Implementation of Workers KV API operations.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Accounts_Kv_KvApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Accounts.Kv.KvApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.Kv.KvApi">
+
+
+
+  <h1 id="Cloudflare_NET_Accounts_Kv_KvApi" data-uid="Cloudflare.NET.Accounts.Kv.KvApi" class="text-break">
+Class KvApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Accounts.html">Accounts</a>.<a class="xref" href="Cloudflare.NET.Accounts.Kv.html">Kv</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implementation of Workers KV API operations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class KvApi : ApiResource, IKvApi</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Core.ApiResource.html">ApiResource</a></div>
+      <div><span class="xref">KvApi</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.Kv.IKvApi.html">IKvApi</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_HttpClient">ApiResource.HttpClient</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_Logger">ApiResource.Logger</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetStringAsync_System_String_System_Threading_CancellationToken_">ApiResource.GetStringAsync(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync__1_System_String_System_IO_Stream_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostMultipartFileAsync&lt;TResult&gt;(string, Stream, string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetPagePaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessResponse__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessResponse&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi__ctor_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi__ctor_System_Net_Http_HttpClient_Microsoft_Extensions_Options_IOptions_Cloudflare_NET_Core_CloudflareApiOptions__Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Options.IOptions{Cloudflare.NET.Core.CloudflareApiOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
+  KvApi(HttpClient, IOptions&lt;CloudflareApiOptions&gt;, ILoggerFactory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Cloudflare.NET.Accounts.Kv.KvApi.html">KvApi</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KvApi(HttpClient httpClient, IOptions&lt;CloudflareApiOptions&gt; options, ILoggerFactory loggerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd><p>The HttpClient for making requests.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptions-1">IOptions</a>&lt;<a class="xref" href="Cloudflare.NET.Core.CloudflareApiOptions.html">CloudflareApiOptions</a>&gt;</dt>
+    <dd><p>The Cloudflare API options containing the account ID.</p>
+</dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The factory to create loggers.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_BulkDeleteAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkDeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_BulkDeleteAsync_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkDeleteAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+  BulkDeleteAsync(string, IEnumerable&lt;string&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L498"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes multiple keys in a single request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KvBulkDeleteResult&gt; BulkDeleteAsync(string namespaceId, IEnumerable&lt;string&gt; keys, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>keys</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Keys to delete (max 10,000 keys).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvBulkDeleteResult.html">KvBulkDeleteResult</a>&gt;</dt>
+    <dd><p>Result indicating success/failure counts.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Kv_KvApi_BulkDeleteAsync_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The request body is a simple JSON array of key names: [&quot;key1&quot;, &quot;key2&quot;].</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/bulk_delete/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/bulk_delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_BulkGetAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkGetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_BulkGetAsync_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkGetAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+  BulkGetAsync(string, IEnumerable&lt;string&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L511"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves multiple values in a single request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyDictionary&lt;string, string?&gt;&gt; BulkGetAsync(string namespaceId, IEnumerable&lt;string&gt; keys, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>keys</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Keys to retrieve (max 100 keys).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Dictionary of key-value pairs (value is null for non-existent keys).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Kv_KvApi_BulkGetAsync_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The API returns values as a dictionary: { &quot;key1&quot;: &quot;value1&quot;, &quot;key2&quot;: &quot;value2&quot; }.
+Use <a class="xref" href="Cloudflare.NET.Accounts.Kv.IKvApi.html#Cloudflare_NET_Accounts_Kv_IKvApi_BulkGetWithMetadataAsync_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken_">BulkGetWithMetadataAsync(string, IEnumerable&lt;string&gt;, CancellationToken)</a> if you need metadata for each key.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/keys/methods/bulk_get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/keys/methods/bulk_get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_BulkGetWithMetadataAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkGetWithMetadataAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_BulkGetWithMetadataAsync_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkGetWithMetadataAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+  BulkGetWithMetadataAsync(string, IEnumerable&lt;string&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L527"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves multiple values with metadata in a single request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyDictionary&lt;string, KvBulkGetItemWithMetadata?&gt;&gt; BulkGetWithMetadataAsync(string namespaceId, IEnumerable&lt;string&gt; keys, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>keys</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Keys to retrieve (max 100 keys).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvBulkGetItemWithMetadata.html">KvBulkGetItemWithMetadata</a>&gt;&gt;</dt>
+    <dd><p>Dictionary of key-value pairs with metadata.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/keys/methods/bulk_get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/keys/methods/bulk_get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_BulkWriteAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkWriteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_BulkWriteAsync_System_String_System_Collections_Generic_IEnumerable_Cloudflare_NET_Accounts_Kv_Models_KvBulkWriteItem__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.BulkWriteAsync(System.String,System.Collections.Generic.IEnumerable{Cloudflare.NET.Accounts.Kv.Models.KvBulkWriteItem},System.Threading.CancellationToken)">
+  BulkWriteAsync(string, IEnumerable&lt;KvBulkWriteItem&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L486"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes multiple key-value pairs in a single request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KvBulkWriteResult&gt; BulkWriteAsync(string namespaceId, IEnumerable&lt;KvBulkWriteItem&gt; items, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>items</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvBulkWriteItem.html">KvBulkWriteItem</a>&gt;</dt>
+    <dd><p>Key-value pairs to write (max 10,000 items, 100MB total).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvBulkWriteResult.html">KvBulkWriteResult</a>&gt;</dt>
+    <dd><p>Result indicating success/failure counts.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Kv_KvApi_BulkWriteAsync_System_String_System_Collections_Generic_IEnumerable_Cloudflare_NET_Accounts_Kv_Models_KvBulkWriteItem__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Existing values and expirations will be overwritten.
+Check <a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvBulkWriteResult.html#Cloudflare_NET_Accounts_Kv_Models_KvBulkWriteResult_UnsuccessfulKeys">UnsuccessfulKeys</a> and retry if needed.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/bulk_update/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/bulk_update/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_CreateAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.CreateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_CreateAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.CreateAsync(System.String,System.Threading.CancellationToken)">
+  CreateAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new KV namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KvNamespace&gt; CreateAsync(string title, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>title</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The title for the new namespace. Must be unique per account.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvNamespace.html">KvNamespace</a>&gt;</dt>
+    <dd><p>The created namespace.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown if title already exists (code 10014).</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/create/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/create/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_DeleteAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_DeleteAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.DeleteAsync(System.String,System.Threading.CancellationToken)">
+  DeleteAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a KV namespace and all its keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteAsync(string namespaceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/delete/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_DeleteValueAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.DeleteValueAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_DeleteValueAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.DeleteValueAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteValueAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L470"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a key-value pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteValueAsync(string namespaceId, string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/delete/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_GetAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_GetAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetAsync(System.String,System.Threading.CancellationToken)">
+  GetAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a specific KV namespace by ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KvNamespace&gt; GetAsync(string namespaceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvNamespace.html">KvNamespace</a>&gt;</dt>
+    <dd><p>The namespace details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_GetMetadataAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetMetadataAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_GetMetadataAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetMetadataAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetMetadataAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L359"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads only the metadata for a key (without retrieving the value).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JsonElement?&gt; GetMetadataAsync(string namespaceId, string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>?&gt;</dt>
+    <dd><p>The metadata as JSON, or null if no metadata exists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/metadata/methods/get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/metadata/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetValueAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L269"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a value by key as a string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;string?&gt; GetValueAsync(string namespaceId, string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The value as a string, or null if the key doesn't exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use <a class="xref" href="Cloudflare.NET.Accounts.Kv.IKvApi.html#Cloudflare_NET_Accounts_Kv_IKvApi_GetValueWithExpirationAsync_System_String_System_String_System_Threading_CancellationToken_">GetValueWithExpirationAsync(string, string, CancellationToken)</a> if you need the expiration timestamp.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueBytesAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueBytesAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueBytesAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueBytesAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetValueBytesAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L314"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a value by key as bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;byte[]?&gt; GetValueBytesAsync(string namespaceId, string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]&gt;</dt>
+    <dd><p>The value as bytes, or null if the key doesn't exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueBytesAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use <a class="xref" href="Cloudflare.NET.Accounts.Kv.IKvApi.html#Cloudflare_NET_Accounts_Kv_IKvApi_GetValueBytesWithExpirationAsync_System_String_System_String_System_Threading_CancellationToken_">GetValueBytesWithExpirationAsync(string, string, CancellationToken)</a> if you need the expiration timestamp.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueBytesWithExpirationAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueBytesWithExpirationAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueBytesWithExpirationAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueBytesWithExpirationAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetValueBytesWithExpirationAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L325"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a value by key as bytes, including expiration info.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KvValueResult?&gt; GetValueBytesWithExpirationAsync(string namespaceId, string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvValueResult.html">KvValueResult</a>&gt;</dt>
+    <dd><p>The value and expiration, or null if the key doesn't exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueWithExpirationAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueWithExpirationAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_GetValueWithExpirationAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.GetValueWithExpirationAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetValueWithExpirationAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L280"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a value by key as a string, including expiration info.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KvStringValueResult?&gt; GetValueWithExpirationAsync(string namespaceId, string key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvStringValueResult.html">KvStringValueResult</a>&gt;</dt>
+    <dd><p>The value and expiration, or null if the key doesn't exist.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_ListAllAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListAllAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_ListAllAsync_Cloudflare_NET_Accounts_Kv_Models_ListKvNamespacesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListAllAsync(Cloudflare.NET.Accounts.Kv.Models.ListKvNamespacesFilters,System.Threading.CancellationToken)">
+  ListAllAsync(ListKvNamespacesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all KV namespaces, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IAsyncEnumerable&lt;KvNamespace&gt; ListAllAsync(ListKvNamespacesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.ListKvNamespacesFilters.html">ListKvNamespacesFilters</a></dt>
+    <dd><p>Optional filters for ordering.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvNamespace.html">KvNamespace</a>&gt;</dt>
+    <dd><p>An async enumerable of all namespaces.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_ListAllKeysAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListAllKeysAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_ListAllKeysAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListAllKeysAsync(System.String,System.String,System.Threading.CancellationToken)">
+  ListAllKeysAsync(string, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L236"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all keys in a namespace, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IAsyncEnumerable&lt;KvKey&gt; ListAllKeysAsync(string namespaceId, string? prefix = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>prefix</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Optional prefix filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvKey.html">KvKey</a>&gt;</dt>
+    <dd><p>An async enumerable of all keys.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_ListAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_ListAsync_Cloudflare_NET_Accounts_Kv_Models_ListKvNamespacesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListAsync(Cloudflare.NET.Accounts.Kv.Models.ListKvNamespacesFilters,System.Threading.CancellationToken)">
+  ListAsync(ListKvNamespacesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists KV namespaces in the account.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;PagePaginatedResult&lt;KvNamespace&gt;&gt; ListAsync(ListKvNamespacesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.ListKvNamespacesFilters.html">ListKvNamespacesFilters</a></dt>
+    <dd><p>Optional filters for pagination and ordering.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvNamespace.html">KvNamespace</a>&gt;&gt;</dt>
+    <dd><p>A page of namespaces with pagination info.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/list/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_ListKeysAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListKeysAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_ListKeysAsync_System_String_Cloudflare_NET_Accounts_Kv_Models_ListKvKeysFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.ListKeysAsync(System.String,Cloudflare.NET.Accounts.Kv.Models.ListKvKeysFilters,System.Threading.CancellationToken)">
+  ListKeysAsync(string, ListKvKeysFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L213"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists keys in a namespace with cursor-based pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CursorPaginatedResult&lt;KvKey&gt;&gt; ListKeysAsync(string namespaceId, ListKvKeysFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.ListKvKeysFilters.html">ListKvKeysFilters</a></dt>
+    <dd><p>Optional filters for prefix, limit, and cursor.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvKey.html">KvKey</a>&gt;&gt;</dt>
+    <dd><p>Keys and pagination info (use CursorInfo.Cursor for next page).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/keys/methods/list/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/keys/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_RenameAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.RenameAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_RenameAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.RenameAsync(System.String,System.String,System.Threading.CancellationToken)">
+  RenameAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renames a KV namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KvNamespace&gt; RenameAsync(string namespaceId, string title, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID to rename.</p>
+</dd>
+    <dt><code>title</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The new title for the namespace. Must be unique per account.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvNamespace.html">KvNamespace</a>&gt;</dt>
+    <dd><p>The updated namespace with id, title, and supports_url_encoding.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/update/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/methods/update/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_WriteValueAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.WriteValueAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_WriteValueAsync_System_String_System_String_System_Byte___Cloudflare_NET_Accounts_Kv_Models_KvWriteOptions_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.WriteValueAsync(System.String,System.String,System.Byte[],Cloudflare.NET.Accounts.Kv.Models.KvWriteOptions,System.Threading.CancellationToken)">
+  WriteValueAsync(string, string, byte[], KvWriteOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L423"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a binary value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task WriteValueAsync(string namespaceId, string key, byte[] value, KvWriteOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name (max 512 bytes).</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The value to store (max 25 MiB).</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvWriteOptions.html">KvWriteOptions</a></dt>
+    <dd><p>Optional expiration and metadata settings.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/update/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/update/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_Kv_KvApi_WriteValueAsync_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.WriteValueAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Kv_KvApi_WriteValueAsync_System_String_System_String_System_String_Cloudflare_NET_Accounts_Kv_Models_KvWriteOptions_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Kv.KvApi.WriteValueAsync(System.String,System.String,System.String,Cloudflare.NET.Accounts.Kv.Models.KvWriteOptions,System.Threading.CancellationToken)">
+  WriteValueAsync(string, string, string, KvWriteOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L377"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task WriteValueAsync(string namespaceId, string key, string value, KvWriteOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>namespaceId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The namespace ID.</p>
+</dd>
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key name (max 512 bytes).</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The value to store (max 25 MiB).</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Cloudflare.NET.Accounts.Kv.Models.KvWriteOptions.html">KvWriteOptions</a></dt>
+    <dd><p>Optional expiration and metadata settings.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/update/">https://developers.cloudflare.com/api/resources/kv/subresources/namespaces/subresources/values/methods/update/</a></span></div>
+    </dd>
+  </dl>
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Kv/KvApi.cs/#L16" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
