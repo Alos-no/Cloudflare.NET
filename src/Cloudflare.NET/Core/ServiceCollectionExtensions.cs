@@ -1,19 +1,14 @@
 namespace Cloudflare.NET.Core;
 
-using System.Net;
 using System.Net.Http.Headers;
-using System.Threading.RateLimiting;
 using Auth;
 using Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Polly;
-using Polly.Timeout;
-using RateLimitHeaders.Polly;
+using Resilience;
 using Validation;
 
 /// <summary>Provides extension methods for setting up the Cloudflare API client in an IServiceCollection.</summary>
@@ -98,12 +93,14 @@ public static class ServiceCollectionExtensions
                             // Resolve the configured options.
                             var options = serviceProvider.GetRequiredService<IOptions<CloudflareApiOptions>>().Value;
 
-                            ConfigureHttpClient(client, options);
+                            // Configure base properties (base address, timeout).
+                            // Auth header is handled by AuthenticationHandler, so don't set it here.
+                            CloudflareHttpClientConfigurator.ConfigureBase(client, options);
                           })
                           .AddHttpMessageHandler<AuthenticationHandler>();
 
     // Add the resilience handler for the default client.
-    AddResilienceHandler(builder, true, null);
+    AddResilienceHandler(builder, resolveOptionsFromDi: true, clientName: null);
 
     // Register the factory as a singleton. It will be shared by all named client registrations.
     services.TryAddSingleton<ICloudflareApiClientFactory, CloudflareApiClientFactory>();
@@ -221,15 +218,12 @@ public static class ServiceCollectionExtensions
       var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<CloudflareApiOptions>>();
       var options        = optionsMonitor.Get(name);
 
-      ConfigureHttpClient(client, options);
-
-      // Set the Authorization header directly for named clients.
-      if (!string.IsNullOrWhiteSpace(options.ApiToken))
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", options.ApiToken);
+      // Configure all properties including the Authorization header for named clients.
+      CloudflareHttpClientConfigurator.Configure(client, options, setAuthorizationHeader: true);
     });
 
     // Add the resilience handler for the named client.
-    AddResilienceHandler(builder, false, name);
+    AddResilienceHandler(builder, resolveOptionsFromDi: false, clientName: name);
 
     // Register the factory as a singleton. It will be shared by all named client registrations.
     // TryAdd ensures we don't replace an existing registration.
@@ -257,24 +251,6 @@ public static class ServiceCollectionExtensions
     return $"{HttpClientNamePrefix}:{clientName}";
   }
 
-  /// <summary>Configures the base properties of an HttpClient for Cloudflare API access.</summary>
-  /// <param name="client">The HttpClient to configure.</param>
-  /// <param name="options">The options containing the API configuration.</param>
-  private static void ConfigureHttpClient(HttpClient client, CloudflareApiOptions options)
-  {
-    // Use the URL from the options, which has a built-in default value.
-    if (string.IsNullOrWhiteSpace(options.ApiBaseUrl))
-      throw new InvalidOperationException(
-        "Cloudflare API Base URL is missing. Please configure it in the 'Cloudflare' settings section.");
-
-    client.BaseAddress = new Uri(options.ApiBaseUrl);
-
-    // Set a long HttpClient.Timeout so that our resilience pipeline's TotalRequestTimeout is the effective timeout.
-    // Ref: https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience#httpclient-timeout
-    client.Timeout = TimeSpan.FromMinutes(5);
-  }
-
-
   /// <summary>Adds the resilience handler to an HttpClient builder.</summary>
   /// <param name="builder">The HttpClient builder.</param>
   /// <param name="resolveOptionsFromDi">
@@ -296,7 +272,7 @@ public static class ServiceCollectionExtensions
     // rate limiter tuned for API access. We use a single handler to avoid the complexities and
     // potential for compounding delays that come from stacking multiple handlers.
     // Ref: https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience#avoid-stacking-handlers
-    builder.AddResilienceHandler(pipelineName, (b, context) =>
+    builder.AddResilienceHandler(pipelineName, (pipelineBuilder, context) =>
     {
       // Resolve options based on whether this is the default or a named client.
       CloudflareApiOptions cfOptions;
@@ -314,169 +290,9 @@ public static class ServiceCollectionExtensions
       var logger = context.ServiceProvider.GetRequiredService<ILoggerFactory>()
                           .CreateLogger(LoggingConstants.Categories.HttpResilience);
 
-      ConfigureResiliencePipeline(b, cfOptions, logger, clientName);
-    });
-  }
-
-
-  /// <summary>Configures the resilience pipeline with rate limiting, retries, and circuit breaker.</summary>
-  /// <param name="builder">The resilience pipeline builder.</param>
-  /// <param name="cfOptions">The Cloudflare API options.</param>
-  /// <param name="logger">The logger for resilience events.</param>
-  /// <param name="clientName">Optional client name for logging context.</param>
-  private static void ConfigureResiliencePipeline(ResiliencePipelineBuilder<HttpResponseMessage> builder,
-                                                  CloudflareApiOptions                           cfOptions,
-                                                  ILogger                                        logger,
-                                                  string?                                        clientName)
-  {
-    // Create name prefixes for this specific client's resilience components.
-    var namePrefix = clientName is null ? "Cloudflare" : $"Cloudflare:{clientName}";
-
-    // The standard pipeline order is:
-    // Rate Limiter -> Rate Limit Headers -> Total Timeout -> Retry -> Circuit Breaker -> Attempt Timeout.
-    // Ref: https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience#standard-pipeline
-
-    // 1. OUTERMOST: Client-side rate limiting to avoid sending requests that are likely to be throttled.
-    var rateLimiterName = $"{namePrefix}:RateLimiter";
-
-    builder.AddRateLimiter(new HttpRateLimiterStrategyOptions
-    {
-      Name = rateLimiterName,
-      DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
-      {
-        PermitLimit          = Math.Max(1, cfOptions.RateLimiting.PermitLimit),
-        QueueLimit           = Math.Max(0, cfOptions.RateLimiting.QueueLimit),
-        QueueProcessingOrder = QueueProcessingOrder.OldestFirst
-      },
-      OnRejected = args =>
-      {
-        // Try to extract a Retry-After hint if the limiter can calculate one.
-        args.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter);
-
-        logger.LogWarning(
-          "Request rejected by {Strategy}. Concurrency limit reached. RetryAfter={RetryAfter}.",
-          rateLimiterName, retryAfter == default ? "n/a" : $"{(int)retryAfter.TotalSeconds}s");
-
-        return default;
-      }
-    });
-
-    // 2. Rate Limit Headers: Proactive throttling based on server-returned rate limit headers.
-    // This processes headers like RateLimit-Remaining, RateLimit-Limit, and RateLimit-Reset to
-    // preemptively slow down requests before hitting 429 responses.
-    // Ref: https://alos.no/ratelimitheaders/articles/polly-integration.html
-    builder.AddRateLimitHeaders(options =>
-    {
-      // Enable proactive throttling to delay requests when quota is running low.
-      options.EnableProactiveThrottling = cfOptions.RateLimiting.EnableProactiveThrottling;
-
-      // Set the threshold at which throttling begins (e.g., 0.1 = 10% remaining).
-      options.QuotaLowThreshold = cfOptions.RateLimiting.QuotaLowThreshold;
-    });
-
-    // 3. Total Request Timeout: An outer timeout that covers the entire operation, including all retries.
-    builder.AddTimeout(new HttpTimeoutStrategyOptions
-    {
-      Name    = $"{namePrefix}:TotalTimeout",
-      Timeout = TimeSpan.FromSeconds(60)
-    });
-
-    // 4. Retry Strategy: Handles transient failures. Only add when enabled.
-    // Polly v8 validates MaxRetryAttempts >= 1. If users set MaxRetries = 0 to disable retries,
-    // we skip adding the retry component entirely to avoid validation failures.
-    if (cfOptions.RateLimiting.MaxRetries > 0)
-    {
-      var retryOptions = new HttpRetryStrategyOptions
-      {
-        // Defaults handle 5xx, 408, 429, HttpRequestException, and TimeoutRejectedException.
-        // Ref: https://learn.microsoft.com/en-us/dotnet/api/polly.extensions.http.httpretrystrategyoptions
-        Name             = $"{namePrefix}:Retry",
-        BackoffType      = DelayBackoffType.Exponential,
-        Delay            = TimeSpan.FromSeconds(1),
-        UseJitter        = true,
-        MaxRetryAttempts = cfOptions.RateLimiting.MaxRetries,
-
-        // By default, HttpRetryStrategyOptions honors the 'Retry-After' header. A custom generator is not needed.
-        // Ref: https://devblogs.microsoft.com/dotnet/building-resilient-cloud-services-with-dotnet-8/
-
-        // This custom predicate ensures we always retry on server errors (5xx) and transient exceptions,
-        // but only retry on 429s if rate limit handling is explicitly enabled in options.
-        ShouldHandle = args =>
-        {
-          // ----- Method-based gating (idempotency) -----
-          // Do NOT retry non-idempotent methods.
-          // Retry allowed for: GET, HEAD, OPTIONS, TRACE, PUT, DELETE.
-          // No retry for: POST, PATCH, CONNECT (and anything else not listed above).
-
-          // 0) Gate by HTTP method *idempotency*, not "safety"
-          var method = args.Outcome.Result?.RequestMessage?.Method;
-
-          // Treat GET, HEAD, OPTIONS, TRACE, PUT, DELETE as idempotent.
-          if (method is not null)
-          {
-            var isIdempotent =
-              method == HttpMethod.Get ||
-              method == HttpMethod.Head ||
-              method == HttpMethod.Options ||
-              method == HttpMethod.Trace ||
-              method == HttpMethod.Put ||
-              method == HttpMethod.Delete;
-
-            if (!isIdempotent)
-              return new ValueTask<bool>(false);
-          }
-
-          // 1) Exceptions we consider transient.
-          if (args.Outcome.Exception is HttpRequestException or TimeoutRejectedException)
-            return new ValueTask<bool>(true);
-
-          // 2) HTTP responses we consider transient.
-          if (args.Outcome.Result is not { } response)
-            return new ValueTask<bool>(false);
-
-          var statusCode = response.StatusCode;
-
-          // Retry on 408 and 5xx.
-          if (statusCode == HttpStatusCode.RequestTimeout || (int)statusCode >= 500)
-            return new ValueTask<bool>(true);
-
-          // Retry on 429 only when rate-limit handling is enabled.
-          if (statusCode == HttpStatusCode.TooManyRequests)
-            return new ValueTask<bool>(cfOptions.RateLimiting.IsEnabled);
-
-          return new ValueTask<bool>(false);
-        },
-
-        OnRetry = args =>
-        {
-          var req = args.Outcome.Result?.RequestMessage;
-
-          logger.LogWarning(
-            "Transient failure for {Method} {Uri}. Attempt {Attempt}/{MaxAttempts}. Next delay: {Delay}.",
-            req?.Method,
-            req?.RequestUri,
-            args.AttemptNumber + 1,
-            cfOptions.RateLimiting.MaxRetries,
-            args.RetryDelay);
-
-          return default;
-        }
-      };
-
-      // IMPORTANT: keep this removed so DELETE/PUT can retry when appropriate.
-      // retryOptions.DisableForUnsafeHttpMethods();
-
-      builder.AddRetry(retryOptions);
-    }
-
-    // 5. Circuit Breaker: Stops sending requests after too many consecutive failures. Defaults are sensible.
-    builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions { Name = $"{namePrefix}:CircuitBreaker" });
-
-    // 6. INNERMOST: Per-attempt timeout, using our configurable value.
-    builder.AddTimeout(new HttpTimeoutStrategyOptions
-    {
-      Name    = $"{namePrefix}:AttemptTimeout",
-      Timeout = cfOptions.DefaultTimeout
+      // Use the shared resilience pipeline builder to ensure consistent configuration
+      // between DI-registered clients and dynamically created clients.
+      CloudflareResiliencePipelineBuilder.Configure(pipelineBuilder, cfOptions, logger, clientName);
     });
   }
 

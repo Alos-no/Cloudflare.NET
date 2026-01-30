@@ -36,7 +36,7 @@ using Zones;
 /// </code>
 ///   </example>
 /// </remarks>
-public interface ICloudflareApiClient
+public interface ICloudflareApiClient : IDisposable
 {
   #region Properties & Fields - Public
 

@@ -3,6 +3,7 @@ namespace Cloudflare.NET.Core;
 using Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Resilience;
 using Validation;
 
 /// <summary>
@@ -77,6 +78,47 @@ public sealed class CloudflareApiClientFactory : ICloudflareApiClientFactory
     var optionsWrapper = new NamedOptionsWrapper<CloudflareApiOptions>(options);
 
     return new CloudflareApiClient(httpClient, optionsWrapper, _loggerFactory);
+  }
+
+
+  /// <inheritdoc />
+  public ICloudflareApiClient CreateClient(CloudflareApiOptions options)
+  {
+    ArgumentNullException.ThrowIfNull(options);
+
+    // Validate the options using the shared validator for consistent, clear error messages.
+    ValidateNamedClientConfiguration("dynamic", options);
+
+    // Build the resilience pipeline using the shared builder.
+    // This ensures the same resilience behavior as DI-registered clients.
+    var logger   = _loggerFactory.CreateLogger(LoggingConstants.Categories.HttpResilience);
+    var pipeline = CloudflareResiliencePipelineBuilder.Build(options, logger, clientName: "dynamic");
+
+    // Create the handler chain: ResilienceHandler → SocketsHttpHandler.
+    // SocketsHttpHandler is used for proper connection pooling and lifetime management.
+    var socketHandler = new SocketsHttpHandler
+    {
+      // PooledConnectionLifetime ensures connections are recycled periodically,
+      // which helps with DNS changes and prevents stale connections.
+      // This mirrors the behavior of IHttpClientFactory-managed handlers.
+      PooledConnectionLifetime = TimeSpan.FromMinutes(2)
+    };
+
+    var resilienceHandler = new ResilienceDelegatingHandler(pipeline, socketHandler);
+
+    // Create and configure the HttpClient using the shared configurator.
+    // This ensures the same configuration as DI-registered clients.
+    var httpClient = new HttpClient(resilienceHandler);
+    CloudflareHttpClientConfigurator.Configure(httpClient, options, setAuthorizationHeader: true);
+
+    // Wrap the options in IOptions<T> for the CloudflareApiClient constructor.
+    var optionsWrapper = new NamedOptionsWrapper<CloudflareApiOptions>(options);
+
+    // Create the inner client that handles all API operations.
+    var innerClient = new CloudflareApiClient(httpClient, optionsWrapper, _loggerFactory);
+
+    // Wrap in DynamicCloudflareApiClient which handles disposal of the owned HttpClient.
+    return new DynamicCloudflareApiClient(innerClient, httpClient);
   }
 
   #endregion
