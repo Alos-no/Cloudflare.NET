@@ -41,6 +41,40 @@ Install-Package Cloudflare.NET.Analytics
 
 ## Configuration
 
+The SDK supports two configuration approaches:
+
+1. **Dependency Injection** (recommended for most applications) - Register clients at startup with `AddCloudflareApiClient()`
+2. **Dynamic Creation** - Create clients at runtime when configurations aren't known at startup (see [Dynamic Clients](#option-2-dynamic-clients-runtime-creation))
+
+### Dependency Injection
+
+Register the clients in your `Program.cs`:
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+// Register from IConfiguration (binds to "Cloudflare" and "R2" sections)
+builder.Services.AddCloudflareApiClient(builder.Configuration);
+builder.Services.AddCloudflareR2Client(builder.Configuration);
+builder.Services.AddCloudflareAnalytics();
+
+var app = builder.Build();
+```
+
+Alternatively, configure options programmatically:
+
+```csharp
+builder.Services.AddCloudflareApiClient(options =>
+{
+    options.ApiToken = "your-api-token";
+    options.AccountId = "your-account-id";
+    options.DefaultTimeout = TimeSpan.FromSeconds(30);
+    options.RateLimiting.IsEnabled = true;
+    options.RateLimiting.EnableProactiveThrottling = true;  // Delay requests when quota is low
+    options.RateLimiting.QuotaLowThreshold = 0.1;           // Throttle at 10% remaining
+});
+```
+
 ### appsettings.json
 
 Configure your Cloudflare credentials in `appsettings.json`:
@@ -73,35 +107,6 @@ Configure your Cloudflare credentials in `appsettings.json`:
 > [!NOTE]
 > Never commit API tokens or secrets to source control. Use [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) for development and environment variables or a managed Key Vault for production.
 
-### Dependency Injection
-
-Register the clients in your `Program.cs`:
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-
-// Register from IConfiguration (binds to "Cloudflare" and "R2" sections)
-builder.Services.AddCloudflareApiClient(builder.Configuration);
-builder.Services.AddCloudflareR2Client(builder.Configuration);
-builder.Services.AddCloudflareAnalytics();
-
-var app = builder.Build();
-```
-
-Alternatively, configure options programmatically:
-
-```csharp
-builder.Services.AddCloudflareApiClient(options =>
-{
-    options.ApiToken = "your-api-token";
-    options.AccountId = "your-account-id";
-    options.DefaultTimeout = TimeSpan.FromSeconds(30);
-    options.RateLimiting.IsEnabled = true;
-    options.RateLimiting.EnableProactiveThrottling = true;  // Delay requests when quota is low
-    options.RateLimiting.QuotaLowThreshold = 0.1;           // Throttle at 10% remaining
-});
-```
-
 ## Basic Usage
 
 Inject <xref:Cloudflare.NET.ICloudflareApiClient> into your services:
@@ -131,7 +136,11 @@ public class DnsService(ICloudflareApiClient cf)
 
 ## Multi-Account Support
 
-For applications managing multiple Cloudflare accounts, use named clients:
+For applications managing multiple Cloudflare accounts, you have two options:
+
+### Option 1: Named Clients (Pre-Registered)
+
+Use named clients when account configurations are known at startup:
 
 ```csharp
 // Register named clients
@@ -148,7 +157,7 @@ builder.Services.AddCloudflareApiClient("staging", options =>
 });
 ```
 
-### Using the Factory
+#### Using the Factory
 
 ```csharp
 public class MultiAccountService(ICloudflareApiClientFactory apiFactory)
@@ -161,7 +170,7 @@ public class MultiAccountService(ICloudflareApiClientFactory apiFactory)
 }
 ```
 
-### Using Keyed Services (.NET 8+)
+#### Using Keyed Services (.NET 8+)
 
 ```csharp
 public class MyService(
@@ -171,6 +180,42 @@ public class MyService(
     // Both clients are injected directly
 }
 ```
+
+### Option 2: Dynamic Clients (Runtime Creation)
+
+Use dynamic clients when account configurations are not known at startup, such as when users can add Cloudflare accounts through a UI:
+
+```csharp
+public class UserAccountService(ICloudflareApiClientFactory factory)
+{
+    public async Task<IReadOnlyList<Zone>> GetUserZonesAsync(UserCloudflareCredentials credentials)
+    {
+        var options = new CloudflareApiOptions
+        {
+            ApiToken = credentials.ApiToken,
+            AccountId = credentials.AccountId,
+            RateLimiting = new RateLimitingOptions
+            {
+                IsEnabled = true,
+                PermitLimit = 10  // Conservative limit for user accounts
+            }
+        };
+
+        // Dynamic clients must be disposed when done
+        using var client = factory.CreateClient(options);
+
+        var zones = new List<Zone>();
+        await foreach (var zone in client.Zones.ListAllZonesAsync())
+        {
+            zones.Add(zone);
+        }
+        return zones;
+    }
+}
+```
+
+> [!IMPORTANT]
+> Dynamic clients manage their own `HttpClient` and resilience pipeline. Always dispose them when finished using a `using` statement or by calling `Dispose()`. Each dynamic client has isolated state (rate limiter, circuit breaker) and does not share resources with other clients.
 
 ## Error Handling
 
