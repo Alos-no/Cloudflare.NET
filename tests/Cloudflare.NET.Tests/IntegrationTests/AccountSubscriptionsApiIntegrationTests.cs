@@ -281,7 +281,7 @@ public class AccountSubscriptionsApiIntegrationTests : IClassFixture<CloudflareA
 
   /// <summary>I11: Verifies that invalid rate plan returns API error.</summary>
   [IntegrationTest]
-  public async Task CreateAccountSubscriptionAsync_InvalidRatePlan_ThrowsNotFound()
+  public async Task CreateAccountSubscriptionAsync_InvalidRatePlan_ThrowsBadRequest()
   {
     // Arrange
     var accountId = _settings.AccountId;
@@ -291,10 +291,10 @@ public class AccountSubscriptionsApiIntegrationTests : IClassFixture<CloudflareA
     // Act
     var act = () => _sut.CreateAccountSubscriptionAsync(accountId, request);
 
-    // Assert - Per Cloudflare API: Invalid rate plan references return 404 Not Found
+    // Assert - Invalid rate plan references return 400 Bad Request with error code 7501.
     await act.Should()
       .ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
   }
 
   /// <summary>I12: Verifies that malformed subscription ID returns API error.</summary>

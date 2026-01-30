@@ -115,4 +115,31 @@ public sealed class CloudflareApiClient : ICloudflareApiClient
   public ITurnstileApi Turnstile => _turnstile.Value;
 
   #endregion
+
+
+  #region Methods Impl - IDisposable
+
+  /// <summary>
+  ///   Disposes this client instance.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     For DI-managed clients, this method does nothing because the <see cref="HttpClient" />
+  ///     lifetime is managed by <see cref="IHttpClientFactory" />. The factory handles pooling
+  ///     and disposal of the underlying handlers automatically.
+  ///   </para>
+  ///   <para>
+  ///     For dynamic clients created via
+  ///     <see cref="ICloudflareApiClientFactory.CreateClient(CloudflareApiOptions)" />,
+  ///     the <see cref="DynamicCloudflareApiClient" /> wrapper handles actual disposal of resources.
+  ///   </para>
+  /// </remarks>
+  public void Dispose()
+  {
+    // No-op for DI-managed clients. The HttpClient is managed by IHttpClientFactory
+    // and should not be disposed by the client. For dynamic clients, the
+    // DynamicCloudflareApiClient wrapper handles disposal.
+  }
+
+  #endregion
 }

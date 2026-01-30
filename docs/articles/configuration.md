@@ -192,7 +192,7 @@ The resilience pipeline is configured automatically when using `AddCloudflareApi
 
 ## Named Clients
 
-For multi-account scenarios, use named clients with separate configurations:
+For multi-account scenarios where configurations are known at startup, use named clients:
 
 ```csharp
 // appsettings.json
@@ -211,6 +211,78 @@ For multi-account scenarios, use named clients with separate configurations:
 builder.Services.AddCloudflareApiClient("production", builder.Configuration);
 builder.Services.AddCloudflareApiClient("staging", builder.Configuration);
 ```
+
+## Dynamic Clients
+
+For scenarios where client configurations are not known at startup (e.g., desktop applications where users add accounts at runtime), use dynamic client creation:
+
+```csharp
+public class AccountManager(ICloudflareApiClientFactory factory)
+{
+    public async Task<AccountInfo> ValidateAndGetAccountInfoAsync(string apiToken, string accountId)
+    {
+        var options = new CloudflareApiOptions
+        {
+            ApiToken = apiToken,
+            AccountId = accountId,
+            DefaultTimeout = TimeSpan.FromSeconds(15),
+            RateLimiting = new RateLimitingOptions
+            {
+                IsEnabled = true,
+                PermitLimit = 5,      // Conservative for user-provided credentials
+                MaxRetries = 2
+            }
+        };
+
+        // Create and use a dynamic client
+        using var client = factory.CreateClient(options);
+
+        var user = await client.User.GetUserAsync();
+        return new AccountInfo(user.Email, accountId);
+    }
+}
+```
+
+### Dynamic Client Characteristics
+
+| Aspect | Named Clients | Dynamic Clients |
+|--------|---------------|-----------------|
+| Configuration | At startup via DI | At runtime via `CloudflareApiOptions` |
+| Lifecycle | Managed by DI container | Must be disposed by caller |
+| HttpClient | Shared via `IHttpClientFactory` | Owned by the client instance |
+| Resilience Pipeline | Shared per named client | Isolated per instance |
+| Use Case | Known accounts, server apps | User-provided accounts, desktop apps |
+
+### Disposal Requirements
+
+Dynamic clients implement `IDisposable` and **must** be disposed when no longer needed:
+
+```csharp
+// Option 1: using statement (recommended)
+using var client = factory.CreateClient(options);
+await client.Zones.ListZonesAsync();
+// Client automatically disposed at end of scope
+
+// Option 2: using declaration in async methods
+using var client = factory.CreateClient(options);
+var zones = await client.Zones.ListZonesAsync();
+// ... more operations
+// Client disposed when method returns
+
+// Option 3: Manual disposal (for longer-lived clients)
+var client = factory.CreateClient(options);
+try
+{
+    // Use client for multiple operations...
+}
+finally
+{
+    client.Dispose();
+}
+```
+
+> [!WARNING]
+> Failing to dispose dynamic clients will leak `HttpClient` instances and their underlying socket connections. Always use a `using` statement or explicitly call `Dispose()`.
 
 ## Environment Variables
 

@@ -46,5 +46,55 @@ public interface ICloudflareApiClientFactory
   /// <exception cref="InvalidOperationException">Thrown when no client with the specified name has been registered.</exception>
   ICloudflareApiClient CreateClient(string name);
 
+
+  /// <summary>
+  ///   Creates an <see cref="ICloudflareApiClient" /> instance dynamically from the provided options,
+  ///   without requiring pre-registration in the DI container.
+  /// </summary>
+  /// <param name="options">The configuration options for the client.</param>
+  /// <returns>
+  ///   A fully configured <see cref="ICloudflareApiClient" /> with authentication and resilience
+  ///   (rate limiting, retries, circuit breaker, timeouts).
+  /// </returns>
+  /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is null.</exception>
+  /// <exception cref="InvalidOperationException">Thrown when the options fail validation (e.g., missing ApiToken).</exception>
+  /// <remarks>
+  ///   <para>
+  ///     Use this method when client configurations are not known at application startup,
+  ///     such as when users can add Cloudflare accounts at runtime through a UI.
+  ///   </para>
+  ///   <para>
+  ///     The returned client manages its own <see cref="HttpClient" /> instance and should be disposed
+  ///     when no longer needed to release resources. Use a <c>using</c> statement or call <see cref="IDisposable.Dispose" />:
+  ///   </para>
+  ///   <code>
+  /// using var client = factory.CreateClient(options);
+  /// var zones = await client.Zones.ListZonesAsync();
+  /// // Client is disposed when the using scope ends
+  /// </code>
+  ///   <para>
+  ///     Each dynamic client has its own isolated resilience pipeline (rate limiter, circuit breaker, etc.).
+  ///     Dynamic clients do not share state with pre-registered named clients or other dynamic clients.
+  ///   </para>
+  /// </remarks>
+  /// <example>
+  ///   <code>
+  /// // Create a dynamic client for a user-provided account
+  /// var options = new CloudflareApiOptions
+  /// {
+  ///     ApiToken = userProvidedToken,
+  ///     AccountId = userProvidedAccountId,
+  ///     RateLimiting = new RateLimitingOptions
+  ///     {
+  ///         IsEnabled = true,
+  ///         PermitLimit = 10  // Conservative limit for user accounts
+  ///     }
+  /// };
+  ///
+  /// var client = factory.CreateClient(options);
+  /// </code>
+  /// </example>
+  ICloudflareApiClient CreateClient(CloudflareApiOptions options);
+
   #endregion
 }

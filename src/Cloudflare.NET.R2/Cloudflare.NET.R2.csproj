@@ -18,6 +18,8 @@
   <ItemGroup>
     <!-- This package will use the official AWS SDK for S3 operations. -->
     <PackageReference Include="AWSSDK.S3" Version="4.0.7.1" />
+    <!-- Explicit Core version to fix vulnerability GHSA-9cvc-h2w8-phrp (fixed in 4.0.3.3) -->
+    <PackageReference Include="AWSSDK.Core" Version="4.0.3.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
