@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Uploading Objects | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Uploading Objects | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/uploads.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="uploading-objects">Uploading Objects</h1>
+
+<p>The R2 client provides multiple upload methods with intelligent strategy selection based on file size.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class UploadService(IR2Client r2)
+{
+    public async Task UploadFileAsync(string key, string filePath)
+    {
+        // Automatically selects single-part or multipart based on size
+        var result = await r2.UploadAsync(&quot;my-bucket&quot;, key, filePath);
+
+        Console.WriteLine($&quot;Uploaded {result.IngressBytes} bytes&quot;);
+        Console.WriteLine($&quot;Class A operations: {result.ClassAOperations}&quot;);
+    }
+}
+</code></pre>
+<h2 id="automatic-upload">Automatic Upload</h2>
+<p>The <code>UploadAsync</code> method automatically chooses the best upload strategy:</p>
+<ul>
+<li>Files &lt;= 5 GiB: Single PUT request</li>
+<li>Files &gt; 5 GiB: Multipart upload</li>
+</ul>
+<h3 id="from-file-path">From File Path</h3>
+<pre><code class="lang-csharp">var result = await r2.UploadAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;documents/report.pdf&quot;,
+    filePath: &quot;/path/to/report.pdf&quot;);
+
+Console.WriteLine($&quot;Uploaded: {result.IngressBytes} bytes&quot;);
+</code></pre>
+<h3 id="from-stream">From Stream</h3>
+<pre><code class="lang-csharp">await using var stream = File.OpenRead(&quot;/path/to/file.zip&quot;);
+
+var result = await r2.UploadAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;archives/file.zip&quot;,
+    fileStream: stream);
+</code></pre>
+<h3 id="with-custom-part-size">With Custom Part Size</h3>
+<p>For multipart uploads, you can specify the part size (5 MiB - 5 GiB):</p>
+<pre><code class="lang-csharp">var result = await r2.UploadAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;large-file.bin&quot;,
+    filePath: &quot;/path/to/large-file.bin&quot;,
+    partSize: 100 * 1024 * 1024); // 100 MiB parts
+</code></pre>
+<h2 id="single-part-upload">Single-Part Upload</h2>
+<p>Force a single PUT request for files up to 5 GiB:</p>
+<h3 id="from-file-path-1">From File Path</h3>
+<pre><code class="lang-csharp">var result = await r2.UploadSinglePartAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;images/photo.jpg&quot;,
+    filePath: &quot;/path/to/photo.jpg&quot;);
+</code></pre>
+<h3 id="from-stream-1">From Stream</h3>
+<pre><code class="lang-csharp">await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(&quot;Hello, R2!&quot;));
+
+var result = await r2.UploadSinglePartAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;text/hello.txt&quot;,
+    inputStream: stream);
+</code></pre>
+<h3 id="from-in-memory-data">From In-Memory Data</h3>
+<pre><code class="lang-csharp">byte[] data = GetFileData();
+await using var stream = new MemoryStream(data);
+
+var result = await r2.UploadSinglePartAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;data.bin&quot;,
+    inputStream: stream);
+</code></pre>
+<h2 id="r2result">R2Result</h2>
+<p>Upload operations return <code>R2Result</code> with metrics:</p>
+<pre><code class="lang-csharp">var result = await r2.UploadAsync(&quot;bucket&quot;, &quot;key&quot;, filePath);
+
+Console.WriteLine($&quot;Class A Operations: {result.ClassAOperations}&quot;); // 1 for single-part
+Console.WriteLine($&quot;Class B Operations: {result.ClassBOperations}&quot;); // Always 0 for uploads
+Console.WriteLine($&quot;Ingress Bytes: {result.IngressBytes}&quot;);          // File size
+Console.WriteLine($&quot;Egress Bytes: {result.EgressBytes}&quot;);            // Always 0 for uploads
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<pre><code class="lang-csharp">try
+{
+    await r2.UploadAsync(&quot;bucket&quot;, &quot;key&quot;, filePath);
+}
+catch (FileNotFoundException)
+{
+    Console.WriteLine(&quot;File not found&quot;);
+}
+catch (ArgumentException ex)
+{
+    // File exceeds size limits
+    Console.WriteLine($&quot;Invalid file: {ex.Message}&quot;);
+}
+catch (CloudflareR2OperationException ex)
+{
+    Console.WriteLine($&quot;Upload failed: {ex.Message}&quot;);
+    // Access partial metrics if available
+    Console.WriteLine($&quot;Bytes uploaded before failure: {ex.PartialMetrics?.IngressBytes}&quot;);
+}
+</code></pre>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="upload-with-progress">Upload with Progress</h3>
+<pre><code class="lang-csharp">public async Task UploadWithProgressAsync(string bucket, string key, string filePath)
+{
+    var fileInfo = new FileInfo(filePath);
+    var totalBytes = fileInfo.Length;
+
+    // For small files, use single-part
+    if (totalBytes &lt;= 5L * 1024 * 1024 * 1024)
+    {
+        Console.WriteLine(&quot;Uploading...&quot;);
+        await r2.UploadSinglePartAsync(bucket, key, filePath);
+        Console.WriteLine(&quot;Complete!&quot;);
+    }
+    else
+    {
+        // For large files, track multipart progress
+        // See Multipart Uploads documentation
+        await r2.UploadMultipartAsync(bucket, key, filePath);
+    }
+}
+</code></pre>
+<h3 id="upload-multiple-files">Upload Multiple Files</h3>
+<pre><code class="lang-csharp">public async Task&lt;R2Result&gt; UploadDirectoryAsync(string bucket, string prefix, string localDir)
+{
+    var total = new R2Result();
+
+    foreach (var file in Directory.GetFiles(localDir, &quot;*&quot;, SearchOption.AllDirectories))
+    {
+        var relativePath = Path.GetRelativePath(localDir, file);
+        var key = $&quot;{prefix}/{relativePath.Replace('\\', '/')}&quot;;
+
+        var result = await r2.UploadAsync(bucket, key, file);
+        total += result;
+
+        Console.WriteLine($&quot;Uploaded: {key}&quot;);
+    }
+
+    return total;
+}
+</code></pre>
+<h3 id="upload-with-retry">Upload with Retry</h3>
+<pre><code class="lang-csharp">public async Task&lt;R2Result&gt; UploadWithRetryAsync(
+    string bucket, string key, string filePath, int maxRetries = 3)
+{
+    for (int attempt = 1; attempt &lt;= maxRetries; attempt++)
+    {
+        try
+        {
+            return await r2.UploadAsync(bucket, key, filePath);
+        }
+        catch (CloudflareR2OperationException) when (attempt &lt; maxRetries)
+        {
+            Console.WriteLine($&quot;Attempt {attempt} failed, retrying...&quot;);
+            await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt)));
+        }
+    }
+
+    throw new InvalidOperationException($&quot;Upload failed after {maxRetries} attempts&quot;);
+}
+</code></pre>
+<h3 id="upload-json-data">Upload JSON Data</h3>
+<pre><code class="lang-csharp">public async Task&lt;R2Result&gt; UploadJsonAsync&lt;T&gt;(string bucket, string key, T data)
+{
+    var json = JsonSerializer.Serialize(data);
+    var bytes = Encoding.UTF8.GetBytes(json);
+
+    await using var stream = new MemoryStream(bytes);
+    return await r2.UploadSinglePartAsync(bucket, key, stream);
+}
+</code></pre>
+<h2 id="size-limits">Size Limits</h2>
+<table>
+<thead>
+<tr>
+<th>Upload Type</th>
+<th>Maximum Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single-part (PUT)</td>
+<td>5 GiB</td>
+</tr>
+<tr>
+<td>Multipart</td>
+<td>5 TiB</td>
+</tr>
+<tr>
+<td>Minimum part size</td>
+<td>5 MiB</td>
+</tr>
+<tr>
+<td>Maximum part size</td>
+<td>5 GiB</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="multipart.html">Multipart Uploads</a> - Large file handling</li>
+<li><a href="presigned-urls.html">Presigned URLs</a> - Direct browser uploads</li>
+<li><a href="downloads.html">Downloading Objects</a> - Download files</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/uploads.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

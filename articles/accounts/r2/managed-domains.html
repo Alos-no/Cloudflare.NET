@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Managed Domains (r2.dev) | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Managed Domains (r2.dev) | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/managed-domains.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-managed-domains-r2dev">R2 Managed Domains (r2.dev)</h1>
+
+<p>Control public access to R2 buckets via the managed r2.dev domain. This allows you to enable or disable public access to bucket contents without configuring custom domains.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class ManagedDomainService(ICloudflareApiClient cf)
+{
+    public async Task EnablePublicAccessAsync(string bucket)
+    {
+        var result = await cf.Accounts.Buckets.EnableManagedDomainAsync(bucket);
+        Console.WriteLine($&quot;Public URL: {result.Domain}&quot;);
+    }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Jurisdictional Buckets:</strong> If your bucket was created with a jurisdiction (e.g., <code>R2Jurisdiction.EuropeanUnion</code>), you must pass the jurisdiction parameter to all managed domain operations. See <a href="buckets.html#working-with-jurisdictional-buckets">Working with Jurisdictional Buckets</a>.</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.EnableManagedDomainAsync(&quot;my-eu-bucket&quot;, R2Jurisdiction.EuropeanUnion);
+</code></pre>
+</div>
+<h2 id="getting-managed-domain-status">Getting Managed Domain Status</h2>
+<p>Check if the r2.dev public URL is enabled for a bucket:</p>
+<pre><code class="lang-csharp">var status = await cf.Accounts.Buckets.GetManagedDomainAsync(&quot;my-bucket&quot;);
+
+Console.WriteLine($&quot;Bucket ID: {status.BucketId}&quot;);
+Console.WriteLine($&quot;Domain: {status.Domain}&quot;);
+Console.WriteLine($&quot;Enabled: {status.Enabled}&quot;);
+</code></pre>
+<p>The domain format is: <code>{bucket-name}.{account-id}.r2.dev</code></p>
+<h2 id="enabling-public-access">Enabling Public Access</h2>
+<p>Enable the r2.dev subdomain to allow public access to bucket contents:</p>
+<pre><code class="lang-csharp">var result = await cf.Accounts.Buckets.EnableManagedDomainAsync(&quot;my-bucket&quot;);
+
+Console.WriteLine($&quot;Public URL: https://{result.Domain}&quot;);
+// Output: https://my-bucket.abc123.r2.dev
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Enabling the managed domain makes all objects in the bucket publicly accessible. Ensure you have appropriate access controls or use custom domains with authentication for sensitive content.</p>
+</div>
+<h2 id="disabling-public-access">Disabling Public Access</h2>
+<p>Disable the r2.dev subdomain to prevent public access:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.DisableManagedDomainAsync(&quot;my-bucket&quot;);
+</code></pre>
+<p>After disabling, objects are only accessible via:</p>
+<ul>
+<li>The S3-compatible API with authentication</li>
+<li>Custom domains (if configured)</li>
+</ul>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="manageddomainresponse">ManagedDomainResponse</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BucketId</code></td>
+<td><code>string?</code></td>
+<td>The unique identifier of the bucket</td>
+</tr>
+<tr>
+<td><code>Domain</code></td>
+<td><code>string?</code></td>
+<td>The r2.dev domain hostname</td>
+</tr>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td>Whether public access is enabled</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="toggle-public-access">Toggle Public Access</h3>
+<pre><code class="lang-csharp">public async Task SetPublicAccessAsync(string bucket, bool enabled)
+{
+    if (enabled)
+    {
+        var result = await cf.Accounts.Buckets.EnableManagedDomainAsync(bucket);
+        Console.WriteLine($&quot;Public URL enabled: https://{result.Domain}&quot;);
+    }
+    else
+    {
+        await cf.Accounts.Buckets.DisableManagedDomainAsync(bucket);
+        Console.WriteLine(&quot;Public access disabled&quot;);
+    }
+}
+</code></pre>
+<h3 id="check-before-enabling">Check Before Enabling</h3>
+<pre><code class="lang-csharp">public async Task&lt;string?&gt; EnsurePublicAccessAsync(string bucket)
+{
+    var status = await cf.Accounts.Buckets.GetManagedDomainAsync(bucket);
+
+    if (status.Enabled)
+    {
+        return status.Domain;
+    }
+
+    var result = await cf.Accounts.Buckets.EnableManagedDomainAsync(bucket);
+    return result.Domain;
+}
+</code></pre>
+<h3 id="development-vs-production">Development vs Production</h3>
+<pre><code class="lang-csharp">public async Task ConfigureAccessAsync(string bucket, bool isDevelopment)
+{
+    if (isDevelopment)
+    {
+        // Enable r2.dev for easy development access
+        await cf.Accounts.Buckets.EnableManagedDomainAsync(bucket);
+    }
+    else
+    {
+        // Production: disable r2.dev, use custom domains only
+        await cf.Accounts.Buckets.DisableManagedDomainAsync(bucket);
+    }
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers R2 Storage</td>
+<td>Account</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-considerations">Security Considerations</h2>
+<ol>
+<li><strong>Disable in production</strong> - Use custom domains with proper access controls for production workloads</li>
+<li><strong>No authentication</strong> - The r2.dev domain provides no authentication; all objects are publicly accessible</li>
+<li><strong>Rate limiting</strong> - r2.dev URLs are subject to Cloudflare's standard rate limiting</li>
+<li><strong>Caching</strong> - Content served via r2.dev benefits from Cloudflare's edge caching</li>
+</ol>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="custom-domains.html">Custom Domains</a> - Attach custom hostnames for branded URLs</li>
+<li><a href="buckets.html">Bucket Management</a> - Create and manage buckets</li>
+<li><a href="cors.html">CORS Configuration</a> - Configure cross-origin access</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/managed-domains.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

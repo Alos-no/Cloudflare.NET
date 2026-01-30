@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Object Storage | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Object Storage | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-object-storage">R2 Object Storage</h1>
+
+<p>The <code>Cloudflare.NET.R2</code> package provides a high-level S3-compatible client for Cloudflare R2 object storage with intelligent upload strategies, multipart support, presigned URLs, and comprehensive operation metrics.</p>
+<h2 id="installation">Installation</h2>
+<pre><code class="lang-bash">dotnet add package Cloudflare.NET.R2
+</code></pre>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="configuration">Configuration</h3>
+<p>Add R2 settings to your <code>appsettings.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;Cloudflare&quot;: {
+    &quot;AccountId&quot;: &quot;your-account-id&quot;
+  },
+  &quot;R2&quot;: {
+    &quot;AccessKeyId&quot;: &quot;your-r2-access-key-id&quot;,
+    &quot;SecretAccessKey&quot;: &quot;your-r2-secret-access-key&quot;
+  }
+}
+</code></pre>
+<h3 id="registration">Registration</h3>
+<pre><code class="lang-csharp">// Program.cs
+builder.Services.AddCloudflareR2Client(builder.Configuration);
+</code></pre>
+<h3 id="basic-usage">Basic Usage</h3>
+<p>Inject <a class="xref" href="../../api/Cloudflare.NET.R2.IR2Client.html">IR2Client</a> into your services:</p>
+<pre><code class="lang-csharp">public class StorageService(IR2Client r2)
+{
+    public async Task&lt;R2Result&gt; UploadFileAsync(string key, string filePath)
+    {
+        return await r2.UploadAsync(&quot;my-bucket&quot;, key, filePath);
+    }
+
+    public async Task&lt;R2Result&gt; DownloadFileAsync(string key, string downloadPath)
+    {
+        return await r2.DownloadFileAsync(&quot;my-bucket&quot;, key, downloadPath);
+    }
+}
+</code></pre>
+<h2 id="features">Features</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Intelligent Uploads</strong></td>
+<td>Auto-selects single-part or multipart based on file size</td>
+</tr>
+<tr>
+<td><strong>Multipart Uploads</strong></td>
+<td>Handle files up to 5 TiB with parallel part uploads</td>
+</tr>
+<tr>
+<td><strong>Presigned URLs</strong></td>
+<td>Generate secure URLs for direct browser uploads</td>
+</tr>
+<tr>
+<td><strong>Jurisdiction Support</strong></td>
+<td>EU, FedRAMP, and default global endpoints</td>
+</tr>
+<tr>
+<td><strong>Named Clients</strong></td>
+<td>Multi-account scenarios with <code>IR2ClientFactory</code></td>
+</tr>
+<tr>
+<td><strong>Operation Metrics</strong></td>
+<td>Track Class A/B operations, ingress, and egress bytes</td>
+</tr>
+<tr>
+<td><strong>Error Handling</strong></td>
+<td>Rich exceptions with partial metrics for debugging</td>
+</tr>
+</tbody>
+</table>
+<h2 id="operation-pricing">Operation Pricing</h2>
+<p>R2 has a unique pricing model with free and paid operations:</p>
+<table>
+<thead>
+<tr>
+<th>Operation Type</th>
+<th>Examples</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Class A</strong></td>
+<td>Put, List, Copy</td>
+<td>$4.50 per million</td>
+</tr>
+<tr>
+<td><strong>Class B</strong></td>
+<td>Get, Head</td>
+<td>$0.36 per million</td>
+</tr>
+<tr>
+<td><strong>Free</strong></td>
+<td>Delete</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Egress</strong></td>
+<td>Downloads</td>
+<td>Free</td>
+</tr>
+</tbody>
+</table>
+<p>The SDK tracks these metrics in the <a class="xref" href="../../api/Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> object returned by all operations.</p>
+<h2 id="api-overview">API Overview</h2>
+<h3 id="upload-operations">Upload Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="uploads.html"><code>UploadAsync</code></a></td>
+<td>Auto-select upload strategy</td>
+</tr>
+<tr>
+<td><a href="uploads.html#single-part-upload"><code>UploadSinglePartAsync</code></a></td>
+<td>Force single PUT request</td>
+</tr>
+<tr>
+<td><a href="multipart.html"><code>UploadMultipartAsync</code></a></td>
+<td>Force multipart upload</td>
+</tr>
+</tbody>
+</table>
+<h3 id="download-operations">Download Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="downloads.html"><code>DownloadFileAsync</code></a></td>
+<td>Download to file or stream</td>
+</tr>
+</tbody>
+</table>
+<h3 id="delete-operations">Delete Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="deletes.html"><code>DeleteObjectAsync</code></a></td>
+<td>Delete single object (free)</td>
+</tr>
+<tr>
+<td><a href="deletes.html#batch-delete"><code>DeleteObjectsAsync</code></a></td>
+<td>Batch delete (free)</td>
+</tr>
+<tr>
+<td><a href="deletes.html#clear-bucket"><code>ClearBucketAsync</code></a></td>
+<td>Delete all objects (free)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="list-operations">List Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="listing.html"><code>ListObjectsAsync</code></a></td>
+<td>List objects with pagination</td>
+</tr>
+<tr>
+<td><a href="multipart.html#listing-parts"><code>ListPartsAsync</code></a></td>
+<td>List multipart upload parts</td>
+</tr>
+</tbody>
+</table>
+<h3 id="presigned-urls">Presigned URLs</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="presigned-urls.html"><code>CreatePresignedPutUrl</code></a></td>
+<td>URL for direct upload</td>
+</tr>
+<tr>
+<td><a href="presigned-urls.html#multipart-presigned-urls"><code>CreatePresignedUploadPartUrl</code></a></td>
+<td>URL for multipart part</td>
+</tr>
+<tr>
+<td><a href="presigned-urls.html#batch-presigned-urls"><code>CreatePresignedUploadPartsUrls</code></a></td>
+<td>Batch URLs for parts</td>
+</tr>
+</tbody>
+</table>
+<h3 id="low-level-multipart">Low-Level Multipart</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="multipart.html#manual-multipart-control"><code>InitiateMultipartUploadAsync</code></a></td>
+<td>Start multipart upload</td>
+</tr>
+<tr>
+<td><a href="multipart.html#completing-upload"><code>CompleteMultipartUploadAsync</code></a></td>
+<td>Finalize multipart upload</td>
+</tr>
+<tr>
+<td><a href="multipart.html#aborting-upload"><code>AbortMultipartUploadAsync</code></a></td>
+<td>Cancel multipart upload</td>
+</tr>
+</tbody>
+</table>
+<h2 id="r2result-model">R2Result Model</h2>
+<p>All operations return <a class="xref" href="../../api/Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> with operation metrics:</p>
+<pre><code class="lang-csharp">public record R2Result(
+    long ClassAOperations = 0,  // Writes, lists
+    long ClassBOperations = 0,  // Reads
+    long IngressBytes = 0,      // Bytes uploaded
+    long EgressBytes = 0        // Bytes downloaded
+);
+</code></pre>
+<p>Results can be combined:</p>
+<pre><code class="lang-csharp">var total = result1 + result2 + result3;
+Console.WriteLine($&quot;Total ingress: {total.IngressBytes} bytes&quot;);
+</code></pre>
+<h2 id="exception-handling">Exception Handling</h2>
+<p>The SDK provides rich exceptions for error handling:</p>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Scenario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></td>
+<td>Single operation failure</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Cloudflare.NET.R2.Exceptions.CloudflareR2BatchException-1.html">CloudflareR2BatchException&lt;T&gt;</a></td>
+<td>Batch operation with failures</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Cloudflare.NET.R2.Exceptions.CloudflareR2ListException-1.html">CloudflareR2ListException&lt;T&gt;</a></td>
+<td>List operation failed mid-stream</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">try
+{
+    await r2.UploadAsync(&quot;bucket&quot;, &quot;key&quot;, filePath);
+}
+catch (CloudflareR2OperationException ex)
+{
+    // Single operation failed
+    Console.WriteLine($&quot;Upload failed: {ex.Message}&quot;);
+    Console.WriteLine($&quot;Partial metrics: {ex.PartialMetrics}&quot;);
+}
+catch (CloudflareR2BatchException&lt;string&gt; ex)
+{
+    // Batch operation had failures
+    Console.WriteLine($&quot;Failed items: {ex.FailedItems.Count}&quot;);
+    Console.WriteLine($&quot;Partial metrics: {ex.PartialMetrics}&quot;);
+}
+catch (CloudflareR2ListException&lt;S3Object&gt; ex)
+{
+    // List operation failed mid-stream
+    Console.WriteLine($&quot;Partial data retrieved: {ex.PartialData.Count}&quot;);
+}
+</code></pre>
+<h2 id="size-limits">Size Limits</h2>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maximum object size</td>
+<td>5 TiB</td>
+</tr>
+<tr>
+<td>Single PUT limit</td>
+<td>5 GiB</td>
+</tr>
+<tr>
+<td>Minimum part size</td>
+<td>5 MiB</td>
+</tr>
+<tr>
+<td>Maximum part size</td>
+<td>5 GiB</td>
+</tr>
+<tr>
+<td>Maximum parts per upload</td>
+<td>10,000</td>
+</tr>
+</tbody>
+</table>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s3:GetObject</code></td>
+<td>Download objects</td>
+</tr>
+<tr>
+<td><code>s3:PutObject</code></td>
+<td>Upload objects</td>
+</tr>
+<tr>
+<td><code>s3:DeleteObject</code></td>
+<td>Delete objects</td>
+</tr>
+<tr>
+<td><code>s3:ListBucket</code></td>
+<td>List objects</td>
+</tr>
+</tbody>
+</table>
+<h2 id="jurisdictions">Jurisdictions</h2>
+<p>R2 supports jurisdictional restrictions for data residency compliance. Use <code>IR2ClientFactory</code> to create clients for different jurisdictions:</p>
+<pre><code class="lang-csharp">public class MultiRegionService(IR2ClientFactory factory)
+{
+    public async Task ReplicateToEuAsync(string bucket, string key, Stream data)
+    {
+        // Create a client for the EU jurisdiction
+        var euClient = factory.GetClient(R2Jurisdiction.EuropeanUnion);
+        await euClient.UploadAsync(bucket, key, data);
+    }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Jurisdiction</th>
+<th>Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Default</code></td>
+<td><code>https://{account_id}.r2.cloudflarestorage.com</code></td>
+</tr>
+<tr>
+<td><code>EuropeanUnion</code></td>
+<td><code>https://{account_id}.eu.r2.cloudflarestorage.com</code></td>
+</tr>
+<tr>
+<td><code>FedRamp</code></td>
+<td><code>https://{account_id}.fedramp.r2.cloudflarestorage.com</code></td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../r2-client.html#jurisdiction-support">R2 Object Storage</a> for detailed jurisdiction documentation.</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="uploads.html">Uploading Objects</a> - Single and automatic uploads</li>
+<li><a href="downloads.html">Downloading Objects</a> - Download to files and streams</li>
+<li><a href="deletes.html">Deleting Objects</a> - Single and batch deletes</li>
+<li><a href="listing.html">Listing Objects</a> - Object enumeration</li>
+<li><a href="multipart.html">Multipart Uploads</a> - Large file handling</li>
+<li><a href="presigned-urls.html">Presigned URLs</a> - Direct browser uploads</li>
+<li><a href="../accounts/r2/buckets.html">R2 Bucket Management</a> - Create and configure buckets</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Object Storage | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Object Storage | Cloudflare.NET ">
+      <meta name="description" content="Use Cloudflare R2 object storage with .NET. Upload, download, and manage files using the S3-compatible Cloudflare.NET.R2 client.">
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2-client.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-object-storage">R2 Object Storage</h1>
+
+<p>The <code>Cloudflare.NET.R2</code> package provides a high-level client for Cloudflare R2 object storage using the S3-compatible API.</p>
+<h2 id="installation">Installation</h2>
+<pre><code class="lang-bash">dotnet add package Cloudflare.NET.R2
+</code></pre>
+<h2 id="configuration">Configuration</h2>
+<pre><code class="lang-json">{
+  &quot;Cloudflare&quot;: {
+    &quot;AccountId&quot;: &quot;your-cloudflare-account-id&quot;
+  },
+  &quot;R2&quot;: {
+    &quot;AccessKeyId&quot;: &quot;your-r2-access-key-id&quot;,
+    &quot;SecretAccessKey&quot;: &quot;your-r2-secret-access-key&quot;
+  }
+}
+</code></pre>
+<pre><code class="lang-csharp">builder.Services.AddCloudflareR2Client(builder.Configuration);
+</code></pre>
+<h2 id="jurisdiction-support">Jurisdiction Support</h2>
+<p>R2 supports jurisdictional restrictions that ensure data stays within specific geographic regions. The SDK provides full support for jurisdictions through configuration and the <code>IR2ClientFactory</code>.</p>
+<h3 id="available-jurisdictions">Available Jurisdictions</h3>
+<table>
+<thead>
+<tr>
+<th>Jurisdiction</th>
+<th>Description</th>
+<th>Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Default</code></td>
+<td>No restriction (global)</td>
+<td><code>https://{account_id}.r2.cloudflarestorage.com</code></td>
+</tr>
+<tr>
+<td><code>EuropeanUnion</code></td>
+<td>EU data residency</td>
+<td><code>https://{account_id}.eu.r2.cloudflarestorage.com</code></td>
+</tr>
+<tr>
+<td><code>FedRamp</code></td>
+<td>FedRAMP compliance</td>
+<td><code>https://{account_id}.fedramp.r2.cloudflarestorage.com</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration-based-jurisdiction">Configuration-Based Jurisdiction</h3>
+<p>Set the jurisdiction in your configuration to use it as the default:</p>
+<pre><code class="lang-json">{
+  &quot;R2&quot;: {
+    &quot;AccessKeyId&quot;: &quot;...&quot;,
+    &quot;SecretAccessKey&quot;: &quot;...&quot;,
+    &quot;Jurisdiction&quot;: &quot;eu&quot;
+  }
+}
+</code></pre>
+<h3 id="runtime-jurisdiction-with-ir2clientfactory">Runtime Jurisdiction with IR2ClientFactory</h3>
+<p>Use <code>IR2ClientFactory</code> to create clients for different jurisdictions at runtime:</p>
+<pre><code class="lang-csharp">public class MultiJurisdictionService(IR2ClientFactory factory)
+{
+    // Get client for specific jurisdiction using default credentials
+    public async Task UploadToEuAsync(string bucket, string key, Stream data)
+    {
+        var euClient = factory.GetClient(R2Jurisdiction.EuropeanUnion);
+        await euClient.UploadAsync(bucket, key, data);
+    }
+
+    // Get client for specific jurisdiction using named credentials
+    public async Task UploadToProdEuAsync(string bucket, string key, Stream data)
+    {
+        var client = factory.GetClient(&quot;production&quot;, R2Jurisdiction.EuropeanUnion);
+        await client.UploadAsync(bucket, key, data);
+    }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The same R2 credentials work across all jurisdictions within an account—only the S3 endpoint differs. Clients are cached by <code>(name, jurisdiction)</code> tuple and reused.</p>
+</div>
+<h3 id="named-clients">Named Clients</h3>
+<p>For multi-account scenarios, register named R2 clients:</p>
+<pre><code class="lang-csharp">// Registration
+services.AddCloudflareR2Client(&quot;production&quot;, config);
+services.AddCloudflareR2Client(&quot;staging&quot;, config);
+
+// Usage
+public class StorageService(IR2ClientFactory factory)
+{
+    public IR2Client Production =&gt; factory.GetClient(&quot;production&quot;);
+    public IR2Client Staging =&gt; factory.GetClient(&quot;staging&quot;);
+}
+</code></pre>
+<h2 id="basic-operations">Basic Operations</h2>
+<h3 id="upload-objects">Upload Objects</h3>
+<pre><code class="lang-csharp">public class StorageService(IR2Client r2)
+{
+    // Upload a file (auto-selects single or multipart based on size)
+    public async Task&lt;R2Result&gt; UploadFileAsync(string bucket, string key, string filePath)
+    {
+        return await r2.UploadAsync(bucket, key, filePath);
+    }
+
+    // Upload from stream
+    public async Task&lt;R2Result&gt; UploadStreamAsync(string bucket, string key, Stream stream)
+    {
+        return await r2.UploadAsync(bucket, key, stream);
+    }
+
+    // Upload with content type
+    public async Task&lt;R2Result&gt; UploadWithMetadataAsync(
+        string bucket,
+        string key,
+        Stream stream,
+        string contentType)
+    {
+        return await r2.UploadAsync(bucket, key, stream, contentType: contentType);
+    }
+}
+</code></pre>
+<h3 id="download-objects">Download Objects</h3>
+<pre><code class="lang-csharp">// Download to file
+public async Task DownloadToFileAsync(string bucket, string key, string filePath)
+{
+    await r2.DownloadFileAsync(bucket, key, filePath);
+}
+
+// Download to stream
+public async Task&lt;Stream&gt; DownloadToStreamAsync(string bucket, string key)
+{
+    var memoryStream = new MemoryStream();
+    await r2.DownloadFileAsync(bucket, key, memoryStream);
+    memoryStream.Position = 0;
+    return memoryStream;
+}
+</code></pre>
+<h3 id="delete-objects">Delete Objects</h3>
+<pre><code class="lang-csharp">// Delete single object (free operation)
+public async Task DeleteObjectAsync(string bucket, string key)
+{
+    await r2.DeleteObjectAsync(bucket, key);
+}
+
+// Batch delete (up to 1000 keys per request)
+public async Task DeleteObjectsAsync(string bucket, IEnumerable&lt;string&gt; keys)
+{
+    await r2.DeleteObjectsAsync(bucket, keys);
+}
+
+// Clear entire bucket
+public async Task ClearBucketAsync(string bucket)
+{
+    await r2.ClearBucketAsync(bucket);
+}
+</code></pre>
+<h3 id="list-objects">List Objects</h3>
+<pre><code class="lang-csharp">// List all objects with automatic pagination
+public async IAsyncEnumerable&lt;S3Object&gt; ListAllAsync(string bucket, string? prefix = null)
+{
+    await foreach (var obj in r2.ListObjectsAsync(bucket, prefix))
+    {
+        yield return obj;
+    }
+}
+</code></pre>
+<h2 id="presigned-urls">Presigned URLs</h2>
+<p>Generate presigned URLs for direct client uploads:</p>
+<pre><code class="lang-csharp">// Generate presigned PUT URL (valid for 1 hour by default)
+public string GetPresignedUploadUrl(string bucket, string key)
+{
+    return r2.CreatePresignedPutUrl(bucket, key, TimeSpan.FromHours(1));
+}
+
+// Generate presigned URL for multipart upload part
+public string GetPresignedPartUrl(string bucket, string key, string uploadId, int partNumber)
+{
+    return r2.CreatePresignedUploadPartUrl(bucket, key, uploadId, partNumber);
+}
+</code></pre>
+<h2 id="multipart-uploads">Multipart Uploads</h2>
+<p>For large files (&gt; 5 GiB), use multipart uploads:</p>
+<pre><code class="lang-csharp">// Automatic multipart upload based on size
+public async Task&lt;R2Result&gt; UploadLargeFileAsync(string bucket, string key, string filePath)
+{
+    // Automatically uses multipart for files &gt; threshold
+    return await r2.UploadAsync(bucket, key, filePath);
+}
+
+// Explicit multipart upload
+public async Task&lt;R2Result&gt; UploadMultipartAsync(string bucket, string key, Stream stream)
+{
+    return await r2.UploadMultipartAsync(bucket, key, stream);
+}
+</code></pre>
+<h2 id="operation-metrics">Operation Metrics</h2>
+<p>All R2 operations return <code>R2Result</code> or <code>R2Result&lt;T&gt;</code> which includes operation metrics:</p>
+<pre><code class="lang-csharp">var result = await r2.UploadAsync(bucket, key, stream);
+
+Console.WriteLine($&quot;Class A Operations: {result.ClassAOperations}&quot;);
+Console.WriteLine($&quot;Class B Operations: {result.ClassBOperations}&quot;);
+Console.WriteLine($&quot;Ingress Bytes: {result.IngressBytes}&quot;);
+Console.WriteLine($&quot;Egress Bytes: {result.EgressBytes}&quot;);
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<p>The R2 client provides specialized exceptions:</p>
+<pre><code class="lang-csharp">try
+{
+    await r2.UploadAsync(bucket, key, stream);
+}
+catch (CloudflareR2OperationException ex)
+{
+    // Single operation failure
+    Console.WriteLine($&quot;Operation failed: {ex.Message}&quot;);
+    Console.WriteLine($&quot;Partial metrics: {ex.PartialMetrics}&quot;);
+}
+catch (CloudflareR2BatchException&lt;string&gt; ex)
+{
+    // Batch operation failure
+    foreach (var failedKey in ex.FailedItems)
+    {
+        Console.WriteLine($&quot;Failed to delete: {failedKey}&quot;);
+    }
+}
+catch (CloudflareR2ConfigurationException ex)
+{
+    // Missing or invalid configuration
+    Console.WriteLine($&quot;Configuration error: {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="bucket-management">Bucket Management</h2>
+<p>Bucket operations are available through the REST API client:</p>
+<pre><code class="lang-csharp">public class BucketService(ICloudflareApiClient cf)
+{
+    // Basic bucket creation
+    public async Task&lt;R2Bucket&gt; CreateBucketAsync(string name)
+    {
+        return await cf.Accounts.Buckets.CreateAsync(name);
+    }
+
+    // Create with location hint and jurisdiction
+    public async Task&lt;R2Bucket&gt; CreateEuBucketAsync(string name)
+    {
+        return await cf.Accounts.Buckets.CreateAsync(
+            name,
+            locationHint: R2LocationHint.WestEurope,
+            jurisdiction: R2Jurisdiction.EuropeanUnion
+        );
+    }
+
+    public async IAsyncEnumerable&lt;R2Bucket&gt; ListBucketsAsync()
+    {
+        await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync())
+        {
+            // Access extensible enum properties with IntelliSense
+            if (bucket.Location == R2LocationHint.WestEurope)
+            {
+                Console.WriteLine($&quot;EU bucket: {bucket.Name}&quot;);
+            }
+
+            yield return bucket;
+        }
+    }
+
+    public async Task DeleteBucketAsync(string name)
+    {
+        await cf.Accounts.Buckets.DeleteAsync(name);
+    }
+}
+</code></pre>
+<p>The <code>R2Bucket</code> model uses <strong>extensible enums</strong> for <code>Location</code>, <code>Jurisdiction</code>, and <code>StorageClass</code> properties. See <a href="conventions.html#extensible-enums">SDK Conventions</a> for details.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2-client.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

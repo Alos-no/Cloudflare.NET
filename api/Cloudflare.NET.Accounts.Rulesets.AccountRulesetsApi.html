@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class AccountRulesetsApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class AccountRulesetsApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Implements the API for managing Rulesets at the account level.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi">
+
+
+
+  <h1 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi" class="text-break">
+Class AccountRulesetsApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Accounts.html">Accounts</a>.<a class="xref" href="Cloudflare.NET.Accounts.Rulesets.html">Rulesets</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements the API for managing Rulesets at the account level.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class AccountRulesetsApi : ApiResource, IAccountRulesetsApi</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Core.ApiResource.html">ApiResource</a></div>
+      <div><span class="xref">AccountRulesetsApi</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.Rulesets.IAccountRulesetsApi.html">IAccountRulesetsApi</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_HttpClient">ApiResource.HttpClient</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_Logger">ApiResource.Logger</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetStringAsync_System_String_System_Threading_CancellationToken_">ApiResource.GetStringAsync(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync__1_System_String_System_IO_Stream_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostMultipartFileAsync&lt;TResult&gt;(string, Stream, string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetPagePaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessResponse__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessResponse&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi__ctor_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi__ctor_System_Net_Http_HttpClient_Microsoft_Extensions_Options_IOptions_Cloudflare_NET_Core_CloudflareApiOptions__Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Options.IOptions{Cloudflare.NET.Core.CloudflareApiOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
+  AccountRulesetsApi(HttpClient, IOptions&lt;CloudflareApiOptions&gt;, ILoggerFactory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implements the API for managing Rulesets at the account level.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AccountRulesetsApi(HttpClient httpClient, IOptions&lt;CloudflareApiOptions&gt; options, ILoggerFactory loggerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptions-1">IOptions</a>&lt;<a class="xref" href="Cloudflare.NET.Core.CloudflareApiOptions.html">CloudflareApiOptions</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_AddRuleAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.AddRuleAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_AddRuleAsync_System_String_Cloudflare_NET_Security_Rulesets_Models_CreateRuleRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.AddRuleAsync(System.String,Cloudflare.NET.Security.Rulesets.Models.CreateRuleRequest,System.Threading.CancellationToken)">
+  AddRuleAsync(string, CreateRuleRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a new rule to a specific account-level ruleset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; AddRuleAsync(string rulesetId, CreateRuleRequest rule, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rulesetId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the ruleset.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.CreateRuleRequest.html">CreateRuleRequest</a></dt>
+    <dd><p>The rule to add.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The updated parent ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_CreateAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.CreateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_CreateAsync_Cloudflare_NET_Security_Rulesets_Models_CreateRulesetRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.CreateAsync(Cloudflare.NET.Security.Rulesets.Models.CreateRulesetRequest,System.Threading.CancellationToken)">
+  CreateAsync(CreateRulesetRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new ruleset for the account.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; CreateAsync(CreateRulesetRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.CreateRulesetRequest.html">CreateRulesetRequest</a></dt>
+    <dd><p>The request containing the details of the ruleset to create.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The created ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_DeleteAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_DeleteAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.DeleteAsync(System.String,System.Threading.CancellationToken)">
+  DeleteAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a ruleset from the account.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteAsync(string rulesetId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rulesetId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the ruleset to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_DeleteRuleAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.DeleteRuleAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_DeleteRuleAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.DeleteRuleAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteRuleAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a rule from an account-level ruleset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; DeleteRuleAsync(string rulesetId, string ruleId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rulesetId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the ruleset.</p>
+</dd>
+    <dt><code>ruleId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the rule to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The updated parent ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_GetAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_GetAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.GetAsync(System.String,System.Threading.CancellationToken)">
+  GetAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a single ruleset by its ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; GetAsync(string rulesetId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rulesetId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the ruleset to retrieve.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The requested ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_GetPhaseEntrypointAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.GetPhaseEntrypointAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_GetPhaseEntrypointAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.GetPhaseEntrypointAsync(System.String,System.Threading.CancellationToken)">
+  GetPhaseEntrypointAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the entrypoint ruleset for a specific phase at the account level.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; GetPhaseEntrypointAsync(string phase, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>phase</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The phase of the entrypoint (e.g., &quot;http_request_firewall_managed&quot;).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The entrypoint ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_GetPhaseEntrypointVersionAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.GetPhaseEntrypointVersionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_GetPhaseEntrypointVersionAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.GetPhaseEntrypointVersionAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetPhaseEntrypointVersionAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a specific version of a phase entrypoint ruleset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; GetPhaseEntrypointVersionAsync(string phase, string version, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>phase</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The phase of the entrypoint.</p>
+</dd>
+    <dt><code>version</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The version number to retrieve.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The specified version of the ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListAllAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.ListAllAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListAllAsync_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.ListAllAsync(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  ListAllAsync(int?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all rulesets for the account, automatically handling cursor-based pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IAsyncEnumerable&lt;Ruleset&gt; ListAllAsync(int? perPage = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>perPage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The number of results to fetch per API page.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>An asynchronous stream of all rulesets for the account.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListAllAsync_System_Nullable_System_Int32__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method simplifies fetching all rulesets by abstracting away the pagination logic.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.ListAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListAsync_Cloudflare_NET_Security_Rulesets_Models_ListRulesetsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.ListAsync(Cloudflare.NET.Security.Rulesets.Models.ListRulesetsFilters,System.Threading.CancellationToken)">
+  ListAsync(ListRulesetsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all rulesets for the account, allowing for manual pagination control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CursorPaginatedResult&lt;Ruleset&gt;&gt; ListAsync(ListRulesetsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.ListRulesetsFilters.html">ListRulesetsFilters</a></dt>
+    <dd><p>Optional pagination filters, including the cursor from a previous response.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;&gt;</dt>
+    <dd><p>A single page of rulesets along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListAsync_Cloudflare_NET_Security_Rulesets_Models_ListRulesetsFilters_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is intended for developers who need to control the pagination process manually. To fetch the next
+page of results, use the <code>Cursor</code> from the <code>CursorInfo</code> property of the returned
+<a class="xref" href="Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult&lt;T&gt;</a> in your next call.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListPhaseEntrypointVersionsAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.ListPhaseEntrypointVersionsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_ListPhaseEntrypointVersionsAsync_System_String_Cloudflare_NET_Security_Rulesets_Models_ListRulesetVersionsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.ListPhaseEntrypointVersionsAsync(System.String,Cloudflare.NET.Security.Rulesets.Models.ListRulesetVersionsFilters,System.Threading.CancellationToken)">
+  ListPhaseEntrypointVersionsAsync(string, ListRulesetVersionsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists the version history for a specific phase entrypoint, allowing for manual pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;PagePaginatedResult&lt;Ruleset&gt;&gt; ListPhaseEntrypointVersionsAsync(string phase, ListRulesetVersionsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>phase</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The phase of the entrypoint.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.ListRulesetVersionsFilters.html">ListRulesetVersionsFilters</a></dt>
+    <dd><p>Optional pagination filters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;&gt;</dt>
+    <dd><p>A single page of ruleset versions along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_UpdateAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.UpdateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_UpdateAsync_System_String_Cloudflare_NET_Security_Rulesets_Models_UpdateRulesetRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.UpdateAsync(System.String,Cloudflare.NET.Security.Rulesets.Models.UpdateRulesetRequest,System.Threading.CancellationToken)">
+  UpdateAsync(string, UpdateRulesetRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing ruleset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; UpdateAsync(string rulesetId, UpdateRulesetRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rulesetId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the ruleset to update.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.UpdateRulesetRequest.html">UpdateRulesetRequest</a></dt>
+    <dd><p>The request containing the fields to update.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The updated ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_UpdatePhaseEntrypointAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.UpdatePhaseEntrypointAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_UpdatePhaseEntrypointAsync_System_String_System_Collections_Generic_IEnumerable_Cloudflare_NET_Security_Rulesets_Models_CreateRuleRequest__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.UpdatePhaseEntrypointAsync(System.String,System.Collections.Generic.IEnumerable{Cloudflare.NET.Security.Rulesets.Models.CreateRuleRequest},System.Threading.CancellationToken)">
+  UpdatePhaseEntrypointAsync(string, IEnumerable&lt;CreateRuleRequest&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the entrypoint ruleset for a specific phase at the account level.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; UpdatePhaseEntrypointAsync(string phase, IEnumerable&lt;CreateRuleRequest&gt; rules, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>phase</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The phase of the entrypoint.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.CreateRuleRequest.html">CreateRuleRequest</a>&gt;</dt>
+    <dd><p>The list of rules to set for the ruleset.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The updated ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_UpdateRuleAsync_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.UpdateRuleAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Rulesets_AccountRulesetsApi_UpdateRuleAsync_System_String_System_String_System_Object_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.UpdateRuleAsync(System.String,System.String,System.Object,System.Threading.CancellationToken)">
+  UpdateRuleAsync(string, string, object, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing rule within an account-level ruleset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Ruleset&gt; UpdateRuleAsync(string rulesetId, string ruleId, object rule, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rulesetId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the ruleset containing the rule.</p>
+</dd>
+    <dt><code>ruleId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the rule to update.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The partial rule object with fields to update.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Rulesets.Models.Ruleset.html">Ruleset</a>&gt;</dt>
+    <dd><p>The updated parent ruleset.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Rulesets/AccountRulesetsApi.cs/#L10" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

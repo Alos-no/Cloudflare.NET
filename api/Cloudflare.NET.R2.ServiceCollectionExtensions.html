@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ServiceCollectionExtensions | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ServiceCollectionExtensions | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Provides extension methods for setting up the Cloudflare R2 client in an .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_R2_ServiceCollectionExtensions.md&amp;value=---%0Auid%3A%20Cloudflare.NET.R2.ServiceCollectionExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions">
+
+
+
+  <h1 id="Cloudflare_NET_R2_ServiceCollectionExtensions" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions" class="text-break">
+Class ServiceCollectionExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/ServiceCollectionExtensions.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.R2.html">R2</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.R2.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides extension methods for setting up the Cloudflare R2 client in an <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ServiceCollectionExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ServiceCollectionExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client*"></a>
+
+  <h3 id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_Microsoft_Extensions_Configuration_IConfiguration_" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+  AddCloudflareR2Client(IServiceCollection, IConfiguration)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/ServiceCollectionExtensions.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers the <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> and its dependencies using a configuration section.</p>
+<p>
+  This is a convenience method that binds to the "R2" section of the application's <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfiguration">IConfiguration</a>.
+  It also requires the "Cloudflare" section for the Account ID.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, IConfiguration configuration)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> to add the services to.</p>
+</dd>
+    <dt><code>configuration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfiguration">IConfiguration</a></dt>
+    <dd><p>The application configuration, used to bind R2 settings.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> so that additional calls can be chained.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client*"></a>
+
+  <h3 id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_Cloudflare_NET_R2_Configuration_R2Settings__" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Cloudflare.NET.R2.Configuration.R2Settings})">
+  AddCloudflareR2Client(IServiceCollection, Action&lt;R2Settings&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/ServiceCollectionExtensions.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>
+  Registers the <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> and its dependencies, allowing for fine-grained programmatic
+  configuration.
+</p>
+<p>
+  This method sets up the underlying S3-compatible client tailored for R2 and registers the high-level
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> as a singleton.
+</p>
+<p>
+  Configuration is validated at application startup. If required settings (AccessKeyId, SecretAccessKey,
+  AccountId) are missing, an <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.optionsvalidationexception">OptionsValidationException</a> is thrown with a clear error message
+  indicating what configuration is missing and how to fix it.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, Action&lt;R2Settings&gt; configureOptions)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> to add the services to.</p>
+</dd>
+    <dt><code>configureOptions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Configuration.R2Settings.html">R2Settings</a>&gt;</dt>
+    <dd><p>An action to configure the <a class="xref" href="Cloudflare.NET.R2.Configuration.R2Settings.html">R2Settings</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> so that additional calls can be chained.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.optionsvalidationexception">OptionsValidationException</a></dt>
+    <dd><p>Thrown at application startup if required configuration is missing or
+invalid.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client*"></a>
+
+  <h3 id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_Microsoft_Extensions_Configuration_IConfiguration_" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,Microsoft.Extensions.Configuration.IConfiguration)">
+  AddCloudflareR2Client(IServiceCollection, string, IConfiguration)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/ServiceCollectionExtensions.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a named <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> configuration using a configuration section.</p>
+<p>
+  Named clients can be retrieved using <a class="xref" href="Cloudflare.NET.R2.IR2ClientFactory.html">IR2ClientFactory</a> or via keyed services using
+  <code>[FromKeyedServices("name")]</code>.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, string name, IConfiguration configuration)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> to add the services to.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The unique name for this client configuration. Used to retrieve the client from the factory or via
+keyed services.</p>
+</dd>
+    <dt><code>configuration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfiguration">IConfiguration</a></dt>
+    <dd><p name="">The application configuration. Will bind to the &quot;R2:&quot; section for R2 settings and
+&quot;Cloudflare:&quot; section for the Account ID.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> so that additional calls can be chained.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client*"></a>
+
+  <h3 id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_System_Action_Cloudflare_NET_R2_Configuration_R2Settings__" data-uid="Cloudflare.NET.R2.ServiceCollectionExtensions.AddCloudflareR2Client(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{Cloudflare.NET.R2.Configuration.R2Settings})">
+  AddCloudflareR2Client(IServiceCollection, string, Action&lt;R2Settings&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/ServiceCollectionExtensions.cs/#L209"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a named <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> configuration with programmatic options.</p>
+<p>
+  Named clients can be retrieved using <a class="xref" href="Cloudflare.NET.R2.IR2ClientFactory.html">IR2ClientFactory</a> or via keyed services using
+  <code>[FromKeyedServices("name")]</code>.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, string name, Action&lt;R2Settings&gt; configureOptions)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>services</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> to add the services to.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The unique name for this client configuration. Used to retrieve the client from the factory or via
+keyed services.</p>
+</dd>
+    <dt><code>configureOptions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Configuration.R2Settings.html">R2Settings</a>&gt;</dt>
+    <dd><p>An action to configure the <a class="xref" href="Cloudflare.NET.R2.Configuration.R2Settings.html">R2Settings</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a> so that additional calls can be chained.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_System_Action_Cloudflare_NET_R2_Configuration_R2Settings___examples">Examples</h4>
+  <pre><code class="lang-csharp">// Register multiple named clients
+services.AddCloudflareApiClient("primary", options =&gt; {
+    options.AccountId = "primary-account-id";
+    options.ApiToken = "primary-token";
+});
+services.AddCloudflareR2Client("primary", options =&gt; {
+    options.AccessKeyId = "primary-key";
+    options.SecretAccessKey = "primary-secret";
+    // Jurisdiction defaults to R2Jurisdiction.Default (global endpoint)
+    // Set options.Jurisdiction = R2Jurisdiction.EuropeanUnion for EU buckets
+});
+
+// Use via factory
+public class MyService(IR2ClientFactory factory)
+{
+    public async Task DoSomething()
+    {
+        var primaryClient = factory.CreateClient("primary");
+        // ...
+    }
+}
+
+// Or use via keyed services
+public class MyService([FromKeyedServices("primary")] IR2Client client)
+{
+    // ...
+}</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_System_Action_Cloudflare_NET_R2_Configuration_R2Settings___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  This method requires that the Cloudflare API options for the same name are also registered using
+  <a class="xref" href="Cloudflare.NET.Core.ServiceCollectionExtensions.html#Cloudflare_NET_Core_ServiceCollectionExtensions_AddCloudflareApiClient_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_System_Action_Cloudflare_NET_Core_CloudflareApiOptions__">AddCloudflareApiClient(IServiceCollection, string, Action&lt;CloudflareApiOptions&gt;)</a>
+  . The Account ID from those options is used to construct the R2 endpoint URL.
+</p>
+<p>
+  Unlike the default client registration, named clients are validated when first created via the factory or keyed
+  services, not at application startup. This is because named configurations may be dynamically added or configured
+  after startup.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ConfigurationException.html">CloudflareR2ConfigurationException</a></dt>
+    <dd><p>Thrown when the named client is created if required configuration
+is missing or invalid.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/ServiceCollectionExtensions.cs/#L15" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

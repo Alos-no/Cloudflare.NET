@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>User-Agent Rules | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="User-Agent Rules | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/ua-rules.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="user-agent-rules">User-Agent Rules</h1>
+
+<p>User-Agent Rules allow you to block or challenge requests based on the User-Agent header. This is useful for blocking known bad bots, scrapers, or outdated clients.</p>
+<h2 id="overview">Overview</h2>
+<p>Access the UA Rules API through <code>cf.Zones.UaRules</code>:</p>
+<pre><code class="lang-csharp">public class BotBlockingService(ICloudflareApiClient cf)
+{
+    public async Task BlockBadBotAsync(string zoneId, string userAgent)
+    {
+        await cf.Zones.UaRules.CreateAsync(zoneId,
+            new CreateUaRuleRequest(
+                Mode: UaRuleMode.Block,
+                Configuration: new UaRuleConfiguration(&quot;ua&quot;, userAgent),
+                Description: &quot;Block known bad bot&quot;
+            ));
+    }
+}
+</code></pre>
+<h2 id="creating-ua-rules">Creating UA Rules</h2>
+<h3 id="block-a-user-agent">Block a User-Agent</h3>
+<pre><code class="lang-csharp">var rule = await cf.Zones.UaRules.CreateAsync(zoneId,
+    new CreateUaRuleRequest(
+        Mode: UaRuleMode.Block,
+        Configuration: new UaRuleConfiguration(&quot;ua&quot;, &quot;BadBot/1.0&quot;),
+        Description: &quot;Block BadBot scraper&quot;
+    ));
+</code></pre>
+<h3 id="challenge-suspicious-user-agents">Challenge Suspicious User-Agents</h3>
+<pre><code class="lang-csharp">var rule = await cf.Zones.UaRules.CreateAsync(zoneId,
+    new CreateUaRuleRequest(
+        Mode: UaRuleMode.Challenge,
+        Configuration: new UaRuleConfiguration(&quot;ua&quot;, &quot;curl&quot;),
+        Description: &quot;Challenge curl requests&quot;
+    ));
+</code></pre>
+<h3 id="block-with-pattern-matching">Block with Pattern Matching</h3>
+<p>User-Agent matching supports partial matches:</p>
+<pre><code class="lang-csharp">// Blocks any User-Agent containing &quot;scraper&quot;
+var rule = await cf.Zones.UaRules.CreateAsync(zoneId,
+    new CreateUaRuleRequest(
+        Mode: UaRuleMode.Block,
+        Configuration: new UaRuleConfiguration(&quot;ua&quot;, &quot;scraper&quot;),
+        Description: &quot;Block scrapers&quot;
+    ));
+</code></pre>
+<h2 id="listing-ua-rules">Listing UA Rules</h2>
+<h3 id="list-all-rules">List All Rules</h3>
+<pre><code class="lang-csharp">await foreach (var rule in cf.Zones.UaRules.ListAllAsync(zoneId))
+{
+    Console.WriteLine($&quot;{rule.Id}: {rule.Configuration.Value} -&gt; {rule.Mode}&quot;);
+}
+</code></pre>
+<h3 id="list-with-pagination">List with Pagination</h3>
+<pre><code class="lang-csharp">var page = await cf.Zones.UaRules.ListAsync(zoneId,
+    new ListUaRulesFilters { PerPage = 50 });
+
+foreach (var rule in page.Items)
+{
+    Console.WriteLine($&quot;{rule.Description}: {rule.Mode}&quot;);
+}
+</code></pre>
+<h2 id="getting-a-specific-rule">Getting a Specific Rule</h2>
+<pre><code class="lang-csharp">var rule = await cf.Zones.UaRules.GetAsync(zoneId, ruleId);
+Console.WriteLine($&quot;User-Agent: {rule.Configuration.Value}&quot;);
+Console.WriteLine($&quot;Mode: {rule.Mode}&quot;);
+Console.WriteLine($&quot;Paused: {rule.Paused}&quot;);
+</code></pre>
+<h2 id="updating-ua-rules">Updating UA Rules</h2>
+<pre><code class="lang-csharp">var updated = await cf.Zones.UaRules.UpdateAsync(zoneId, ruleId,
+    new UpdateUaRuleRequest(
+        Mode: UaRuleMode.ManagedChallenge,
+        Description: &quot;Updated to managed challenge&quot;
+    ));
+</code></pre>
+<h3 id="pause-a-rule">Pause a Rule</h3>
+<pre><code class="lang-csharp">var updated = await cf.Zones.UaRules.UpdateAsync(zoneId, ruleId,
+    new UpdateUaRuleRequest(Paused: true));
+</code></pre>
+<h2 id="deleting-ua-rules">Deleting UA Rules</h2>
+<pre><code class="lang-csharp">await cf.Zones.UaRules.DeleteAsync(zoneId, ruleId);
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="uarule">UaRule</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Unique identifier</td>
+</tr>
+<tr>
+<td><code>Mode</code></td>
+<td><code>UaRuleMode</code></td>
+<td>Action to take</td>
+</tr>
+<tr>
+<td><code>Configuration</code></td>
+<td><code>UaRuleConfiguration</code></td>
+<td>User-Agent pattern</td>
+</tr>
+<tr>
+<td><code>Paused</code></td>
+<td><code>bool</code></td>
+<td>Whether the rule is paused</td>
+</tr>
+<tr>
+<td><code>Description</code></td>
+<td><code>string?</code></td>
+<td>Optional description</td>
+</tr>
+</tbody>
+</table>
+<h3 id="uarulemode-extensible-enum">UaRuleMode (Extensible Enum)</h3>
+<p>The action to take when a User-Agent rule matches. This is an <a href="../../conventions.html#extensible-enums">extensible enum</a> that supports custom values for forward compatibility.</p>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Block</code></td>
+<td>Block the request</td>
+</tr>
+<tr>
+<td><code>Challenge</code></td>
+<td>Present CAPTCHA challenge</td>
+</tr>
+<tr>
+<td><code>JsChallenge</code></td>
+<td>Present JavaScript challenge</td>
+</tr>
+<tr>
+<td><code>ManagedChallenge</code></td>
+<td>Cloudflare-managed challenge</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// Using known values
+UaRuleMode.Block
+UaRuleMode.Challenge
+UaRuleMode.JsChallenge
+UaRuleMode.ManagedChallenge
+
+// Future-proof: accepts unknown values from API
+UaRuleMode customMode = &quot;new-mode&quot;;
+</code></pre>
+<h3 id="uaruleconfiguration">UaRuleConfiguration</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Target</code></td>
+<td><code>string</code></td>
+<td>Always <code>&quot;ua&quot;</code></td>
+</tr>
+<tr>
+<td><code>Value</code></td>
+<td><code>string</code></td>
+<td>User-Agent pattern to match</td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-agent-matching">User-Agent Matching</h2>
+<ul>
+<li>Matching is <strong>case-insensitive</strong></li>
+<li>Matching is <strong>substring-based</strong> (pattern can appear anywhere in User-Agent)</li>
+<li>Example: Pattern <code>&quot;bot&quot;</code> matches <code>&quot;Googlebot&quot;</code>, <code>&quot;bingbot&quot;</code>, <code>&quot;MyBot/1.0&quot;</code></li>
+</ul>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="block-known-bad-bots">Block Known Bad Bots</h3>
+<pre><code class="lang-csharp">var badBots = new[]
+{
+    &quot;AhrefsBot&quot;,
+    &quot;MJ12bot&quot;,
+    &quot;DotBot&quot;,
+    &quot;SemrushBot&quot;,
+    &quot;BLEXBot&quot;
+};
+
+foreach (var bot in badBots)
+{
+    await cf.Zones.UaRules.CreateAsync(zoneId,
+        new CreateUaRuleRequest(
+            Mode: UaRuleMode.Block,
+            Configuration: new UaRuleConfiguration(&quot;ua&quot;, bot),
+            Description: $&quot;Block {bot}&quot;
+        ));
+}
+</code></pre>
+<h3 id="challenge-empty-user-agents">Challenge Empty User-Agents</h3>
+<pre><code class="lang-csharp">await cf.Zones.UaRules.CreateAsync(zoneId,
+    new CreateUaRuleRequest(
+        Mode: UaRuleMode.Challenge,
+        Configuration: new UaRuleConfiguration(&quot;ua&quot;, &quot;&quot;),
+        Description: &quot;Challenge empty User-Agent&quot;
+    ));
+</code></pre>
+<h3 id="audit-existing-rules">Audit Existing Rules</h3>
+<pre><code class="lang-csharp">public async Task&lt;List&lt;string&gt;&gt; GetBlockedUserAgentsAsync(string zoneId)
+{
+    var blocked = new List&lt;string&gt;();
+
+    await foreach (var rule in cf.Zones.UaRules.ListAllAsync(zoneId))
+    {
+        if (rule.Mode == UaRuleMode.Block &amp;&amp; !rule.Paused)
+        {
+            blocked.Add(rule.Configuration.Value);
+        }
+    }
+
+    return blocked;
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Firewall Services</td>
+<td>Zone</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Be specific</strong> with User-Agent patterns to avoid blocking legitimate traffic</li>
+<li><strong>Use Challenge</strong> instead of Block for uncertain cases</li>
+<li><strong>Monitor traffic</strong> before and after adding rules</li>
+<li><strong>Document rules</strong> with clear descriptions</li>
+<li><strong>Review periodically</strong> - bot User-Agents change over time</li>
+</ol>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/ua-rules.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

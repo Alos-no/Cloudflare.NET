@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>D1 Serverless Database | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="D1 Serverless Database | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/d1.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="d1-serverless-database">D1 Serverless Database</h1>
+
+<p>D1 is Cloudflare's native serverless SQL database built on SQLite. This API allows you to manage D1 databases, execute SQL queries, and perform import/export operations programmatically.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class D1Service(ICloudflareApiClient cf)
+{
+    public async Task&lt;IReadOnlyList&lt;D1QueryResult&gt;&gt; ExecuteQueryAsync(
+        string databaseId,
+        string sql)
+    {
+        return await cf.Accounts.D1.QueryAsync(databaseId, sql);
+    }
+}
+</code></pre>
+<h2 id="api-limits">API Limits</h2>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Value (Workers Paid)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Max databases</td>
+<td>50,000 per account</td>
+</tr>
+<tr>
+<td>Max database size</td>
+<td>10 GB</td>
+</tr>
+<tr>
+<td>Max account storage</td>
+<td>1 TB</td>
+</tr>
+<tr>
+<td>Max SQL statement length</td>
+<td>100 KB</td>
+</tr>
+<tr>
+<td>Max query duration</td>
+<td>30 seconds</td>
+</tr>
+<tr>
+<td>Max bound parameters</td>
+<td>100 per query</td>
+</tr>
+<tr>
+<td>Max row/string/BLOB size</td>
+<td>2 MB</td>
+</tr>
+<tr>
+<td>Max columns per table</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>D1's REST API is subject to global Cloudflare API rate limits and is best suited for administrative use. For high-throughput query access outside Workers, consider creating a proxy Worker with the D1 Worker binding.</p>
+</div>
+<h2 id="database-operations">Database Operations</h2>
+<h3 id="creating-a-database">Creating a Database</h3>
+<pre><code class="lang-csharp">// Basic creation
+var db = await cf.Accounts.D1.CreateAsync(&quot;my-database&quot;);
+
+Console.WriteLine($&quot;Database ID: {db.Uuid}&quot;);
+Console.WriteLine($&quot;Name: {db.Name}&quot;);
+Console.WriteLine($&quot;Version: {db.Version}&quot;);
+</code></pre>
+<h3 id="with-location-hint">With Location Hint</h3>
+<p>Suggest a geographic region for database placement:</p>
+<pre><code class="lang-csharp">// Create database in Western Europe
+var db = await cf.Accounts.D1.CreateAsync(
+    &quot;eu-database&quot;,
+    primaryLocationHint: R2LocationHint.WestEurope
+);
+
+Console.WriteLine($&quot;Running in region: {db.RunningInRegion}&quot;);
+</code></pre>
+<h3 id="with-jurisdiction-data-residency">With Jurisdiction (Data Residency)</h3>
+<p>Enforce data residency within a specific boundary:</p>
+<pre><code class="lang-csharp">// Create EU-jurisdictional database for GDPR compliance
+var db = await cf.Accounts.D1.CreateAsync(
+    &quot;gdpr-database&quot;,
+    jurisdiction: D1Jurisdiction.EuropeanUnion
+);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>When specifying a jurisdiction, the <code>primaryLocationHint</code> parameter is ignored. The jurisdiction takes precedence and guarantees data residency within the specified region.</p>
+</div>
+<h3 id="getting-a-database">Getting a Database</h3>
+<pre><code class="lang-csharp">var db = await cf.Accounts.D1.GetAsync(databaseId);
+
+Console.WriteLine($&quot;Name: {db.Name}&quot;);
+Console.WriteLine($&quot;Size: {db.FileSize} bytes&quot;);
+Console.WriteLine($&quot;Tables: {db.NumTables}&quot;);
+Console.WriteLine($&quot;Region: {db.RunningInRegion}&quot;);
+</code></pre>
+<h3 id="listing-databases">Listing Databases</h3>
+<pre><code class="lang-csharp">// List all databases automatically
+await foreach (var db in cf.Accounts.D1.ListAllAsync())
+{
+    Console.WriteLine($&quot;{db.Name}: {db.Uuid}&quot;);
+}
+</code></pre>
+<h4 id="with-filters">With Filters</h4>
+<pre><code class="lang-csharp">// Filter by name
+var filters = new ListD1DatabasesFilters(Name: &quot;production&quot;);
+
+await foreach (var db in cf.Accounts.D1.ListAllAsync(filters))
+{
+    Console.WriteLine(db.Name);
+}
+</code></pre>
+<h4 id="manual-pagination">Manual Pagination</h4>
+<pre><code class="lang-csharp">var page = await cf.Accounts.D1.ListAsync(new ListD1DatabasesFilters(
+    Page: 1,
+    PerPage: 50
+));
+
+Console.WriteLine($&quot;Page {page.PageInfo.Page}, returned {page.Items.Count} items&quot;);
+
+foreach (var db in page.Items)
+{
+    Console.WriteLine(db.Name);
+}
+
+// Fetch next page if current page is full
+if (page.Items.Count &gt;= 50)
+{
+    var nextPage = await cf.Accounts.D1.ListAsync(new ListD1DatabasesFilters(
+        Page: 2,
+        PerPage: 50
+    ));
+}
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>The D1 API returns <code>total_count=0</code> and <code>total_pages=0</code> in the pagination info, which is inconsistent with other Cloudflare APIs. Use <code>ListAllAsync</code> for automatic pagination, or check if the current page is full to determine if more pages exist.</p>
+</div>
+<h3 id="updating-a-database">Updating a Database</h3>
+<p>Update database configuration such as read replication:</p>
+<pre><code class="lang-csharp">// Enable read replication
+var updated = await cf.Accounts.D1.UpdateAsync(
+    databaseId,
+    new UpdateD1DatabaseOptions(
+        ReadReplication: new D1ReadReplication(&quot;auto&quot;)
+    )
+);
+
+Console.WriteLine($&quot;Replication mode: {updated.ReadReplication?.Mode}&quot;);
+</code></pre>
+<h3 id="deleting-a-database">Deleting a Database</h3>
+<pre><code class="lang-csharp">await cf.Accounts.D1.DeleteAsync(databaseId);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Deleting a database permanently removes all data. This action cannot be undone.</p>
+</div>
+<h2 id="query-operations">Query Operations</h2>
+<h3 id="simple-queries">Simple Queries</h3>
+<pre><code class="lang-csharp">var results = await cf.Accounts.D1.QueryAsync(databaseId, &quot;SELECT * FROM users&quot;);
+
+foreach (var result in results)
+{
+    if (result.Success)
+    {
+        Console.WriteLine($&quot;Duration: {result.Meta.Duration}ms&quot;);
+        Console.WriteLine($&quot;Rows read: {result.Meta.RowsRead}&quot;);
+
+        foreach (var row in result.Results)
+        {
+            Console.WriteLine(row);
+        }
+    }
+}
+</code></pre>
+<h3 id="parameterized-queries">Parameterized Queries</h3>
+<p>Use <code>?</code> placeholders to prevent SQL injection:</p>
+<pre><code class="lang-csharp">// Safe parameterized query
+var results = await cf.Accounts.D1.QueryAsync(
+    databaseId,
+    &quot;SELECT * FROM users WHERE id = ? AND status = ?&quot;,
+    new object?[] { userId, &quot;active&quot; }
+);
+</code></pre>
+<h3 id="insert-operations">Insert Operations</h3>
+<pre><code class="lang-csharp">var results = await cf.Accounts.D1.QueryAsync(
+    databaseId,
+    &quot;INSERT INTO users (name, email) VALUES (?, ?)&quot;,
+    new object?[] { &quot;John Doe&quot;, &quot;john@example.com&quot; }
+);
+
+var meta = results[0].Meta;
+Console.WriteLine($&quot;Rows inserted: {meta.Changes}&quot;);
+Console.WriteLine($&quot;Last row ID: {meta.LastRowId}&quot;);
+</code></pre>
+<h3 id="multiple-statements">Multiple Statements</h3>
+<p>Execute multiple SQL statements in a single request:</p>
+<pre><code class="lang-csharp">var results = await cf.Accounts.D1.QueryAsync(
+    databaseId,
+    &quot;&quot;&quot;
+    INSERT INTO users (name) VALUES ('Alice');
+    INSERT INTO users (name) VALUES ('Bob');
+    SELECT COUNT(*) as total FROM users
+    &quot;&quot;&quot;
+);
+
+// Each statement produces a separate result
+Console.WriteLine($&quot;Statement count: {results.Count}&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>When executing multiple statements, parameter binding is not supported. Use literal values or execute statements separately with parameters.</p>
+</div>
+<h3 id="typed-query-results">Typed Query Results</h3>
+<p>Deserialize results directly to strongly-typed objects:</p>
+<pre><code class="lang-csharp">public record User(long Id, string Name, string Email);
+
+var results = await cf.Accounts.D1.QueryAsync&lt;User&gt;(
+    databaseId,
+    &quot;SELECT id, name, email FROM users WHERE active = ?&quot;,
+    new object?[] { true }
+);
+
+foreach (var user in results[0].Results)
+{
+    Console.WriteLine($&quot;{user.Name}: {user.Email}&quot;);
+}
+</code></pre>
+<h3 id="raw-query-format">Raw Query Format</h3>
+<p>For better performance with large result sets, use the raw format which returns rows as arrays instead of objects:</p>
+<pre><code class="lang-csharp">var results = await cf.Accounts.D1.QueryRawAsync(
+    databaseId,
+    &quot;SELECT id, name, email FROM users&quot;
+);
+
+var result = results[0];
+Console.WriteLine($&quot;Columns: {string.Join(&quot;, &quot;, result.Results.Columns)}&quot;);
+
+foreach (var row in result.Results.Rows)
+{
+    // Row values are in column order
+    Console.WriteLine($&quot;ID: {row[0]}, Name: {row[1]}, Email: {row[2]}&quot;);
+}
+</code></pre>
+<h2 id="export-operations">Export Operations</h2>
+<p>Export a database to SQL format for backup or migration:</p>
+<pre><code class="lang-csharp">// Start export
+var export = await cf.Accounts.D1.StartExportAsync(databaseId);
+var bookmark = export.AtBookmark;
+
+// Poll until complete
+while (export.Status != &quot;complete&quot;)
+{
+    await Task.Delay(1000);
+    export = await cf.Accounts.D1.PollExportAsync(databaseId, bookmark!);
+}
+
+// Download the SQL file
+Console.WriteLine($&quot;Download URL: {export.Result?.SignedUrl}&quot;);
+</code></pre>
+<h3 id="export-options">Export Options</h3>
+<p>Control what data is included in the export:</p>
+<pre><code class="lang-csharp">// Schema only (no data)
+var schemaExport = await cf.Accounts.D1.StartExportAsync(
+    databaseId,
+    new D1ExportDumpOptions(NoData: true)
+);
+
+// Data only (no schema)
+var dataExport = await cf.Accounts.D1.StartExportAsync(
+    databaseId,
+    new D1ExportDumpOptions(NoSchema: true)
+);
+
+// Specific tables only
+var tablesExport = await cf.Accounts.D1.StartExportAsync(
+    databaseId,
+    new D1ExportDumpOptions(Tables: new[] { &quot;users&quot;, &quot;orders&quot; })
+);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The database is unavailable for queries during export operations. Exports that aren't polled will auto-cancel.</p>
+</div>
+<h2 id="import-operations">Import Operations</h2>
+<p>Import SQL data into a database:</p>
+<pre><code class="lang-csharp">// Step 1: Compute MD5 hash of your SQL file
+var sqlContent = await File.ReadAllBytesAsync(&quot;backup.sql&quot;);
+var md5 = Convert.ToHexString(MD5.HashData(sqlContent)).ToLower();
+
+// Step 2: Request upload URL
+var initResponse = await cf.Accounts.D1.StartImportAsync(databaseId, md5);
+var uploadUrl = initResponse.UploadUrl;
+var filename = initResponse.Filename;
+
+// Step 3: Upload the SQL file to the signed URL
+using var httpClient = new HttpClient();
+using var content = new ByteArrayContent(sqlContent);
+await httpClient.PutAsync(uploadUrl, content);
+
+// Step 4: Start the import
+var importResponse = await cf.Accounts.D1.CompleteImportAsync(databaseId, md5, filename!);
+var bookmark = importResponse.AtBookmark;
+
+// Step 5: Poll until complete
+while (importResponse.Status != &quot;complete&quot;)
+{
+    await Task.Delay(1000);
+    importResponse = await cf.Accounts.D1.PollImportAsync(databaseId, bookmark!);
+}
+
+Console.WriteLine($&quot;Imported {importResponse.Result?.NumQueries} queries&quot;);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>The database is blocked during import operations. Plan imports during maintenance windows.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="d1database">D1Database</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Uuid</code></td>
+<td><code>string</code></td>
+<td>Unique database identifier (UUID format)</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Database name</td>
+</tr>
+<tr>
+<td><code>CreatedAt</code></td>
+<td><code>DateTimeOffset?</code></td>
+<td>When the database was created</td>
+</tr>
+<tr>
+<td><code>FileSize</code></td>
+<td><code>long?</code></td>
+<td>Database size in bytes</td>
+</tr>
+<tr>
+<td><code>NumTables</code></td>
+<td><code>int?</code></td>
+<td>Number of tables in the database</td>
+</tr>
+<tr>
+<td><code>Version</code></td>
+<td><code>string?</code></td>
+<td>Database version: &quot;production&quot; or &quot;alpha&quot;</td>
+</tr>
+<tr>
+<td><code>ReadReplication</code></td>
+<td><code>D1ReadReplication?</code></td>
+<td>Read replication configuration</td>
+</tr>
+<tr>
+<td><code>RunningInRegion</code></td>
+<td><code>string?</code></td>
+<td>Region code where the database is running</td>
+</tr>
+</tbody>
+</table>
+<h3 id="d1querymeta">D1QueryMeta</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChangedDb</code></td>
+<td><code>bool</code></td>
+<td>Whether the database was modified</td>
+</tr>
+<tr>
+<td><code>Changes</code></td>
+<td><code>int</code></td>
+<td>Number of rows modified</td>
+</tr>
+<tr>
+<td><code>Duration</code></td>
+<td><code>double</code></td>
+<td>Query execution time in milliseconds</td>
+</tr>
+<tr>
+<td><code>LastRowId</code></td>
+<td><code>long</code></td>
+<td>Row ID of last inserted row</td>
+</tr>
+<tr>
+<td><code>RowsRead</code></td>
+<td><code>long</code></td>
+<td>Number of rows read (including indices)</td>
+</tr>
+<tr>
+<td><code>RowsWritten</code></td>
+<td><code>long</code></td>
+<td>Number of rows written (including indices)</td>
+</tr>
+<tr>
+<td><code>ServedByRegion</code></td>
+<td><code>string?</code></td>
+<td>Region that handled the query</td>
+</tr>
+<tr>
+<td><code>ServedByPrimary</code></td>
+<td><code>bool?</code></td>
+<td>Whether handled by primary instance</td>
+</tr>
+<tr>
+<td><code>SizeAfter</code></td>
+<td><code>long?</code></td>
+<td>Database size after the query</td>
+</tr>
+</tbody>
+</table>
+<h3 id="d1jurisdiction-extensible-enum">D1Jurisdiction (Extensible Enum)</h3>
+<p>Jurisdictions guarantee data residency within specific geographic or regulatory boundaries.</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EuropeanUnion</code></td>
+<td><code>eu</code></td>
+<td>EU data residency (GDPR compliance)</td>
+</tr>
+<tr>
+<td><code>FedRamp</code></td>
+<td><code>fedramp</code></td>
+<td>US federal compliance (Enterprise only)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// EU jurisdiction for GDPR compliance
+var jurisdiction = D1Jurisdiction.EuropeanUnion;
+
+// Using custom values for new jurisdictions
+D1Jurisdiction customJurisdiction = &quot;new-jurisdiction&quot;;
+</code></pre>
+<h3 id="listd1databasesfilters">ListD1DatabasesFilters</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>string?</code></td>
+<td>Filter by database name (partial match)</td>
+</tr>
+<tr>
+<td><code>Page</code></td>
+<td><code>int?</code></td>
+<td>Page number (1-based)</td>
+</tr>
+<tr>
+<td><code>PerPage</code></td>
+<td><code>int?</code></td>
+<td>Number of results per page</td>
+</tr>
+</tbody>
+</table>
+<h3 id="d1exportdumpoptions">D1ExportDumpOptions</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NoData</code></td>
+<td><code>bool?</code></td>
+<td>Export only schema (no data)</td>
+</tr>
+<tr>
+<td><code>NoSchema</code></td>
+<td><code>bool?</code></td>
+<td>Export only data (no schema)</td>
+</tr>
+<tr>
+<td><code>Tables</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>Filter to specific tables</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="schema-management">Schema Management</h3>
+<pre><code class="lang-csharp">public class SchemaManager(ICloudflareApiClient cf)
+{
+    public async Task CreateTablesAsync(string databaseId)
+    {
+        await cf.Accounts.D1.QueryAsync(databaseId, &quot;&quot;&quot;
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                created_at TEXT DEFAULT (datetime('now'))
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+        &quot;&quot;&quot;);
+    }
+}
+</code></pre>
+<h3 id="connection-pooling-pattern">Connection Pooling Pattern</h3>
+<pre><code class="lang-csharp">public class D1Repository(ICloudflareApiClient cf, string databaseId)
+{
+    public async Task&lt;User?&gt; GetUserByEmailAsync(string email)
+    {
+        var results = await cf.Accounts.D1.QueryAsync&lt;User&gt;(
+            databaseId,
+            &quot;SELECT * FROM users WHERE email = ?&quot;,
+            new object?[] { email }
+        );
+
+        return results[0].Results.FirstOrDefault();
+    }
+
+    public async Task&lt;User&gt; CreateUserAsync(string name, string email)
+    {
+        var results = await cf.Accounts.D1.QueryAsync&lt;User&gt;(
+            databaseId,
+            &quot;&quot;&quot;
+            INSERT INTO users (name, email) VALUES (?, ?)
+            RETURNING *
+            &quot;&quot;&quot;,
+            new object?[] { name, email }
+        );
+
+        return results[0].Results[0];
+    }
+}
+</code></pre>
+<h3 id="backup-and-restore">Backup and Restore</h3>
+<pre><code class="lang-csharp">public class BackupService(ICloudflareApiClient cf)
+{
+    public async Task&lt;string&gt; BackupDatabaseAsync(string databaseId)
+    {
+        // Start export
+        var export = await cf.Accounts.D1.StartExportAsync(databaseId);
+
+        // Poll until complete
+        while (export.Status != &quot;complete&quot;)
+        {
+            await Task.Delay(2000);
+            export = await cf.Accounts.D1.PollExportAsync(databaseId, export.AtBookmark!);
+
+            if (export.Status == &quot;error&quot;)
+                throw new Exception($&quot;Export failed: {export.Error}&quot;);
+        }
+
+        return export.Result!.SignedUrl!;
+    }
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D1</td>
+<td>Account</td>
+<td>Read (for listing and querying)</td>
+</tr>
+<tr>
+<td>D1</td>
+<td>Account</td>
+<td>Write (for create, update, delete, import/export)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../conventions.html">SDK Conventions</a> - Pagination patterns and common usage</li>
+<li><a href="../api-coverage.html">API Coverage</a> - Full list of supported endpoints</li>
+<li><a href="workers/kv.html">Workers KV</a> - Key-value storage alternative</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/d1.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

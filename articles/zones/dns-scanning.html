@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>DNS Scanning | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="DNS Scanning | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/dns-scanning.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="dns-scanning">DNS Scanning</h1>
+
+<p>Discover existing DNS records by scanning authoritative nameservers. Scanned records are placed in a review queue where you can accept or reject them.</p>
+<h2 id="overview">Overview</h2>
+<p>Access DNS scanning through <code>cf.Dns</code>:</p>
+<pre><code class="lang-csharp">public class DnsScanService(ICloudflareApiClient cf)
+{
+    public async Task ScanAndReviewAsync(string zoneId)
+    {
+        // Trigger the scan
+        await cf.Dns.TriggerDnsRecordScanAsync(zoneId);
+
+        // Get records pending review
+        var pending = await cf.Dns.GetDnsRecordScanReviewAsync(zoneId);
+    }
+}
+</code></pre>
+<h2 id="how-scanning-works">How Scanning Works</h2>
+<ol>
+<li><strong>Trigger Scan</strong>: Initiate an asynchronous scan of authoritative nameservers</li>
+<li><strong>Discovery</strong>: Cloudflare discovers existing DNS records</li>
+<li><strong>Review Queue</strong>: Discovered records are placed in a pending review queue</li>
+<li><strong>Accept/Reject</strong>: Review and decide which records to import</li>
+</ol>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Scanned records remain in the review queue for <strong>30 days</strong> before automatic expiration.</p>
+</div>
+<h2 id="triggering-a-scan">Triggering a Scan</h2>
+<pre><code class="lang-csharp">await cf.Dns.TriggerDnsRecordScanAsync(zoneId);
+Console.WriteLine(&quot;Scan triggered - check review queue shortly&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The scan runs asynchronously. The method returns immediately while scanning continues in the background.</p>
+</div>
+<h2 id="getting-pending-records">Getting Pending Records</h2>
+<p>Retrieve records discovered by scanning that are awaiting review:</p>
+<pre><code class="lang-csharp">var pending = await cf.Dns.GetDnsRecordScanReviewAsync(zoneId);
+
+Console.WriteLine($&quot;Found {pending.Count} records pending review:&quot;);
+
+foreach (var record in pending)
+{
+    Console.WriteLine($&quot;  {record.Type} {record.Name} -&gt; {record.Content}&quot;);
+}
+</code></pre>
+<h2 id="reviewing-scanned-records">Reviewing Scanned Records</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Preview:</strong> This operation has limited test coverage.</p>
+</div>
+<p>Accept or reject discovered records:</p>
+<pre><code class="lang-csharp">var pending = await cf.Dns.GetDnsRecordScanReviewAsync(zoneId);
+
+// Separate records to accept and reject
+var accepts = pending
+    .Where(r =&gt; r.Type == DnsRecordType.A || r.Type == DnsRecordType.AAAA)
+    .ToList();
+
+var rejects = pending
+    .Where(r =&gt; r.Type != DnsRecordType.A &amp;&amp; r.Type != DnsRecordType.AAAA)
+    .Select(r =&gt; r.Id)
+    .ToList();
+
+var result = await cf.Dns.SubmitDnsRecordScanReviewAsync(zoneId,
+    new DnsScanReviewRequest
+    {
+        Accepts = accepts,   // Full record objects for accepted records
+        Rejects = rejects    // Just IDs for rejected records
+    });
+
+Console.WriteLine($&quot;Accepted: {result.Accepts}, Rejected: {result.Rejects}&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Accepted</strong> records become permanent DNS records in the zone. <strong>Rejected</strong> records are discarded.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="dnsscanreviewrequest">DnsScanReviewRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Accepts</code></td>
+<td><code>IReadOnlyList&lt;DnsRecord&gt;?</code></td>
+<td>Records to accept (full record objects)</td>
+</tr>
+<tr>
+<td><code>Rejects</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>Record IDs to reject</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dnsscanreviewresult">DnsScanReviewResult</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Accepts</code></td>
+<td><code>int</code></td>
+<td>Number of records accepted</td>
+</tr>
+<tr>
+<td><code>Rejects</code></td>
+<td><code>int</code></td>
+<td>Number of records rejected</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="auto-accept-all-records">Auto-Accept All Records</h3>
+<pre><code class="lang-csharp">public async Task AcceptAllScannedRecordsAsync(string zoneId)
+{
+    var pending = await cf.Dns.GetDnsRecordScanReviewAsync(zoneId);
+
+    if (pending.Count == 0)
+    {
+        Console.WriteLine(&quot;No records pending review&quot;);
+        return;
+    }
+
+    var result = await cf.Dns.SubmitDnsRecordScanReviewAsync(zoneId,
+        new DnsScanReviewRequest { Accepts = pending.ToList() });
+
+    Console.WriteLine($&quot;Accepted {result.Accepts} records&quot;);
+}
+</code></pre>
+<h3 id="scan-with-polling">Scan with Polling</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;DnsRecord&gt;&gt; ScanAndWaitAsync(
+    string zoneId,
+    TimeSpan timeout)
+{
+    await cf.Dns.TriggerDnsRecordScanAsync(zoneId);
+
+    var deadline = DateTime.UtcNow + timeout;
+    var lastCount = 0;
+    var stableIterations = 0;
+
+    while (DateTime.UtcNow &lt; deadline)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(5));
+
+        var pending = await cf.Dns.GetDnsRecordScanReviewAsync(zoneId);
+
+        if (pending.Count == lastCount)
+        {
+            stableIterations++;
+            if (stableIterations &gt;= 3)  // Stable for 15 seconds
+            {
+                return pending;
+            }
+        }
+        else
+        {
+            lastCount = pending.Count;
+            stableIterations = 0;
+        }
+    }
+
+    return await cf.Dns.GetDnsRecordScanReviewAsync(zoneId);
+}
+</code></pre>
+<h3 id="selective-review-by-record-type">Selective Review by Record Type</h3>
+<pre><code class="lang-csharp">public async Task ReviewByTypeAsync(
+    string zoneId,
+    HashSet&lt;DnsRecordType&gt; acceptTypes)
+{
+    var pending = await cf.Dns.GetDnsRecordScanReviewAsync(zoneId);
+
+    var accepts = pending.Where(r =&gt; acceptTypes.Contains(r.Type)).ToList();
+    var rejects = pending.Where(r =&gt; !acceptTypes.Contains(r.Type)).Select(r =&gt; r.Id).ToList();
+
+    if (accepts.Count == 0 &amp;&amp; rejects.Count == 0)
+    {
+        Console.WriteLine(&quot;No records to review&quot;);
+        return;
+    }
+
+    var result = await cf.Dns.SubmitDnsRecordScanReviewAsync(zoneId,
+        new DnsScanReviewRequest { Accepts = accepts, Rejects = rejects });
+
+    Console.WriteLine($&quot;Accepted: {result.Accepts}, Rejected: {result.Rejects}&quot;);
+}
+
+// Usage
+await ReviewByTypeAsync(zoneId, new HashSet&lt;DnsRecordType&gt;
+{
+    DnsRecordType.A,
+    DnsRecordType.AAAA,
+    DnsRecordType.MX,
+    DnsRecordType.TXT
+});
+</code></pre>
+<h3 id="initial-zone-setup-with-scanning">Initial Zone Setup with Scanning</h3>
+<pre><code class="lang-csharp">public async Task SetupZoneWithScanAsync(string domainName, string accountId)
+{
+    // Create zone with jump start (also triggers internal scan)
+    var zone = await cf.Zones.CreateZoneAsync(new CreateZoneRequest(
+        Name: domainName,
+        Type: ZoneType.Full,
+        Account: new ZoneAccountReference(accountId),
+        JumpStart: true
+    ));
+
+    // Trigger explicit scan for additional records
+    await cf.Dns.TriggerDnsRecordScanAsync(zone.Id);
+
+    // Wait for scan to complete
+    await Task.Delay(TimeSpan.FromSeconds(10));
+
+    // Accept all discovered records
+    var pending = await cf.Dns.GetDnsRecordScanReviewAsync(zone.Id);
+
+    if (pending.Count &gt; 0)
+    {
+        await cf.Dns.SubmitDnsRecordScanReviewAsync(zone.Id,
+            new DnsScanReviewRequest { Accepts = pending.ToList() });
+    }
+
+    Console.WriteLine($&quot;Zone {zone.Name} setup complete with {pending.Count} imported records&quot;);
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DNS</td>
+<td>Zone</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="dns-records.html">DNS Records</a> - Manage DNS records</li>
+<li><a href="zone-management.html">Zone Management</a> - Create and manage zones</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/dns-scanning.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Account Members | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Account Members | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/members.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="account-members">Account Members</h1>
+
+<p>Manage account members and their access permissions. Members are users who have been granted access to an account's resources.</p>
+<h2 id="overview">Overview</h2>
+<p>Access member management through <code>cf.Members</code>:</p>
+<pre><code class="lang-csharp">public class MemberService(ICloudflareApiClient cf)
+{
+    public async Task&lt;AccountMember&gt; InviteMemberAsync(
+        string accountId,
+        string email,
+        string roleId)
+    {
+        return await cf.Members.CreateAccountMemberAsync(accountId,
+            new CreateAccountMemberRequest(
+                Email: email,
+                Roles: new[] { roleId }
+            ));
+    }
+}
+</code></pre>
+<h2 id="listing-members">Listing Members</h2>
+<h3 id="with-pagination">With Pagination</h3>
+<pre><code class="lang-csharp">var result = await cf.Members.ListAccountMembersAsync(accountId,
+    new ListAccountMembersFilters(
+        Status: MemberStatus.Accepted,
+        Page: 1,
+        PerPage: 50
+    ));
+
+foreach (var member in result.Items)
+{
+    Console.WriteLine($&quot;{member.User.Email}: {member.Status}&quot;);
+    Console.WriteLine($&quot;  Roles: {string.Join(&quot;, &quot;, member.Roles.Select(r =&gt; r.Name))}&quot;);
+}
+</code></pre>
+<h3 id="list-all-members">List All Members</h3>
+<pre><code class="lang-csharp">await foreach (var member in cf.Members.ListAllAccountMembersAsync(accountId))
+{
+    Console.WriteLine($&quot;{member.User.Email} [{member.Status}]&quot;);
+}
+</code></pre>
+<h3 id="filter-by-status">Filter by Status</h3>
+<pre><code class="lang-csharp">// List pending invitations
+var pending = await cf.Members.ListAccountMembersAsync(accountId,
+    new ListAccountMembersFilters(Status: MemberStatus.Pending));
+
+// List active members
+var active = await cf.Members.ListAccountMembersAsync(accountId,
+    new ListAccountMembersFilters(Status: MemberStatus.Accepted));
+</code></pre>
+<h2 id="getting-member-details">Getting Member Details</h2>
+<pre><code class="lang-csharp">var member = await cf.Members.GetAccountMemberAsync(accountId, memberId);
+
+Console.WriteLine($&quot;Email: {member.User.Email}&quot;);
+Console.WriteLine($&quot;Status: {member.Status}&quot;);
+Console.WriteLine($&quot;Roles:&quot;);
+
+foreach (var role in member.Roles)
+{
+    Console.WriteLine($&quot;  - {role.Name}: {role.Description}&quot;);
+}
+</code></pre>
+<h2 id="inviting-members">Inviting Members</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Preview:</strong> This operation has limited test coverage.</p>
+</div>
+<h3 id="basic-invitation">Basic Invitation</h3>
+<pre><code class="lang-csharp">var member = await cf.Members.CreateAccountMemberAsync(accountId,
+    new CreateAccountMemberRequest(
+        Email: &quot;developer@example.com&quot;,
+        Roles: new[] { dnsAdminRoleId }
+    ));
+
+Console.WriteLine($&quot;Invited {member.User.Email}, status: {member.Status}&quot;);
+</code></pre>
+<h3 id="invitation-with-multiple-roles">Invitation with Multiple Roles</h3>
+<pre><code class="lang-csharp">var member = await cf.Members.CreateAccountMemberAsync(accountId,
+    new CreateAccountMemberRequest(
+        Email: &quot;admin@example.com&quot;,
+        Roles: new[] { adminRoleId, billingRoleId }
+    ));
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>An invitation email is sent to the specified address. The user must accept the invitation to become an active member.</p>
+</div>
+<h2 id="updating-members">Updating Members</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Preview:</strong> This operation has limited test coverage.</p>
+</div>
+<p>Update a member's roles:</p>
+<pre><code class="lang-csharp">var updated = await cf.Members.UpdateAccountMemberAsync(accountId, memberId,
+    new UpdateAccountMemberRequest(
+        Roles: new[] { newRoleId, additionalRoleId }
+    ));
+
+Console.WriteLine($&quot;Updated roles for {updated.User.Email}&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Only roles can be updated. The member's email and status cannot be changed through this API.</p>
+</div>
+<h2 id="removing-members">Removing Members</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Preview:</strong> This operation has limited test coverage.</p>
+</div>
+<pre><code class="lang-csharp">var result = await cf.Members.DeleteAccountMemberAsync(accountId, memberId);
+Console.WriteLine($&quot;Removed member: {result.Id}&quot;);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Removing a member immediately revokes their access. They must be re-invited to regain access.</p>
+</div>
+<div class="NOTE">
+<h5>Note</h5>
+<p>You cannot remove yourself from an account.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="accountmember">AccountMember</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Membership identifier</td>
+</tr>
+<tr>
+<td><code>User</code></td>
+<td><code>MemberUser</code></td>
+<td>User information</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td><code>MemberStatus</code></td>
+<td>Membership status</td>
+</tr>
+<tr>
+<td><code>Roles</code></td>
+<td><code>IReadOnlyList&lt;AccountRole&gt;</code></td>
+<td>Assigned roles</td>
+</tr>
+</tbody>
+</table>
+<h3 id="memberuser">MemberUser</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>User identifier</td>
+</tr>
+<tr>
+<td><code>Email</code></td>
+<td><code>string</code></td>
+<td>User's email address</td>
+</tr>
+<tr>
+<td><code>FirstName</code></td>
+<td><code>string?</code></td>
+<td>User's first name</td>
+</tr>
+<tr>
+<td><code>LastName</code></td>
+<td><code>string?</code></td>
+<td>User's last name</td>
+</tr>
+<tr>
+<td><code>TwoFactorAuthenticationEnabled</code></td>
+<td><code>bool</code></td>
+<td>Whether 2FA is enabled</td>
+</tr>
+</tbody>
+</table>
+<h3 id="memberstatus-extensible-enum">MemberStatus (Extensible Enum)</h3>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pending</code></td>
+<td>Invitation sent, awaiting acceptance</td>
+</tr>
+<tr>
+<td><code>Accepted</code></td>
+<td>User has accepted and is an active member</td>
+</tr>
+<tr>
+<td><code>Rejected</code></td>
+<td>User rejected the invitation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="listaccountmembersfilters">ListAccountMembersFilters</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Status</code></td>
+<td><code>MemberStatus?</code></td>
+<td>Filter by status</td>
+</tr>
+<tr>
+<td><code>Page</code></td>
+<td><code>int?</code></td>
+<td>Page number (1-based)</td>
+</tr>
+<tr>
+<td><code>PerPage</code></td>
+<td><code>int?</code></td>
+<td>Results per page</td>
+</tr>
+<tr>
+<td><code>Order</code></td>
+<td><code>string?</code></td>
+<td>Field to order by</td>
+</tr>
+<tr>
+<td><code>Direction</code></td>
+<td><code>ListOrderDirection?</code></td>
+<td>Sort direction</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="find-member-by-email">Find Member by Email</h3>
+<pre><code class="lang-csharp">public async Task&lt;AccountMember?&gt; FindMemberByEmailAsync(
+    string accountId,
+    string email)
+{
+    await foreach (var member in cf.Members.ListAllAccountMembersAsync(accountId))
+    {
+        if (member.User.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
+        {
+            return member;
+        }
+    }
+
+    return null;
+}
+</code></pre>
+<h3 id="invite-or-update-member">Invite or Update Member</h3>
+<pre><code class="lang-csharp">public async Task&lt;AccountMember&gt; EnsureMemberHasRolesAsync(
+    string accountId,
+    string email,
+    IReadOnlyList&lt;string&gt; roleIds)
+{
+    var existing = await FindMemberByEmailAsync(accountId, email);
+
+    if (existing is not null)
+    {
+        return await cf.Members.UpdateAccountMemberAsync(accountId, existing.Id,
+            new UpdateAccountMemberRequest(Roles: roleIds));
+    }
+
+    return await cf.Members.CreateAccountMemberAsync(accountId,
+        new CreateAccountMemberRequest(Email: email, Roles: roleIds));
+}
+</code></pre>
+<h3 id="audit-member-roles">Audit Member Roles</h3>
+<pre><code class="lang-csharp">public async Task AuditMemberRolesAsync(string accountId)
+{
+    Console.WriteLine(&quot;=== Member Role Audit ===&quot;);
+
+    await foreach (var member in cf.Members.ListAllAccountMembersAsync(accountId))
+    {
+        Console.WriteLine($&quot;\n{member.User.Email} ({member.Status}):&quot;);
+
+        foreach (var role in member.Roles)
+        {
+            Console.WriteLine($&quot;  - {role.Name}&quot;);
+        }
+
+        if (member.User.TwoFactorAuthenticationEnabled)
+        {
+            Console.WriteLine(&quot;  [2FA Enabled]&quot;);
+        }
+        else
+        {
+            Console.WriteLine(&quot;  [WARNING: 2FA Not Enabled]&quot;);
+        }
+    }
+}
+</code></pre>
+<h3 id="remove-inactive-members">Remove Inactive Members</h3>
+<pre><code class="lang-csharp">public async Task RemoveRejectedInvitationsAsync(string accountId)
+{
+    var filters = new ListAccountMembersFilters(Status: MemberStatus.Rejected);
+
+    await foreach (var member in cf.Members.ListAllAccountMembersAsync(accountId, filters))
+    {
+        await cf.Members.DeleteAccountMemberAsync(accountId, member.Id);
+        Console.WriteLine($&quot;Removed rejected invitation for: {member.User.Email}&quot;);
+    }
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account Members</td>
+<td>Account</td>
+<td>Read (for listing/get)</td>
+</tr>
+<tr>
+<td>Account Members</td>
+<td>Account</td>
+<td>Write (for invite/update/remove)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="roles.html">Account Roles</a> - View available roles</li>
+<li><a href="../user/memberships.html">User Memberships</a> - User's view of memberships</li>
+<li><a href="account-management.html">Account Management</a> - Manage accounts</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/members.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

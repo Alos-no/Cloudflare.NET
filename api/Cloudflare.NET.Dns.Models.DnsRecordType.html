@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Struct DnsRecordType | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Struct DnsRecordType | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Represents a DNS record type supported by Cloudflare.    DNS record types define the type of data stored in a DNS record, such as IP addresses (A/AAAA),   mail servers (MX), or canonical names (CNAME).">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Dns_Models_DnsRecordType.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Dns.Models.DnsRecordType%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Dns.Models.DnsRecordType">
+
+
+
+  <h1 id="Cloudflare_NET_Dns_Models_DnsRecordType" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType" class="text-break">
+Struct DnsRecordType  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Dns.html">Dns</a>.<a class="xref" href="Cloudflare.NET.Dns.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a DNS record type supported by Cloudflare.</p>
+<p>
+  DNS record types define the type of data stored in a DNS record, such as IP addresses (A/AAAA),
+  mail servers (MX), or canonical names (CNAME).
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ExtensibleEnumConverter&lt;DnsRecordType&gt;))]
+public readonly struct DnsRecordType : IExtensibleEnum&lt;DnsRecordType&gt;, IEquatable&lt;DnsRecordType&gt;</code></pre>
+  </div>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Core.Json.IExtensibleEnum-1.html">IExtensibleEnum</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Cloudflare_NET_Dns_Models_DnsRecordType_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Using a known record type with IntelliSense
+var type = DnsRecordType.CNAME;
+
+// Creating a DNS record request
+var request = new CreateDnsRecordRequest(DnsRecordType.A, "example.com", "192.0.2.1", 3600, true);
+
+// Using implicit conversion from string
+DnsRecordType customType = "NEW_RECORD_TYPE";</code></pre>
+
+
+  <h2 id="Cloudflare_NET_Dns_Models_DnsRecordType_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  This is an extensible enum that provides IntelliSense for known values while allowing custom values
+  for new record types that may be added to the Cloudflare API in the future.
+</p>
+<p>
+  Use the static properties for known record types (e.g., <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html#Cloudflare_NET_Dns_Models_DnsRecordType_A">A</a>, <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html#Cloudflare_NET_Dns_Models_DnsRecordType_CNAME">CNAME</a>)
+  or create custom values using the constructor or implicit string conversion.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType__ctor_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType__ctor_System_String_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.#ctor(System.String)">
+  DnsRecordType(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a> with the specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DnsRecordType(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value representing the record type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_A_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.A*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_A" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.A">
+  A
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A record - maps a hostname to an IPv4 address.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType A { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_A_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The most common DNS record type for pointing domains to servers.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_AAAA_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.AAAA*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_AAAA" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.AAAA">
+  AAAA
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>AAAA record - maps a hostname to an IPv6 address.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType AAAA { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_AAAA_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The IPv6 equivalent of an A record.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_CAA_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.CAA*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_CAA" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.CAA">
+  CAA
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>CAA record - specifies which Certificate Authorities can issue certificates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType CAA { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_CAA_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Helps prevent unauthorized certificate issuance.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_CERT_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.CERT*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_CERT" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.CERT">
+  CERT
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>CERT record - stores certificates in DNS.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType CERT { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_CERT_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Can store various types of certificates including X.509 and PGP.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_CNAME_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.CNAME*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_CNAME" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.CNAME">
+  CNAME
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>CNAME record - creates an alias from one hostname to another.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType CNAME { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_CNAME_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Useful for pointing subdomains to other domains or services.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_DNSKEY_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.DNSKEY*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_DNSKEY" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.DNSKEY">
+  DNSKEY
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>DNSKEY record - contains the public key for DNSSEC.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType DNSKEY { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_DNSKEY_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Used by resolvers to verify DNSSEC signatures.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_DS_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.DS*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_DS" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.DS">
+  DS
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>DS record - Delegation Signer record for DNSSEC.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType DS { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_DS_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Used to establish chains of trust in DNSSEC.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_HTTPS_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.HTTPS*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_HTTPS" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.HTTPS">
+  HTTPS
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>HTTPS record - provides connection information for HTTPS services.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType HTTPS { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_HTTPS_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Enables clients to learn about HTTPS alternative services.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_MX_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.MX*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_MX" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.MX">
+  MX
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>MX record - specifies mail servers for the domain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType MX { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_MX_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Used to route email to the correct mail servers.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_NAPTR_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.NAPTR*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_NAPTR" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.NAPTR">
+  NAPTR
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>NAPTR record - naming authority pointer for URI resolution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType NAPTR { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_NAPTR_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Used in ENUM and SIP applications.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_NS_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.NS*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_NS" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.NS">
+  NS
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>NS record - specifies authoritative nameservers for the domain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType NS { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_NS_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Delegates DNS resolution to specific nameservers.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_PTR_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.PTR*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_PTR" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.PTR">
+  PTR
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>PTR record - maps an IP address to a hostname (reverse DNS).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType PTR { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_PTR_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Used for reverse DNS lookups.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_SMIMEA_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SMIMEA*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_SMIMEA" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SMIMEA">
+  SMIMEA
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SMIMEA record - S/MIME certificate association.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType SMIMEA { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_SMIMEA_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Associates S/MIME certificates with email addresses.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_SOA_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SOA*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_SOA" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SOA">
+  SOA
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SOA record - contains administrative information about the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType SOA { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_SOA_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Every DNS zone must have exactly one SOA record.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_SRV_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SRV*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_SRV" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SRV">
+  SRV
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SRV record - specifies a host and port for specific services.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType SRV { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_SRV_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Used for services like VoIP, instant messaging, and other protocols.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_SSHFP_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SSHFP*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_SSHFP" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SSHFP">
+  SSHFP
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SSHFP record - SSH public key fingerprint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType SSHFP { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_SSHFP_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Allows SSH clients to verify server host keys via DNS.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_SVCB_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SVCB*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_SVCB" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.SVCB">
+  SVCB
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SVCB record - general service binding record.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType SVCB { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_SVCB_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The generic version of HTTPS records for other protocols.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_TLSA_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.TLSA*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_TLSA" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.TLSA">
+  TLSA
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>TLSA record - DANE certificate association.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType TLSA { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_TLSA_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Associates TLS server certificates with domain names.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_TXT_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.TXT*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_TXT" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.TXT">
+  TXT
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>TXT record - holds arbitrary text data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType TXT { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_DnsRecordType_TXT_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Commonly used for domain verification, SPF, DKIM, and DMARC records.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_URI_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.URI*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_URI" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.URI">
+  URI
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>URI record - publishes mappings from hostnames to URIs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType URI { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_Value_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Value*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_Value" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the underlying string value of this record type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_Create_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Create*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_Create_System_String_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Create(System.String)">
+  Create(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new instance of the extensible enum from the specified string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DnsRecordType Create(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value to wrap.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd><p>A new instance of <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a> containing the specified value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_Equals_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_Equals_Cloudflare_NET_Dns_Models_DnsRecordType_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Equals(Cloudflare.NET.Dns.Models.DnsRecordType)">
+  Equals(DnsRecordType)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L195"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(DnsRecordType other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd><p>An object to compare with this object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current object is equal to the <code class="paramref">other</code> parameter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_Equals_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_Equals_System_Object_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare with the current instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> and this instance are the same type and represent the same value; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_GetHashCode_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.GetHashCode*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_GetHashCode" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit signed integer that is the hash code for this instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_ToString_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.ToString*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_ToString" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the fully qualified type name of this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The fully qualified type name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Equality_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Equality*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Equality_Cloudflare_NET_Dns_Models_DnsRecordType_Cloudflare_NET_Dns_Models_DnsRecordType_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Equality(Cloudflare.NET.Dns.Models.DnsRecordType,Cloudflare.NET.Dns.Models.DnsRecordType)">
+  operator ==(DnsRecordType, DnsRecordType)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L184"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a> values are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(DnsRecordType left, DnsRecordType right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Implicit_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Implicit*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Implicit_Cloudflare_NET_Dns_Models_DnsRecordType__System_String" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Implicit(Cloudflare.NET.Dns.Models.DnsRecordType)~System.String">
+  implicit operator string(DnsRecordType)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a> to its string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator string(DnsRecordType recordType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>recordType</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd><p>The record type to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Implicit_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Implicit*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Implicit_System_String__Cloudflare_NET_Dns_Models_DnsRecordType" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Implicit(System.String)~Cloudflare.NET.Dns.Models.DnsRecordType">
+  implicit operator DnsRecordType(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L177"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a string to a <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator DnsRecordType(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Inequality_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Inequality*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_DnsRecordType_op_Inequality_Cloudflare_NET_Dns_Models_DnsRecordType_Cloudflare_NET_Dns_Models_DnsRecordType_" data-uid="Cloudflare.NET.Dns.Models.DnsRecordType.op_Inequality(Cloudflare.NET.Dns.Models.DnsRecordType,Cloudflare.NET.Dns.Models.DnsRecordType)">
+  operator !=(DnsRecordType, DnsRecordType)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a> values are not equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(DnsRecordType left, DnsRecordType right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecordType.html">DnsRecordType</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/dns/manage-dns-records/reference/dns-record-types/">https://developers.cloudflare.com/dns/manage-dns-records/reference/dns-record-types/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordType.cs/#L37" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
