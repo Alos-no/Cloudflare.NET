@@ -268,14 +268,19 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
       .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
-  /// <summary>I12: Verifies that create subscription with invalid rate plan returns 404.</summary>
+  /// <summary>I12: Verifies that create subscription with invalid rate plan returns 400 Bad Request.</summary>
   /// <remarks>
-  ///   Per Cloudflare API: POST with non-existent rate plan returns 404 Not Found.
-  ///   Error code 1298: "Review the rate plan ID and try again. Could not find the rate plan."
-  ///   https://developers.cloudflare.com/api/resources/zones/subresources/subscriptions/methods/create/
+  ///   <para>
+  ///     Per Cloudflare API: POST with non-existent rate plan returns 400 Bad Request with error code 7501.
+  ///     Error message: "unknown or deprecated rate plan: 'invalid-rate-plan-that-does-not-exist'"
+  ///   </para>
+  ///   <para>
+  ///     <b>Note:</b> The documentation previously indicated 404, but current behavior returns 400.
+  ///     If this test fails with 404, Cloudflare may have reverted to the documented behavior.
+  ///   </para>
   /// </remarks>
   [IntegrationTest]
-  public async Task CreateZoneSubscriptionAsync_InvalidRatePlan_ThrowsNotFound()
+  public async Task CreateZoneSubscriptionAsync_InvalidRatePlan_ThrowsBadRequest()
   {
     // Arrange
     var zoneId = _settings.ZoneId;
@@ -285,10 +290,10 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     // Act
     var act = () => _sut.CreateZoneSubscriptionAsync(zoneId, request);
 
-    // Assert - Non-existent rate plan returns 404 Not Found
+    // Assert - Invalid rate plan references return 400 Bad Request with error code 7501.
     await act.Should()
       .ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
   }
 
   /// <summary>I13: Verifies that update subscription on non-existent zone returns 404.</summary>
