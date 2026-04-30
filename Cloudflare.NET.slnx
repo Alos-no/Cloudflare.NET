@@ -1,0 +1,27 @@
+<Solution>
+  <Folder Name="/DevOps/">
+    <File Path=".github/workflows/dotnet.yml" />
+    <File Path="scripts/publish.ps1" />
+    <File Path="scripts/setup-secrets.ps1" />
+  </Folder>
+  <Folder Name="/Docs/">
+    <File Path="docs/Cloudflare.NET-prompt.md" />
+    <File Path="docs/Cloudflare.NET-temp.md" />
+  </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="samples/Cloudflare.NET.R2.Sample/Cloudflare.NET.R2.Sample.csproj" />
+    <Project Path="samples/Cloudflare.NET.Sample.csproj/Cloudflare.NET.Sample.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Cloudflare.NET.Analytics.Tests/Cloudflare.NET.Analytics.Tests.csproj" />
+    <Project Path="tests/Cloudflare.NET.R2.Tests/Cloudflare.NET.R2.Tests.csproj" />
+    <Project Path="tests/Cloudflare.NET.Tests.Shared/Cloudflare.NET.Tests.Shared.csproj" />
+    <Project Path="tests/Cloudflare.NET.Tests/Cloudflare.NET.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="tools/Cloudflare.NET.Analytics.CodeGen/Cloudflare.NET.Analytics.CodeGen.csproj" />
+  </Folder>
+  <Project Path="src/Cloudflare.NET.Analytics/Cloudflare.NET.Analytics.csproj" />
+  <Project Path="src/Cloudflare.NET.R2/Cloudflare.NET.R2.csproj" />
+  <Project Path="src/Cloudflare.NET/Cloudflare.NET.csproj" />
+</Solution>
