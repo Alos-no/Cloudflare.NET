@@ -37,13 +37,20 @@ public record ManagedDomainResponse(
 /// <param name="Domain">The domain name to attach.</param>
 /// <param name="Enabled">Whether the domain should be enabled.</param>
 /// <param name="ZoneId">The Zone ID the domain belongs to.</param>
+/// <param name="MinTls">
+///   Optional minimum TLS version for the domain (e.g., "1.2", "1.3"). When omitted, the Cloudflare API defaults the
+///   domain to TLS 1.0.
+/// </param>
 public record AttachCustomDomainRequest(
   [property: JsonPropertyName("domain")]
   string Domain,
   [property: JsonPropertyName("enabled")]
   bool Enabled,
   [property: JsonPropertyName("zoneId")]
-  string ZoneId
+  string ZoneId,
+  [property: JsonPropertyName("minTLS")]
+  [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+  string? MinTls = null
 );
 
 /// <summary>Defines the request payload for updating a custom domain configuration.</summary>

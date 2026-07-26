@@ -101,7 +101,7 @@ public class AccountsApi : ApiResource, IAccountsApi
     string            hostname,
     string            zoneId,
     CancellationToken cancellationToken = default) =>
-    Buckets.AttachCustomDomainAsync(bucketName, hostname, zoneId, null, cancellationToken);
+    Buckets.AttachCustomDomainAsync(bucketName, hostname, zoneId, null, cancellationToken: cancellationToken);
 
   /// <inheritdoc />
   [Obsolete("Use Buckets.GetCustomDomainStatusAsync instead. This method will be removed in a future version.")]

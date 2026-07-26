@@ -1371,6 +1371,40 @@ public class R2BucketsApiUnitTests
     capturedJsonBody.Should().NotBeNull();
     var content = JsonSerializer.Deserialize<AttachCustomDomainRequest>(capturedJsonBody!, _serializerOptions);
     content.Should().BeEquivalentTo(new AttachCustomDomainRequest(hostname, true, zoneId));
+
+    // The minTLS property must be omitted entirely when not provided (the API would otherwise reject or misapply it).
+    capturedJsonBody.Should().NotContain("minTLS");
+  }
+
+  /// <summary>
+  ///   Verifies that AttachCustomDomainAsync serializes the optional minimum TLS version into the request body when
+  ///   provided (the Cloudflare API defaults an attached domain to TLS 1.0 when the property is omitted).
+  /// </summary>
+  [Fact]
+  public async Task AttachCustomDomainAsync_WithMinTls_SerializesMinTlsIntoRequestBody()
+  {
+    // Arrange
+    var bucketName      = "test-bucket";
+    var hostname        = "r2.example.com";
+    var zoneId          = "test-zone-id";
+    var expectedResult  = new CustomDomainResponse(hostname, null, "pending_validation");
+    var successResponse = HttpFixtures.CreateSuccessResponse(expectedResult);
+
+    string? capturedJsonBody = null;
+    var sut = CreateSut(successResponse, callback: (req, _) =>
+    {
+      capturedJsonBody = req.Content?.ReadAsStringAsync().GetAwaiter().GetResult();
+    });
+
+    // Act
+    var result = await sut.AttachCustomDomainAsync(bucketName, hostname, zoneId, minTls: "1.2");
+
+    // Assert
+    result.Should().BeEquivalentTo(expectedResult);
+    capturedJsonBody.Should().NotBeNull();
+    var content = JsonSerializer.Deserialize<AttachCustomDomainRequest>(capturedJsonBody!, _serializerOptions);
+    content.Should().BeEquivalentTo(new AttachCustomDomainRequest(hostname, true, zoneId, "1.2"));
+    capturedJsonBody.Should().Contain("\"minTLS\":\"1.2\"");
   }
 
   /// <summary>Verifies that GetCustomDomainStatusAsync sends a correctly formatted GET request.</summary>
