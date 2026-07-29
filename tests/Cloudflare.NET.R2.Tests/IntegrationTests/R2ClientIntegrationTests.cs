@@ -550,7 +550,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
       // Assert
       var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
       ex.Which.InnerException.Should().BeOfType<AmazonS3Exception>()
-        .Which.ErrorCode.Should().Be("InternalError"); // R2 returns a generic error for duplicate parts
+        .Which.ErrorCode.Should().Be("InvalidPart"); // R2 historically returned a generic "InternalError" for duplicate parts; since July 2026 it returns the S3-standard "InvalidPart"
     }
     finally
     {

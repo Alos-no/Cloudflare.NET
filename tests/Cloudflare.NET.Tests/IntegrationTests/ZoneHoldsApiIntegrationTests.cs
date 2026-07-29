@@ -268,7 +268,20 @@ public class ZoneHoldsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   /// <summary>
   ///   I07: Verifies that a zone hold can be removed successfully.
   /// </summary>
-  [IntegrationTest]
+  /// <remarks>
+  ///   <para><b>SKIPPED: Requires Enterprise plan.</b></para>
+  ///   <para><b>API Documentation Evidence:</b></para>
+  ///   <list type="bullet">
+  ///     <item>Zone holds are an Enterprise-only feature.</item>
+  ///     <item>
+  ///       Cloudflare used to silently accept hold creation on non-Enterprise zones (leaving 'hold' false),
+  ///       which let this test run. Since July 2026, POST /zones/{zone_id}/hold returns 400 with error
+  ///       code 1005 ("Zone holds are only available on Enterprise zones"), so the Arrange step fails.
+  ///     </item>
+  ///     <item>API Ref: https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/create/</item>
+  ///   </list>
+  /// </remarks>
+  [IntegrationTest(Skip = "Requires Enterprise plan - creating a zone hold now returns 400 error 1005 on Free/Pro/Business zones")]
   public async Task RemoveZoneHoldAsync_WithExistingHold_RemovesSuccessfully()
   {
     // Arrange
