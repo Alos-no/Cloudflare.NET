@@ -319,9 +319,10 @@ public class R2BucketsApi : ApiResource, IR2BucketsApi
     string            hostname,
     string            zoneId,
     R2Jurisdiction?   jurisdiction      = null,
+    string?           minTls            = null,
     CancellationToken cancellationToken = default)
   {
-    var requestBody = new AttachCustomDomainRequest(hostname, true, zoneId);
+    var requestBody = new AttachCustomDomainRequest(hostname, true, zoneId, minTls);
     var endpoint    = $"accounts/{_accountId}/r2/buckets/{Uri.EscapeDataString(bucketName)}/domains/custom";
     var headers     = BuildJurisdictionHeaders(jurisdiction);
 
