@@ -28,6 +28,11 @@ public static class ServiceCollectionExtensions
   /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
   public static IServiceCollection AddCloudflareR2Client(this IServiceCollection services, IConfiguration configuration)
   {
+    // Bind the "Cloudflare" section (Account ID) so the R2 client works standalone, without requiring a
+    // preceding AddCloudflareApiClient call. When both registrations are used with the same configuration,
+    // the section is bound twice with identical values, which is harmless.
+    services.Configure<CloudflareApiOptions>(options => configuration.GetSection("Cloudflare").Bind(options));
+
     return services.AddCloudflareR2Client(options => configuration.GetSection("R2").Bind(options));
   }
 
@@ -138,6 +143,12 @@ public static class ServiceCollectionExtensions
 
     // Bind to the section "R2:{name}" for R2 settings.
     var r2SectionName = $"R2:{name}";
+
+    // Bind the "Cloudflare:{name}" section (Account ID) so the named R2 client works standalone, matching
+    // the documented contract of this overload. When AddCloudflareApiClient(name, configuration) is also
+    // called with the same configuration, the section is bound twice with identical values, which is harmless.
+    var cloudflareSectionName = $"Cloudflare:{name}";
+    services.Configure<CloudflareApiOptions>(name, options => configuration.GetSection(cloudflareSectionName).Bind(options));
 
     return services.AddCloudflareR2Client(name, options => configuration.GetSection(r2SectionName).Bind(options));
   }
