@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Cache Purge | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Cache Purge | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/cache-purge.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="cache-purge">Cache Purge</h1>
+
+<p>Purge cached content from Cloudflare's edge servers for your zone. You can purge everything, specific files, URL prefixes, or entire hostnames.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class CacheService(ICloudflareApiClient cf)
+{
+    public async Task PurgeAsync(string zoneId)
+    {
+        var result = await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+        {
+            Files = [&quot;https://example.com/styles.css&quot;]
+        });
+
+        Console.WriteLine($&quot;Purge completed for zone: {result.Id}&quot;);
+    }
+}
+</code></pre>
+<h2 id="purge-methods">Purge Methods</h2>
+<h3 id="purge-everything">Purge Everything</h3>
+<p>Purge all cached content for the entire zone:</p>
+<pre><code class="lang-csharp">await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+{
+    PurgeEverything = true
+});
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Purging everything can significantly increase origin load as all assets need to be re-fetched. Use with caution in production.</p>
+</div>
+<h3 id="purge-specific-files">Purge Specific Files</h3>
+<p>Purge specific URLs from the cache:</p>
+<pre><code class="lang-csharp">await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+{
+    Files =
+    [
+        &quot;https://example.com/styles.css&quot;,
+        &quot;https://example.com/script.js&quot;,
+        &quot;https://example.com/images/logo.png&quot;
+    ]
+});
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>URLs must be fully qualified including the protocol (https://). You can purge up to 30 files per request.</p>
+</div>
+<h3 id="purge-by-prefix">Purge by Prefix</h3>
+<p>Purge all URLs matching a prefix (Enterprise plans only):</p>
+<pre><code class="lang-csharp">await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+{
+    Prefixes =
+    [
+        &quot;https://example.com/images/&quot;,
+        &quot;https://example.com/static/v2/&quot;
+    ]
+});
+</code></pre>
+<h3 id="purge-by-hostname">Purge by Hostname</h3>
+<p>Purge all cached content for specific hostnames:</p>
+<pre><code class="lang-csharp">await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+{
+    Hosts =
+    [
+        &quot;cdn.example.com&quot;,
+        &quot;assets.example.com&quot;
+    ]
+});
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="purgecacherequest">PurgeCacheRequest</h3>
+<p>Request payload for cache purge operations. At least one property must be set.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PurgeEverything</code></td>
+<td><code>bool?</code></td>
+<td>If <code>true</code>, purges all assets in the cache</td>
+</tr>
+<tr>
+<td><code>Files</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>List of specific URLs to purge (max 30)</td>
+</tr>
+<tr>
+<td><code>Prefixes</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>List of URL prefixes to purge (Enterprise only)</td>
+</tr>
+<tr>
+<td><code>Hosts</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>List of hostnames to purge</td>
+</tr>
+</tbody>
+</table>
+<h3 id="purgecacheresult">PurgeCacheResult</h3>
+<p>Result of a successful cache purge operation.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Zone identifier where the purge was performed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="purge-after-deployment">Purge After Deployment</h3>
+<p>Purge static assets after a deployment:</p>
+<pre><code class="lang-csharp">public class DeploymentService(ICloudflareApiClient cf)
+{
+    public async Task PurgeAfterDeployAsync(string zoneId, string version)
+    {
+        await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+        {
+            Files =
+            [
+                $&quot;https://example.com/static/{version}/app.js&quot;,
+                $&quot;https://example.com/static/{version}/styles.css&quot;
+            ]
+        });
+    }
+}
+</code></pre>
+<h3 id="purge-with-retry-on-rate-limit">Purge with Retry on Rate Limit</h3>
+<p>Handle rate limiting when purging many files:</p>
+<pre><code class="lang-csharp">public async Task PurgeBatchAsync(string zoneId, IEnumerable&lt;string&gt; urls)
+{
+    // Cloudflare allows 30 files per request
+    var batches = urls.Chunk(30);
+
+    foreach (var batch in batches)
+    {
+        await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+        {
+            Files = batch.ToList()
+        });
+
+        // Small delay to avoid rate limiting
+        await Task.Delay(100);
+    }
+}
+</code></pre>
+<h3 id="invalidate-content-after-update">Invalidate Content After Update</h3>
+<p>Purge content when database records change:</p>
+<pre><code class="lang-csharp">public async Task InvalidateProductCacheAsync(string zoneId, int productId)
+{
+    await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+    {
+        Files =
+        [
+            $&quot;https://example.com/api/products/{productId}&quot;,
+            $&quot;https://example.com/products/{productId}&quot;
+        ]
+    });
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache Purge</td>
+<td>Zone</td>
+<td>Purge</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rate-limits">Rate Limits</h2>
+<ul>
+<li><strong>Files</strong>: Maximum 30 URLs per request</li>
+<li><strong>Rate</strong>: 1,000 purge requests per 10 seconds per zone</li>
+<li><strong>Everything</strong>: Limited to 1 per minute per zone (recommended to avoid)</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Prefer targeted purges</strong> over <code>PurgeEverything</code> to minimize origin load</li>
+<li><strong>Use cache tags</strong> (via Cache-Tag header) for more granular invalidation</li>
+<li><strong>Batch file purges</strong> to stay within the 30 file limit</li>
+<li><strong>Add delays</strong> between batch requests to avoid rate limiting</li>
+<li><strong>Monitor origin load</strong> after large purge operations</li>
+</ol>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/cache-purge.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

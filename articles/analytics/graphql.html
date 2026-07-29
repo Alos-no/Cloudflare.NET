@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>GraphQL Queries | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="GraphQL Queries | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/analytics/graphql.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="graphql-queries">GraphQL Queries</h1>
+
+<p>Examples and patterns for querying Cloudflare Analytics with GraphQL.</p>
+<h2 id="query-structure">Query Structure</h2>
+<p>Cloudflare Analytics queries follow this structure:</p>
+<pre><code class="lang-graphql">query {
+    viewer {
+        zones(filter: { zoneTag: &quot;your-zone-id&quot; }) {
+            # Zone-level analytics
+        }
+        accounts(filter: { accountTag: &quot;your-account-id&quot; }) {
+            # Account-level analytics
+        }
+    }
+}
+</code></pre>
+<h2 id="zone-analytics">Zone Analytics</h2>
+<h3 id="http-requests-daily">HTTP Requests (Daily)</h3>
+<pre><code class="lang-csharp">public async Task&lt;DailyTraffic&gt; GetDailyTrafficAsync(string zoneTag, int days = 30)
+{
+    var request = new GraphQLRequest
+    {
+        Query = &quot;&quot;&quot;
+            query DailyTraffic($zoneTag: String!, $since: String!, $until: String!) {
+                viewer {
+                    zones(filter: { zoneTag: $zoneTag }) {
+                        httpRequests1dGroups(
+                            filter: { date_geq: $since, date_lt: $until }
+                            limit: 100
+                            orderBy: [date_ASC]
+                        ) {
+                            dimensions { date }
+                            sum {
+                                requests
+                                bytes
+                                cachedRequests
+                                cachedBytes
+                                pageViews
+                            }
+                            uniq {
+                                uniques
+                            }
+                        }
+                    }
+                }
+            }
+            &quot;&quot;&quot;,
+        Variables = new
+        {
+            zoneTag,
+            since = DateTime.UtcNow.AddDays(-days).ToString(&quot;yyyy-MM-dd&quot;),
+            until = DateTime.UtcNow.AddDays(1).ToString(&quot;yyyy-MM-dd&quot;)
+        }
+    };
+
+    return await analytics.SendQueryAsync&lt;DailyTraffic&gt;(request);
+}
+</code></pre>
+<h3 id="http-requests-hourly">HTTP Requests (Hourly)</h3>
+<pre><code class="lang-csharp">public async Task&lt;HourlyTraffic&gt; GetHourlyTrafficAsync(string zoneTag, int hours = 24)
+{
+    var since = DateTime.UtcNow.AddHours(-hours);
+
+    var request = new GraphQLRequest
+    {
+        Query = &quot;&quot;&quot;
+            query HourlyTraffic($zoneTag: String!, $since: DateTime!, $until: DateTime!) {
+                viewer {
+                    zones(filter: { zoneTag: $zoneTag }) {
+                        httpRequests1hGroups(
+                            filter: { datetime_geq: $since, datetime_lt: $until }
+                            limit: 100
+                            orderBy: [datetime_ASC]
+                        ) {
+                            dimensions { datetime }
+                            sum {
+                                requests
+                                bytes
+                            }
+                        }
+                    }
+                }
+            }
+            &quot;&quot;&quot;,
+        Variables = new
+        {
+            zoneTag,
+            since = since.ToString(&quot;O&quot;),
+            until = DateTime.UtcNow.ToString(&quot;O&quot;)
+        }
+    };
+
+    return await analytics.SendQueryAsync&lt;HourlyTraffic&gt;(request);
+}
+</code></pre>
+<h3 id="requests-by-country">Requests by Country</h3>
+<pre><code class="lang-csharp">public async Task&lt;CountryTraffic&gt; GetTrafficByCountryAsync(string zoneTag, int days = 7)
+{
+    var request = new GraphQLRequest
+    {
+        Query = &quot;&quot;&quot;
+            query TrafficByCountry($zoneTag: String!, $since: String!, $until: String!) {
+                viewer {
+                    zones(filter: { zoneTag: $zoneTag }) {
+                        httpRequests1dGroups(
+                            filter: { date_geq: $since, date_lt: $until }
+                            limit: 100
+                            orderBy: [sum_requests_DESC]
+                        ) {
+                            dimensions { clientCountryName }
+                            sum { requests bytes }
+                        }
+                    }
+                }
+            }
+            &quot;&quot;&quot;,
+        Variables = new
+        {
+            zoneTag,
+            since = DateTime.UtcNow.AddDays(-days).ToString(&quot;yyyy-MM-dd&quot;),
+            until = DateTime.UtcNow.AddDays(1).ToString(&quot;yyyy-MM-dd&quot;)
+        }
+    };
+
+    return await analytics.SendQueryAsync&lt;CountryTraffic&gt;(request);
+}
+</code></pre>
+<h3 id="cache-performance">Cache Performance</h3>
+<pre><code class="lang-csharp">public async Task&lt;CacheStats&gt; GetCacheStatsAsync(string zoneTag, int days = 30)
+{
+    var request = new GraphQLRequest
+    {
+        Query = &quot;&quot;&quot;
+            query CacheStats($zoneTag: String!, $since: String!, $until: String!) {
+                viewer {
+                    zones(filter: { zoneTag: $zoneTag }) {
+                        httpRequests1dGroups(
+                            filter: { date_geq: $since, date_lt: $until }
+                            limit: 1
+                        ) {
+                            sum {
+                                requests
+                                cachedRequests
+                                bytes
+                                cachedBytes
+                            }
+                        }
+                    }
+                }
+            }
+            &quot;&quot;&quot;,
+        Variables = new
+        {
+            zoneTag,
+            since = DateTime.UtcNow.AddDays(-days).ToString(&quot;yyyy-MM-dd&quot;),
+            until = DateTime.UtcNow.AddDays(1).ToString(&quot;yyyy-MM-dd&quot;)
+        }
+    };
+
+    return await analytics.SendQueryAsync&lt;CacheStats&gt;(request);
+}
+</code></pre>
+<h2 id="security-analytics">Security Analytics</h2>
+<h3 id="firewall-events">Firewall Events</h3>
+<pre><code class="lang-csharp">public async Task&lt;FirewallEvents&gt; GetFirewallEventsAsync(string zoneTag, int hours = 24)
+{
+    var since = DateTime.UtcNow.AddHours(-hours);
+
+    var request = new GraphQLRequest
+    {
+        Query = &quot;&quot;&quot;
+            query FirewallEvents($zoneTag: String!, $since: DateTime!, $until: DateTime!) {
+                viewer {
+                    zones(filter: { zoneTag: $zoneTag }) {
+                        firewallEventsAdaptiveGroups(
+                            filter: { datetime_geq: $since, datetime_lt: $until }
+                            limit: 100
+                            orderBy: [count_DESC]
+                        ) {
+                            dimensions {
+                                action
+                                clientCountryName
+                                clientASNDescription
+                            }
+                            count
+                        }
+                    }
+                }
+            }
+            &quot;&quot;&quot;,
+        Variables = new
+        {
+            zoneTag,
+            since = since.ToString(&quot;O&quot;),
+            until = DateTime.UtcNow.ToString(&quot;O&quot;)
+        }
+    };
+
+    return await analytics.SendQueryAsync&lt;FirewallEvents&gt;(request);
+}
+</code></pre>
+<h3 id="threats-blocked">Threats Blocked</h3>
+<pre><code class="lang-csharp">public async Task&lt;ThreatsBlocked&gt; GetThreatsBlockedAsync(string zoneTag, int days = 7)
+{
+    var request = new GraphQLRequest
+    {
+        Query = &quot;&quot;&quot;
+            query ThreatsBlocked($zoneTag: String!, $since: String!, $until: String!) {
+                viewer {
+                    zones(filter: { zoneTag: $zoneTag }) {
+                        httpRequests1dGroups(
+                            filter: { date_geq: $since, date_lt: $until }
+                            limit: 100
+                            orderBy: [date_ASC]
+                        ) {
+                            dimensions { date }
+                            sum { threats }
+                        }
+                    }
+                }
+            }
+            &quot;&quot;&quot;,
+        Variables = new
+        {
+            zoneTag,
+            since = DateTime.UtcNow.AddDays(-days).ToString(&quot;yyyy-MM-dd&quot;),
+            until = DateTime.UtcNow.AddDays(1).ToString(&quot;yyyy-MM-dd&quot;)
+        }
+    };
+
+    return await analytics.SendQueryAsync&lt;ThreatsBlocked&gt;(request);
+}
+</code></pre>
+<h2 id="response-models">Response Models</h2>
+<h3 id="basic-traffic-response">Basic Traffic Response</h3>
+<pre><code class="lang-csharp">public record DailyTraffic(Viewer Viewer);
+
+public record Viewer(IReadOnlyList&lt;Zone&gt; Zones);
+
+public record Zone(IReadOnlyList&lt;HttpRequestsGroup&gt; HttpRequests1dGroups);
+
+public record HttpRequestsGroup(
+    DateDimensions Dimensions,
+    TrafficSum Sum,
+    UniquesCount? Uniq
+);
+
+public record DateDimensions(string Date);
+
+public record TrafficSum(
+    long Requests,
+    long Bytes,
+    long CachedRequests,
+    long CachedBytes,
+    long? PageViews,
+    long? Threats
+);
+
+public record UniquesCount(long Uniques);
+</code></pre>
+<h3 id="country-traffic-response">Country Traffic Response</h3>
+<pre><code class="lang-csharp">public record CountryTraffic(Viewer Viewer);
+
+public record CountryGroup(
+    CountryDimensions Dimensions,
+    RequestSum Sum
+);
+
+public record CountryDimensions(string ClientCountryName);
+
+public record RequestSum(long Requests, long Bytes);
+</code></pre>
+<h3 id="firewall-response">Firewall Response</h3>
+<pre><code class="lang-csharp">public record FirewallEvents(Viewer Viewer);
+
+public record FirewallGroup(
+    FirewallDimensions Dimensions,
+    long Count
+);
+
+public record FirewallDimensions(
+    string Action,
+    string ClientCountryName,
+    string? ClientASNDescription
+);
+</code></pre>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="dashboard-service">Dashboard Service</h3>
+<pre><code class="lang-csharp">public class DashboardService(IAnalyticsApi analytics)
+{
+    public async Task&lt;DashboardData&gt; GetDashboardAsync(string zoneTag)
+    {
+        var request = new GraphQLRequest
+        {
+            Query = &quot;&quot;&quot;
+                query Dashboard($zoneTag: String!, $since: String!, $until: String!) {
+                    viewer {
+                        zones(filter: { zoneTag: $zoneTag }) {
+                            # Traffic overview
+                            trafficOverview: httpRequests1dGroups(
+                                filter: { date_geq: $since, date_lt: $until }
+                                limit: 1
+                            ) {
+                                sum { requests bytes cachedRequests cachedBytes }
+                                uniq { uniques }
+                            }
+                            # Daily trend
+                            dailyTrend: httpRequests1dGroups(
+                                filter: { date_geq: $since, date_lt: $until }
+                                limit: 30
+                                orderBy: [date_ASC]
+                            ) {
+                                dimensions { date }
+                                sum { requests }
+                            }
+                            # Top countries
+                            topCountries: httpRequests1dGroups(
+                                filter: { date_geq: $since, date_lt: $until }
+                                limit: 10
+                                orderBy: [sum_requests_DESC]
+                            ) {
+                                dimensions { clientCountryName }
+                                sum { requests }
+                            }
+                        }
+                    }
+                }
+                &quot;&quot;&quot;,
+            Variables = new
+            {
+                zoneTag,
+                since = DateTime.UtcNow.AddDays(-30).ToString(&quot;yyyy-MM-dd&quot;),
+                until = DateTime.UtcNow.AddDays(1).ToString(&quot;yyyy-MM-dd&quot;)
+            }
+        };
+
+        return await analytics.SendQueryAsync&lt;DashboardData&gt;(request);
+    }
+}
+</code></pre>
+<h3 id="caching-results">Caching Results</h3>
+<pre><code class="lang-csharp">public class CachedAnalyticsService(IAnalyticsApi analytics, IMemoryCache cache)
+{
+    public async Task&lt;DailyTraffic&gt; GetCachedTrafficAsync(string zoneTag)
+    {
+        var cacheKey = $&quot;traffic:{zoneTag}&quot;;
+
+        return await cache.GetOrCreateAsync(cacheKey, async entry =&gt;
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+
+            return await GetDailyTrafficAsync(zoneTag);
+        })!;
+    }
+
+    private async Task&lt;DailyTraffic&gt; GetDailyTrafficAsync(string zoneTag)
+    {
+        // Implementation from above...
+    }
+}
+</code></pre>
+<h2 id="filter-reference">Filter Reference</h2>
+<h3 id="date-filters">Date Filters</h3>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>date</code></td>
+<td>String</td>
+<td><code>&quot;2024-01-15&quot;</code></td>
+</tr>
+<tr>
+<td><code>date_geq</code></td>
+<td>String</td>
+<td>Greater than or equal</td>
+</tr>
+<tr>
+<td><code>date_gt</code></td>
+<td>String</td>
+<td>Greater than</td>
+</tr>
+<tr>
+<td><code>date_leq</code></td>
+<td>String</td>
+<td>Less than or equal</td>
+</tr>
+<tr>
+<td><code>date_lt</code></td>
+<td>String</td>
+<td>Less than</td>
+</tr>
+</tbody>
+</table>
+<h3 id="datetime-filters">DateTime Filters</h3>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>datetime_geq</code></td>
+<td>DateTime</td>
+<td><code>&quot;2024-01-15T00:00:00Z&quot;</code></td>
+</tr>
+<tr>
+<td><code>datetime_lt</code></td>
+<td>DateTime</td>
+<td>Less than</td>
+</tr>
+</tbody>
+</table>
+<h3 id="common-filters">Common Filters</h3>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clientCountryName</code></td>
+<td>Two-letter country code</td>
+</tr>
+<tr>
+<td><code>clientASNDescription</code></td>
+<td>ASN name</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>Firewall action taken</td>
+</tr>
+</tbody>
+</table>
+<h2 id="order-by-options">Order By Options</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>date_ASC</code> / <code>date_DESC</code></td>
+<td>Order by date</td>
+</tr>
+<tr>
+<td><code>datetime_ASC</code> / <code>datetime_DESC</code></td>
+<td>Order by datetime</td>
+</tr>
+<tr>
+<td><code>sum_requests_ASC</code> / <code>sum_requests_DESC</code></td>
+<td>Order by request count</td>
+</tr>
+<tr>
+<td><code>sum_bytes_ASC</code> / <code>sum_bytes_DESC</code></td>
+<td>Order by bytes</td>
+</tr>
+<tr>
+<td><code>count_ASC</code> / <code>count_DESC</code></td>
+<td>Order by count</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="index.html">Analytics Overview</a> - Package introduction</li>
+<li><a href="https://developers.cloudflare.com/analytics/graphql-api/getting-started/">Cloudflare GraphQL Schema</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/analytics/graphql.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

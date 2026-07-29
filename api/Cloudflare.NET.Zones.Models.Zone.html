@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Zone | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Zone | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Represents the detailed information for a Cloudflare Zone.    A zone represents a domain and its configuration in Cloudflare. This record captures   all properties returned by the Cloudflare API for a zone resource.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Zones_Models_Zone.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Zones.Models.Zone%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Zones.Models.Zone">
+
+
+
+  <h1 id="Cloudflare_NET_Zones_Models_Zone" data-uid="Cloudflare.NET.Zones.Models.Zone" class="text-break">
+Class Zone  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Zones.html">Zones</a>.<a class="xref" href="Cloudflare.NET.Zones.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents the detailed information for a Cloudflare Zone.</p>
+<p>
+  A zone represents a domain and its configuration in Cloudflare. This record captures
+  all properties returned by the Cloudflare API for a zone resource.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record Zone : IEquatable&lt;Zone&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Zone</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone__ctor_" data-uid="Cloudflare.NET.Zones.Models.Zone.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone__ctor_System_String_System_String_Cloudflare_NET_Zones_Models_ZoneStatus_Cloudflare_NET_Zones_Models_ZoneAccount_System_Nullable_System_DateTime__System_DateTime_System_DateTime_System_Int32_System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_String_System_String_Cloudflare_NET_Zones_Models_ZoneOwner_Cloudflare_NET_Zones_Models_ZonePlan_Cloudflare_NET_Zones_Models_ZoneMeta_System_Boolean_System_Collections_Generic_IReadOnlyList_System_String__Cloudflare_NET_Zones_Models_ZoneType_System_Collections_Generic_IReadOnlyList_System_String__System_String_System_String_Cloudflare_NET_Zones_Models_ZoneTenant_Cloudflare_NET_Zones_Models_ZoneTenantUnit_" data-uid="Cloudflare.NET.Zones.Models.Zone.#ctor(System.String,System.String,Cloudflare.NET.Zones.Models.ZoneStatus,Cloudflare.NET.Zones.Models.ZoneAccount,System.Nullable{System.DateTime},System.DateTime,System.DateTime,System.Int32,System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.String,System.String,Cloudflare.NET.Zones.Models.ZoneOwner,Cloudflare.NET.Zones.Models.ZonePlan,Cloudflare.NET.Zones.Models.ZoneMeta,System.Boolean,System.Collections.Generic.IReadOnlyList{System.String},Cloudflare.NET.Zones.Models.ZoneType,System.Collections.Generic.IReadOnlyList{System.String},System.String,System.String,Cloudflare.NET.Zones.Models.ZoneTenant,Cloudflare.NET.Zones.Models.ZoneTenantUnit)">
+  Zone(string, string, ZoneStatus, ZoneAccount, DateTime?, DateTime, DateTime, int, IReadOnlyList&lt;string&gt;, IReadOnlyList&lt;string&gt;?, string?, string?, ZoneOwner, ZonePlan, ZoneMeta?, bool, IReadOnlyList&lt;string&gt;?, ZoneType, IReadOnlyList&lt;string&gt;?, string?, string?, ZoneTenant?, ZoneTenantUnit?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents the detailed information for a Cloudflare Zone.</p>
+<p>
+  A zone represents a domain and its configuration in Cloudflare. This record captures
+  all properties returned by the Cloudflare API for a zone resource.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Zone(string Id, string Name, ZoneStatus Status, ZoneAccount Account, DateTime? ActivatedOn, DateTime CreatedOn, DateTime ModifiedOn, int DevelopmentMode, IReadOnlyList&lt;string&gt; NameServers, IReadOnlyList&lt;string&gt;? OriginalNameServers, string? OriginalRegistrar, string? OriginalDnsHost, ZoneOwner Owner, ZonePlan Plan, ZoneMeta? Meta, bool Paused, IReadOnlyList&lt;string&gt;? Permissions, ZoneType Type, IReadOnlyList&lt;string&gt;? VanityNameServers, string? CnameSuffix, string? VerificationKey, ZoneTenant? Tenant, ZoneTenantUnit? TenantUnit)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The unique identifier for the zone (32-character hexadecimal string).</p>
+</dd>
+    <dt><code>Name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The domain name of the zone (e.g., &quot;example.com&quot;).</p>
+</dd>
+    <dt><code>Status</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneStatus.html">ZoneStatus</a></dt>
+    <dd><p>The current status of the zone (e.g., active, pending, initializing).</p>
+</dd>
+    <dt><code>Account</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneAccount.html">ZoneAccount</a></dt>
+    <dd><p>The account that owns this zone.</p>
+</dd>
+    <dt><code>ActivatedOn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>The timestamp when the zone was activated. Null if not yet activated.</p>
+</dd>
+    <dt><code>CreatedOn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The timestamp when the zone was created.</p>
+</dd>
+    <dt><code>ModifiedOn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The timestamp when the zone was last modified.</p>
+</dd>
+    <dt><code>DevelopmentMode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Seconds remaining in development mode. 0 means development mode is off.
+When enabled, Cloudflare caching is bypassed.</p>
+</dd>
+    <dt><code>NameServers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The Cloudflare-assigned nameservers for the zone.</p>
+</dd>
+    <dt><code>OriginalNameServers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The nameservers that were on the domain before moving to Cloudflare.</p>
+</dd>
+    <dt><code>OriginalRegistrar</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The registrar that manages the domain.</p>
+</dd>
+    <dt><code>OriginalDnsHost</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The DNS host that was hosting the domain before moving to Cloudflare.</p>
+</dd>
+    <dt><code>Owner</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneOwner.html">ZoneOwner</a></dt>
+    <dd><p>Information about the user who owns the zone.</p>
+</dd>
+    <dt><code>Plan</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZonePlan.html">ZonePlan</a></dt>
+    <dd><p>The billing plan for the zone.</p>
+</dd>
+    <dt><code>Meta</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneMeta.html">ZoneMeta</a></dt>
+    <dd><p>Additional metadata about the zone.</p>
+</dd>
+    <dt><code>Paused</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the zone is paused. When paused, Cloudflare stops proxying traffic.</p>
+</dd>
+    <dt><code>Permissions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The permissions the current API token has on this zone.</p>
+</dd>
+    <dt><code>Type</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneType.html">ZoneType</a></dt>
+    <dd><p>The type of zone setup (full, partial, or secondary).</p>
+</dd>
+    <dt><code>VanityNameServers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Custom nameservers configured for the zone (Business/Enterprise only).</p>
+</dd>
+    <dt><code>CnameSuffix</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The CNAME suffix for partial zones.</p>
+</dd>
+    <dt><code>VerificationKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The verification key for the zone.</p>
+</dd>
+    <dt><code>Tenant</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneTenant.html">ZoneTenant</a></dt>
+    <dd><p>Tenant information for multi-tenant configurations.</p>
+</dd>
+    <dt><code>TenantUnit</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneTenantUnit.html">ZoneTenantUnit</a></dt>
+    <dd><p>Tenant unit information for multi-tenant configurations.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/list/">https://developers.cloudflare.com/api/resources/zones/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Account_" data-uid="Cloudflare.NET.Zones.Models.Zone.Account*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Account" data-uid="Cloudflare.NET.Zones.Models.Zone.Account">
+  Account
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The account that owns this zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;account&quot;)]
+public ZoneAccount Account { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneAccount.html">ZoneAccount</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_ActivatedOn_" data-uid="Cloudflare.NET.Zones.Models.Zone.ActivatedOn*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_ActivatedOn" data-uid="Cloudflare.NET.Zones.Models.Zone.ActivatedOn">
+  ActivatedOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The timestamp when the zone was activated. Null if not yet activated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;activated_on&quot;)]
+public DateTime? ActivatedOn { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_CnameSuffix_" data-uid="Cloudflare.NET.Zones.Models.Zone.CnameSuffix*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_CnameSuffix" data-uid="Cloudflare.NET.Zones.Models.Zone.CnameSuffix">
+  CnameSuffix
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The CNAME suffix for partial zones.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cname_suffix&quot;)]
+public string? CnameSuffix { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_CreatedOn_" data-uid="Cloudflare.NET.Zones.Models.Zone.CreatedOn*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_CreatedOn" data-uid="Cloudflare.NET.Zones.Models.Zone.CreatedOn">
+  CreatedOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The timestamp when the zone was created.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;created_on&quot;)]
+public DateTime CreatedOn { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_DevelopmentMode_" data-uid="Cloudflare.NET.Zones.Models.Zone.DevelopmentMode*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_DevelopmentMode" data-uid="Cloudflare.NET.Zones.Models.Zone.DevelopmentMode">
+  DevelopmentMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Seconds remaining in development mode. 0 means development mode is off.
+When enabled, Cloudflare caching is bypassed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;development_mode&quot;)]
+public int DevelopmentMode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Id_" data-uid="Cloudflare.NET.Zones.Models.Zone.Id*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Id" data-uid="Cloudflare.NET.Zones.Models.Zone.Id">
+  Id
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The unique identifier for the zone (32-character hexadecimal string).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
+public string Id { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Meta_" data-uid="Cloudflare.NET.Zones.Models.Zone.Meta*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Meta" data-uid="Cloudflare.NET.Zones.Models.Zone.Meta">
+  Meta
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Additional metadata about the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;meta&quot;)]
+public ZoneMeta? Meta { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneMeta.html">ZoneMeta</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_ModifiedOn_" data-uid="Cloudflare.NET.Zones.Models.Zone.ModifiedOn*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_ModifiedOn" data-uid="Cloudflare.NET.Zones.Models.Zone.ModifiedOn">
+  ModifiedOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The timestamp when the zone was last modified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;modified_on&quot;)]
+public DateTime ModifiedOn { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Name_" data-uid="Cloudflare.NET.Zones.Models.Zone.Name*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Name" data-uid="Cloudflare.NET.Zones.Models.Zone.Name">
+  Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The domain name of the zone (e.g., &quot;example.com&quot;).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
+public string Name { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_NameServers_" data-uid="Cloudflare.NET.Zones.Models.Zone.NameServers*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_NameServers" data-uid="Cloudflare.NET.Zones.Models.Zone.NameServers">
+  NameServers
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The Cloudflare-assigned nameservers for the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name_servers&quot;)]
+public IReadOnlyList&lt;string&gt; NameServers { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_OriginalDnsHost_" data-uid="Cloudflare.NET.Zones.Models.Zone.OriginalDnsHost*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_OriginalDnsHost" data-uid="Cloudflare.NET.Zones.Models.Zone.OriginalDnsHost">
+  OriginalDnsHost
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The DNS host that was hosting the domain before moving to Cloudflare.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;original_dnshost&quot;)]
+public string? OriginalDnsHost { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_OriginalNameServers_" data-uid="Cloudflare.NET.Zones.Models.Zone.OriginalNameServers*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_OriginalNameServers" data-uid="Cloudflare.NET.Zones.Models.Zone.OriginalNameServers">
+  OriginalNameServers
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The nameservers that were on the domain before moving to Cloudflare.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;original_name_servers&quot;)]
+public IReadOnlyList&lt;string&gt;? OriginalNameServers { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_OriginalRegistrar_" data-uid="Cloudflare.NET.Zones.Models.Zone.OriginalRegistrar*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_OriginalRegistrar" data-uid="Cloudflare.NET.Zones.Models.Zone.OriginalRegistrar">
+  OriginalRegistrar
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The registrar that manages the domain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;original_registrar&quot;)]
+public string? OriginalRegistrar { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Owner_" data-uid="Cloudflare.NET.Zones.Models.Zone.Owner*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Owner" data-uid="Cloudflare.NET.Zones.Models.Zone.Owner">
+  Owner
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Information about the user who owns the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;owner&quot;)]
+public ZoneOwner Owner { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneOwner.html">ZoneOwner</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Paused_" data-uid="Cloudflare.NET.Zones.Models.Zone.Paused*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Paused" data-uid="Cloudflare.NET.Zones.Models.Zone.Paused">
+  Paused
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the zone is paused. When paused, Cloudflare stops proxying traffic.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;paused&quot;)]
+public bool Paused { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Permissions_" data-uid="Cloudflare.NET.Zones.Models.Zone.Permissions*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Permissions" data-uid="Cloudflare.NET.Zones.Models.Zone.Permissions">
+  Permissions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The permissions the current API token has on this zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;permissions&quot;)]
+public IReadOnlyList&lt;string&gt;? Permissions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Plan_" data-uid="Cloudflare.NET.Zones.Models.Zone.Plan*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Plan" data-uid="Cloudflare.NET.Zones.Models.Zone.Plan">
+  Plan
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The billing plan for the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;plan&quot;)]
+public ZonePlan Plan { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZonePlan.html">ZonePlan</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Status_" data-uid="Cloudflare.NET.Zones.Models.Zone.Status*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Status" data-uid="Cloudflare.NET.Zones.Models.Zone.Status">
+  Status
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The current status of the zone (e.g., active, pending, initializing).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;status&quot;)]
+public ZoneStatus Status { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneStatus.html">ZoneStatus</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Tenant_" data-uid="Cloudflare.NET.Zones.Models.Zone.Tenant*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Tenant" data-uid="Cloudflare.NET.Zones.Models.Zone.Tenant">
+  Tenant
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tenant information for multi-tenant configurations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;tenant&quot;)]
+public ZoneTenant? Tenant { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneTenant.html">ZoneTenant</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_TenantUnit_" data-uid="Cloudflare.NET.Zones.Models.Zone.TenantUnit*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_TenantUnit" data-uid="Cloudflare.NET.Zones.Models.Zone.TenantUnit">
+  TenantUnit
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tenant unit information for multi-tenant configurations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;tenant_unit&quot;)]
+public ZoneTenantUnit? TenantUnit { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneTenantUnit.html">ZoneTenantUnit</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_Type_" data-uid="Cloudflare.NET.Zones.Models.Zone.Type*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_Type" data-uid="Cloudflare.NET.Zones.Models.Zone.Type">
+  Type
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The type of zone setup (full, partial, or secondary).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;type&quot;)]
+public ZoneType Type { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneType.html">ZoneType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_VanityNameServers_" data-uid="Cloudflare.NET.Zones.Models.Zone.VanityNameServers*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_VanityNameServers" data-uid="Cloudflare.NET.Zones.Models.Zone.VanityNameServers">
+  VanityNameServers
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Custom nameservers configured for the zone (Business/Enterprise only).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;vanity_name_servers&quot;)]
+public IReadOnlyList&lt;string&gt;? VanityNameServers { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_Zone_VerificationKey_" data-uid="Cloudflare.NET.Zones.Models.Zone.VerificationKey*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_Zone_VerificationKey" data-uid="Cloudflare.NET.Zones.Models.Zone.VerificationKey">
+  VerificationKey
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The verification key for the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;verification_key&quot;)]
+public string? VerificationKey { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/list/">https://developers.cloudflare.com/api/resources/zones/methods/list/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneModels.cs/#L39" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

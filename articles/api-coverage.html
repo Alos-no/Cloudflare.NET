@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>API Coverage | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="API Coverage | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET API coverage. See all supported Cloudflare API endpoints for DNS, Zones, R2, WAF, Workers, and security features.">
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/api-coverage.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<style>
+/* Consistent column widths for API coverage tables */
+.api-summary-table th:nth-child(1),
+.api-summary-table td:nth-child(1) { width: 25%; }
+.api-summary-table th:nth-child(2),
+.api-summary-table td:nth-child(2) { width: 15%; text-align: center; }
+.api-summary-table th:nth-child(3),
+.api-summary-table td:nth-child(3) { width: 60%; }
+
+.api-table th:nth-child(1),
+.api-table td:nth-child(1) { width: 20%; }
+.api-table th:nth-child(2),
+.api-table td:nth-child(2) { width: 30%; }
+.api-table th:nth-child(3),
+.api-table td:nth-child(3) { width: 42%; }
+.api-table th:nth-child(4),
+.api-table td:nth-child(4) { width: 8%; text-align: center; }
+
+.api-ext-table th:nth-child(1),
+.api-ext-table td:nth-child(1) { width: 22%; }
+.api-ext-table th:nth-child(2),
+.api-ext-table td:nth-child(2) { width: 33%; }
+.api-ext-table th:nth-child(3),
+.api-ext-table td:nth-child(3) { width: 45%; }
+
+.api-planned-table th:nth-child(1),
+.api-planned-table td:nth-child(1) { width: 28%; }
+.api-planned-table th:nth-child(2),
+.api-planned-table td:nth-child(2) { width: 32%; }
+.api-planned-table th:nth-child(3),
+.api-planned-table td:nth-child(3) { width: 40%; }
+</style>
+<h1 id="api-coverage">API Coverage</h1>
+<p>This document provides a comprehensive overview of the Cloudflare API endpoints supported by the SDK.</p>
+<h2 id="summary">Summary</h2>
+<table class="api-summary-table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 15%">
+<col style="width: 60%">
+</colgroup>
+<thead><tr><th>Category</th><th>Endpoints</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>Accounts</td><td>5</td><td>Account CRUD and settings management</td></tr>
+<tr><td>Account Members</td><td>5</td><td>Invite, update, and remove account members</td></tr>
+<tr><td>Account Roles</td><td>2</td><td>List and retrieve account-level roles</td></tr>
+<tr><td>Account Security</td><td>2</td><td>Account-scoped IP rules and WAF rulesets</td></tr>
+<tr><td>Audit Logs</td><td>2</td><td>Query account and user activity logs</td></tr>
+<tr><td>API Tokens</td><td>8</td><td>Create, verify, and manage API tokens</td></tr>
+<tr><td>DNS Records</td><td>12</td><td>Full DNS lifecycle including batch and BIND import/export</td></tr>
+<tr><td>R2 Buckets</td><td>22</td><td>Bucket management, CORS, lifecycle, domains, and Sippy</td></tr>
+<tr><td>Workers KV</td><td>19</td><td>Namespace and key-value CRUD, metadata, bulk operations</td></tr>
+<tr><td>D1 Databases</td><td>11</td><td>Database CRUD, SQL queries, export/import operations</td></tr>
+<tr><td>Subscriptions</td><td>6</td><td>Account, zone, and user subscription details</td></tr>
+<tr><td>Turnstile</td><td>5</td><td>CAPTCHA widget configuration and secret rotation</td></tr>
+<tr><td>User</td><td>11</td><td>Profile, invitations, and membership management</td></tr>
+<tr><td>Workers (Routes)</td><td>4</td><td>Zone-level Workers route management</td></tr>
+<tr><td>Zones</td><td>18</td><td>Zone CRUD, holds, settings, and cache purge</td></tr>
+<tr><td>Zone Security</td><td>4</td><td>Zone-scoped firewall, lockdown, UA rules, and rulesets</td></tr>
+<tr><td>Extension Packages</td><td>2</td><td>R2 S3-compatible client and GraphQL analytics</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="accounts-api">Accounts API</h2>
+<h3 id="account-management">Account Management</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Accounts</td><td><code>ListAccountsAsync</code></td><td><code>GET /accounts</code></td><td>✅</td></tr>
+<tr><td>List All Accounts</td><td><code>ListAllAccountsAsync</code></td><td><code>GET /accounts</code> (auto)</td><td>✅</td></tr>
+<tr><td>Get Account</td><td><code>GetAccountAsync</code></td><td><code>GET /accounts/{id}</code></td><td>✅</td></tr>
+<tr><td>Create Account</td><td><code>CreateAccountAsync</code></td><td><code>POST /accounts</code></td><td>✅</td></tr>
+<tr><td>Update Account</td><td><code>UpdateAccountAsync</code></td><td><code>PUT /accounts/{id}</code></td><td>✅</td></tr>
+<tr><td>Delete Account</td><td><code>DeleteAccountAsync</code></td><td><code>DELETE /accounts/{id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="account-members">Account Members</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Members</td><td><code>ListAccountMembersAsync</code></td><td><code>GET /accounts/{id}/members</code></td><td>✅</td></tr>
+<tr><td>List All Members</td><td><code>ListAllAccountMembersAsync</code></td><td><code>GET /accounts/{id}/members</code> (auto)</td><td>✅</td></tr>
+<tr><td>Get Member</td><td><code>GetAccountMemberAsync</code></td><td><code>GET /accounts/{id}/members/{member_id}</code></td><td>✅</td></tr>
+<tr><td>Create Member</td><td><code>CreateAccountMemberAsync</code></td><td><code>POST /accounts/{id}/members</code></td><td>✅</td></tr>
+<tr><td>Update Member</td><td><code>UpdateAccountMemberAsync</code></td><td><code>PUT /accounts/{id}/members/{member_id}</code></td><td>✅</td></tr>
+<tr><td>Delete Member</td><td><code>DeleteAccountMemberAsync</code></td><td><code>DELETE /accounts/{id}/members/{member_id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="account-roles">Account Roles</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Roles</td><td><code>ListAccountRolesAsync</code></td><td><code>GET /accounts/{id}/roles</code></td><td>✅</td></tr>
+<tr><td>List All Roles</td><td><code>ListAllAccountRolesAsync</code></td><td><code>GET /accounts/{id}/roles</code> (auto)</td><td>✅</td></tr>
+<tr><td>Get Role</td><td><code>GetAccountRoleAsync</code></td><td><code>GET /accounts/{id}/roles/{id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="account-security">Account Security</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>IP Access Rules</td><td><code>Accounts.AccessRules.*</code></td><td><code>/accounts/{id}/firewall/access_rules/rules</code></td><td>✅</td></tr>
+<tr><td>Rulesets (WAF)</td><td><code>Accounts.Rulesets.*</code></td><td><code>/accounts/{id}/rulesets</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="api-tokens">API Tokens</h2>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Account Tokens</td><td><code>ListAccountTokensAsync</code></td><td><code>GET /accounts/{id}/tokens</code></td><td>✅</td></tr>
+<tr><td>Get Account Token</td><td><code>GetAccountTokenAsync</code></td><td><code>GET /accounts/{id}/tokens/{token_id}</code></td><td>✅</td></tr>
+<tr><td>Create Account Token</td><td><code>CreateAccountTokenAsync</code></td><td><code>POST /accounts/{id}/tokens</code></td><td>✅</td></tr>
+<tr><td>Update Account Token</td><td><code>UpdateAccountTokenAsync</code></td><td><code>PUT /accounts/{id}/tokens/{token_id}</code></td><td>✅</td></tr>
+<tr><td>Delete Account Token</td><td><code>DeleteAccountTokenAsync</code></td><td><code>DELETE /accounts/{id}/tokens/{token_id}</code></td><td>✅</td></tr>
+<tr><td>Verify Token</td><td><code>VerifyTokenAsync</code></td><td><code>GET /user/tokens/verify</code></td><td>✅</td></tr>
+<tr><td>List User Tokens</td><td><code>ListUserTokensAsync</code></td><td><code>GET /user/tokens</code></td><td>✅</td></tr>
+<tr><td>List Permission Groups</td><td><code>ListPermissionGroupsAsync</code></td><td><code>GET /accounts/{id}/tokens/permission_groups</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="audit-logs">Audit Logs</h2>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Account Logs</td><td><code>GetAccountAuditLogsAsync</code></td><td><code>GET /accounts/{id}/audit_logs</code></td><td>✅</td></tr>
+<tr><td>Get User Logs</td><td><code>GetUserAuditLogsAsync</code></td><td><code>GET /user/audit_logs</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="dns-records">DNS Records</h2>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Record</td><td><code>GetDnsRecordAsync</code></td><td><code>GET /zones/{id}/dns_records/{record_id}</code></td><td>✅</td></tr>
+<tr><td>List Records</td><td><code>ListDnsRecordsAsync</code></td><td><code>GET /zones/{id}/dns_records</code></td><td>✅</td></tr>
+<tr><td>List All Records</td><td><code>ListAllDnsRecordsAsync</code></td><td><code>GET /zones/{id}/dns_records</code> (auto)</td><td>✅</td></tr>
+<tr><td>Find by Name</td><td><code>FindDnsRecordByNameAsync</code></td><td><code>GET /zones/{id}/dns_records?name=...</code></td><td>✅</td></tr>
+<tr><td>Create Record</td><td><code>CreateDnsRecordAsync</code></td><td><code>POST /zones/{id}/dns_records</code></td><td>✅</td></tr>
+<tr><td>Create CNAME</td><td><code>CreateCnameRecordAsync</code></td><td><code>POST /zones/{id}/dns_records</code></td><td>✅</td></tr>
+<tr><td>Update Record</td><td><code>UpdateDnsRecordAsync</code></td><td><code>PUT /zones/{id}/dns_records/{record_id}</code></td><td>✅</td></tr>
+<tr><td>Patch Record</td><td><code>PatchDnsRecordAsync</code></td><td><code>PATCH /zones/{id}/dns_records/{record_id}</code></td><td>✅</td></tr>
+<tr><td>Delete Record</td><td><code>DeleteDnsRecordAsync</code></td><td><code>DELETE /zones/{id}/dns_records/{record_id}</code></td><td>✅</td></tr>
+<tr><td>Batch Operations</td><td><code>BatchDnsRecordsAsync</code></td><td><code>POST /zones/{id}/dns_records/batch</code></td><td>✅</td></tr>
+<tr><td>Export (BIND)</td><td><code>ExportDnsRecordsAsync</code></td><td><code>GET /zones/{id}/dns_records/export</code></td><td>✅</td></tr>
+<tr><td>Import (BIND)</td><td><code>ImportDnsRecordsAsync</code></td><td><code>POST /zones/{id}/dns_records/import</code></td><td>✅</td></tr>
+<tr><td>Trigger Scan</td><td><code>TriggerDnsRecordScanAsync</code></td><td><code>POST /zones/{id}/dns_records/scan</code></td><td>✅</td></tr>
+<tr><td>Get Scan Review</td><td><code>GetDnsRecordScanReviewAsync</code></td><td><code>GET /zones/{id}/dns_records/scan</code></td><td>✅</td></tr>
+<tr><td>Submit Review</td><td><code>SubmitDnsRecordScanReviewAsync</code></td><td><code>POST /zones/{id}/dns_records/scan/review</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="r2-buckets">R2 Buckets</h2>
+<h3 id="core-operations">Core Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Create Bucket</td><td><code>Buckets.CreateAsync</code></td><td><code>POST /accounts/{id}/r2/buckets</code></td><td>✅</td></tr>
+<tr><td>Get Bucket</td><td><code>Buckets.GetAsync</code></td><td><code>GET /accounts/{id}/r2/buckets/{name}</code></td><td>✅</td></tr>
+<tr><td>List Buckets</td><td><code>Buckets.ListAsync</code></td><td><code>GET /accounts/{id}/r2/buckets</code></td><td>✅</td></tr>
+<tr><td>List All Buckets</td><td><code>Buckets.ListAllAsync</code></td><td><code>GET /accounts/{id}/r2/buckets</code> (auto)</td><td>✅</td></tr>
+<tr><td>Delete Bucket</td><td><code>Buckets.DeleteAsync</code></td><td><code>DELETE /accounts/{id}/r2/buckets/{name}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="cors-configuration">CORS Configuration</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get CORS</td><td><code>Buckets.GetCorsAsync</code></td><td><code>GET /accounts/{id}/r2/buckets/{name}/cors</code></td><td>✅</td></tr>
+<tr><td>Set CORS</td><td><code>Buckets.SetCorsAsync</code></td><td><code>PUT /accounts/{id}/r2/buckets/{name}/cors</code></td><td>✅</td></tr>
+<tr><td>Delete CORS</td><td><code>Buckets.DeleteCorsAsync</code></td><td><code>DELETE .../r2/buckets/{name}/cors</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="lifecycle-configuration">Lifecycle Configuration</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Lifecycle</td><td><code>Buckets.GetLifecycleAsync</code></td><td><code>GET /accounts/{id}/r2/buckets/{name}/lifecycle</code></td><td>✅</td></tr>
+<tr><td>Set Lifecycle</td><td><code>Buckets.SetLifecycleAsync</code></td><td><code>PUT /accounts/{id}/r2/buckets/{name}/lifecycle</code></td><td>✅</td></tr>
+<tr><td>Delete Lifecycle</td><td><code>Buckets.DeleteLifecycleAsync</code></td><td><code>PUT .../lifecycle</code> (empty)</td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="custom-domains">Custom Domains</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Domains</td><td><code>Buckets.ListCustomDomainsAsync</code></td><td><code>GET .../r2/buckets/{name}/domains/custom</code></td><td>✅</td></tr>
+<tr><td>Attach Domain</td><td><code>Buckets.AttachCustomDomainAsync</code></td><td><code>POST .../r2/buckets/{name}/domains/custom</code></td><td>✅</td></tr>
+<tr><td>Get Domain Status</td><td><code>Buckets.GetCustomDomainStatusAsync</code></td><td><code>GET .../domains/custom/{hostname}</code></td><td>✅</td></tr>
+<tr><td>Update Domain</td><td><code>Buckets.UpdateCustomDomainAsync</code></td><td><code>PUT .../domains/custom/{hostname}</code></td><td>✅</td></tr>
+<tr><td>Detach Domain</td><td><code>Buckets.DetachCustomDomainAsync</code></td><td><code>DELETE .../domains/custom/{hostname}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="managed-domain-r2dev">Managed Domain (r2.dev)</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Status</td><td><code>Buckets.GetManagedDomainAsync</code></td><td><code>GET .../r2/buckets/{name}/domains/managed</code></td><td>✅</td></tr>
+<tr><td>Enable</td><td><code>Buckets.EnableManagedDomainAsync</code></td><td><code>PUT .../r2/buckets/{name}/domains/managed</code></td><td>✅</td></tr>
+<tr><td>Disable</td><td><code>Buckets.DisableManagedDomainAsync</code></td><td><code>DELETE .../r2/buckets/{name}/domains/managed</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="bucket-locks">Bucket Locks</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Lock</td><td><code>Buckets.GetLockAsync</code></td><td><code>GET /accounts/{id}/r2/buckets/{name}/lock</code></td><td>✅</td></tr>
+<tr><td>Set Lock</td><td><code>Buckets.SetLockAsync</code></td><td><code>PUT /accounts/{id}/r2/buckets/{name}/lock</code></td><td>✅</td></tr>
+<tr><td>Delete Lock</td><td><code>Buckets.DeleteLockAsync</code></td><td><code>PUT .../lock</code> (empty)</td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="sippy-incremental-migration">Sippy (Incremental Migration)</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Config</td><td><code>Buckets.GetSippyAsync</code></td><td><code>GET /accounts/{id}/r2/buckets/{name}/sippy</code></td><td>✅</td></tr>
+<tr><td>Enable</td><td><code>Buckets.EnableSippyAsync</code></td><td><code>PUT /accounts/{id}/r2/buckets/{name}/sippy</code></td><td>✅</td></tr>
+<tr><td>Disable</td><td><code>Buckets.DisableSippyAsync</code></td><td><code>DELETE .../r2/buckets/{name}/sippy</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="temporary-credentials">Temporary Credentials</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Create Credentials</td><td><code>Buckets.CreateTempCredentialsAsync</code></td><td><code>POST /accounts/{id}/r2/temp-access-credentials</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="subscriptions">Subscriptions</h2>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Account Subs</td><td><code>ListAccountSubscriptionsAsync</code></td><td><code>GET /accounts/{id}/subscriptions</code></td><td>✅</td></tr>
+<tr><td>Create Account Sub</td><td><code>CreateAccountSubscriptionAsync</code></td><td><code>POST /accounts/{id}/subscriptions</code></td><td>✅</td></tr>
+<tr><td>Update Account Sub</td><td><code>UpdateAccountSubscriptionAsync</code></td><td><code>PUT /accounts/{id}/subscriptions/{sub_id}</code></td><td>✅</td></tr>
+<tr><td>Delete Account Sub</td><td><code>DeleteAccountSubscriptionAsync</code></td><td><code>DELETE .../subscriptions/{sub_id}</code></td><td>✅</td></tr>
+<tr><td>Get Zone Sub</td><td><code>GetZoneSubscriptionAsync</code></td><td><code>GET /zones/{id}/subscription</code></td><td>✅</td></tr>
+<tr><td>Get User Sub</td><td><code>GetUserSubscriptionAsync</code></td><td><code>GET /user/subscriptions</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="turnstile">Turnstile</h2>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Widgets</td><td><code>ListWidgetsAsync</code></td><td><code>GET /accounts/{id}/challenges/widgets</code></td><td>✅</td></tr>
+<tr><td>Get Widget</td><td><code>GetWidgetAsync</code></td><td><code>GET /accounts/{id}/challenges/widgets/{sitekey}</code></td><td>✅</td></tr>
+<tr><td>Create Widget</td><td><code>CreateWidgetAsync</code></td><td><code>POST /accounts/{id}/challenges/widgets</code></td><td>✅</td></tr>
+<tr><td>Update Widget</td><td><code>UpdateWidgetAsync</code></td><td><code>PUT /accounts/{id}/challenges/widgets/{sitekey}</code></td><td>✅</td></tr>
+<tr><td>Delete Widget</td><td><code>DeleteWidgetAsync</code></td><td><code>DELETE /accounts/{id}/challenges/widgets/{sitekey}</code></td><td>✅</td></tr>
+<tr><td>Rotate Secret</td><td><code>RotateSecretAsync</code></td><td><code>POST .../widgets/{sitekey}/rotate_secret</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="user">User</h2>
+<h3 id="profile">Profile</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get User</td><td><code>GetUserAsync</code></td><td><code>GET /user</code></td><td>✅</td></tr>
+<tr><td>Edit User</td><td><code>EditUserAsync</code></td><td><code>PATCH /user</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="invitations">Invitations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Invitations</td><td><code>ListInvitationsAsync</code></td><td><code>GET /user/invites</code></td><td>✅</td></tr>
+<tr><td>Get Invitation</td><td><code>GetInvitationAsync</code></td><td><code>GET /user/invites/{id}</code></td><td>✅</td></tr>
+<tr><td>Respond to Invitation</td><td><code>RespondToInvitationAsync</code></td><td><code>PATCH /user/invites/{id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="memberships">Memberships</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Memberships</td><td><code>ListMembershipsAsync</code></td><td><code>GET /memberships</code></td><td>✅</td></tr>
+<tr><td>List All</td><td><code>ListAllMembershipsAsync</code></td><td><code>GET /memberships</code> (auto)</td><td>✅</td></tr>
+<tr><td>Get Membership</td><td><code>GetMembershipAsync</code></td><td><code>GET /memberships/{id}</code></td><td>✅</td></tr>
+<tr><td>Update Membership</td><td><code>UpdateMembershipAsync</code></td><td><code>PUT /memberships/{id}</code></td><td>✅</td></tr>
+<tr><td>Delete Membership</td><td><code>DeleteMembershipAsync</code></td><td><code>DELETE /memberships/{id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="workers-kv">Workers KV</h2>
+<h3 id="namespace-operations">Namespace Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Namespaces</td><td><code>Kv.ListAsync</code></td><td><code>GET /accounts/{id}/storage/kv/namespaces</code></td><td>✅</td></tr>
+<tr><td>List All Namespaces</td><td><code>Kv.ListAllAsync</code></td><td><code>GET /accounts/{id}/storage/kv/namespaces</code> (auto)</td><td>✅</td></tr>
+<tr><td>Create Namespace</td><td><code>Kv.CreateAsync</code></td><td><code>POST /accounts/{id}/storage/kv/namespaces</code></td><td>✅</td></tr>
+<tr><td>Get Namespace</td><td><code>Kv.GetAsync</code></td><td><code>GET /accounts/{id}/storage/kv/namespaces/{ns_id}</code></td><td>✅</td></tr>
+<tr><td>Rename Namespace</td><td><code>Kv.RenameAsync</code></td><td><code>PUT /accounts/{id}/storage/kv/namespaces/{ns_id}</code></td><td>✅</td></tr>
+<tr><td>Delete Namespace</td><td><code>Kv.DeleteAsync</code></td><td><code>DELETE /accounts/{id}/storage/kv/namespaces/{ns_id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="key-operations">Key Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Keys</td><td><code>Kv.ListKeysAsync</code></td><td><code>GET .../namespaces/{ns_id}/keys</code></td><td>✅</td></tr>
+<tr><td>List All Keys</td><td><code>Kv.ListAllKeysAsync</code></td><td><code>GET .../namespaces/{ns_id}/keys</code> (auto)</td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="value-operations">Value Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Value</td><td><code>Kv.GetValueAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Value (with exp)</td><td><code>Kv.GetValueWithExpirationAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Value (bytes)</td><td><code>Kv.GetValueBytesAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Value (bytes+exp)</td><td><code>Kv.GetValueBytesWithExpirationAsync</code></td><td><code>GET .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Get Metadata</td><td><code>Kv.GetMetadataAsync</code></td><td><code>GET .../namespaces/{ns_id}/metadata/{key}</code></td><td>✅</td></tr>
+<tr><td>Write Value</td><td><code>Kv.WriteValueAsync</code></td><td><code>PUT .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+<tr><td>Delete Value</td><td><code>Kv.DeleteValueAsync</code></td><td><code>DELETE .../namespaces/{ns_id}/values/{key}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="bulk-operations">Bulk Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Bulk Write</td><td><code>Kv.BulkWriteAsync</code></td><td><code>PUT .../namespaces/{ns_id}/bulk</code></td><td>✅</td></tr>
+<tr><td>Bulk Delete</td><td><code>Kv.BulkDeleteAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/delete</code></td><td>✅</td></tr>
+<tr><td>Bulk Get</td><td><code>Kv.BulkGetAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/get</code></td><td>✅</td></tr>
+<tr><td>Bulk Get (metadata)</td><td><code>Kv.BulkGetWithMetadataAsync</code></td><td><code>POST .../namespaces/{ns_id}/bulk/get</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="d1-databases">D1 Databases</h2>
+<h3 id="database-operations">Database Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Databases</td><td><code>D1.ListAsync</code></td><td><code>GET /accounts/{id}/d1/database</code></td><td>✅</td></tr>
+<tr><td>List All Databases</td><td><code>D1.ListAllAsync</code></td><td><code>GET /accounts/{id}/d1/database</code> (auto)</td><td>✅</td></tr>
+<tr><td>Create Database</td><td><code>D1.CreateAsync</code></td><td><code>POST /accounts/{id}/d1/database</code></td><td>✅</td></tr>
+<tr><td>Get Database</td><td><code>D1.GetAsync</code></td><td><code>GET /accounts/{id}/d1/database/{uuid}</code></td><td>✅</td></tr>
+<tr><td>Update Database</td><td><code>D1.UpdateAsync</code></td><td><code>PATCH /accounts/{id}/d1/database/{uuid}</code></td><td>✅</td></tr>
+<tr><td>Delete Database</td><td><code>D1.DeleteAsync</code></td><td><code>DELETE /accounts/{id}/d1/database/{uuid}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="query-operations">Query Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Execute Query</td><td><code>D1.QueryAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/query</code></td><td>✅</td></tr>
+<tr><td>Execute Query (typed)</td><td><code>D1.QueryAsync&lt;T&gt;</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/query</code></td><td>✅</td></tr>
+<tr><td>Execute Query (raw)</td><td><code>D1.QueryRawAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/raw</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="exportimport-operations">Export/Import Operations</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Start Export</td><td><code>D1.StartExportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/export</code></td><td>✅</td></tr>
+<tr><td>Poll Export</td><td><code>D1.PollExportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/export</code></td><td>✅</td></tr>
+<tr><td>Start Import</td><td><code>D1.StartImportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/import</code></td><td>✅</td></tr>
+<tr><td>Complete Import</td><td><code>D1.CompleteImportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/import</code></td><td>✅</td></tr>
+<tr><td>Poll Import</td><td><code>D1.PollImportAsync</code></td><td><code>POST /accounts/{id}/d1/database/{uuid}/import</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="workers-route">Workers Route</h2>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Routes</td><td><code>ListRoutesAsync</code></td><td><code>GET /zones/{id}/workers/routes</code></td><td>✅</td></tr>
+<tr><td>Get Route</td><td><code>GetRouteAsync</code></td><td><code>GET /zones/{id}/workers/routes/{id}</code></td><td>✅</td></tr>
+<tr><td>Create Route</td><td><code>CreateRouteAsync</code></td><td><code>POST /zones/{id}/workers/routes</code></td><td>✅</td></tr>
+<tr><td>Update Route</td><td><code>UpdateRouteAsync</code></td><td><code>PUT /zones/{id}/workers/routes/{id}</code></td><td>✅</td></tr>
+<tr><td>Delete Route</td><td><code>DeleteRouteAsync</code></td><td><code>DELETE /zones/{id}/workers/routes/{id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="zones">Zones</h2>
+<h3 id="zone-crud">Zone CRUD</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>List Zones</td><td><code>ListZonesAsync</code></td><td><code>GET /zones</code></td><td>✅</td></tr>
+<tr><td>List All Zones</td><td><code>ListAllZonesAsync</code></td><td><code>GET /zones</code> (auto)</td><td>✅</td></tr>
+<tr><td>Get Zone</td><td><code>GetZoneDetailsAsync</code></td><td><code>GET /zones/{id}</code></td><td>✅</td></tr>
+<tr><td>Create Zone</td><td><code>CreateZoneAsync</code></td><td><code>POST /zones</code></td><td>✅</td></tr>
+<tr><td>Edit Zone</td><td><code>EditZoneAsync</code></td><td><code>PATCH /zones/{id}</code></td><td>✅</td></tr>
+<tr><td>Delete Zone</td><td><code>DeleteZoneAsync</code></td><td><code>DELETE /zones/{id}</code></td><td>✅</td></tr>
+<tr><td>Activation Check</td><td><code>TriggerActivationCheckAsync</code></td><td><code>POST /zones/{id}/activation_check</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="zone-convenience-methods">Zone Convenience Methods</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Set Paused</td><td><code>SetZonePausedAsync</code></td><td><code>PATCH /zones/{id}</code></td><td>✅</td></tr>
+<tr><td>Set Type</td><td><code>SetZoneTypeAsync</code></td><td><code>PATCH /zones/{id}</code></td><td>✅</td></tr>
+<tr><td>Set Vanity NS</td><td><code>SetVanityNameServersAsync</code></td><td><code>PATCH /zones/{id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="zone-holds">Zone Holds</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Hold</td><td><code>GetZoneHoldAsync</code></td><td><code>GET /zones/{id}/hold</code></td><td>✅</td></tr>
+<tr><td>Create Hold</td><td><code>CreateZoneHoldAsync</code></td><td><code>POST /zones/{id}/hold</code></td><td>✅</td></tr>
+<tr><td>Update Hold</td><td><code>UpdateZoneHoldAsync</code></td><td><code>PATCH /zones/{id}/hold</code></td><td>✅</td></tr>
+<tr><td>Remove Hold</td><td><code>RemoveZoneHoldAsync</code></td><td><code>DELETE /zones/{id}/hold</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="zone-settings">Zone Settings</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Get Setting</td><td><code>GetZoneSettingAsync</code></td><td><code>GET /zones/{id}/settings/{setting_id}</code></td><td>✅</td></tr>
+<tr><td>Set Setting</td><td><code>SetZoneSettingAsync</code></td><td><code>PATCH /zones/{id}/settings/{id}</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="cache">Cache</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Purge Cache</td><td><code>PurgeCacheAsync</code></td><td><code>POST /zones/{id}/purge_cache</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<h3 id="zone-security">Zone Security</h3>
+<table class="api-table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 44%">
+<col style="width: 8%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Endpoint</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>IP Access Rules</td><td><code>Zones.AccessRules.*</code></td><td><code>/zones/{id}/firewall/access_rules/rules</code></td><td>✅</td></tr>
+<tr><td>Zone Lockdown</td><td><code>Zones.Lockdown.*</code></td><td><code>/zones/{id}/firewall/lockdowns</code></td><td>✅</td></tr>
+<tr><td>User-Agent Rules</td><td><code>Zones.UaRules.*</code></td><td><code>/zones/{id}/firewall/ua_rules</code></td><td>✅</td></tr>
+<tr><td>Rulesets (WAF)</td><td><code>Zones.Rulesets.*</code></td><td><code>/zones/{id}/rulesets</code></td><td>✅</td></tr>
+<tr><td>Custom Hostnames</td><td><code>Zones.CustomHostnames.*</code></td><td><code>/zones/{id}/custom_hostnames</code></td><td>✅</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="extension-packages">Extension Packages</h2>
+<h3 id="cloudflarenetr2-s3-compatible-client">Cloudflare.NET.R2 (S3-Compatible Client)</h3>
+<table class="api-ext-table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 33%">
+<col style="width: 45%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>Upload</td><td><code>UploadAsync</code></td><td>Auto-selects single-part or multipart</td></tr>
+<tr><td>Upload Single Part</td><td><code>UploadSinglePartAsync</code></td><td>Direct PUT (≤5 GiB)</td></tr>
+<tr><td>Upload Multipart</td><td><code>UploadMultipartAsync</code></td><td>Multipart upload (5 MiB–5 GiB parts)</td></tr>
+<tr><td>Download</td><td><code>DownloadFileAsync</code></td><td>Download to file or stream</td></tr>
+<tr><td>Delete Object</td><td><code>DeleteObjectAsync</code></td><td>Single object delete</td></tr>
+<tr><td>Delete Objects</td><td><code>DeleteObjectsAsync</code></td><td>Batch delete (up to 1000 keys)</td></tr>
+<tr><td>Clear Bucket</td><td><code>ClearBucketAsync</code></td><td>List + batch delete all objects</td></tr>
+<tr><td>List Objects</td><td><code>ListObjectsAsync</code></td><td>List with automatic pagination</td></tr>
+<tr><td>Presigned GET URL</td><td><code>CreatePresignedGetUrl</code></td><td>Presigned URL for download</td></tr>
+<tr><td>Presigned PUT URL</td><td><code>CreatePresignedPutUrl</code></td><td>Presigned URL for upload</td></tr>
+<tr><td>Presigned Part URL</td><td><code>CreatePresignedUploadPartUrl</code></td><td>Presigned URL for multipart part</td></tr>
+</tbody>
+</table>
+<h3 id="cloudflarenetanalytics-graphql-client">Cloudflare.NET.Analytics (GraphQL Client)</h3>
+<table class="api-ext-table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 33%">
+<col style="width: 45%">
+</colgroup>
+<thead><tr><th>Operation</th><th>Method</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>Send Query</td><td><code>SendQueryAsync&lt;T&gt;</code></td><td>Generic GraphQL query execution</td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="planned-api-resources">Planned API Resources</h2>
+<p>The following API surfaces are being considered for future implementation:</p>
+<table class="api-planned-table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 32%">
+<col style="width: 40%">
+</colgroup>
+<thead><tr><th>API Family</th><th>Use Case</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>SSL & Certificates (mTLS)</td><td>Client certificate management</td><td><code>GET /zones/{id}/client_certificates</code></td></tr>
+<tr><td>R2 Object Metadata</td><td>Cloudflare object metadata</td><td><code>GET .../r2/buckets/.../objects</code></td></tr>
+<tr><td>Pages</td><td>CloudFlare Pages</td><td></td></tr>
+</tbody>
+</table>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="permissions.html">API Token Permissions</a> - Required permissions for each feature</li>
+<li><a href="conventions.html">SDK Conventions</a> - Pagination patterns and common usage</li>
+<li><a href="getting-started.html">Getting Started</a> - Installation and basic usage</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/api-coverage.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

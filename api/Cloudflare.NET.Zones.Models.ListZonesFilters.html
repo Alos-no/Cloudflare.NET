@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ListZonesFilters | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ListZonesFilters | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Filters for listing Zones.    All filter properties are optional. When multiple filters are specified,   they are combined according to the  parameter.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Zones_Models_ListZonesFilters.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Zones.Models.ListZonesFilters%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters">
+
+
+
+  <h1 id="Cloudflare_NET_Zones_Models_ListZonesFilters" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters" class="text-break">
+Class ListZonesFilters  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Zones.html">Zones</a>.<a class="xref" href="Cloudflare.NET.Zones.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Filters for listing Zones.</p>
+<p>
+  All filter properties are optional. When multiple filters are specified,
+  they are combined according to the <a class="xref" href="Cloudflare.NET.Zones.Models.ListZonesFilters.html#Cloudflare_NET_Zones_Models_ListZonesFilters_Match">Match</a> parameter.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record ListZonesFilters : IEquatable&lt;ListZonesFilters&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ListZonesFilters</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ListZonesFilters.html">ListZonesFilters</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Cloudflare_NET_Zones_Models_ListZonesFilters_examples">Examples</h2>
+  <pre><code class="lang-csharp">// List active zones
+var filters = new ListZonesFilters(Status: ZoneStatus.Active);
+
+// List zones with pagination
+var filters = new ListZonesFilters(Page: 1, PerPage: 50);
+
+// List zones for a specific account, sorted by name
+var filters = new ListZonesFilters(
+  AccountId: "account-id",
+  Order: ZoneOrderField.Name,
+  Direction: ListOrderDirection.Ascending
+);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters__ctor_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters__ctor_System_String_System_Nullable_Cloudflare_NET_Zones_Models_ZoneStatus__System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Nullable_Cloudflare_NET_Zones_Models_ZoneOrderField__System_Nullable_Cloudflare_NET_Security_Firewall_Models_ListOrderDirection__System_Nullable_Cloudflare_NET_Security_Firewall_Models_FilterMatch__" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.#ctor(System.String,System.Nullable{Cloudflare.NET.Zones.Models.ZoneStatus},System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{Cloudflare.NET.Zones.Models.ZoneOrderField},System.Nullable{Cloudflare.NET.Security.Firewall.Models.ListOrderDirection},System.Nullable{Cloudflare.NET.Security.Firewall.Models.FilterMatch})">
+  ListZonesFilters(string?, ZoneStatus?, string?, string?, int?, int?, ZoneOrderField?, ListOrderDirection?, FilterMatch?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filters for listing Zones.</p>
+<p>
+  All filter properties are optional. When multiple filters are specified,
+  they are combined according to the <a class="xref" href="Cloudflare.NET.Zones.Models.ListZonesFilters.html#Cloudflare_NET_Zones_Models_ListZonesFilters_Match">Match</a> parameter.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ListZonesFilters(string? Name = null, ZoneStatus? Status = null, string? AccountId = null, string? AccountName = null, int? Page = null, int? PerPage = null, ZoneOrderField? Order = null, ListOrderDirection? Direction = null, FilterMatch? Match = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Filter by exact domain name match.</p>
+</dd>
+    <dt><code>Status</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneStatus.html">ZoneStatus</a>?</dt>
+    <dd><p>Filter by zone status (e.g., active, pending).</p>
+</dd>
+    <dt><code>AccountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Filter by account ID. Use this for multi-account scenarios.</p>
+</dd>
+    <dt><code>AccountName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Filter by account name.</p>
+</dd>
+    <dt><code>Page</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The page number for pagination (1-based).</p>
+</dd>
+    <dt><code>PerPage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The number of results per page (1-50, default 20).</p>
+</dd>
+    <dt><code>Order</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneOrderField.html">ZoneOrderField</a>?</dt>
+    <dd><p>The field to order results by.</p>
+</dd>
+    <dt><code>Direction</code> <a class="xref" href="Cloudflare.NET.Security.Firewall.Models.ListOrderDirection.html">ListOrderDirection</a>?</dt>
+    <dd><p>The sort direction (ascending or descending).</p>
+</dd>
+    <dt><code>Match</code> <a class="xref" href="Cloudflare.NET.Security.Firewall.Models.FilterMatch.html">FilterMatch</a>?</dt>
+    <dd><p>How to combine multiple filters: &quot;all&quot; (AND) or &quot;any&quot; (OR).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Models_ListZonesFilters__ctor_System_String_System_Nullable_Cloudflare_NET_Zones_Models_ZoneStatus__System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Nullable_Cloudflare_NET_Zones_Models_ZoneOrderField__System_Nullable_Cloudflare_NET_Security_Firewall_Models_ListOrderDirection__System_Nullable_Cloudflare_NET_Security_Firewall_Models_FilterMatch___examples">Examples</h4>
+  <pre><code class="lang-csharp">// List active zones
+var filters = new ListZonesFilters(Status: ZoneStatus.Active);
+
+// List zones with pagination
+var filters = new ListZonesFilters(Page: 1, PerPage: 50);
+
+// List zones for a specific account, sorted by name
+var filters = new ListZonesFilters(
+  AccountId: "account-id",
+  Order: ZoneOrderField.Name,
+  Direction: ListOrderDirection.Ascending
+);</code></pre>
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/list/">https://developers.cloudflare.com/api/resources/zones/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_AccountId_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.AccountId*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_AccountId" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.AccountId">
+  AccountId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by account ID. Use this for multi-account scenarios.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? AccountId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_AccountName_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.AccountName*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_AccountName" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.AccountName">
+  AccountName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by account name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? AccountName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_Direction_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Direction*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_Direction" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Direction">
+  Direction
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The sort direction (ascending or descending).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ListOrderDirection? Direction { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Security.Firewall.Models.ListOrderDirection.html">ListOrderDirection</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_Match_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Match*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_Match" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Match">
+  Match
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How to combine multiple filters: &quot;all&quot; (AND) or &quot;any&quot; (OR).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FilterMatch? Match { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Security.Firewall.Models.FilterMatch.html">FilterMatch</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_Name_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Name*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_Name" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Name">
+  Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by exact domain name match.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Name { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_Order_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Order*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_Order" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Order">
+  Order
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The field to order results by.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ZoneOrderField? Order { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneOrderField.html">ZoneOrderField</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_Page_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Page*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_Page" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Page">
+  Page
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The page number for pagination (1-based).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? Page { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_PerPage_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.PerPage*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_PerPage" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.PerPage">
+  PerPage
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L177"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of results per page (1-50, default 20).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? PerPage { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Models_ListZonesFilters_Status_" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Status*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Models_ListZonesFilters_Status" data-uid="Cloudflare.NET.Zones.Models.ListZonesFilters.Status">
+  Status
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by zone status (e.g., active, pending).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ZoneStatus? Status { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneStatus.html">ZoneStatus</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/list/">https://developers.cloudflare.com/api/resources/zones/methods/list/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Models/ZoneRequestModels.cs/#L171" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

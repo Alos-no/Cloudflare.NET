@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>SDK Conventions | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="SDK Conventions | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/conventions.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="sdk-conventions">SDK Conventions</h1>
+
+<p>This guide covers common patterns and conventions used throughout the Cloudflare.NET SDK.</p>
+<h2 id="pagination">Pagination</h2>
+<p>The SDK supports both pagination patterns used by the Cloudflare API. All paginated methods provide two approaches:</p>
+<ol>
+<li><strong>Automatic pagination</strong> via <code>IAsyncEnumerable&lt;T&gt;</code> - handles paging automatically</li>
+<li><strong>Manual pagination</strong> for fine-grained control over page requests</li>
+</ol>
+<h3 id="page-based-pagination">Page-based Pagination</h3>
+<p>Page-based pagination uses <code>page</code> and <code>per_page</code> parameters. This pattern is used by:</p>
+<ul>
+<li>DNS Records</li>
+<li>Access Rules (Zone and Account)</li>
+<li>Zone Lockdown Rules</li>
+<li>User-Agent Rules</li>
+<li>Workers KV Namespaces</li>
+<li>D1 Databases</li>
+</ul>
+<h4 id="automatic-pagination">Automatic Pagination</h4>
+<pre><code class="lang-csharp">// Iterate over all records automatically
+await foreach (var record in cf.Zones.ListAllDnsRecordsAsync(zoneId))
+{
+    Console.WriteLine($&quot;{record.Name}: {record.Content}&quot;);
+}
+
+// With filters
+var filters = new ListDnsRecordsFilters { Type = DnsRecordType.A };
+await foreach (var record in cf.Zones.ListAllDnsRecordsAsync(zoneId, filters))
+{
+    // Process A records only
+}
+</code></pre>
+<h4 id="manual-pagination">Manual Pagination</h4>
+<pre><code class="lang-csharp">// Get a specific page
+var page = await cf.Zones.ListDnsRecordsAsync(zoneId, new ListDnsRecordsFilters
+{
+    Page = 1,
+    PerPage = 50
+});
+
+// Access pagination info
+Console.WriteLine($&quot;Page {page.PageInfo.Page} of {page.PageInfo.TotalPages}&quot;);
+Console.WriteLine($&quot;Total records: {page.PageInfo.TotalCount}&quot;);
+
+// Iterate manually
+while (page.PageInfo.Page &lt; page.PageInfo.TotalPages)
+{
+    foreach (var record in page.Items)
+    {
+        // Process record
+    }
+
+    // Get next page
+    page = await cf.Zones.ListDnsRecordsAsync(zoneId, new ListDnsRecordsFilters
+    {
+        Page = page.PageInfo.Page + 1,
+        PerPage = 50
+    });
+}
+</code></pre>
+<h3 id="cursor-based-pagination">Cursor-based Pagination</h3>
+<p>Cursor-based pagination uses an opaque cursor string for continuation. This pattern is used by:</p>
+<ul>
+<li>R2 Buckets</li>
+<li>Rulesets (Zone and Account)</li>
+<li>Workers KV Keys</li>
+</ul>
+<h4 id="automatic-pagination-1">Automatic Pagination</h4>
+<pre><code class="lang-csharp">// Iterate over all buckets automatically
+await foreach (var bucket in cf.Accounts.Buckets.ListAllAsync())
+{
+    Console.WriteLine($&quot;Bucket: {bucket.Name}&quot;);
+}
+</code></pre>
+<h4 id="manual-pagination-1">Manual Pagination</h4>
+<pre><code class="lang-csharp">// Get first page
+var page = await cf.Accounts.Buckets.ListAsync(new ListR2BucketsFilters
+{
+    PerPage = 50
+});
+
+// Process items
+foreach (var bucket in page.Items)
+{
+    Console.WriteLine($&quot;Bucket: {bucket.Name}&quot;);
+}
+
+// Continue if more pages exist
+while (!string.IsNullOrEmpty(page.CursorInfo?.Cursor))
+{
+    page = await cf.Accounts.Buckets.ListAsync(new ListR2BucketsFilters
+    {
+        PerPage = 50,
+        Cursor = page.CursorInfo.Cursor
+    });
+
+    foreach (var bucket in page.Items)
+    {
+        // Process bucket
+    }
+}
+</code></pre>
+<h2 id="async-enumerable-pattern">Async Enumerable Pattern</h2>
+<p>All <code>ListAll*Async</code> methods return <code>IAsyncEnumerable&lt;T&gt;</code>, enabling efficient streaming of results:</p>
+<pre><code class="lang-csharp">// Count records without loading all into memory
+var count = await cf.Zones.ListAllDnsRecordsAsync(zoneId).CountAsync();
+
+// Take first N records
+var firstTen = await cf.Zones.ListAllDnsRecordsAsync(zoneId).Take(10).ToListAsync();
+
+// Filter with LINQ
+var aRecords = await cf.Zones.ListAllDnsRecordsAsync(zoneId)
+    .Where(r =&gt; r.Type == DnsRecordType.A)
+    .ToListAsync();
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Use <code>System.Linq.Async</code> NuGet package for LINQ extension methods on <code>IAsyncEnumerable&lt;T&gt;</code>.</p>
+</div>
+<h2 id="cancellation-tokens">Cancellation Tokens</h2>
+<p>All async methods accept an optional <code>CancellationToken</code>:</p>
+<pre><code class="lang-csharp">using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+try
+{
+    var record = await cf.Zones.GetDnsRecordAsync(zoneId, recordId, cts.Token);
+}
+catch (OperationCanceledException)
+{
+    Console.WriteLine(&quot;Operation timed out&quot;);
+}
+</code></pre>
+<h2 id="filter-objects">Filter Objects</h2>
+<p>List operations typically accept a filter object to narrow results:</p>
+<pre><code class="lang-csharp">// DNS record filters
+var dnsFilters = new ListDnsRecordsFilters
+{
+    Type = DnsRecordType.CNAME,
+    Name = &quot;www.example.com&quot;,
+    Page = 1,
+    PerPage = 100
+};
+
+// Access rule filters
+var ruleFilters = new ListAccessRulesFilters
+{
+    Mode = AccessRuleMode.Block,
+    Page = 1,
+    PerPage = 50
+};
+</code></pre>
+<h2 id="result-types">Result Types</h2>
+<h3 id="single-results">Single Results</h3>
+<p>Methods returning a single item typically return the item directly or <code>null</code> if not found:</p>
+<pre><code class="lang-csharp">// Returns DnsRecord or null
+var record = await cf.Zones.FindDnsRecordByNameAsync(zoneId, &quot;www.example.com&quot;);
+
+if (record is not null)
+{
+    Console.WriteLine($&quot;Found: {record.Id}&quot;);
+}
+</code></pre>
+<h3 id="paginated-results">Paginated Results</h3>
+<p>Paginated methods return wrapper types containing items and pagination info:</p>
+<ul>
+<li><a class="xref" href="../api/Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult&lt;T&gt;</a> - For page-based pagination</li>
+<li><a class="xref" href="../api/Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult&lt;T&gt;</a> - For cursor-based pagination</li>
+</ul>
+<h2 id="error-handling">Error Handling</h2>
+<p>The SDK throws <a class="xref" href="../api/Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a> when the API returns <code>success: false</code>:</p>
+<pre><code class="lang-csharp">try
+{
+    await cf.Zones.CreateCnameRecordAsync(zoneId, name, target);
+}
+catch (CloudflareApiException ex)
+{
+    // API returned an error response
+    foreach (var error in ex.Errors)
+    {
+        Console.WriteLine($&quot;[{error.Code}] {error.Message}&quot;);
+    }
+}
+catch (HttpRequestException ex)
+{
+    // Network or HTTP-level error
+    Console.WriteLine($&quot;HTTP Error: {ex.StatusCode} - {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="extensible-enums">Extensible Enums</h2>
+<p>The SDK uses <strong>extensible enums</strong> for values that may be extended by Cloudflare in the future. This pattern provides:</p>
+<ul>
+<li><strong>Strong typing</strong> with IntelliSense for known values</li>
+<li><strong>Forward compatibility</strong> by accepting unknown string values</li>
+<li><strong>Graceful degradation</strong> when new API values are returned</li>
+</ul>
+<h3 id="usage">Usage</h3>
+<p>Extensible enums can be used like regular enums with static properties:</p>
+<pre><code class="lang-csharp">// Use predefined constants with IntelliSense
+var location = R2LocationHint.EastNorthAmerica;
+var jurisdiction = R2Jurisdiction.EuropeanUnion;
+var storageClass = R2StorageClass.InfrequentAccess;
+</code></pre>
+<p>They also support implicit conversion from strings for custom or new values:</p>
+<pre><code class="lang-csharp">// Future-proof: accept values not yet defined in SDK
+R2LocationHint futureRegion = &quot;new-region-2025&quot;;
+R2Jurisdiction customJurisdiction = &quot;custom-jurisdiction&quot;;
+</code></pre>
+<h3 id="comparison">Comparison</h3>
+<p>Extensible enums support equality comparison:</p>
+<pre><code class="lang-csharp">if (bucket.Location == R2LocationHint.WestEurope)
+{
+    Console.WriteLine(&quot;Bucket is in Western Europe&quot;);
+}
+
+// Pattern matching works too
+if (bucket.StorageClass is { } sc &amp;&amp; sc == R2StorageClass.InfrequentAccess)
+{
+    Console.WriteLine(&quot;Using infrequent access storage&quot;);
+}
+</code></pre>
+<h3 id="available-extensible-enums">Available Extensible Enums</h3>
+<h4 id="r2-storage">R2 Storage</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Known Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>R2LocationHint</code></td>
+<td>Bucket placement hint</td>
+<td><code>wnam</code>, <code>enam</code>, <code>weur</code>, <code>eeur</code>, <code>apac</code>, <code>oc</code></td>
+</tr>
+<tr>
+<td><code>R2Jurisdiction</code></td>
+<td>Data residency</td>
+<td><code>default</code>, <code>eu</code>, <code>fedramp</code></td>
+</tr>
+<tr>
+<td><code>R2StorageClass</code></td>
+<td>Storage tier</td>
+<td><code>Standard</code>, <code>InfrequentAccess</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="dns--zones">DNS &amp; Zones</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Known Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DnsRecordType</code></td>
+<td>DNS record type</td>
+<td><code>A</code>, <code>AAAA</code>, <code>CNAME</code>, <code>MX</code>, <code>TXT</code>, <code>NS</code>, <code>SOA</code>, <code>PTR</code>, <code>SRV</code>, <code>HTTPS</code>, <code>SVCB</code>, <code>CAA</code>, <code>DS</code>, <code>DNSKEY</code>, etc.</td>
+</tr>
+<tr>
+<td><code>ZoneStatus</code></td>
+<td>Zone activation status</td>
+<td><code>active</code>, <code>pending</code>, <code>initializing</code>, <code>moved</code>, <code>deleted</code>, <code>deactivated</code></td>
+</tr>
+<tr>
+<td><code>ZoneSettingId</code></td>
+<td>Zone setting identifier</td>
+<td><code>ssl</code>, <code>min_tls_version</code>, <code>always_use_https</code>, <code>brotli</code>, <code>http2</code>, <code>http3</code>, <code>development_mode</code>, <code>security_level</code>, etc.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="d1-databases">D1 Databases</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Known Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>D1Jurisdiction</code></td>
+<td>D1 data residency</td>
+<td><code>eu</code>, <code>fedramp</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="security--firewall">Security &amp; Firewall</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Known Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AccessRuleMode</code></td>
+<td>IP access rule action</td>
+<td><code>block</code>, <code>challenge</code>, <code>js_challenge</code>, <code>managed_challenge</code>, <code>whitelist</code></td>
+</tr>
+<tr>
+<td><code>AccessRuleTarget</code></td>
+<td>Access rule target type</td>
+<td><code>ip</code>, <code>ip_range</code>, <code>asn</code>, <code>country</code></td>
+</tr>
+<tr>
+<td><code>UaRuleMode</code></td>
+<td>User-agent rule action</td>
+<td><code>block</code>, <code>challenge</code>, <code>js_challenge</code>, <code>managed_challenge</code></td>
+</tr>
+<tr>
+<td><code>LockdownTarget</code></td>
+<td>Zone lockdown target type</td>
+<td><code>ip</code>, <code>ip_range</code></td>
+</tr>
+<tr>
+<td><code>RulesetAction</code></td>
+<td>WAF ruleset action</td>
+<td><code>block</code>, <code>challenge</code>, <code>js_challenge</code>, <code>managed_challenge</code>, <code>log</code>, <code>skip</code>, <code>execute</code>, <code>rewrite</code>, <code>redirect</code>, <code>route</code>, <code>score</code>, <code>serve_error</code>, <code>compress_response</code>, <code>set_cache_settings</code>, <code>set_config</code></td>
+</tr>
+<tr>
+<td><code>ManagedWafOverrideAction</code></td>
+<td>Managed WAF override</td>
+<td><code>block</code>, <code>challenge</code>, <code>js_challenge</code>, <code>managed_challenge</code>, <code>log</code>, <code>default</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="why-extensible-enums">Why Extensible Enums?</h3>
+<p>Traditional C# enums would fail to deserialize when Cloudflare adds new values:</p>
+<pre><code class="lang-csharp">// Traditional enum - BREAKS if API returns &quot;new-value&quot;
+public enum StorageClass { Standard, InfrequentAccess }
+
+// Extensible enum - gracefully handles unknown values
+R2StorageClass unknownClass = &quot;new-storage-class-2025&quot;; // Works!
+</code></pre>
+<p>This pattern is commonly used by cloud SDKs (Azure SDK, AWS SDK) to handle API evolution gracefully.</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="getting-started.html">Getting Started</a> - Quick start guide</li>
+<li><a href="configuration.html">Configuration</a> - SDK configuration options</li>
+<li><a href="api-coverage.html">API Coverage</a> - Supported API endpoints</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/conventions.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

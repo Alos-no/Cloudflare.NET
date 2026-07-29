@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Listing Objects | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Listing Objects | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/listing.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="listing-objects">Listing Objects</h1>
+
+<p>Enumerate objects in R2 buckets with automatic pagination handling.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class BrowserService(IR2Client r2)
+{
+    public async Task ListFilesAsync(string prefix)
+    {
+        var result = await r2.ListObjectsAsync(&quot;my-bucket&quot;, prefix);
+
+        foreach (var obj in result.Data)
+        {
+            Console.WriteLine($&quot;{obj.Key}: {obj.Size} bytes&quot;);
+        }
+
+        Console.WriteLine($&quot;Class A operations: {result.Metrics.ClassAOperations}&quot;);
+    }
+}
+</code></pre>
+<h2 id="list-all-objects">List All Objects</h2>
+<p>List all objects in a bucket:</p>
+<pre><code class="lang-csharp">var result = await r2.ListObjectsAsync(
+    bucketName: &quot;my-bucket&quot;,
+    prefix: null); // null for all objects
+
+foreach (var obj in result.Data)
+{
+    Console.WriteLine($&quot;Key: {obj.Key}&quot;);
+    Console.WriteLine($&quot;Size: {obj.Size} bytes&quot;);
+    Console.WriteLine($&quot;Modified: {obj.LastModified}&quot;);
+    Console.WriteLine($&quot;ETag: {obj.ETag}&quot;);
+    Console.WriteLine();
+}
+</code></pre>
+<h2 id="list-by-prefix">List by Prefix</h2>
+<p>Filter objects by key prefix:</p>
+<pre><code class="lang-csharp">// List all objects under &quot;documents/&quot;
+var result = await r2.ListObjectsAsync(&quot;my-bucket&quot;, &quot;documents/&quot;);
+
+// List all objects under &quot;images/2024/&quot;
+var images = await r2.ListObjectsAsync(&quot;my-bucket&quot;, &quot;images/2024/&quot;);
+</code></pre>
+<h2 id="s3object-properties">S3Object Properties</h2>
+<p>The returned <code>S3Object</code> contains:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Key</code></td>
+<td><code>string</code></td>
+<td>Object key (path)</td>
+</tr>
+<tr>
+<td><code>Size</code></td>
+<td><code>long</code></td>
+<td>Object size in bytes</td>
+</tr>
+<tr>
+<td><code>LastModified</code></td>
+<td><code>DateTime</code></td>
+<td>Last modification timestamp</td>
+</tr>
+<tr>
+<td><code>ETag</code></td>
+<td><code>string</code></td>
+<td>Entity tag (content hash)</td>
+</tr>
+<tr>
+<td><code>StorageClass</code></td>
+<td><code>string</code></td>
+<td>Storage class (STANDARD, INFREQUENT_ACCESS)</td>
+</tr>
+<tr>
+<td><code>Owner</code></td>
+<td><code>Owner</code></td>
+<td>Object owner information</td>
+</tr>
+</tbody>
+</table>
+<h2 id="r2result">R2Result</h2>
+<p>Listing returns <code>R2Result&lt;IReadOnlyList&lt;S3Object&gt;&gt;</code>:</p>
+<pre><code class="lang-csharp">var result = await r2.ListObjectsAsync(&quot;bucket&quot;, &quot;prefix/&quot;);
+
+// Access the data
+var objects = result.Data;
+Console.WriteLine($&quot;Found {objects.Count} objects&quot;);
+
+// Access the metrics
+var metrics = result.Metrics;
+Console.WriteLine($&quot;Class A operations: {metrics.ClassAOperations}&quot;);
+</code></pre>
+<h2 id="pagination">Pagination</h2>
+<p>The SDK handles pagination automatically, fetching all pages:</p>
+<pre><code class="lang-csharp">// This fetches ALL matching objects, regardless of how many pages
+var result = await r2.ListObjectsAsync(&quot;my-bucket&quot;, null);
+
+// Could be thousands of objects
+Console.WriteLine($&quot;Total objects: {result.Data.Count}&quot;);
+Console.WriteLine($&quot;List operations: {result.Metrics.ClassAOperations}&quot;); // Multiple if paginated
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<pre><code class="lang-csharp">try
+{
+    var result = await r2.ListObjectsAsync(&quot;bucket&quot;, &quot;prefix/&quot;);
+}
+catch (CloudflareR2ListException&lt;S3Object&gt; ex)
+{
+    // Listing failed mid-pagination
+    Console.WriteLine($&quot;Listing failed: {ex.Message}&quot;);
+    Console.WriteLine($&quot;Partial data retrieved: {ex.PartialData.Count} objects&quot;);
+    Console.WriteLine($&quot;Partial metrics: {ex.PartialMetrics}&quot;);
+
+    // You can still use the partial data
+    foreach (var obj in ex.PartialData)
+    {
+        Console.WriteLine($&quot;  {obj.Key}&quot;);
+    }
+}
+catch (CloudflareR2OperationException ex)
+{
+    Console.WriteLine($&quot;List operation failed: {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="get-total-size">Get Total Size</h3>
+<pre><code class="lang-csharp">public async Task&lt;long&gt; GetTotalSizeAsync(string bucket, string? prefix = null)
+{
+    var result = await r2.ListObjectsAsync(bucket, prefix);
+    return result.Data.Sum(o =&gt; o.Size);
+}
+</code></pre>
+<h3 id="find-files-by-extension">Find Files by Extension</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;S3Object&gt;&gt; FindByExtensionAsync(
+    string bucket, string extension)
+{
+    var result = await r2.ListObjectsAsync(bucket, null);
+
+    return result.Data
+        .Where(o =&gt; o.Key.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+}
+</code></pre>
+<h3 id="get-folder-structure">Get Folder Structure</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;string&gt;&gt; GetFoldersAsync(
+    string bucket, string? prefix = null)
+{
+    var result = await r2.ListObjectsAsync(bucket, prefix);
+
+    // Extract unique folder prefixes
+    var folders = result.Data
+        .Select(o =&gt; {
+            var relativePath = prefix != null
+                ? o.Key.Substring(prefix.Length)
+                : o.Key;
+            var slashIndex = relativePath.IndexOf('/');
+            return slashIndex &gt;= 0 ? relativePath.Substring(0, slashIndex) : null;
+        })
+        .Where(f =&gt; f != null)
+        .Distinct()
+        .OrderBy(f =&gt; f)
+        .ToList();
+
+    return folders!;
+}
+</code></pre>
+<h3 id="find-large-files">Find Large Files</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;S3Object&gt;&gt; FindLargeFilesAsync(
+    string bucket, long minSizeBytes)
+{
+    var result = await r2.ListObjectsAsync(bucket, null);
+
+    return result.Data
+        .Where(o =&gt; o.Size &gt;= minSizeBytes)
+        .OrderByDescending(o =&gt; o.Size)
+        .ToList();
+}
+</code></pre>
+<h3 id="find-recently-modified">Find Recently Modified</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;S3Object&gt;&gt; FindRecentAsync(
+    string bucket, TimeSpan maxAge)
+{
+    var cutoff = DateTime.UtcNow - maxAge;
+    var result = await r2.ListObjectsAsync(bucket, null);
+
+    return result.Data
+        .Where(o =&gt; o.LastModified &gt;= cutoff)
+        .OrderByDescending(o =&gt; o.LastModified)
+        .ToList();
+}
+</code></pre>
+<h3 id="stream-processing-for-large-buckets">Stream Processing for Large Buckets</h3>
+<p>For very large buckets, process objects as you go:</p>
+<pre><code class="lang-csharp">public async Task ProcessAllObjectsAsync(
+    string bucket, Func&lt;S3Object, Task&gt; processor)
+{
+    var result = await r2.ListObjectsAsync(bucket, null);
+
+    foreach (var obj in result.Data)
+    {
+        await processor(obj);
+    }
+}
+</code></pre>
+<h3 id="export-object-list-to-csv">Export Object List to CSV</h3>
+<pre><code class="lang-csharp">public async Task ExportToCsvAsync(string bucket, string csvPath)
+{
+    var result = await r2.ListObjectsAsync(bucket, null);
+
+    using var writer = new StreamWriter(csvPath);
+    await writer.WriteLineAsync(&quot;Key,Size,LastModified,ETag&quot;);
+
+    foreach (var obj in result.Data)
+    {
+        await writer.WriteLineAsync(
+            $&quot;\&quot;{obj.Key}\&quot;,{obj.Size},{obj.LastModified:O},{obj.ETag}&quot;);
+    }
+}
+</code></pre>
+<h2 id="list-multipart-upload-parts">List Multipart Upload Parts</h2>
+<p>List parts of an in-progress multipart upload:</p>
+<pre><code class="lang-csharp">var result = await r2.ListPartsAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;large-file.bin&quot;,
+    uploadId: &quot;upload-id-here&quot;);
+
+foreach (var part in result.Data)
+{
+    Console.WriteLine($&quot;Part {part.PartNumber}: {part.Size} bytes, ETag: {part.ETag}&quot;);
+}
+</code></pre>
+<h2 id="r2-pricing-note">R2 Pricing Note</h2>
+<p>List operations are <strong>Class A</strong> operations ($4.50 per million). Each page of results counts as one operation.</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="deletes.html">Deleting Objects</a> - Delete listed objects</li>
+<li><a href="downloads.html">Downloading Objects</a> - Download found objects</li>
+<li><a href="multipart.html">Multipart Uploads</a> - List multipart parts</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/listing.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

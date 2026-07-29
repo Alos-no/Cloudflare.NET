@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Bucket Locks | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Bucket Locks | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/bucket-locks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-bucket-locks">R2 Bucket Locks</h1>
+
+<p>Configure object retention policies to prevent deletion and modification of objects in R2 buckets. Bucket locks are essential for compliance requirements like WORM (Write Once Read Many) storage.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class RetentionService(ICloudflareApiClient cf)
+{
+    public async Task SetRetentionAsync(string bucket, int days)
+    {
+        var policy = new BucketLockPolicy([
+            new BucketLockRule(
+                Id: &quot;retention-rule&quot;,
+                Enabled: true,
+                Condition: BucketLockCondition.ForDays(days)
+            )
+        ]);
+
+        await cf.Accounts.Buckets.SetLockAsync(bucket, policy);
+    }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Jurisdictional Buckets:</strong> If your bucket was created with a jurisdiction (e.g., <code>R2Jurisdiction.EuropeanUnion</code>), you must pass the jurisdiction parameter to all bucket lock operations. See <a href="buckets.html#working-with-jurisdictional-buckets">Working with Jurisdictional Buckets</a>.</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLockAsync(&quot;my-eu-bucket&quot;, policy, R2Jurisdiction.EuropeanUnion);
+</code></pre>
+</div>
+<h2 id="getting-lock-policy">Getting Lock Policy</h2>
+<p>Retrieve the current lock rules for a bucket:</p>
+<pre><code class="lang-csharp">var policy = await cf.Accounts.Buckets.GetLockAsync(&quot;my-bucket&quot;);
+
+foreach (var rule in policy.Rules)
+{
+    Console.WriteLine($&quot;Rule: {rule.Id}&quot;);
+    Console.WriteLine($&quot;  Enabled: {rule.Enabled}&quot;);
+    Console.WriteLine($&quot;  Prefix: {rule.Prefix ?? &quot;(all objects)&quot;}&quot;);
+    Console.WriteLine($&quot;  Type: {rule.Condition?.Type}&quot;);
+}
+</code></pre>
+<h2 id="setting-lock-policy">Setting Lock Policy</h2>
+<h3 id="age-based-retention-days">Age-Based Retention (Days)</h3>
+<p>Lock objects for a specific number of days after creation:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLockAsync(&quot;my-bucket&quot;, new BucketLockPolicy([
+    new BucketLockRule(
+        Id: &quot;30-day-retention&quot;,
+        Enabled: true,
+        Condition: BucketLockCondition.ForDays(30)
+    )
+]));
+</code></pre>
+<h3 id="age-based-retention-seconds">Age-Based Retention (Seconds)</h3>
+<p>For precise control, specify retention in seconds:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLockAsync(&quot;my-bucket&quot;, new BucketLockPolicy([
+    new BucketLockRule(
+        Id: &quot;1-hour-retention&quot;,
+        Enabled: true,
+        Condition: BucketLockCondition.ForSeconds(3600)
+    )
+]));
+</code></pre>
+<h3 id="date-based-retention">Date-Based Retention</h3>
+<p>Lock objects until a specific date:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLockAsync(&quot;my-bucket&quot;, new BucketLockPolicy([
+    new BucketLockRule(
+        Id: &quot;retain-until-2026&quot;,
+        Enabled: true,
+        Condition: BucketLockCondition.UntilDate(new DateTime(2026, 1, 1))
+    )
+]));
+</code></pre>
+<h3 id="indefinite-retention">Indefinite Retention</h3>
+<p>Lock objects permanently (cannot be deleted):</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLockAsync(&quot;my-bucket&quot;, new BucketLockPolicy([
+    new BucketLockRule(
+        Id: &quot;permanent-lock&quot;,
+        Enabled: true,
+        Condition: BucketLockCondition.Indefinitely()
+    )
+]));
+</code></pre>
+<div class="CAUTION">
+<h5>Caution</h5>
+<p>Indefinite locks cannot be removed. Objects will be retained forever. Use with extreme caution.</p>
+</div>
+<h3 id="prefix-scoped-rules">Prefix-Scoped Rules</h3>
+<p>Apply retention to objects with a specific prefix:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLockAsync(&quot;my-bucket&quot;, new BucketLockPolicy([
+    new BucketLockRule(
+        Id: &quot;archive-retention&quot;,
+        Enabled: true,
+        Prefix: &quot;archive/&quot;,
+        Condition: BucketLockCondition.ForDays(365)
+    ),
+    new BucketLockRule(
+        Id: &quot;logs-retention&quot;,
+        Enabled: true,
+        Prefix: &quot;logs/&quot;,
+        Condition: BucketLockCondition.ForDays(90)
+    )
+]));
+</code></pre>
+<h3 id="multiple-rules">Multiple Rules</h3>
+<p>Configure different retention policies for different object prefixes:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLockAsync(&quot;compliance-bucket&quot;, new BucketLockPolicy([
+    // Financial records: 7 years
+    new BucketLockRule(
+        Id: &quot;financial-records&quot;,
+        Enabled: true,
+        Prefix: &quot;financial/&quot;,
+        Condition: BucketLockCondition.ForDays(2555)  // ~7 years
+    ),
+    // Legal documents: indefinite
+    new BucketLockRule(
+        Id: &quot;legal-documents&quot;,
+        Enabled: true,
+        Prefix: &quot;legal/&quot;,
+        Condition: BucketLockCondition.Indefinitely()
+    ),
+    // General data: 1 year
+    new BucketLockRule(
+        Id: &quot;general-retention&quot;,
+        Enabled: true,
+        Condition: BucketLockCondition.ForDays(365)
+    )
+]));
+</code></pre>
+<h2 id="deleting-lock-policy">Deleting Lock Policy</h2>
+<p>Remove all lock rules from a bucket:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.DeleteLockAsync(&quot;my-bucket&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Deleting the lock policy does not affect objects that are currently within their retention period. Those objects remain locked until their retention expires.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="bucketlockpolicy">BucketLockPolicy</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rules</code></td>
+<td><code>IReadOnlyList&lt;BucketLockRule&gt;</code></td>
+<td>List of lock rules (max 1000)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bucketlockrule">BucketLockRule</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string?</code></td>
+<td>Optional rule identifier</td>
+</tr>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td>Whether the rule is active (default: true)</td>
+</tr>
+<tr>
+<td><code>Prefix</code></td>
+<td><code>string?</code></td>
+<td>Object key prefix filter (optional)</td>
+</tr>
+<tr>
+<td><code>Condition</code></td>
+<td><code>BucketLockCondition?</code></td>
+<td>Retention condition</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bucketlockcondition">BucketLockCondition</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Type</code></td>
+<td><code>BucketLockConditionType</code></td>
+<td>Type of condition (Age, Date, Indefinite)</td>
+</tr>
+<tr>
+<td><code>MaxAgeSeconds</code></td>
+<td><code>int?</code></td>
+<td>Retention duration in seconds (for Age type)</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td><code>DateTime?</code></td>
+<td>Retention end date (for Date type)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bucketlockcondition-factory-methods">BucketLockCondition Factory Methods</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ForDays(int days)</code></td>
+<td>Create age-based condition in days</td>
+</tr>
+<tr>
+<td><code>ForSeconds(int seconds)</code></td>
+<td>Create age-based condition in seconds</td>
+</tr>
+<tr>
+<td><code>UntilDate(DateTime date)</code></td>
+<td>Create date-based condition</td>
+</tr>
+<tr>
+<td><code>Indefinitely()</code></td>
+<td>Create permanent lock condition</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bucketlockconditiontype">BucketLockConditionType</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Age</code></td>
+<td>Retention based on object age</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td>Retention until specific date</td>
+</tr>
+<tr>
+<td><code>Indefinite</code></td>
+<td>Permanent retention</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="compliance-configuration">Compliance Configuration</h3>
+<pre><code class="lang-csharp">public async Task ConfigureComplianceAsync(
+    string bucket,
+    int retentionDays,
+    string? prefix = null)
+{
+    var rules = new List&lt;BucketLockRule&gt;
+    {
+        new BucketLockRule(
+            Id: $&quot;compliance-{retentionDays}d&quot;,
+            Enabled: true,
+            Prefix: prefix,
+            Condition: BucketLockCondition.ForDays(retentionDays)
+        )
+    };
+
+    await cf.Accounts.Buckets.SetLockAsync(bucket, new BucketLockPolicy(rules));
+}
+</code></pre>
+<h3 id="check-lock-status">Check Lock Status</h3>
+<pre><code class="lang-csharp">public async Task&lt;bool&gt; IsLockedAsync(string bucket)
+{
+    var policy = await cf.Accounts.Buckets.GetLockAsync(bucket);
+    return policy.Rules.Any(r =&gt; r.Enabled);
+}
+</code></pre>
+<h3 id="extend-retention">Extend Retention</h3>
+<pre><code class="lang-csharp">public async Task ExtendRetentionAsync(string bucket, int additionalDays)
+{
+    var policy = await cf.Accounts.Buckets.GetLockAsync(bucket);
+
+    var updatedRules = policy.Rules.Select(rule =&gt;
+    {
+        if (rule.Condition?.Type == BucketLockConditionType.Age &amp;&amp; rule.Condition.MaxAgeSeconds.HasValue)
+        {
+            var newSeconds = rule.Condition.MaxAgeSeconds.Value + (additionalDays * 86400);
+            return rule with { Condition = BucketLockCondition.ForSeconds(newSeconds) };
+        }
+        return rule;
+    }).ToList();
+
+    await cf.Accounts.Buckets.SetLockAsync(bucket, new BucketLockPolicy(updatedRules));
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers R2 Storage</td>
+<td>Account</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="important-notes">Important Notes</h2>
+<ol>
+<li><strong>Precedence</strong>: If multiple rules apply to the same object, the strictest (longest) retention takes precedence</li>
+<li><strong>Maximum rules</strong>: Up to 1000 lock rules per bucket</li>
+<li><strong>Immutable objects</strong>: Locked objects cannot be deleted or overwritten until retention expires</li>
+<li><strong>Versioning</strong>: Lock rules apply to individual object versions</li>
+<li><strong>Billing</strong>: Locked objects continue to incur storage costs during retention</li>
+</ol>
+<h2 id="compliance-use-cases">Compliance Use Cases</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Recommended Configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HIPAA</td>
+<td>6-year retention for medical records</td>
+</tr>
+<tr>
+<td>SOX</td>
+<td>7-year retention for financial data</td>
+</tr>
+<tr>
+<td>GDPR</td>
+<td>Date-based retention with deletion</td>
+</tr>
+<tr>
+<td>Legal Hold</td>
+<td>Indefinite retention</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="buckets.html">Bucket Management</a> - Create and manage buckets</li>
+<li><a href="lifecycle.html">Lifecycle Policies</a> - Automatic object management</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/bucket-locks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

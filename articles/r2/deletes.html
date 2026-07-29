@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Deleting Objects | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Deleting Objects | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/deletes.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="deleting-objects">Deleting Objects</h1>
+
+<p>Delete operations in R2 are <strong>free</strong> - they don't count against your operation quota.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class CleanupService(IR2Client r2)
+{
+    public async Task DeleteFileAsync(string key)
+    {
+        await r2.DeleteObjectAsync(&quot;my-bucket&quot;, key);
+    }
+
+    public async Task ClearTempFilesAsync()
+    {
+        var objects = await r2.ListObjectsAsync(&quot;my-bucket&quot;, &quot;temp/&quot;);
+        var keys = objects.Data.Select(o =&gt; o.Key);
+
+        await r2.DeleteObjectsAsync(&quot;my-bucket&quot;, keys);
+    }
+}
+</code></pre>
+<h2 id="single-object-delete">Single Object Delete</h2>
+<p>Delete a single object by key:</p>
+<pre><code class="lang-csharp">var result = await r2.DeleteObjectAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKey: &quot;documents/old-report.pdf&quot;);
+
+// Result metrics will be zero (free operation)
+Console.WriteLine($&quot;Class A operations: {result.ClassAOperations}&quot;); // 0
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Deleting a non-existent key succeeds silently without error.</p>
+</div>
+<h2 id="batch-delete">Batch Delete</h2>
+<p>Delete multiple objects efficiently in batches (up to 1000 per request):</p>
+<pre><code class="lang-csharp">var keysToDelete = new[]
+{
+    &quot;temp/file1.txt&quot;,
+    &quot;temp/file2.txt&quot;,
+    &quot;temp/file3.txt&quot;
+};
+
+var result = await r2.DeleteObjectsAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKeys: keysToDelete);
+</code></pre>
+<h3 id="continue-on-error">Continue on Error</h3>
+<p>By default, batch delete continues even if some objects fail:</p>
+<pre><code class="lang-csharp">// Will delete all possible objects, throwing at the end if any failed
+var result = await r2.DeleteObjectsAsync(
+    bucketName: &quot;my-bucket&quot;,
+    objectKeys: keysToDelete,
+    continueOnError: true);
+</code></pre>
+<h3 id="stop-on-first-error">Stop on First Error</h3>
+<pre><code class="lang-csharp">// Stops immediately on first failure
+try
+{
+    var result = await r2.DeleteObjectsAsync(
+        bucketName: &quot;my-bucket&quot;,
+        objectKeys: keysToDelete,
+        continueOnError: false);
+}
+catch (CloudflareR2BatchException&lt;string&gt; ex)
+{
+    Console.WriteLine($&quot;Failed to delete: {string.Join(&quot;, &quot;, ex.FailedItems)}&quot;);
+}
+</code></pre>
+<h2 id="clear-bucket">Clear Bucket</h2>
+<p>Delete <strong>all</strong> objects in a bucket:</p>
+<pre><code class="lang-csharp">var result = await r2.ClearBucketAsync(&quot;my-bucket&quot;);
+
+Console.WriteLine($&quot;Cleared bucket with {result.ClassAOperations} list operations&quot;);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This operation is irreversible. All objects in the bucket will be permanently deleted.</p>
+</div>
+<h3 id="with-continue-on-error">With Continue on Error</h3>
+<pre><code class="lang-csharp">try
+{
+    await r2.ClearBucketAsync(&quot;my-bucket&quot;, continueOnError: true);
+}
+catch (CloudflareR2BatchException&lt;string&gt; ex)
+{
+    Console.WriteLine($&quot;Some objects could not be deleted: {ex.FailedItems.Count}&quot;);
+}
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<h3 id="batch-delete-exceptions">Batch Delete Exceptions</h3>
+<pre><code class="lang-csharp">try
+{
+    await r2.DeleteObjectsAsync(&quot;bucket&quot;, keysToDelete);
+}
+catch (CloudflareR2BatchException&lt;string&gt; ex)
+{
+    Console.WriteLine($&quot;Operation partially failed&quot;);
+    Console.WriteLine($&quot;Failed keys: {string.Join(&quot;, &quot;, ex.FailedItems)}&quot;);
+    Console.WriteLine($&quot;Partial metrics: {ex.PartialMetrics}&quot;);
+}
+</code></pre>
+<h3 id="clear-bucket-exceptions">Clear Bucket Exceptions</h3>
+<pre><code class="lang-csharp">try
+{
+    await r2.ClearBucketAsync(&quot;bucket&quot;);
+}
+catch (CloudflareR2ListException&lt;S3Object&gt; ex)
+{
+    // Listing failed mid-stream
+    Console.WriteLine($&quot;Objects found before failure: {ex.PartialData.Count}&quot;);
+}
+catch (CloudflareR2BatchException&lt;string&gt; ex)
+{
+    // Delete batch failed
+    Console.WriteLine($&quot;Objects that couldn't be deleted: {ex.FailedItems.Count}&quot;);
+}
+</code></pre>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="delete-by-prefix">Delete by Prefix</h3>
+<pre><code class="lang-csharp">public async Task DeleteByPrefixAsync(string bucket, string prefix)
+{
+    var listResult = await r2.ListObjectsAsync(bucket, prefix);
+    var keys = listResult.Data.Select(o =&gt; o.Key);
+
+    await r2.DeleteObjectsAsync(bucket, keys);
+
+    Console.WriteLine($&quot;Deleted {listResult.Data.Count} objects&quot;);
+}
+</code></pre>
+<h3 id="delete-old-files">Delete Old Files</h3>
+<pre><code class="lang-csharp">public async Task DeleteOlderThanAsync(string bucket, TimeSpan maxAge)
+{
+    var cutoff = DateTime.UtcNow - maxAge;
+    var listResult = await r2.ListObjectsAsync(bucket, null);
+
+    var oldKeys = listResult.Data
+        .Where(o =&gt; o.LastModified &lt; cutoff)
+        .Select(o =&gt; o.Key)
+        .ToList();
+
+    if (oldKeys.Any())
+    {
+        await r2.DeleteObjectsAsync(bucket, oldKeys);
+        Console.WriteLine($&quot;Deleted {oldKeys.Count} old objects&quot;);
+    }
+}
+</code></pre>
+<h3 id="safe-delete-with-confirmation">Safe Delete with Confirmation</h3>
+<pre><code class="lang-csharp">public async Task&lt;int&gt; DeleteWithConfirmationAsync(
+    string bucket, string prefix, Func&lt;IReadOnlyList&lt;S3Object&gt;, bool&gt; confirm)
+{
+    var listResult = await r2.ListObjectsAsync(bucket, prefix);
+
+    if (!listResult.Data.Any())
+    {
+        Console.WriteLine(&quot;No objects found&quot;);
+        return 0;
+    }
+
+    if (!confirm(listResult.Data))
+    {
+        Console.WriteLine(&quot;Delete cancelled&quot;);
+        return 0;
+    }
+
+    var keys = listResult.Data.Select(o =&gt; o.Key);
+    await r2.DeleteObjectsAsync(bucket, keys);
+
+    return listResult.Data.Count;
+}
+</code></pre>
+<h3 id="delete-multipart-upload-parts">Delete Multipart Upload Parts</h3>
+<p>When you need to clean up incomplete multipart uploads:</p>
+<pre><code class="lang-csharp">public async Task CleanupIncompleteUploadAsync(
+    string bucket, string key, string uploadId)
+{
+    // Abort the multipart upload (also deletes uploaded parts)
+    await r2.AbortMultipartUploadAsync(bucket, key, uploadId);
+}
+</code></pre>
+<h2 id="r2result-for-deletes">R2Result for Deletes</h2>
+<p>Delete operations return metrics, but they will always be zero since deletes are free:</p>
+<pre><code class="lang-csharp">var result = await r2.DeleteObjectAsync(&quot;bucket&quot;, &quot;key&quot;);
+
+Console.WriteLine($&quot;Class A: {result.ClassAOperations}&quot;); // 0
+Console.WriteLine($&quot;Class B: {result.ClassBOperations}&quot;); // 0
+Console.WriteLine($&quot;Ingress: {result.IngressBytes}&quot;);     // 0
+Console.WriteLine($&quot;Egress: {result.EgressBytes}&quot;);       // 0
+</code></pre>
+<h2 id="batch-size">Batch Size</h2>
+<p>The SDK automatically batches delete requests. R2 supports up to 1000 objects per delete request.</p>
+<pre><code class="lang-csharp">// Even 10,000 keys will be batched into 10 requests
+var manyKeys = Enumerable.Range(1, 10000).Select(i =&gt; $&quot;file{i}.txt&quot;);
+await r2.DeleteObjectsAsync(&quot;bucket&quot;, manyKeys);
+</code></pre>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="listing.html">Listing Objects</a> - Find objects to delete</li>
+<li><a href="../accounts/r2/lifecycle.html">Lifecycle Policies</a> - Auto-delete with rules</li>
+<li><a href="uploads.html">Uploading Objects</a> - Add new objects</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/deletes.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

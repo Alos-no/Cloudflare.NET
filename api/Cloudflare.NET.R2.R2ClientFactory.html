@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class R2ClientFactory | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class R2ClientFactory | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Factory that creates and caches  instances. Supports named configurations for multi-account scenarios and jurisdiction-specific clients for accessing buckets in different geographic regions.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_R2_R2ClientFactory.md&amp;value=---%0Auid%3A%20Cloudflare.NET.R2.R2ClientFactory%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.R2.R2ClientFactory">
+
+
+
+  <h1 id="Cloudflare_NET_R2_R2ClientFactory" data-uid="Cloudflare.NET.R2.R2ClientFactory" class="text-break">
+Class R2ClientFactory  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2ClientFactory.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.R2.html">R2</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.R2.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Factory that creates and caches <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> instances. Supports named configurations
+for multi-account scenarios and jurisdiction-specific clients for accessing buckets in different
+geographic regions.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class R2ClientFactory : IR2ClientFactory, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">R2ClientFactory</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.R2.IR2ClientFactory.html">IR2ClientFactory</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Cloudflare_NET_R2_R2ClientFactory_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  This factory caches created clients to leverage the thread-safe, singleton-friendly nature of
+  the AWS S3 client. Clients are cached by a composite key of <code>(name, jurisdiction)</code>.
+</p>
+<p>
+  Named clients are registered using
+  <a class="xref" href="Cloudflare.NET.R2.ServiceCollectionExtensions.html#Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_System_Action_Cloudflare_NET_R2_Configuration_R2Settings__">AddCloudflareR2Client(IServiceCollection, string, Action&lt;R2Settings&gt;)</a>
+  .
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_R2ClientFactory__ctor_" data-uid="Cloudflare.NET.R2.R2ClientFactory.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2ClientFactory__ctor_Microsoft_Extensions_Options_IOptionsMonitor_Cloudflare_NET_R2_Configuration_R2Settings__Microsoft_Extensions_Options_IOptionsMonitor_Cloudflare_NET_Core_CloudflareApiOptions__Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="Cloudflare.NET.R2.R2ClientFactory.#ctor(Microsoft.Extensions.Options.IOptionsMonitor{Cloudflare.NET.R2.Configuration.R2Settings},Microsoft.Extensions.Options.IOptionsMonitor{Cloudflare.NET.Core.CloudflareApiOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
+  R2ClientFactory(IOptionsMonitor&lt;R2Settings&gt;, IOptionsMonitor&lt;CloudflareApiOptions&gt;, ILoggerFactory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2ClientFactory.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Cloudflare.NET.R2.R2ClientFactory.html">R2ClientFactory</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public R2ClientFactory(IOptionsMonitor&lt;R2Settings&gt; r2OptionsMonitor, IOptionsMonitor&lt;CloudflareApiOptions&gt; cloudflareOptionsMonitor, ILoggerFactory loggerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>r2OptionsMonitor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptionsmonitor-1">IOptionsMonitor</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Configuration.R2Settings.html">R2Settings</a>&gt;</dt>
+    <dd><p>The options monitor for named R2 settings.</p>
+</dd>
+    <dt><code>cloudflareOptionsMonitor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptionsmonitor-1">IOptionsMonitor</a>&lt;<a class="xref" href="Cloudflare.NET.Core.CloudflareApiOptions.html">CloudflareApiOptions</a>&gt;</dt>
+    <dd><p>The options monitor for named Cloudflare API options.</p>
+</dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The logger factory.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_R2ClientFactory_Dispose_" data-uid="Cloudflare.NET.R2.R2ClientFactory.Dispose*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2ClientFactory_Dispose" data-uid="Cloudflare.NET.R2.R2ClientFactory.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2ClientFactory.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Disposes all cached R2 clients and their underlying S3 clients.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_R2ClientFactory_GetClient_" data-uid="Cloudflare.NET.R2.R2ClientFactory.GetClient*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2ClientFactory_GetClient_Cloudflare_NET_Accounts_Models_R2Jurisdiction_" data-uid="Cloudflare.NET.R2.R2ClientFactory.GetClient(Cloudflare.NET.Accounts.Models.R2Jurisdiction)">
+  GetClient(R2Jurisdiction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2ClientFactory.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets an <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> for the specified jurisdiction using the default (unnamed) credentials.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IR2Client GetClient(R2Jurisdiction jurisdiction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd><p>The target jurisdiction for R2 operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a></dt>
+    <dd><p>A cached <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> instance configured for the specified jurisdiction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2ClientFactory_GetClient_Cloudflare_NET_Accounts_Models_R2Jurisdiction__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Access buckets in different jurisdictions with the same credentials
+var globalClient = factory.GetClient(R2Jurisdiction.Default);
+var euClient = factory.GetClient(R2Jurisdiction.EuropeanUnion);
+var fedRampClient = factory.GetClient(R2Jurisdiction.FedRamp);
+
+// Upload to EU-jurisdictional bucket
+await euClient.UploadAsync("my-eu-bucket", "file.txt", stream);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2ClientFactory_GetClient_Cloudflare_NET_Accounts_Models_R2Jurisdiction__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  This method uses the credentials from the default (unnamed) R2 configuration registered via
+  <a class="xref" href="Cloudflare.NET.R2.ServiceCollectionExtensions.html#Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_Cloudflare_NET_R2_Configuration_R2Settings__">AddCloudflareR2Client(IServiceCollection, Action&lt;R2Settings&gt;)</a>
+  .
+</p>
+<p>
+  The same R2 credentials work across all jurisdictions within an account; only the S3 endpoint differs.
+  Clients are cached by jurisdiction and reused for subsequent calls.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ConfigurationException.html">CloudflareR2ConfigurationException</a></dt>
+    <dd><p>Thrown when the default R2 configuration is missing or invalid.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2ClientFactory_GetClient_" data-uid="Cloudflare.NET.R2.R2ClientFactory.GetClient*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2ClientFactory_GetClient_System_String_" data-uid="Cloudflare.NET.R2.R2ClientFactory.GetClient(System.String)">
+  GetClient(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2ClientFactory.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or creates a named <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> instance configured with the specified named options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IR2Client GetClient(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the client configuration to use. Must match the name used during registration
+with
+<a class="xref" href="Cloudflare.NET.R2.ServiceCollectionExtensions.html#Cloudflare_NET_R2_ServiceCollectionExtensions_AddCloudflareR2Client_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_String_System_Action_Cloudflare_NET_R2_Configuration_R2Settings__">AddCloudflareR2Client(IServiceCollection, string, Action&lt;R2Settings&gt;)</a>
+.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a></dt>
+    <dd><p>A cached <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> instance configured with the named options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2ClientFactory_GetClient_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Registration
+services.AddCloudflareR2Client("primary", options =&gt; {
+    options.AccessKeyId = "primary-key";
+    options.SecretAccessKey = "primary-secret";
+});
+services.AddCloudflareR2Client("backup", options =&gt; {
+    options.AccessKeyId = "backup-key";
+    options.SecretAccessKey = "backup-secret";
+});
+
+// Usage via factory
+public class MyService(IR2ClientFactory factory)
+{
+    public async Task DoSomething()
+    {
+        var primaryClient = factory.GetClient("primary");
+        var backupClient = factory.GetClient("backup");
+        // ...
+    }
+}</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2ClientFactory_GetClient_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  The client uses the jurisdiction specified in the named configuration's
+  <a class="xref" href="Cloudflare.NET.R2.Configuration.R2Settings.html#Cloudflare_NET_R2_Configuration_R2Settings_Jurisdiction">Jurisdiction</a>.
+  To access a different jurisdiction with the same credentials, use
+  <a class="xref" href="Cloudflare.NET.R2.IR2ClientFactory.html#Cloudflare_NET_R2_IR2ClientFactory_GetClient_System_String_Cloudflare_NET_Accounts_Models_R2Jurisdiction_">GetClient(string, R2Jurisdiction)</a>.
+</p>
+<p>
+  Clients are cached by <code>(name, configured-jurisdiction)</code> and reused for subsequent calls.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ConfigurationException.html">CloudflareR2ConfigurationException</a></dt>
+    <dd><p>Thrown when the named configuration is missing or invalid.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2ClientFactory_GetClient_" data-uid="Cloudflare.NET.R2.R2ClientFactory.GetClient*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2ClientFactory_GetClient_System_String_Cloudflare_NET_Accounts_Models_R2Jurisdiction_" data-uid="Cloudflare.NET.R2.R2ClientFactory.GetClient(System.String,Cloudflare.NET.Accounts.Models.R2Jurisdiction)">
+  GetClient(string, R2Jurisdiction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2ClientFactory.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets an <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> for the specified jurisdiction using named credentials.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IR2Client GetClient(string name, R2Jurisdiction jurisdiction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the client configuration providing credentials. Must match the name used during registration.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2Jurisdiction.html">R2Jurisdiction</a></dt>
+    <dd><p>The target jurisdiction for R2 operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a></dt>
+    <dd><p>A cached <a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a> instance configured with the named credentials and specified jurisdiction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2ClientFactory_GetClient_System_String_Cloudflare_NET_Accounts_Models_R2Jurisdiction__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Production account has buckets in both default and EU jurisdictions
+var prodDefault = factory.GetClient("production", R2Jurisdiction.Default);
+var prodEu = factory.GetClient("production", R2Jurisdiction.EuropeanUnion);
+
+// DR account uses FedRAMP jurisdiction
+var drFedRamp = factory.GetClient("disaster-recovery", R2Jurisdiction.FedRamp);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2ClientFactory_GetClient_System_String_Cloudflare_NET_Accounts_Models_R2Jurisdiction__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Use this method when you have multiple accounts (each with different credentials) and need to access
+  buckets in specific jurisdictions within those accounts.
+</p>
+<p>
+  Clients are cached by <code>(name, jurisdiction)</code> tuple and reused for subsequent calls.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ConfigurationException.html">CloudflareR2ConfigurationException</a></dt>
+    <dd><p>Thrown when the named configuration is missing or invalid.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2ClientFactory.cs/#L31" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

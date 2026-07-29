@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Configuration | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Configuration | Cloudflare.NET ">
+      <meta name="description" content="Configure Cloudflare.NET SDK. Set up API tokens, rate limiting, resilience options, and multi-account support in your .NET application.">
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/configuration.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="configuration">Configuration</h1>
+
+<p>This guide covers all configuration options available in the Cloudflare.NET SDK.</p>
+<h2 id="core-api-client-options">Core API Client Options</h2>
+<p>The <code>CloudflareApiOptions</code> class provides the following configuration:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ApiToken</code></td>
+<td><code>string</code></td>
+<td><em>Required</em></td>
+<td>Your Cloudflare API token</td>
+</tr>
+<tr>
+<td><code>AccountId</code></td>
+<td><code>string</code></td>
+<td><em>Required</em></td>
+<td>Your Cloudflare account ID</td>
+</tr>
+<tr>
+<td><code>ApiBaseUrl</code></td>
+<td><code>string</code></td>
+<td><code>https://api.cloudflare.com/client/v4</code></td>
+<td>Base URL for the Cloudflare API</td>
+</tr>
+<tr>
+<td><code>DefaultTimeout</code></td>
+<td><code>TimeSpan</code></td>
+<td>30 seconds</td>
+<td>Default timeout for API requests</td>
+</tr>
+<tr>
+<td><code>RateLimiting</code></td>
+<td><code>RateLimitingOptions</code></td>
+<td>See below</td>
+<td>Rate limiting configuration</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rate-limiting-options">Rate Limiting Options</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IsEnabled</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Enable client-side rate limiting</td>
+</tr>
+<tr>
+<td><code>MaxRetries</code></td>
+<td><code>int</code></td>
+<td><code>3</code></td>
+<td>Maximum retry attempts for failed requests</td>
+</tr>
+<tr>
+<td><code>PermitLimit</code></td>
+<td><code>int</code></td>
+<td><code>25</code></td>
+<td>Maximum concurrent requests</td>
+</tr>
+<tr>
+<td><code>QueueLimit</code></td>
+<td><code>int</code></td>
+<td><code>10</code></td>
+<td>Maximum queued requests when at limit</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration-example">Configuration Example</h3>
+<pre><code class="lang-json">{
+  &quot;Cloudflare&quot;: {
+    &quot;ApiToken&quot;: &quot;your-cloudflare-api-token&quot;,
+    &quot;AccountId&quot;: &quot;your-cloudflare-account-id&quot;,
+    &quot;ApiBaseUrl&quot;: &quot;https://api.cloudflare.com/client/v4&quot;,
+    &quot;DefaultTimeout&quot;: &quot;00:00:30&quot;,
+    &quot;RateLimiting&quot;: {
+      &quot;IsEnabled&quot;: true,
+      &quot;MaxRetries&quot;: 3,
+      &quot;PermitLimit&quot;: 25,
+      &quot;QueueLimit&quot;: 10
+    }
+  }
+}
+</code></pre>
+<h2 id="r2-client-options">R2 Client Options</h2>
+<p>The <code>R2Settings</code> class provides configuration for the S3-compatible R2 client:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AccessKeyId</code></td>
+<td><code>string</code></td>
+<td><em>Required</em></td>
+<td>R2 Access Key ID</td>
+</tr>
+<tr>
+<td><code>SecretAccessKey</code></td>
+<td><code>string</code></td>
+<td><em>Required</em></td>
+<td>R2 Secret Access Key</td>
+</tr>
+<tr>
+<td><code>Jurisdiction</code></td>
+<td><code>R2Jurisdiction</code></td>
+<td><code>Default</code></td>
+<td>Target jurisdiction (determines S3 endpoint)</td>
+</tr>
+<tr>
+<td><code>EndpointUrl</code></td>
+<td><code>string</code></td>
+<td><em>Auto-computed</em></td>
+<td>R2 endpoint URL template (overrides <code>Jurisdiction</code> if set)</td>
+</tr>
+<tr>
+<td><code>Region</code></td>
+<td><code>string</code></td>
+<td><code>auto</code></td>
+<td>AWS region (always &quot;auto&quot; for R2)</td>
+</tr>
+</tbody>
+</table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The R2 client uses separate credentials from the REST API. You need to create R2 API tokens in the Cloudflare dashboard under R2 &gt; Manage R2 API Tokens.</p>
+</div>
+<h3 id="jurisdiction-to-endpoint-mapping">Jurisdiction to Endpoint Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Jurisdiction</th>
+<th>JSON Value</th>
+<th>S3 Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default</td>
+<td><code>&quot;default&quot;</code></td>
+<td><code>https://{account_id}.r2.cloudflarestorage.com</code></td>
+</tr>
+<tr>
+<td>European Union</td>
+<td><code>&quot;eu&quot;</code></td>
+<td><code>https://{account_id}.eu.r2.cloudflarestorage.com</code></td>
+</tr>
+<tr>
+<td>FedRAMP</td>
+<td><code>&quot;fedramp&quot;</code></td>
+<td><code>https://{account_id}.fedramp.r2.cloudflarestorage.com</code></td>
+</tr>
+</tbody>
+</table>
+<div class="TIP">
+<h5>Tip</h5>
+<p>When <code>Jurisdiction</code> is set and <code>EndpointUrl</code> is not specified, the endpoint is automatically computed from the jurisdiction. If you explicitly set <code>EndpointUrl</code>, it takes precedence over <code>Jurisdiction</code>.</p>
+</div>
+<h3 id="r2-configuration-example">R2 Configuration Example</h3>
+<pre><code class="lang-json">{
+  &quot;Cloudflare&quot;: {
+    &quot;AccountId&quot;: &quot;your-cloudflare-account-id&quot;
+  },
+  &quot;R2&quot;: {
+    &quot;AccessKeyId&quot;: &quot;your-r2-access-key-id&quot;,
+    &quot;SecretAccessKey&quot;: &quot;your-r2-secret-access-key&quot;
+  }
+}
+</code></pre>
+<h3 id="r2-with-jurisdiction">R2 with Jurisdiction</h3>
+<pre><code class="lang-json">{
+  &quot;Cloudflare&quot;: {
+    &quot;AccountId&quot;: &quot;your-cloudflare-account-id&quot;
+  },
+  &quot;R2&quot;: {
+    &quot;AccessKeyId&quot;: &quot;your-r2-access-key-id&quot;,
+    &quot;SecretAccessKey&quot;: &quot;your-r2-secret-access-key&quot;,
+    &quot;Jurisdiction&quot;: &quot;eu&quot;
+  }
+}
+</code></pre>
+<h3 id="named-r2-clients-multi-account">Named R2 Clients (Multi-Account)</h3>
+<p>For multi-account R2 scenarios, register named clients with separate configurations:</p>
+<p><strong>JSON Configuration:</strong></p>
+<pre><code class="lang-json">{
+  &quot;Cloudflare&quot;: {
+    &quot;AccountId&quot;: &quot;primary-account-id&quot;
+  },
+  &quot;Cloudflare:backup&quot;: {
+    &quot;AccountId&quot;: &quot;backup-account-id&quot;
+  },
+  &quot;R2&quot;: {
+    &quot;AccessKeyId&quot;: &quot;primary-r2-key&quot;,
+    &quot;SecretAccessKey&quot;: &quot;primary-r2-secret&quot;
+  },
+  &quot;R2:backup&quot;: {
+    &quot;AccessKeyId&quot;: &quot;backup-r2-key&quot;,
+    &quot;SecretAccessKey&quot;: &quot;backup-r2-secret&quot;,
+    &quot;Jurisdiction&quot;: &quot;eu&quot;
+  }
+}
+</code></pre>
+<pre><code class="lang-csharp">// Program.cs - Register named clients from configuration
+builder.Services.AddCloudflareR2Client(builder.Configuration);              // Default client
+builder.Services.AddCloudflareR2Client(&quot;backup&quot;, builder.Configuration);    // Named &quot;backup&quot; client
+</code></pre>
+<p><strong>Code-Based Configuration:</strong></p>
+<pre><code class="lang-csharp">// Program.cs - Register with inline configuration
+builder.Services.AddCloudflareR2Client(options =&gt;
+{
+    options.AccessKeyId = &quot;primary-key&quot;;
+    options.SecretAccessKey = &quot;primary-secret&quot;;
+});
+
+builder.Services.AddCloudflareR2Client(&quot;eu-storage&quot;, options =&gt;
+{
+    options.AccessKeyId = &quot;eu-key&quot;;
+    options.SecretAccessKey = &quot;eu-secret&quot;;
+    options.Jurisdiction = R2Jurisdiction.EuropeanUnion;
+});
+</code></pre>
+<p><strong>Usage with IR2ClientFactory:</strong></p>
+<pre><code class="lang-csharp">public class StorageService(IR2ClientFactory factory)
+{
+    public async Task ReplicateAsync(string bucket, string key, Stream data)
+    {
+        // Upload to primary account (default client)
+        var primaryClient = factory.GetClient(R2Jurisdiction.Default);
+        await primaryClient.UploadAsync(bucket, key, data);
+
+        // Upload to backup account (named client)
+        data.Position = 0;
+        var backupClient = factory.GetClient(&quot;backup&quot;);
+        await backupClient.UploadAsync(&quot;backup-bucket&quot;, key, data);
+    }
+
+    // Override jurisdiction for a named client
+    public async Task UploadToBackupEuAsync(string key, Stream data)
+    {
+        var client = factory.GetClient(&quot;backup&quot;, R2Jurisdiction.EuropeanUnion);
+        await client.UploadAsync(&quot;eu-bucket&quot;, key, data);
+    }
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>The same R2 credentials work across all jurisdictions within an account—only the S3 endpoint differs. Use <code>factory.GetClient(name, jurisdiction)</code> to override the configured jurisdiction at runtime.</p>
+</div>
+<h2 id="resilience-pipeline">Resilience Pipeline</h2>
+<p>The SDK includes a built-in resilience pipeline powered by <a href="https://github.com/App-vNext/Polly">Polly</a>:</p>
+<ol>
+<li><strong>Rate Limiter</strong> - Client-side concurrency control</li>
+<li><strong>Total Timeout</strong> - 60 seconds for entire operation including retries</li>
+<li><strong>Retry</strong> - Exponential backoff with jitter; honors <code>Retry-After</code> header</li>
+<li><strong>Circuit Breaker</strong> - Stops requests after consecutive failures</li>
+<li><strong>Attempt Timeout</strong> - Per-request timeout from <code>DefaultTimeout</code></li>
+</ol>
+<h3 id="customizing-resilience">Customizing Resilience</h3>
+<p>The resilience pipeline is configured automatically when using <code>AddCloudflareApiClient()</code>. The default settings are designed for most use cases, but you can adjust the rate limiting options to match your Cloudflare plan limits.</p>
+<h2 id="named-clients">Named Clients</h2>
+<p>For multi-account scenarios where configurations are known at startup, use named clients:</p>
+<pre><code class="lang-csharp">// appsettings.json
+{
+  &quot;Cloudflare:production&quot;: {
+    &quot;ApiToken&quot;: &quot;prod-token&quot;,
+    &quot;AccountId&quot;: &quot;prod-account-id&quot;
+  },
+  &quot;Cloudflare:staging&quot;: {
+    &quot;ApiToken&quot;: &quot;staging-token&quot;,
+    &quot;AccountId&quot;: &quot;staging-account-id&quot;
+  }
+}
+
+// Program.cs
+builder.Services.AddCloudflareApiClient(&quot;production&quot;, builder.Configuration);
+builder.Services.AddCloudflareApiClient(&quot;staging&quot;, builder.Configuration);
+</code></pre>
+<h2 id="dynamic-clients">Dynamic Clients</h2>
+<p>For scenarios where client configurations are not known at startup (e.g., desktop applications where users add accounts at runtime), use dynamic client creation:</p>
+<pre><code class="lang-csharp">public class AccountManager(ICloudflareApiClientFactory factory)
+{
+    public async Task&lt;AccountInfo&gt; ValidateAndGetAccountInfoAsync(string apiToken, string accountId)
+    {
+        var options = new CloudflareApiOptions
+        {
+            ApiToken = apiToken,
+            AccountId = accountId,
+            DefaultTimeout = TimeSpan.FromSeconds(15),
+            RateLimiting = new RateLimitingOptions
+            {
+                IsEnabled = true,
+                PermitLimit = 5,      // Conservative for user-provided credentials
+                MaxRetries = 2
+            }
+        };
+
+        // Create and use a dynamic client
+        using var client = factory.CreateClient(options);
+
+        var user = await client.User.GetUserAsync();
+        return new AccountInfo(user.Email, accountId);
+    }
+}
+</code></pre>
+<h3 id="dynamic-client-characteristics">Dynamic Client Characteristics</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Named Clients</th>
+<th>Dynamic Clients</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Configuration</td>
+<td>At startup via DI</td>
+<td>At runtime via <code>CloudflareApiOptions</code></td>
+</tr>
+<tr>
+<td>Lifecycle</td>
+<td>Managed by DI container</td>
+<td>Must be disposed by caller</td>
+</tr>
+<tr>
+<td>HttpClient</td>
+<td>Shared via <code>IHttpClientFactory</code></td>
+<td>Owned by the client instance</td>
+</tr>
+<tr>
+<td>Resilience Pipeline</td>
+<td>Shared per named client</td>
+<td>Isolated per instance</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>Known accounts, server apps</td>
+<td>User-provided accounts, desktop apps</td>
+</tr>
+</tbody>
+</table>
+<h3 id="disposal-requirements">Disposal Requirements</h3>
+<p>Dynamic clients implement <code>IDisposable</code> and <strong>must</strong> be disposed when no longer needed:</p>
+<pre><code class="lang-csharp">// Option 1: using statement (recommended)
+using var client = factory.CreateClient(options);
+await client.Zones.ListZonesAsync();
+// Client automatically disposed at end of scope
+
+// Option 2: using declaration in async methods
+using var client = factory.CreateClient(options);
+var zones = await client.Zones.ListZonesAsync();
+// ... more operations
+// Client disposed when method returns
+
+// Option 3: Manual disposal (for longer-lived clients)
+var client = factory.CreateClient(options);
+try
+{
+    // Use client for multiple operations...
+}
+finally
+{
+    client.Dispose();
+}
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Failing to dispose dynamic clients will leak <code>HttpClient</code> instances and their underlying socket connections. Always use a <code>using</code> statement or explicitly call <code>Dispose()</code>.</p>
+</div>
+<h2 id="environment-variables">Environment Variables</h2>
+<p>Configuration can also be provided via environment variables using the <code>__</code> (double underscore) convention:</p>
+<pre><code class="lang-bash">export Cloudflare__ApiToken=&quot;your-api-token&quot;
+export Cloudflare__AccountId=&quot;your-account-id&quot;
+export R2__AccessKeyId=&quot;your-r2-access-key&quot;
+export R2__SecretAccessKey=&quot;your-r2-secret&quot;
+</code></pre>
+<h2 id="user-secrets-development">User Secrets (Development)</h2>
+<p>For local development, use .NET User Secrets:</p>
+<pre><code class="lang-bash">dotnet user-secrets init
+dotnet user-secrets set &quot;Cloudflare:ApiToken&quot; &quot;your-api-token&quot;
+dotnet user-secrets set &quot;Cloudflare:AccountId&quot; &quot;your-account-id&quot;
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/configuration.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

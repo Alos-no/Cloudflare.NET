@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Zones API | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Zones API | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="zones-api">Zones API</h1>
+
+<p>The Zones API provides access to zone-level resources in Cloudflare. A zone represents a domain and its configuration within Cloudflare.</p>
+<h2 id="overview">Overview</h2>
+<p>Access the Zones API through <code>ICloudflareApiClient.Zones</code>:</p>
+<pre><code class="lang-csharp">public class MyService(ICloudflareApiClient cf)
+{
+    public async Task ManageZoneAsync(string zoneId)
+    {
+        // Get zone details
+        var zone = await cf.Zones.GetZoneDetailsAsync(zoneId);
+        Console.WriteLine($&quot;Zone: {zone.Name}, Status: {zone.Status}&quot;);
+    }
+}
+</code></pre>
+<h2 id="available-apis">Available APIs</h2>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="zone-management.html">Zone Management</a></td>
+<td><code>cf.Zones</code></td>
+<td>Create, list, edit, delete zones</td>
+</tr>
+<tr>
+<td><a href="zone-holds.html">Zone Holds</a></td>
+<td><code>cf.Zones</code></td>
+<td>Prevent unauthorized zone takeover</td>
+</tr>
+<tr>
+<td><a href="zone-settings.html">Zone Settings</a></td>
+<td><code>cf.Zones</code></td>
+<td>Configure zone-level settings</td>
+</tr>
+<tr>
+<td><a href="dns-records.html">DNS Records</a></td>
+<td><code>cf.Dns</code></td>
+<td>Full DNS CRUD and batch operations</td>
+</tr>
+<tr>
+<td><a href="dns-scanning.html">DNS Scanning</a></td>
+<td><code>cf.Dns</code></td>
+<td>Discover and review DNS records</td>
+</tr>
+<tr>
+<td><a href="worker-routes.html">Worker Routes</a></td>
+<td><code>cf.Workers</code></td>
+<td>Map URL patterns to Workers</td>
+</tr>
+<tr>
+<td><a href="cache-purge.html">Cache Purge</a></td>
+<td><code>cf.Zones</code></td>
+<td>Clear cached content</td>
+</tr>
+<tr>
+<td><a href="security/access-rules.html">Access Rules</a></td>
+<td><code>cf.Zones.AccessRules</code></td>
+<td>IP-based access control</td>
+</tr>
+<tr>
+<td><a href="security/rulesets.html">Rulesets</a></td>
+<td><code>cf.Zones.Rulesets</code></td>
+<td>WAF custom rules and rate limiting</td>
+</tr>
+<tr>
+<td><a href="security/lockdown.html">Lockdown</a></td>
+<td><code>cf.Zones.Lockdown</code></td>
+<td>Restrict URLs to specific IPs</td>
+</tr>
+<tr>
+<td><a href="security/ua-rules.html">UA Rules</a></td>
+<td><code>cf.Zones.UaRules</code></td>
+<td>Block/challenge by User-Agent</td>
+</tr>
+<tr>
+<td><a href="custom-hostnames.html">Custom Hostnames</a></td>
+<td><code>cf.Zones.CustomHostnames</code></td>
+<td>SSL for SaaS hostname management</td>
+</tr>
+</tbody>
+</table>
+<h2 id="zone-management">Zone Management</h2>
+<h3 id="create-a-zone">Create a Zone</h3>
+<pre><code class="lang-csharp">var zone = await cf.Zones.CreateZoneAsync(new CreateZoneRequest(
+    Name: &quot;example.com&quot;,
+    Type: ZoneType.Full,
+    Account: new ZoneAccountReference(accountId),
+    JumpStart: true
+));
+</code></pre>
+<h3 id="list-all-zones">List All Zones</h3>
+<pre><code class="lang-csharp">await foreach (var zone in cf.Zones.ListAllZonesAsync())
+{
+    Console.WriteLine($&quot;{zone.Name}: {zone.Status}&quot;);
+}
+</code></pre>
+<h3 id="get-zone-details">Get Zone Details</h3>
+<pre><code class="lang-csharp">var zone = await cf.Zones.GetZoneDetailsAsync(zoneId);
+Console.WriteLine($&quot;Plan: {zone.Plan.Name}&quot;);
+Console.WriteLine($&quot;Nameservers: {string.Join(&quot;, &quot;, zone.NameServers)}&quot;);
+</code></pre>
+<h2 id="quick-links">Quick Links</h2>
+<h3 id="zone-operations">Zone Operations</h3>
+<ul>
+<li><a href="zone-management.html">Zone Management</a> - CRUD operations for zones</li>
+<li><a href="zone-holds.html">Zone Holds</a> - Domain takeover protection</li>
+<li><a href="zone-settings.html">Zone Settings</a> - Security and performance settings</li>
+</ul>
+<h3 id="dns">DNS</h3>
+<ul>
+<li><a href="dns-records.html">DNS Records</a> - Manage DNS records with batch operations</li>
+<li><a href="dns-scanning.html">DNS Scanning</a> - Discover existing DNS records</li>
+</ul>
+<h3 id="workers">Workers</h3>
+<ul>
+<li><a href="worker-routes.html">Worker Routes</a> - Route traffic to Worker scripts</li>
+</ul>
+<h3 id="security">Security</h3>
+<ul>
+<li><a href="security/access-rules.html">Access Rules</a> - IP-based firewall rules</li>
+<li><a href="security/rulesets.html">WAF Rulesets</a> - Custom WAF rules and rate limiting</li>
+<li><a href="security/lockdown.html">Zone Lockdown</a> - Restrict access to specific URLs</li>
+<li><a href="security/ua-rules.html">User-Agent Rules</a> - Block by User-Agent string</li>
+</ul>
+<h3 id="other">Other</h3>
+<ul>
+<li><a href="cache-purge.html">Cache Purge</a> - Clear cached content</li>
+<li><a href="custom-hostnames.html">Custom Hostnames</a> - Cloudflare for SaaS</li>
+</ul>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Permission</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zone Management</td>
+<td>Zone</td>
+<td>Read/Write</td>
+</tr>
+<tr>
+<td>Zone Settings</td>
+<td>Zone Settings</td>
+<td>Read/Write</td>
+</tr>
+<tr>
+<td>DNS Records</td>
+<td>DNS</td>
+<td>Read/Write</td>
+</tr>
+<tr>
+<td>Worker Routes</td>
+<td>Workers Routes</td>
+<td>Read/Write</td>
+</tr>
+<tr>
+<td>Cache Purge</td>
+<td>Cache Purge</td>
+<td>Purge</td>
+</tr>
+<tr>
+<td>Access Rules</td>
+<td>Firewall Services</td>
+<td>Write</td>
+</tr>
+<tr>
+<td>Rulesets</td>
+<td>Zone WAF</td>
+<td>Read/Write</td>
+</tr>
+<tr>
+<td>Lockdown</td>
+<td>Firewall Services</td>
+<td>Write</td>
+</tr>
+<tr>
+<td>UA Rules</td>
+<td>Firewall Services</td>
+<td>Write</td>
+</tr>
+<tr>
+<td>Custom Hostnames</td>
+<td>SSL and Certificates</td>
+<td>Read/Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../accounts/index.html">Account API</a> - Account-level operations</li>
+<li><a href="../user/index.html">User API</a> - User profile and memberships</li>
+<li><a href="../subscriptions.html">Subscriptions</a> - Zone subscription management</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

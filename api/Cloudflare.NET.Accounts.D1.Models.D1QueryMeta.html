@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class D1QueryMeta | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class D1QueryMeta | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Metadata about a D1 query execution.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Accounts_D1_Models_D1QueryMeta.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Accounts.D1.Models.D1QueryMeta%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta">
+
+
+
+  <h1 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta" class="text-break">
+Class D1QueryMeta  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Accounts.html">Accounts</a>.<a class="xref" href="Cloudflare.NET.Accounts.D1.html">D1</a>.<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Metadata about a D1 query execution.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record D1QueryMeta : IEquatable&lt;D1QueryMeta&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">D1QueryMeta</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.html">D1QueryMeta</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta__ctor_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta__ctor_System_Boolean_System_Int32_System_Double_System_Int64_System_Int64_System_Int64_System_String_System_Nullable_System_Boolean__System_String_System_Nullable_System_Int64__Cloudflare_NET_Accounts_D1_Models_D1QueryTimings_System_Nullable_System_Int32__" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.#ctor(System.Boolean,System.Int32,System.Double,System.Int64,System.Int64,System.Int64,System.String,System.Nullable{System.Boolean},System.String,System.Nullable{System.Int64},Cloudflare.NET.Accounts.D1.Models.D1QueryTimings,System.Nullable{System.Int32})">
+  D1QueryMeta(bool, int, double, long, long, long, string?, bool?, string?, long?, D1QueryTimings?, int?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Metadata about a D1 query execution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public D1QueryMeta(bool ChangedDb, int Changes, double Duration, long LastRowId, long RowsRead, long RowsWritten, string? ServedBy = null, bool? ServedByPrimary = null, string? ServedByRegion = null, long? SizeAfter = null, D1QueryTimings? Timings = null, int? TotalAttempts = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ChangedDb</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the database was modified by this query.</p>
+</dd>
+    <dt><code>Changes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Approximate number of rows modified (from sqlite3_total_changes).</p>
+</dd>
+    <dt><code>Duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Duration of SQL execution inside the database (ms).</p>
+</dd>
+    <dt><code>LastRowId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>Row ID of last inserted row (for INTEGER PRIMARY KEY tables, null for WITHOUT ROWID tables).</p>
+</dd>
+    <dt><code>RowsRead</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>Number of rows read during execution (including indices).</p>
+</dd>
+    <dt><code>RowsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>Number of rows written during execution (including indices).</p>
+</dd>
+    <dt><code>ServedBy</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Version of Cloudflare's backend Worker that returned the result.</p>
+</dd>
+    <dt><code>ServedByPrimary</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd><p>Whether the query was handled by the primary instance.</p>
+</dd>
+    <dt><code>ServedByRegion</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Region code of the instance that handled the query.</p>
+</dd>
+    <dt><code>SizeAfter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>Database size in bytes after the query committed.</p>
+</dd>
+    <dt><code>Timings</code> <a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1QueryTimings.html">D1QueryTimings</a></dt>
+    <dd><p>Detailed timing information.</p>
+</dd>
+    <dt><code>TotalAttempts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>Number of execution attempts for read-only queries (D1 auto-retries up to 2 times).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ChangedDb_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ChangedDb*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ChangedDb" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ChangedDb">
+  ChangedDb
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the database was modified by this query.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;changed_db&quot;)]
+public bool ChangedDb { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_Changes_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.Changes*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_Changes" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.Changes">
+  Changes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Approximate number of rows modified (from sqlite3_total_changes).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;changes&quot;)]
+public int Changes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_Duration_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.Duration*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_Duration" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.Duration">
+  Duration
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Duration of SQL execution inside the database (ms).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;duration&quot;)]
+public double Duration { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_LastRowId_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.LastRowId*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_LastRowId" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.LastRowId">
+  LastRowId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Row ID of last inserted row (for INTEGER PRIMARY KEY tables, null for WITHOUT ROWID tables).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;last_row_id&quot;)]
+public long LastRowId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_RowsRead_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.RowsRead*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_RowsRead" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.RowsRead">
+  RowsRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Number of rows read during execution (including indices).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;rows_read&quot;)]
+public long RowsRead { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_RowsWritten_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.RowsWritten*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_RowsWritten" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.RowsWritten">
+  RowsWritten
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Number of rows written during execution (including indices).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;rows_written&quot;)]
+public long RowsWritten { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ServedBy_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ServedBy*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ServedBy" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ServedBy">
+  ServedBy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Version of Cloudflare's backend Worker that returned the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;served_by&quot;)]
+public string? ServedBy { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ServedByPrimary_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ServedByPrimary*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ServedByPrimary" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ServedByPrimary">
+  ServedByPrimary
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the query was handled by the primary instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;served_by_primary&quot;)]
+public bool? ServedByPrimary { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ServedByRegion_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ServedByRegion*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_ServedByRegion" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.ServedByRegion">
+  ServedByRegion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Region code of the instance that handled the query.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;served_by_region&quot;)]
+public string? ServedByRegion { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_SizeAfter_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.SizeAfter*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_SizeAfter" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.SizeAfter">
+  SizeAfter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Database size in bytes after the query committed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;size_after&quot;)]
+public long? SizeAfter { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_Timings_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.Timings*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_Timings" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.Timings">
+  Timings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Detailed timing information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;timings&quot;)]
+public D1QueryTimings? Timings { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1QueryTimings.html">D1QueryTimings</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_TotalAttempts_" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.TotalAttempts*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_Models_D1QueryMeta_TotalAttempts" data-uid="Cloudflare.NET.Accounts.D1.Models.D1QueryMeta.TotalAttempts">
+  TotalAttempts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Number of execution attempts for read-only queries (D1 auto-retries up to 2 times).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;total_attempts&quot;)]
+public int? TotalAttempts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/Models/D1QueryModels.cs/#L77" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

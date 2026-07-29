@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class SubscriptionsApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class SubscriptionsApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Implementation of  for Cloudflare Subscriptions.    Provides operations for managing subscriptions at account, user, and zone levels.   Subscriptions control billing plans and add-ons for Cloudflare services.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Subscriptions_SubscriptionsApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Subscriptions.SubscriptionsApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi">
+
+
+
+  <h1 id="Cloudflare_NET_Subscriptions_SubscriptionsApi" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi" class="text-break">
+Class SubscriptionsApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Subscriptions.html">Subscriptions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implementation of <a class="xref" href="Cloudflare.NET.Subscriptions.ISubscriptionsApi.html">ISubscriptionsApi</a> for Cloudflare Subscriptions.</p>
+<p>
+  Provides operations for managing subscriptions at account, user, and zone levels.
+  Subscriptions control billing plans and add-ons for Cloudflare services.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class SubscriptionsApi : ApiResource, ISubscriptionsApi</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Core.ApiResource.html">ApiResource</a></div>
+      <div><span class="xref">SubscriptionsApi</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Subscriptions.ISubscriptionsApi.html">ISubscriptionsApi</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_HttpClient">ApiResource.HttpClient</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_Logger">ApiResource.Logger</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetStringAsync_System_String_System_Threading_CancellationToken_">ApiResource.GetStringAsync(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync__1_System_String_System_IO_Stream_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostMultipartFileAsync&lt;TResult&gt;(string, Stream, string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetPagePaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessResponse__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessResponse&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  <b>Billing Permissions Required:</b> All operations require appropriate Billing permissions.
+</p>
+<p>
+  <b>Cost Warning:</b> Creating or updating subscriptions may incur charges.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi__ctor_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi__ctor_System_Net_Http_HttpClient_Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory)">
+  SubscriptionsApi(HttpClient, ILoggerFactory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Cloudflare.NET.Subscriptions.SubscriptionsApi.html">SubscriptionsApi</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SubscriptionsApi(HttpClient httpClient, ILoggerFactory loggerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd><p>The HttpClient for making requests.</p>
+</dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The factory to create loggers for this resource.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateAccountSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.CreateAccountSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateAccountSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_CreateAccountSubscriptionRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.CreateAccountSubscriptionAsync(System.String,Cloudflare.NET.Subscriptions.Models.CreateAccountSubscriptionRequest,System.Threading.CancellationToken)">
+  CreateAccountSubscriptionAsync(string, CreateAccountSubscriptionRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new subscription for an account.</p>
+<p>
+  <b>Warning:</b> Creating subscriptions may incur billing charges.
+  Requires Billing Write permission.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; CreateAccountSubscriptionAsync(string accountId, CreateAccountSubscriptionRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.CreateAccountSubscriptionRequest.html">CreateAccountSubscriptionRequest</a></dt>
+    <dd><p>The subscription creation parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;</dt>
+    <dd><p>The created subscription.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateAccountSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_CreateAccountSubscriptionRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var request = new CreateAccountSubscriptionRequest(
+  RatePlan: new RatePlanReference("enterprise_plan_id"),
+  Frequency: SubscriptionFrequency.Yearly);
+
+var subscription = await cf.Subscriptions.CreateAccountSubscriptionAsync(accountId, request);
+Console.WriteLine($"Created: {subscription.Id}");</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateAccountSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_CreateAccountSubscriptionRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (403 if no billing permission).</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown when the rate plan is invalid or subscription cannot be created.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateZoneSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.CreateZoneSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateZoneSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_CreateZoneSubscriptionRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.CreateZoneSubscriptionAsync(System.String,Cloudflare.NET.Subscriptions.Models.CreateZoneSubscriptionRequest,System.Threading.CancellationToken)">
+  CreateZoneSubscriptionAsync(string, CreateZoneSubscriptionRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a zone subscription (upgrades the zone plan).</p>
+<p>
+  Use this to upgrade a zone from Free to a paid plan (Pro, Business, Enterprise).
+</p>
+<p>
+  <b>Warning:</b> Creating subscriptions will incur billing charges for paid plans.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; CreateZoneSubscriptionAsync(string zoneId, CreateZoneSubscriptionRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.CreateZoneSubscriptionRequest.html">CreateZoneSubscriptionRequest</a></dt>
+    <dd><p>The subscription creation parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;</dt>
+    <dd><p>The created subscription.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateZoneSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_CreateZoneSubscriptionRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Upgrade to Pro plan
+var subscription = await cf.Subscriptions.CreateZoneSubscriptionAsync(zoneId,
+  new CreateZoneSubscriptionRequest(
+    RatePlan: new RatePlanReference("pro"),
+    Frequency: SubscriptionFrequency.Monthly));</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_CreateZoneSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_CreateZoneSubscriptionRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if zone not found, 403 if no billing permission).</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown when the rate plan is invalid or subscription cannot be created.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteAccountSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.DeleteAccountSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteAccountSubscriptionAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.DeleteAccountSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteAccountSubscriptionAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an account subscription.</p>
+<p>
+  <b>Warning:</b> Deleting a subscription will cancel the associated plan.
+  This action may be irreversible.
+</p>
+<p>
+  <b>Note:</b> Externally managed subscriptions cannot be deleted via API.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteAccountSubscriptionAsync(string accountId, string subscriptionId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>subscriptionId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The subscription identifier to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteAccountSubscriptionAsync_System_String_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await cf.Subscriptions.DeleteAccountSubscriptionAsync(accountId, subscriptionId);
+Console.WriteLine("Subscription cancelled");</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteAccountSubscriptionAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> or <code class="paramref">subscriptionId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if not found, 403 if no permission).</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown when the subscription is externally managed or deletion fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteUserSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.DeleteUserSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteUserSubscriptionAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.DeleteUserSubscriptionAsync(System.String,System.Threading.CancellationToken)">
+  DeleteUserSubscriptionAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a user subscription.</p>
+<p>
+  <b>Warning:</b> Deleting a subscription will cancel the associated plan.
+  This action may be irreversible.
+</p>
+<p>
+  <b>Note:</b> Externally managed subscriptions cannot be deleted via API.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DeleteUserSubscriptionResult&gt; DeleteUserSubscriptionAsync(string subscriptionId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>subscriptionId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The subscription identifier to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.DeleteUserSubscriptionResult.html">DeleteUserSubscriptionResult</a>&gt;</dt>
+    <dd><p>Result containing the deleted subscription ID.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteUserSubscriptionAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await cf.Subscriptions.DeleteUserSubscriptionAsync(subscriptionId);
+Console.WriteLine($"Deleted subscription: {result.SubscriptionId}");</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_DeleteUserSubscriptionAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">subscriptionId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if not found, 403 if no permission).</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown when the subscription is externally managed or deletion fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_GetZoneSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.GetZoneSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_GetZoneSubscriptionAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.GetZoneSubscriptionAsync(System.String,System.Threading.CancellationToken)">
+  GetZoneSubscriptionAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the subscription details for a zone.</p>
+<p>
+  Returns the current subscription including the rate plan, state, and billing details.
+  Zones always have a subscription (at minimum, a Free plan).
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; GetZoneSubscriptionAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;</dt>
+    <dd><p>The zone subscription details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_GetZoneSubscriptionAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var subscription = await cf.Subscriptions.GetZoneSubscriptionAsync(zoneId);
+Console.WriteLine($"Current plan: {subscription.RatePlan?.PublicName}");
+Console.WriteLine($"State: {subscription.State}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if zone not found, 403 if no billing permission).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListAccountSubscriptionsAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.ListAccountSubscriptionsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListAccountSubscriptionsAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.ListAccountSubscriptionsAsync(System.String,System.Threading.CancellationToken)">
+  ListAccountSubscriptionsAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all subscriptions for an account.</p>
+<p>
+  Returns all active and inactive subscriptions associated with the account.
+  Requires Billing Read permission.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;Subscription&gt;&gt; ListAccountSubscriptionsAsync(string accountId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;&gt;</dt>
+    <dd><p>All subscriptions for the account.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListAccountSubscriptionsAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var subscriptions = await cf.Subscriptions.ListAccountSubscriptionsAsync(accountId);
+foreach (var sub in subscriptions)
+{
+  Console.WriteLine($"{sub.RatePlan?.PublicName}: {sub.Price} {sub.Currency}");
+  Console.WriteLine($"  State: {sub.State}, Frequency: {sub.Frequency}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (403 if no billing permission).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListAvailableRatePlansAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.ListAvailableRatePlansAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListAvailableRatePlansAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.ListAvailableRatePlansAsync(System.String,System.Threading.CancellationToken)">
+  ListAvailableRatePlansAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all rate plans available for a zone.</p>
+<p>
+  Returns the plans the zone can subscribe to, including pricing information.
+  Use this to discover valid rate plan IDs before creating or updating subscriptions.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;ZoneRatePlan&gt;&gt; ListAvailableRatePlansAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.ZoneRatePlan.html">ZoneRatePlan</a>&gt;&gt;</dt>
+    <dd><p>Available rate plans for the zone.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListAvailableRatePlansAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var plans = await cf.Subscriptions.ListAvailableRatePlansAsync(zoneId);
+foreach (var plan in plans)
+{
+  Console.WriteLine($"{plan.Name}: {plan.Currency} {plan.Frequency}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if zone not found).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListUserSubscriptionsAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.ListUserSubscriptionsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListUserSubscriptionsAsync_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.ListUserSubscriptionsAsync(System.Threading.CancellationToken)">
+  ListUserSubscriptionsAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all subscriptions for the authenticated user.</p>
+<p>
+  Returns all active and inactive subscriptions owned by the user.
+  Requires Billing Read permission.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;Subscription&gt;&gt; ListUserSubscriptionsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;&gt;</dt>
+    <dd><p>All subscriptions for the authenticated user.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_ListUserSubscriptionsAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var subscriptions = await cf.Subscriptions.ListUserSubscriptionsAsync();
+foreach (var sub in subscriptions)
+{
+  Console.WriteLine($"{sub.RatePlan?.PublicName}: {sub.State}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (403 if no billing permission).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateAccountSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.UpdateAccountSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateAccountSubscriptionAsync_System_String_System_String_Cloudflare_NET_Subscriptions_Models_UpdateAccountSubscriptionRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.UpdateAccountSubscriptionAsync(System.String,System.String,Cloudflare.NET.Subscriptions.Models.UpdateAccountSubscriptionRequest,System.Threading.CancellationToken)">
+  UpdateAccountSubscriptionAsync(string, string, UpdateAccountSubscriptionRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing account subscription.</p>
+<p>
+  <b>Warning:</b> Updating subscriptions may affect billing.
+  Requires Billing Write permission.
+</p>
+<p>
+  <b>Note:</b> Externally managed subscriptions cannot be updated via API.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; UpdateAccountSubscriptionAsync(string accountId, string subscriptionId, UpdateAccountSubscriptionRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>subscriptionId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The subscription identifier to update.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.UpdateAccountSubscriptionRequest.html">UpdateAccountSubscriptionRequest</a></dt>
+    <dd><p>The update parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;</dt>
+    <dd><p>The updated subscription.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateAccountSubscriptionAsync_System_String_System_String_Cloudflare_NET_Subscriptions_Models_UpdateAccountSubscriptionRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Change to yearly billing
+var request = new UpdateAccountSubscriptionRequest(
+  Frequency: SubscriptionFrequency.Yearly);
+
+var updated = await cf.Subscriptions.UpdateAccountSubscriptionAsync(
+  accountId, subscriptionId, request);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateAccountSubscriptionAsync_System_String_System_String_Cloudflare_NET_Subscriptions_Models_UpdateAccountSubscriptionRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> or <code class="paramref">subscriptionId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if not found, 403 if no permission).</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown when the subscription is externally managed or update fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateUserSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.UpdateUserSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateUserSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_UpdateUserSubscriptionRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.UpdateUserSubscriptionAsync(System.String,Cloudflare.NET.Subscriptions.Models.UpdateUserSubscriptionRequest,System.Threading.CancellationToken)">
+  UpdateUserSubscriptionAsync(string, UpdateUserSubscriptionRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing user subscription.</p>
+<p>
+  <b>Warning:</b> Updating subscriptions may affect billing.
+  Requires Billing Write permission.
+</p>
+<p>
+  <b>Note:</b> Externally managed subscriptions cannot be updated via API.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; UpdateUserSubscriptionAsync(string subscriptionId, UpdateUserSubscriptionRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>subscriptionId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The subscription identifier to update.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.UpdateUserSubscriptionRequest.html">UpdateUserSubscriptionRequest</a></dt>
+    <dd><p>The update parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;</dt>
+    <dd><p>The updated subscription.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateUserSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_UpdateUserSubscriptionRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Change to yearly billing
+var request = new UpdateUserSubscriptionRequest(
+  Frequency: SubscriptionFrequency.Yearly);
+
+var updated = await cf.Subscriptions.UpdateUserSubscriptionAsync(subscriptionId, request);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateUserSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_UpdateUserSubscriptionRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">subscriptionId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if not found, 403 if no permission).</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown when the subscription is externally managed or update fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateZoneSubscriptionAsync_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.UpdateZoneSubscriptionAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateZoneSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_UpdateZoneSubscriptionRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Subscriptions.SubscriptionsApi.UpdateZoneSubscriptionAsync(System.String,Cloudflare.NET.Subscriptions.Models.UpdateZoneSubscriptionRequest,System.Threading.CancellationToken)">
+  UpdateZoneSubscriptionAsync(string, UpdateZoneSubscriptionRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L169"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates a zone subscription.</p>
+<p>
+  Use this to change the plan, billing frequency, or component values.
+  Can be used to upgrade, downgrade, or modify an existing subscription.
+</p>
+<p>
+  <b>Warning:</b> Updating subscriptions may affect billing.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; UpdateZoneSubscriptionAsync(string zoneId, UpdateZoneSubscriptionRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.UpdateZoneSubscriptionRequest.html">UpdateZoneSubscriptionRequest</a></dt>
+    <dd><p>The update parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;</dt>
+    <dd><p>The updated subscription.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateZoneSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_UpdateZoneSubscriptionRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Downgrade to Pro from Business
+var subscription = await cf.Subscriptions.UpdateZoneSubscriptionAsync(zoneId,
+  new UpdateZoneSubscriptionRequest(
+    RatePlan: new RatePlanReference("pro")));</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_SubscriptionsApi_UpdateZoneSubscriptionAsync_System_String_Cloudflare_NET_Subscriptions_Models_UpdateZoneSubscriptionRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown when the API request fails (404 if zone not found, 403 if no billing permission).</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown when the rate plan is invalid or update fails.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/SubscriptionsApi.cs/#L24" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
