@@ -155,6 +155,43 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
     }
   }
 
+  /// <summary>
+  ///   Verifies that attaching a custom domain with the attach-time <c>minTls</c> parameter applies that minimum TLS
+  ///   version to the domain, overriding the Cloudflare API's TLS 1.0 default.
+  /// </summary>
+  /// <remarks>
+  ///   The assertion reads the configured value back through <c>ListCustomDomainsAsync</c>, whose
+  ///   <see cref="CustomDomain.MinTls" /> field echoes the domain's live minimum-TLS setting — a true round-trip proof
+  ///   that the request body's <c>minTLS</c> property reached the API.
+  /// </remarks>
+  [IntegrationTest]
+  public async Task AttachCustomDomainAsync_WithMinTls_AppliesMinimumTlsVersion()
+  {
+    // Arrange
+    var hostname = $"cfnet-mintls-{Guid.NewGuid():N}.{_settings.BaseDomain}";
+    var zoneId   = _settings.ZoneId;
+
+    try
+    {
+      // Act - Attach with the minimum TLS version pinned at attach time (the new attach-time parameter).
+      var attachResult = await _sut.Buckets.AttachCustomDomainAsync(_bucketName, hostname, zoneId, minTls: "1.2");
+      attachResult.Should().NotBeNull();
+      attachResult.Domain.Should().Be(hostname);
+
+      // Assert - The list endpoint must report the pinned 1.2, not the API's 1.0 default.
+      var domains        = await _sut.Buckets.ListCustomDomainsAsync(_bucketName);
+      var attachedDomain = domains.Should().ContainSingle(d => d.Domain == hostname).Subject;
+      attachedDomain.MinTls.Should().Be("1.2",
+        "the attach request pinned minTLS=1.2, overriding the Cloudflare API's TLS 1.0 default");
+    }
+    finally
+    {
+      // Cleanup
+      var detachAction = async () => await _sut.DetachCustomDomainAsync(_bucketName, hostname);
+      await detachAction.Should().NotThrowAsync("the custom domain should be cleaned up successfully");
+    }
+  }
+
   /// <summary>Verifies that R2 buckets can be listed successfully.</summary>
   [IntegrationTest]
   public async Task ListR2BucketsAsync_CanListSuccessfully()

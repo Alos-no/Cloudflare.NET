@@ -649,15 +649,24 @@ public class KvApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IA
     result.SuccessfulKeyCount.Should().Be(3);
     result.UnsuccessfulKeys.Should().BeNullOrEmpty();
 
-    // Verify they are deleted (retry for eventual consistency - no delays, just retries)
-    const int maxRetries = 10;
+    // Verify they are deleted. KV is eventually consistent: a read can serve a cached value
+    // for up to ~60 seconds after the key was last read (the pre-delete existence checks
+    // above prime that cache), so poll each key with delays until the deletion becomes
+    // visible or the overall deadline expires. The deadline is shared across keys because
+    // the propagation clock runs concurrently for all of them.
+    var       deadline     = DateTime.UtcNow + TimeSpan.FromSeconds(120);
+    const int retryDelayMs = 5000;
     foreach (var key in keys)
     {
-      string? value = "not null";
-      for (var attempt = 1; attempt <= maxRetries && value is not null; attempt++)
-        value = await _sut.GetValueAsync(_namespaceId, key);
+      var value = await _sut.GetValueAsync(_namespaceId, key);
 
-      value.Should().BeNull($"{key} should be deleted after {maxRetries} retries");
+      while (value is not null && DateTime.UtcNow < deadline)
+      {
+        await Task.Delay(retryDelayMs);
+        value = await _sut.GetValueAsync(_namespaceId, key);
+      }
+
+      value.Should().BeNull($"{key} should be deleted once KV propagation completes (waited up to 120s)");
     }
   }
 

@@ -1,0 +1,19 @@
+<Project>
+
+  <!--
+    Central Package Management opt-out.
+
+    This library is a standalone NuGet package with its own inline package versioning,
+    independent of any consuming monorepo. When this repository is vendored as a git
+    submodule inside a repository that uses Central Package Management (CPM), NuGet
+    would otherwise import that parent repository's Directory.Packages.props (the
+    nearest file wins walking up the directory tree) and force CPM onto these projects,
+    breaking restore with NU1008 (versioned PackageReference items are not allowed
+    under CPM). Declaring a local Directory.Packages.props shadows any parent file and
+    keeps CPM disabled here.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+</Project>

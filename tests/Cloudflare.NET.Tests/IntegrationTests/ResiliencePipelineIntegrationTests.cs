@@ -184,8 +184,9 @@ public class ResiliencePipelineIntegrationTests : IDisposable
     result.Name.Should().Be("example.com");
 
     // Verify WireMock received exactly one request.
-    _server.LogEntries.Should().HaveCount(1);
-    _output.WriteLine($"Request received: {_server.LogEntries.First().RequestMessage.Path}");
+    var loggedEntry = _server.LogEntries.Should().ContainSingle().Subject;
+    loggedEntry.RequestMessage.Should().NotBeNull("the logged entry should carry the recorded request");
+    _output.WriteLine($"Request received: {loggedEntry.RequestMessage!.Path}");
   }
 
   #endregion

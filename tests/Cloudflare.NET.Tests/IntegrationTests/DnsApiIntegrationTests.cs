@@ -769,8 +769,17 @@ public class DnsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, I
     var deleted = await _sut.FindDnsRecordByNameAsync(_zoneId, hostname);
     deleted.Should().BeNull("record should be deleted before re-import");
 
-    // Step 3: Import from exported content.
-    var importResult = await _sut.ImportDnsRecordsAsync(_zoneId, bindContent);
+    // Step 3: Import only the exported lines that belong to our test record.
+    // Re-importing the full exported zone file now fails with error 1037 ("The number of
+    // records in the zone file exceeds the zone's record quota"): Cloudflare validates the
+    // file's record count against the zone's quota on top of the records already present,
+    // so a full-zone re-import doubles the count and trips the quota check.
+    var recordLines = bindContent
+      .Split('\n')
+      .Where(line => line.Contains(hostname, StringComparison.OrdinalIgnoreCase));
+    var filteredBindContent = string.Join("\n", recordLines) + "\n";
+
+    var importResult = await _sut.ImportDnsRecordsAsync(_zoneId, filteredBindContent);
     importResult.Should().NotBeNull();
 
     // Step 4: Verify the record was re-imported.

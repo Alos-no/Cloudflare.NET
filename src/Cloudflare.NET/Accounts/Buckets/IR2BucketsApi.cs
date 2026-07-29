@@ -294,6 +294,10 @@ public interface IR2BucketsApi
   /// <param name="jurisdiction">
   ///   <strong>Required for jurisdictional buckets</strong> created with a jurisdiction (e.g., <see cref="R2Jurisdiction.EuropeanUnion" />).
   /// </param>
+  /// <param name="minTls">
+  ///   Optional minimum TLS version for the attached domain (e.g., "1.2", "1.3"). When omitted, the Cloudflare API
+  ///   defaults the domain to TLS 1.0.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>
   ///   A task that represents the asynchronous operation. The task result contains the
@@ -305,6 +309,7 @@ public interface IR2BucketsApi
     string            hostname,
     string            zoneId,
     R2Jurisdiction?   jurisdiction      = null,
+    string?           minTls            = null,
     CancellationToken cancellationToken = default);
 
   /// <summary>Gets the current status of a custom domain attached to a bucket, including ownership and SSL status.</summary>

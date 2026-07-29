@@ -255,58 +255,61 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     }
   }
 
-  /// <summary>I12: Verifies that UpdateAccountAsync with settings parameter is broken and returns 500.</summary>
+  /// <summary>I12: Verifies that UpdateAccountAsync can update account settings.</summary>
   /// <remarks>
-  ///   <b>Cloudflare API Bug:</b> The 'settings' body parameter is documented but causes a 500 error.
   ///   <para>
-  ///     The Cloudflare API documentation for PUT /accounts/{account_id} lists 'settings' as an optional
-  ///     body parameter with properties 'abuse_contact_email' and 'enforce_twofactor'. However, when
-  ///     sending a valid request with the 'settings' field, the API returns HTTP 500 Internal Server Error
-  ///     with error code 500 and message "unhandled server error".
+  ///     <b>History:</b> The 'settings' body parameter of PUT /accounts/{account_id} used to be broken:
+  ///     any request containing the documented 'settings' field returned HTTP 500 Internal Server Error
+  ///     ("unhandled server error"). Cloudflare fixed this server-side bug in July 2026, so this test
+  ///     now verifies the documented, working behavior.
   ///   </para>
   ///   <para>
-  ///     Error response: {"success":false,"errors":[{"code":500,"message":"unhandled server error"}],"messages":[],"result":null}
+  ///     Bug report: https://community.cloudflare.com/t/put-accounts-account-id-returns-500-internal-server-error-with-settings/868211
   ///   </para>
   ///   <para>
   ///     API Ref: https://developers.cloudflare.com/api/resources/accounts/methods/update/
   ///   </para>
   /// </remarks>
-  [CloudflareInternalBug(
-    BugDescription = "PUT /accounts/{account_id} with 'settings' body parameter returns 500 Internal Server Error ('unhandled server error') despite 'settings' being documented as an optional body parameter",
-    ReferenceUrl = "https://community.cloudflare.com/t/put-accounts-account-id-returns-500-internal-server-error-with-settings/868211")]
   [IntegrationTest]
-  public async Task UpdateAccountAsync_WithSettings_IsBroken()
+  public async Task UpdateAccountAsync_WithSettings_UpdatesSettings()
   {
     // Arrange
     var accountId = _settings.AccountId;
     var originalAccount = await _sut.GetAccountAsync(accountId);
 
-    // Act - Attempt to update settings (documented but broken)
-    var newSettings = new AccountSettings(AbuseContactEmail: "thisisatest@email.com");
-    var updateRequest = new UpdateAccountRequest(originalAccount.Name, newSettings);
-    var action = async () => await _sut.UpdateAccountAsync(accountId, updateRequest);
+    try
+    {
+      // Act - Update settings with a test abuse contact email.
+      var newSettings = new AccountSettings(AbuseContactEmail: "thisisatest@email.com");
+      var updateRequest = new UpdateAccountRequest(originalAccount.Name, newSettings);
+      var result = await _sut.UpdateAccountAsync(accountId, updateRequest);
 
-    // Assert - Document actual API behavior: settings parameter causes 500 Internal Server Error
-    // If this assertion fails in the future, it means Cloudflare fixed the bug
-    await action.Should().ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError,
-        "the Cloudflare API returns 500 when 'settings' body parameter is sent; " +
-        "if this test fails, Cloudflare may have fixed the bug and the test should be updated to verify settings can be updated");
+      // Assert - The update succeeds and returns the account.
+      result.Should().NotBeNull();
+      result.Id.Should().Be(accountId);
+
+      // The API may or may not echo the settings object back; only assert on it when present.
+      if (result.Settings is not null)
+        result.Settings.AbuseContactEmail.Should().Be("thisisatest@email.com");
+    }
+    finally
+    {
+      // Cleanup - Restore the original settings (when known) so the account is left unchanged.
+      var revertRequest = new UpdateAccountRequest(originalAccount.Name, originalAccount.Settings);
+      await _sut.UpdateAccountAsync(accountId, revertRequest);
+    }
   }
 
-  /// <summary>I13: Verifies that UpdateAccountAsync with name and settings is broken and returns 500.</summary>
+  /// <summary>I13: Verifies that UpdateAccountAsync can update the name and settings in a single request.</summary>
   /// <remarks>
-  ///   <b>Cloudflare API Bug:</b> Same root cause as UpdateAccountAsync_WithSettings_IsBroken.
   ///   <para>
-  ///     The Cloudflare API returns 500 Internal Server Error when sending the documented 'settings'
-  ///     body parameter, even when combined with a valid name update.
+  ///     <b>History:</b> Same root cause as <see cref="UpdateAccountAsync_WithSettings_UpdatesSettings" />:
+  ///     sending the documented 'settings' body parameter used to return 500 Internal Server Error, even
+  ///     when combined with a valid name update. Cloudflare fixed this server-side bug in July 2026.
   ///   </para>
   /// </remarks>
-  [CloudflareInternalBug(
-    BugDescription = "PUT /accounts/{account_id} with 'settings' body parameter returns 500 Internal Server Error - see UpdateAccountAsync_WithSettings_IsBroken",
-    ReferenceUrl = "https://community.cloudflare.com/t/put-accounts-account-id-returns-500-internal-server-error-with-settings/868211")]
   [IntegrationTest]
-  public async Task UpdateAccountAsync_WithNameAndSettings_IsBroken()
+  public async Task UpdateAccountAsync_WithNameAndSettings_UpdatesBoth()
   {
     // Arrange
     var accountId = _settings.AccountId;
@@ -314,17 +317,28 @@ public class AccountManagementApiIntegrationTests : IClassFixture<CloudflareApiT
     var comboTestName = $"{originalAccount.Name} - Combo Test";
     var testName = comboTestName.Substring(0, Math.Min(50, comboTestName.Length));
 
-    // Act - Attempt to update both name and settings (settings causes the failure)
-    var newSettings = new AccountSettings(AbuseContactEmail: "thisisatest@email.com");
-    var updateRequest = new UpdateAccountRequest(testName, newSettings);
-    var action = async () => await _sut.UpdateAccountAsync(accountId, updateRequest);
+    try
+    {
+      // Act - Update both the name and the settings in a single request.
+      var newSettings = new AccountSettings(AbuseContactEmail: "thisisatest@email.com");
+      var updateRequest = new UpdateAccountRequest(testName, newSettings);
+      var result = await _sut.UpdateAccountAsync(accountId, updateRequest);
 
-    // Assert - Document actual API behavior: settings parameter causes 500 Internal Server Error
-    // If this assertion fails in the future, it means Cloudflare fixed the bug
-    await action.Should().ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError,
-        "the Cloudflare API returns 500 when 'settings' body parameter is sent; " +
-        "if this test fails, Cloudflare may have fixed the bug and the test should be updated to verify name+settings can be updated");
+      // Assert - The update succeeds and returns the account with the new name.
+      result.Should().NotBeNull();
+      result.Id.Should().Be(accountId);
+      result.Name.Should().Be(testName);
+
+      // The API may or may not echo the settings object back; only assert on it when present.
+      if (result.Settings is not null)
+        result.Settings.AbuseContactEmail.Should().Be("thisisatest@email.com");
+    }
+    finally
+    {
+      // Cleanup - Restore the original name and settings so the account is left unchanged.
+      var revertRequest = new UpdateAccountRequest(originalAccount.Name, originalAccount.Settings);
+      await _sut.UpdateAccountAsync(accountId, revertRequest);
+    }
   }
 
   /// <summary>I14: Verifies UpdateAccountAsync returns the updated account.</summary>
