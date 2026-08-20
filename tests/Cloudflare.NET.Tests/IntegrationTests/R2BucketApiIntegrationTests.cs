@@ -1381,7 +1381,7 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   ///     This test verifies the SDK correctly sends the header and parses the response.
   ///   </para>
   /// </remarks>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Cloudflare regression since 2026-08-20: PATCH /accounts/{id}/r2/buckets/{bucket} returns 405 error 7001, while Cloudflare's docs and official SDK still specify PATCH. Re-enable when Cloudflare restores the endpoint.")]
   public async Task UpdateAsync_CanChangeStorageClassToInfrequentAccess()
   {
     // Arrange - Create a bucket with Standard storage class
@@ -1414,7 +1414,7 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   /// <summary>
   ///   Verifies that UpdateAsync can change the storage class back to Standard from InfrequentAccess.
   /// </summary>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Cloudflare regression since 2026-08-20: PATCH /accounts/{id}/r2/buckets/{bucket} returns 405 error 7001, while Cloudflare's docs and official SDK still specify PATCH. Re-enable when Cloudflare restores the endpoint.")]
   public async Task UpdateAsync_CanChangeStorageClassBackToStandard()
   {
     // Arrange - Create a bucket with InfrequentAccess storage class
@@ -1455,7 +1455,7 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   /// <summary>
   ///   Verifies that UpdateAsync works correctly on EU jurisdiction buckets.
   /// </summary>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Cloudflare regression since 2026-08-20: PATCH /accounts/{id}/r2/buckets/{bucket} returns 405 error 7001, while Cloudflare's docs and official SDK still specify PATCH. Re-enable when Cloudflare restores the endpoint.")]
   public async Task UpdateAsync_WorksOnEuJurisdictionBucket()
   {
     // Arrange
@@ -1503,7 +1503,7 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   /// <summary>
   ///   Verifies that UpdateAsync without jurisdiction on an EU bucket returns 404.
   /// </summary>
-  [IntegrationTest]
+  [IntegrationTest(Skip = "Cloudflare regression since 2026-08-20: PATCH /accounts/{id}/r2/buckets/{bucket} returns 405 error 7001, while Cloudflare's docs and official SDK still specify PATCH. Re-enable when Cloudflare restores the endpoint.")]
   public async Task UpdateAsync_WithoutJurisdictionOnEuBucket_ThrowsNotFound()
   {
     // Arrange
