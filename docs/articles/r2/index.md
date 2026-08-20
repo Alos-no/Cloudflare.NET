@@ -59,7 +59,7 @@ public class StorageService(IR2Client r2)
 | **Intelligent Uploads** | Auto-selects single-part or multipart based on file size |
 | **Multipart Uploads** | Handle files up to 5 TiB with parallel part uploads |
 | **Presigned URLs** | Generate secure URLs for direct browser uploads |
-| **Jurisdiction Support** | EU, FedRAMP, and default global endpoints |
+| **Jurisdiction Support** | EU, FedRAMP, US, and default global endpoints |
 | **Named Clients** | Multi-account scenarios with `IR2ClientFactory` |
 | **Operation Metrics** | Track Class A/B operations, ingress, and egress bytes |
 | **Error Handling** | Rich exceptions with partial metrics for debugging |
@@ -218,6 +218,7 @@ public class MultiRegionService(IR2ClientFactory factory)
 | `Default` | `https://{account_id}.r2.cloudflarestorage.com` |
 | `EuropeanUnion` | `https://{account_id}.eu.r2.cloudflarestorage.com` |
 | `FedRamp` | `https://{account_id}.fedramp.r2.cloudflarestorage.com` |
+| `UnitedStates` | `https://{account_id}.us.r2.cloudflarestorage.com` |
 
 See [R2 Object Storage](../r2-client.md#jurisdiction-support) for detailed jurisdiction documentation.
 

@@ -114,6 +114,18 @@ public readonly struct R2Jurisdiction : IExtensibleEnum<R2Jurisdiction>, IEquata
   /// </remarks>
   public static R2Jurisdiction FedRamp { get; } = new("fedramp");
 
+  /// <summary>United States jurisdiction.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     Objects are guaranteed to be stored and processed within the United States, helping meet
+  ///     US data residency requirements.
+  ///   </para>
+  ///   <para>
+  ///     When using the S3 API, use the endpoint: <c>https://{account_id}.us.r2.cloudflarestorage.com</c>
+  ///   </para>
+  /// </remarks>
+  public static R2Jurisdiction UnitedStates { get; } = new("us");
+
   #endregion
 
 
@@ -221,6 +233,7 @@ public readonly struct R2Jurisdiction : IExtensibleEnum<R2Jurisdiction>, IEquata
   ///   <code>
   ///   R2Jurisdiction.EuropeanUnion.GetS3Subdomain(); // Returns: "eu"
   ///   R2Jurisdiction.FedRamp.GetS3Subdomain();       // Returns: "fedramp"
+  ///   R2Jurisdiction.UnitedStates.GetS3Subdomain();  // Returns: "us"
   ///   R2Jurisdiction.Default.GetS3Subdomain();       // Returns: null
   ///   </code>
   /// </example>

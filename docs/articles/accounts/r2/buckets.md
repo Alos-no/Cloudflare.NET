@@ -286,6 +286,7 @@ Jurisdictions guarantee data residency within specific geographic or regulatory 
 | `Default` | `default` | No restriction (global) |
 | `EuropeanUnion` | `eu` | EU data residency (GDPR compliance) |
 | `FedRamp` | `fedramp` | US federal compliance (Enterprise only) |
+| `UnitedStates` | `us` | US data residency |
 
 ```csharp
 // EU jurisdiction for GDPR compliance
