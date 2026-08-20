@@ -86,6 +86,7 @@ public class ExtensibleEnumConverterTests
     JsonSerializer.Serialize(R2Jurisdiction.Default, _serializerOptions).Should().Be("\"default\"");
     JsonSerializer.Serialize(R2Jurisdiction.EuropeanUnion, _serializerOptions).Should().Be("\"eu\"");
     JsonSerializer.Serialize(R2Jurisdiction.FedRamp, _serializerOptions).Should().Be("\"fedramp\"");
+    JsonSerializer.Serialize(R2Jurisdiction.UnitedStates, _serializerOptions).Should().Be("\"us\"");
   }
 
   [Fact]
@@ -186,6 +187,7 @@ public class ExtensibleEnumConverterTests
   [InlineData("default")]
   [InlineData("eu")]
   [InlineData("fedramp")]
+  [InlineData("us")]
   [InlineData("future-jurisdiction")]
   public void RoundTrip_Jurisdiction_PreservesValue(string value)
   {

@@ -26,6 +26,7 @@ using Xunit.Abstractions;
 ///       <item><description>Default: https://{account_id}.r2.cloudflarestorage.com</description></item>
 ///       <item><description>EU: https://{account_id}.eu.r2.cloudflarestorage.com</description></item>
 ///       <item><description>FedRAMP: https://{account_id}.fedramp.r2.cloudflarestorage.com</description></item>
+///       <item><description>US: https://{account_id}.us.r2.cloudflarestorage.com</description></item>
 ///     </list>
 ///   </para>
 /// </remarks>

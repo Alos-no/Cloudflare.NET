@@ -64,6 +64,7 @@ The `R2Settings` class provides configuration for the S3-compatible R2 client:
 | Default | `"default"` | `https://{account_id}.r2.cloudflarestorage.com` |
 | European Union | `"eu"` | `https://{account_id}.eu.r2.cloudflarestorage.com` |
 | FedRAMP | `"fedramp"` | `https://{account_id}.fedramp.r2.cloudflarestorage.com` |
+| United States | `"us"` | `https://{account_id}.us.r2.cloudflarestorage.com` |
 
 > [!TIP]
 > When `Jurisdiction` is set and `EndpointUrl` is not specified, the endpoint is automatically computed from the jurisdiction. If you explicitly set `EndpointUrl`, it takes precedence over `Jurisdiction`.

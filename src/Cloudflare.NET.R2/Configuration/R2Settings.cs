@@ -52,6 +52,7 @@ public class R2Settings
   ///       <item><description>Default: <c>https://{account_id}.r2.cloudflarestorage.com</c></description></item>
   ///       <item><description>EU: <c>https://{account_id}.eu.r2.cloudflarestorage.com</c></description></item>
   ///       <item><description>FedRAMP: <c>https://{account_id}.fedramp.r2.cloudflarestorage.com</c></description></item>
+  ///       <item><description>US: <c>https://{account_id}.us.r2.cloudflarestorage.com</c></description></item>
   ///     </list>
   ///   </para>
   ///   <para>

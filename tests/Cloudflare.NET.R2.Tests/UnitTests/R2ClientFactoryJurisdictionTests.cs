@@ -129,6 +129,37 @@ public class R2ClientFactoryJurisdictionTests
   }
 
 
+  /// <summary>Verifies that GetClient with US jurisdiction returns a valid client.</summary>
+  [Fact]
+  public void GetClient_WithUnitedStatesJurisdiction_ReturnsClient()
+  {
+    // Arrange
+    var services = CreateServiceCollection();
+
+    services.AddCloudflareApiClient(options =>
+    {
+      options.AccountId = "test-account-id";
+      options.ApiToken  = "test-token";
+    });
+
+    services.AddCloudflareR2Client(options =>
+    {
+      options.AccessKeyId     = "test-access-key";
+      options.SecretAccessKey = "test-secret-key";
+    });
+
+    var serviceProvider = services.BuildServiceProvider();
+    var factory         = serviceProvider.GetRequiredService<IR2ClientFactory>();
+
+    // Act
+    var client = factory.GetClient(R2Jurisdiction.UnitedStates);
+
+    // Assert
+    client.Should().NotBeNull();
+    client.Should().BeOfType<R2Client>();
+  }
+
+
   /// <summary>Verifies that GetClient caches clients by jurisdiction.</summary>
   [Fact]
   public void GetClient_CalledTwiceWithSameJurisdiction_ReturnsCachedInstance()

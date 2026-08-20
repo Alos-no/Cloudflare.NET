@@ -59,6 +59,22 @@ public class R2JurisdictionTests
   }
 
 
+  /// <summary>Verifies that UnitedStates jurisdiction returns the US-specific endpoint.</summary>
+  [Fact]
+  public void GetS3EndpointUrl_UnitedStatesJurisdiction_ReturnsUsEndpoint()
+  {
+    // Arrange
+    const string accountId = "abc123";
+    var jurisdiction = R2Jurisdiction.UnitedStates;
+
+    // Act
+    var endpointUrl = jurisdiction.GetS3EndpointUrl(accountId);
+
+    // Assert
+    endpointUrl.Should().Be("https://abc123.us.r2.cloudflarestorage.com");
+  }
+
+
   /// <summary>Verifies that custom (future) jurisdiction values produce correct endpoint URLs.</summary>
   [Fact]
   public void GetS3EndpointUrl_CustomJurisdiction_ReturnsCustomEndpoint()
@@ -144,8 +160,10 @@ public class R2JurisdictionTests
   [InlineData("default", "abc123", "https://abc123.r2.cloudflarestorage.com")]
   [InlineData("eu", "abc123", "https://abc123.eu.r2.cloudflarestorage.com")]
   [InlineData("fedramp", "abc123", "https://abc123.fedramp.r2.cloudflarestorage.com")]
+  [InlineData("us", "abc123", "https://abc123.us.r2.cloudflarestorage.com")]
   [InlineData("EU", "abc123", "https://abc123.eu.r2.cloudflarestorage.com")]
   [InlineData("FEDRAMP", "abc123", "https://abc123.fedramp.r2.cloudflarestorage.com")]
+  [InlineData("US", "abc123", "https://abc123.us.r2.cloudflarestorage.com")]
   public void GetS3EndpointUrl_WithVariousJurisdictions_ReturnsCorrectEndpoint(string jurisdictionValue,
                                                                                 string accountId,
                                                                                 string expectedUrl)
@@ -225,6 +243,21 @@ public class R2JurisdictionTests
   }
 
 
+  /// <summary>Verifies that UnitedStates jurisdiction returns "us" subdomain.</summary>
+  [Fact]
+  public void GetS3Subdomain_UnitedStatesJurisdiction_ReturnsUs()
+  {
+    // Arrange
+    var jurisdiction = R2Jurisdiction.UnitedStates;
+
+    // Act
+    var subdomain = jurisdiction.GetS3Subdomain();
+
+    // Assert
+    subdomain.Should().Be("us");
+  }
+
+
   /// <summary>Verifies that custom jurisdiction returns lowercase subdomain.</summary>
   [Fact]
   public void GetS3Subdomain_CustomJurisdiction_ReturnsLowercaseValue()
@@ -270,6 +303,7 @@ public class R2JurisdictionTests
     R2Jurisdiction.Default.Value.Should().Be("default");
     R2Jurisdiction.EuropeanUnion.Value.Should().Be("eu");
     R2Jurisdiction.FedRamp.Value.Should().Be("fedramp");
+    R2Jurisdiction.UnitedStates.Value.Should().Be("us");
   }
 
 
@@ -284,6 +318,7 @@ public class R2JurisdictionTests
     R2Jurisdiction.Default.GetS3EndpointUrl(accountId).Should().Be("https://test-account.r2.cloudflarestorage.com");
     R2Jurisdiction.EuropeanUnion.GetS3EndpointUrl(accountId).Should().Be("https://test-account.eu.r2.cloudflarestorage.com");
     R2Jurisdiction.FedRamp.GetS3EndpointUrl(accountId).Should().Be("https://test-account.fedramp.r2.cloudflarestorage.com");
+    R2Jurisdiction.UnitedStates.GetS3EndpointUrl(accountId).Should().Be("https://test-account.us.r2.cloudflarestorage.com");
   }
 
   #endregion

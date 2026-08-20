@@ -275,7 +275,7 @@ if (bucket.StorageClass is { } sc && sc == R2StorageClass.InfrequentAccess)
 | Type | Purpose | Known Values |
 |------|---------|--------------|
 | `R2LocationHint` | Bucket placement hint | `wnam`, `enam`, `weur`, `eeur`, `apac`, `oc` |
-| `R2Jurisdiction` | Data residency | `default`, `eu`, `fedramp` |
+| `R2Jurisdiction` | Data residency | `default`, `eu`, `fedramp`, `us` |
 | `R2StorageClass` | Storage tier | `Standard`, `InfrequentAccess` |
 
 #### DNS & Zones

@@ -344,6 +344,24 @@ public class R2SettingsValidatorTests
   }
 
 
+  /// <summary>Verifies that GetEffectiveEndpointUrl computes correct URL for US jurisdiction.</summary>
+  [Fact]
+  public void GetEffectiveEndpointUrl_UnitedStatesJurisdiction_ReturnsUsEndpoint()
+  {
+    // Arrange
+    var settings = new R2Settings
+    {
+      Jurisdiction = R2Jurisdiction.UnitedStates
+    };
+
+    // Act
+    var endpointUrl = settings.GetEffectiveEndpointUrl("test-account");
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.us.r2.cloudflarestorage.com");
+  }
+
+
   /// <summary>Verifies that explicit EndpointUrl takes precedence over Jurisdiction.</summary>
   [Fact]
   public void GetEffectiveEndpointUrl_WithExplicitEndpointUrl_OverridesJurisdiction()
@@ -416,6 +434,7 @@ public class R2SettingsValidatorTests
   [InlineData("default", "https://acct.r2.cloudflarestorage.com")]
   [InlineData("eu", "https://acct.eu.r2.cloudflarestorage.com")]
   [InlineData("fedramp", "https://acct.fedramp.r2.cloudflarestorage.com")]
+  [InlineData("us", "https://acct.us.r2.cloudflarestorage.com")]
   public void GetEffectiveEndpointUrl_WithVariousJurisdictions_ReturnsCorrectEndpoints(
     string jurisdictionValue,
     string expectedUrl)
@@ -471,6 +490,18 @@ public class R2SettingsValidatorTests
 
     // Assert
     endpointUrl.Should().Be("https://test-account.fedramp.r2.cloudflarestorage.com");
+  }
+
+
+  /// <summary>Verifies that GetEndpointUrlForJurisdiction returns correct URL for the US jurisdiction.</summary>
+  [Fact]
+  public void GetEndpointUrlForJurisdiction_UnitedStates_ReturnsUsEndpoint()
+  {
+    // Act
+    var endpointUrl = R2Settings.GetEndpointUrlForJurisdiction("test-account", R2Jurisdiction.UnitedStates);
+
+    // Assert
+    endpointUrl.Should().Be("https://test-account.us.r2.cloudflarestorage.com");
   }
 
 

@@ -37,6 +37,7 @@ R2 supports jurisdictional restrictions that ensure data stays within specific g
 | `Default` | No restriction (global) | `https://{account_id}.r2.cloudflarestorage.com` |
 | `EuropeanUnion` | EU data residency | `https://{account_id}.eu.r2.cloudflarestorage.com` |
 | `FedRamp` | FedRAMP compliance | `https://{account_id}.fedramp.r2.cloudflarestorage.com` |
+| `UnitedStates` | US data residency | `https://{account_id}.us.r2.cloudflarestorage.com` |
 
 ### Configuration-Based Jurisdiction
 

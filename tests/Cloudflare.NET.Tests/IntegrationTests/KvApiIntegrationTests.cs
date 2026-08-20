@@ -75,6 +75,29 @@ public class KvApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IA
     _namespaceId = ns.Id;
 
     _output.WriteLine($"Created test namespace: {_namespaceId} ({_namespaceTitle})");
+
+    // Newly created namespaces are not immediately visible to the value endpoints: for a few seconds,
+    // writes can fail with 404 error 10013 "get namespace: 'namespace not found'" (observed in CI on
+    // 2026-08-20). Poll a probe write until the namespace is usable so tests do not fail on this
+    // propagation delay.
+    var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(120);
+    const string probeKey = "cfnet-readiness-probe";
+
+    while (true)
+    {
+      try
+      {
+        await _sut.WriteValueAsync(_namespaceId, probeKey, "ready");
+        await _sut.DeleteValueAsync(_namespaceId, probeKey);
+
+        break;
+      }
+      catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound && DateTime.UtcNow < deadline)
+      {
+        _output.WriteLine("Namespace not yet visible to the value endpoints; retrying in 5s...");
+        await Task.Delay(TimeSpan.FromSeconds(5));
+      }
+    }
   }
 
   /// <summary>Asynchronously deletes the KV namespace after all tests in this class have run.</summary>
