@@ -72,7 +72,51 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
   public async Task InitializeAsync()
   {
     // Create a new R2 bucket for the test run.
-    await _sut.CreateR2BucketAsync(_bucketName);
+    //
+    // Bucket creation is a POST, which the SDK's resilience pipeline deliberately does not retry
+    // because POST is not idempotent. Cloudflare's gateway occasionally answers 502/503/504 with
+    // error 7009 "Upstream service unavailable" (observed in CI on 2026-08-20), which would fail
+    // the test before it runs any assertion, so this setup retries those responses itself.
+    var       attempts    = 0;
+    const int maxAttempts = 3;
+
+    while (true)
+    {
+      try
+      {
+        await _sut.CreateR2BucketAsync(_bucketName);
+
+        return;
+      }
+      catch (HttpRequestException ex) when (IsTransientGatewayFailure(ex) && attempts < maxAttempts - 1)
+      {
+        attempts++;
+        _output.WriteLine($"Bucket creation failed with {ex.StatusCode}; retrying (attempt {attempts + 1} of {maxAttempts}).");
+
+        await Task.Delay(TimeSpan.FromSeconds(5));
+      }
+      catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Conflict && attempts > 0)
+      {
+        // A previous attempt timed out at the gateway but did create the bucket, so Cloudflare now
+        // reports error 10004 "the bucket you tried to create already exists, and you own it".
+        // The bucket exists under the expected name, which is all this setup needs.
+        _output.WriteLine("Bucket already existed from an earlier attempt that timed out; continuing.");
+
+        return;
+      }
+    }
+  }
+
+  /// <summary>
+  ///   Determines whether the given failure is a transient Cloudflare gateway error that is worth retrying.
+  /// </summary>
+  /// <param name="exception">The exception thrown by the API call.</param>
+  /// <returns><c>true</c> when the status code indicates a transient upstream failure; otherwise <c>false</c>.</returns>
+  private static bool IsTransientGatewayFailure(HttpRequestException exception)
+  {
+    return exception.StatusCode is HttpStatusCode.BadGateway
+                                or HttpStatusCode.ServiceUnavailable
+                                or HttpStatusCode.GatewayTimeout;
   }
 
   /// <summary>Asynchronously deletes the R2 bucket after all tests in this class have run.</summary>
