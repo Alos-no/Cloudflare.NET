@@ -587,18 +587,26 @@ public class ResiliencePipelineIntegrationTests : IDisposable
     var totalTime = endTime - startTime;
 
     // Assert
-    // With 3 retries and exponential backoff (base ~1s), we expect significant cumulative delay.
-    // The logs show "Attempt: '0', '1', '2', '3'" confirming 4 total attempts.
-    // Due to WireMock LogEntries collection issues with helper-created service providers,
-    // we verify behavior through timing instead.
+    // The pipeline must send the initial request plus one request per configured retry.
+    _server.LogEntries.Should().HaveCount(4,
+      "3 retries means 1 initial request followed by 3 retried requests");
 
-    // The total time should reflect exponential delays.
-    // With 3 retries and base delay of 1s: ~1s + ~2s + ~4s = ~7s minimum (before jitter).
-    totalTime.Should().BeGreaterThan(TimeSpan.FromSeconds(3),
+    // The cumulative delay must be large enough to prove the pipeline waited between attempts
+    // rather than hammering the server back to back.
+    //
+    // The floor below is derived from Polly's decorrelated jitter, NOT from the nominal
+    // 1s + 2s + 4s schedule: with BackoffType = Exponential and UseJitter = true, Polly computes
+    // each delay as (next - prev) * (1 / 1.4) * baseDelay, where next = 2^t * tanh(sqrt(4t)) and
+    // t = attemptNumber + a random value in [0, 1). Because each delay is a difference against the
+    // previous value, the delays telescope and the total is next(t) * (1 / 1.4) * baseDelay for the
+    // final attempt alone. With 3 retries the final attempt has t in [2, 3), so with a 1s base delay
+    // the total cumulative delay ranges from about 2.84s (t = 2) to about 5.70s (t approaching 3).
+    // A 3s floor therefore fails roughly 8% of runs, which is what broke CI on 2026-08-20.
+    // 2.5s sits safely below the mathematical minimum while still failing if delays were skipped.
+    totalTime.Should().BeGreaterThan(TimeSpan.FromSeconds(2.5),
       "exponential backoff should result in meaningful cumulative delays across retries");
 
-    _output.WriteLine($"Total time with retries: {totalTime.TotalSeconds:F2}s");
-    _output.WriteLine("NOTE: Request count verified through log output showing 4 attempts (0, 1, 2, 3)");
+    _output.WriteLine($"Total time with retries: {totalTime.TotalSeconds:F2}s across {_server.LogEntries.Count} attempts");
   }
 
   #endregion
