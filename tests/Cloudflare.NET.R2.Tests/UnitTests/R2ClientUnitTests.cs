@@ -1092,6 +1092,91 @@ public class R2ClientUnitTests
   }
 
   [Fact]
+  public void CreatePresignedUploadPartUrl_PutsUploadIdAndPartNumberOnTheirDedicatedProperties()
+  {
+    // Arrange
+    // The upload identifier and part number must travel on the request's own UploadId and PartNumber
+    // properties, which produce the "uploadId" and "partNumber" query parameters that S3 keys the
+    // UploadPart operation on. Routing them through the Parameters collection instead produces
+    // "x-uploadId" and "x-partNumber", and R2 answers such a request by writing a plain object over the
+    // key rather than recording a part, while still returning 200.
+    var request = new PresignedUploadPartRequest("key", "upload-id", 7, TimeSpan.FromMinutes(5), 1024,
+                                                 "application/octet-stream");
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? captured = null;
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => captured = r)
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    mockR2Client.Object.CreatePresignedUploadPartUrl("bucket", request);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.UploadId.Should().Be("upload-id");
+    captured.PartNumber.Should().Be(7);
+    captured.Parameters.Count.Should().Be(0, "routing these through custom parameters would prefix them with \"x-\"");
+  }
+
+  [Fact]
+  public void CreatePresignedUploadPartsUrls_PutsUploadIdAndEachPartNumberOnTheirDedicatedProperties()
+  {
+    // Arrange
+    // Two parts of the same size, because this method requires every part to match the first part's size.
+    const long partSize = 5L * 1024 * 1024;
+
+    var request = new PresignedUploadPartsRequest("key", "upload-id", TimeSpan.FromMinutes(5),
+                                                  new Dictionary<int, long>
+                                                  {
+                                                    [1] = partSize,
+                                                    [2] = partSize
+                                                  });
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    // The implementation reuses one request object across the loop, so the values are read at call time
+    // rather than the object being kept, which would only show the final part number twice.
+    var seenUploadIds   = new List<string?>();
+    var seenPartNumbers = new List<int?>();
+    var seenParameters  = new List<int>();
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r =>
+      {
+        seenUploadIds.Add(r.UploadId);
+        seenPartNumbers.Add(r.PartNumber);
+        seenParameters.Add(r.Parameters.Count);
+      })
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    var urls = mockR2Client.Object.CreatePresignedUploadPartsUrls("bucket", request);
+
+    // Assert
+    urls.Should().HaveCount(2);
+    seenUploadIds.Should().AllBe("upload-id");
+    seenPartNumbers.Should().BeEquivalentTo(new int?[] { 1, 2 });
+    seenParameters.Should().AllBeEquivalentTo(0, "routing these through custom parameters would prefix them with \"x-\"");
+  }
+
+  [Fact]
   public void CreatePresignedUploadPartsUrls_OnS3Error_ThrowsCloudflareR2OperationException()
   {
     // Arrange
@@ -1214,6 +1299,97 @@ public class R2ClientUnitTests
     // Assert
     // The action should throw the exception from the multipart check, not the size validation.
     await action.Should().ThrowAsync<NotSupportedException>();
+  }
+
+
+  [Fact]
+  public async Task InitiateMultipartUploadAsync_WithContentType_SendsItOnTheInitiateRequest()
+  {
+    // Arrange: capture the request, because the content type S3 records for the assembled object comes
+    // from this call and from nowhere else. The parts cannot carry it.
+    InitiateMultipartUploadRequest? capturedRequest = null;
+
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<InitiateMultipartUploadRequest, CancellationToken>((r, _) => capturedRequest = r)
+      .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = "upload-id" });
+
+    // Act
+    var result = await _sut.InitiateMultipartUploadAsync("bucket", "report.pdf", "application/pdf");
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.BucketName.Should().Be("bucket");
+    capturedRequest.Key.Should().Be("report.pdf");
+    capturedRequest.ContentType.Should().Be("application/pdf");
+    result.Data.Should().Be("upload-id");
+    result.Metrics.ClassAOperations.Should().Be(1);
+  }
+
+
+  [Theory]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("   ")]
+  public async Task InitiateMultipartUploadAsync_WithNoUsableContentType_LeavesThePropertyUnset(string? contentType)
+  {
+    // Arrange: an absent or blank content type must leave the property alone so that R2 applies its own
+    // default, rather than the client sending an empty Content-Type header.
+    InitiateMultipartUploadRequest? capturedRequest = null;
+
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<InitiateMultipartUploadRequest, CancellationToken>((r, _) => capturedRequest = r)
+      .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = "upload-id" });
+
+    // Act
+    await _sut.InitiateMultipartUploadAsync("bucket", "key.bin", contentType);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.ContentType.Should().BeNull();
+  }
+
+
+  [Fact]
+  public async Task InitiateMultipartUploadAsync_WithoutAContentTypeArgument_LeavesThePropertyUnset()
+  {
+    // Arrange: this covers the overload that predates the content type, proving it still sends exactly
+    // what it always sent.
+    InitiateMultipartUploadRequest? capturedRequest = null;
+
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<InitiateMultipartUploadRequest, CancellationToken>((r, _) => capturedRequest = r)
+      .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = "upload-id" });
+
+    // Act
+    var result = await _sut.InitiateMultipartUploadAsync("bucket", "key.bin", CancellationToken.None);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.BucketName.Should().Be("bucket");
+    capturedRequest.Key.Should().Be("key.bin");
+    capturedRequest.ContentType.Should().BeNull();
+    result.Data.Should().Be("upload-id");
+  }
+
+
+  [Fact]
+  public async Task InitiateMultipartUploadAsync_WithContentType_OnS3Error_ThrowsCloudflareR2OperationException()
+  {
+    // Arrange
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .ThrowsAsync(new AmazonS3Exception("Access Denied"));
+
+    // Act
+    var action = async () => await _sut.InitiateMultipartUploadAsync("bucket", "key.bin", "application/pdf");
+
+    // Assert: the failed call is still billed, so its cost is reported to the caller.
+    var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+    ex.Which.InnerException.Should().BeOfType<AmazonS3Exception>();
   }
 
   #endregion

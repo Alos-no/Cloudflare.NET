@@ -758,7 +758,10 @@ public class R2Client : IR2Client, IDisposable
         totalMetrics += new R2Result(1);
         var response = await _s3Client.ListPartsAsync(request, cancellationToken);
 
-        allParts.AddRange(response.Parts.Select(p => new ListedPart(p.PartNumber, p.ETag, p.Size, p.LastModified)));
+        // R2 omits the part list entirely when the upload has no parts yet, which the AWS SDK surfaces as a
+        // null collection rather than an empty one. Treat that as "no parts" instead of dereferencing it.
+        if (response.Parts is not null)
+          allParts.AddRange(response.Parts.Select(p => new ListedPart(p.PartNumber, p.ETag, p.Size, p.LastModified)));
 
         if (response.IsTruncated != true) // IsTruncated is type `bool?`
           break;
@@ -905,8 +908,19 @@ public class R2Client : IR2Client, IDisposable
   }
 
   /// <inheritdoc />
+  public Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
+                                                             string            objectKey,
+                                                             CancellationToken cancellationToken = default)
+  {
+    // Defer to the overload that carries a content type. Passing null leaves the property unset on the
+    // request, which is exactly the behaviour this overload has always had.
+    return InitiateMultipartUploadAsync(bucketName, objectKey, null, cancellationToken);
+  }
+
+  /// <inheritdoc />
   public async Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
                                                                    string            objectKey,
+                                                                   string?           contentType,
                                                                    CancellationToken cancellationToken = default)
   {
     var metrics = new R2Result(1);
@@ -918,6 +932,12 @@ public class R2Client : IR2Client, IDisposable
         BucketName = bucketName,
         Key        = objectKey
       };
+
+      // S3 records the assembled object's Content-Type from this initiate request; the individual parts
+      // cannot carry it. Only assign the property when the caller supplied a value, so that a null or
+      // blank argument still lets R2 apply its own default rather than sending an empty header.
+      if (!string.IsNullOrWhiteSpace(contentType))
+        request.ContentType = contentType;
 
       var response = await _s3Client.InitiateMultipartUploadAsync(request, cancellationToken);
 
@@ -942,12 +962,14 @@ public class R2Client : IR2Client, IDisposable
         Key        = request.Key,
         Verb       = HttpVerb.PUT,
         Expires    = DateTime.UtcNow.Add(request.ExpiresAfter),
-        Parameters =
-        {
-          // Per-part parameters must be added to the parameters collection to be included in the signature.
-          ["uploadId"]   = request.UploadId,
-          ["partNumber"] = request.PartNumber.ToString()
-        },
+        // UploadId and PartNumber must be set through these dedicated properties, which emit the
+        // "uploadId" and "partNumber" query parameters that the S3 UploadPart operation is keyed on.
+        // Putting them in the Parameters collection instead emits them as "x-uploadId" and
+        // "x-partNumber", because that collection is for arbitrary custom parameters and the AWS SDK
+        // prefixes those with "x-". R2 then sees a PUT with no recognisable upload identifier, answers
+        // 200, and writes a plain object over the key instead of recording a part.
+        UploadId   = request.UploadId,
+        PartNumber = request.PartNumber,
         Headers =
         {
           // The Content-Length header is signed to enforce size on the provider side.
@@ -1032,12 +1054,13 @@ public class R2Client : IR2Client, IDisposable
         Key        = request.Key,
         Verb       = HttpVerb.PUT,
         Expires    = DateTime.UtcNow.Add(request.ExpiresAfter),
-        Parameters =
-        {
-          ["uploadId"] = request.UploadId,
-          // PartNumber will be updated in the loop. Initialize with a placeholder.
-          ["partNumber"] = "0"
-        },
+        // UploadId and PartNumber must be set through these dedicated properties so that the URL carries
+        // the "uploadId" and "partNumber" query parameters the S3 UploadPart operation is keyed on. The
+        // Parameters collection is for arbitrary custom parameters and the AWS SDK prefixes those with
+        // "x-", which would make R2 treat each part upload as a plain object PUT over the key.
+        UploadId = request.UploadId,
+        // PartNumber will be updated in the loop. Initialize with a placeholder.
+        PartNumber = 0,
         Headers =
         {
           // Content-Length will be updated in the loop. Initialize with a placeholder.
@@ -1054,7 +1077,7 @@ public class R2Client : IR2Client, IDisposable
       foreach (var (partNumber, contentLength) in request.PartNumberAndLength)
       {
         // Update only the parameters that change per iteration.
-        presignedUrlRequest.Parameters["partNumber"]  = partNumber.ToString();
+        presignedUrlRequest.PartNumber                = partNumber;
         presignedUrlRequest.Headers["Content-Length"] = contentLength.ToString();
 
         // Generate the signed URL for the current part and add it to the dictionary.

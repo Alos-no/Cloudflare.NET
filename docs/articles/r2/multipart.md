@@ -91,6 +91,22 @@ var uploadId = result.Data;
 Console.WriteLine($"Upload ID: {uploadId}");
 ```
 
+#### Setting the Object's Content-Type
+
+S3 reads the assembled object's `Content-Type` from the call that starts the upload and never from the
+individual parts. A caller that hands out presigned part URLs therefore has no later opportunity to set
+it, so supply it here:
+
+```csharp
+var result = await r2.InitiateMultipartUploadAsync(
+    bucketName:  "my-bucket",
+    objectKey:   "uploads/report.pdf",
+    contentType: "application/pdf");
+```
+
+Omitting the argument, or passing `null` or a blank string, leaves R2 to choose. R2's default is
+`application/octet-stream`, which is what browsers download rather than display.
+
 ### Listing Parts
 
 Check which parts have been uploaded:

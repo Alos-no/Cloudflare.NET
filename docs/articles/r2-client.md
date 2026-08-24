@@ -115,17 +115,27 @@ public class StorageService(IR2Client r2)
         return await r2.UploadAsync(bucket, key, stream);
     }
 
-    // Upload with content type
-    public async Task<R2Result> UploadWithMetadataAsync(
+    // Upload as a multipart upload, recording the content type the finished object will carry.
+    // The upload methods above do not set a content type, so R2 stores those objects as
+    // application/octet-stream. Setting it requires the multipart route or a presigned PUT URL.
+    public async Task<R2Result> UploadWithContentTypeAsync(
         string bucket,
         string key,
-        Stream stream,
+        string filePath,
         string contentType)
     {
-        return await r2.UploadAsync(bucket, key, stream, contentType: contentType);
+        var initiate = await r2.InitiateMultipartUploadAsync(bucket, key, contentType);
+        // Upload each part, then complete. See the multipart article for the full sequence.
+        return initiate.Metrics;
     }
 }
 ```
+
+> [!NOTE]
+> `UploadAsync`, `UploadSinglePartAsync` and `UploadMultipartAsync` do not accept a content type, so
+> objects they write carry R2's default of `application/octet-stream`. Use
+> `InitiateMultipartUploadAsync` with a content type, or a presigned PUT URL whose
+> `PresignedPutRequest.ContentType` names the type, when the stored value matters.
 
 ### Download Objects
 

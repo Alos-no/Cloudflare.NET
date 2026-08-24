@@ -123,7 +123,7 @@ The SDK tracks these metrics in the <xref:Cloudflare.NET.R2.Models.R2Result> obj
 
 | Method | Description |
 |--------|-------------|
-| [`InitiateMultipartUploadAsync`](multipart.md#manual-multipart-control) | Start multipart upload |
+| [`InitiateMultipartUploadAsync`](multipart.md#manual-multipart-control) | Start multipart upload, optionally naming the finished object's content type |
 | [`CompleteMultipartUploadAsync`](multipart.md#completing-upload) | Finalize multipart upload |
 | [`AbortMultipartUploadAsync`](multipart.md#aborting-upload) | Cancel multipart upload |
 

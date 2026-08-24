@@ -293,7 +293,7 @@ public interface IR2Client
                                                            string            uploadId,
                                                            CancellationToken cancellationToken = default);
 
-  /// <summary>Initiates a new multipart upload.</summary>
+  /// <summary>Initiates a new multipart upload, letting R2 choose the assembled object's content type.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key for the object in the bucket.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
@@ -301,6 +301,30 @@ public interface IR2Client
   /// <exception cref="CloudflareR2OperationException">Thrown if the operation fails.</exception>
   Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
                                                       string            objectKey,
+                                                      CancellationToken cancellationToken = default);
+
+  /// <summary>Initiates a new multipart upload and records the content type the assembled object will carry.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     S3 reads the finished object's <c>Content-Type</c> from this request and never from the individual parts.
+  ///     A caller that hands out presigned part URLs therefore has no later opportunity to set it: the content type
+  ///     must be supplied here, when the upload starts.
+  ///   </para>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank string leaves the property unset, so R2 applies its own default
+  ///     and this method behaves exactly like
+  ///     <see cref="InitiateMultipartUploadAsync(string,string,CancellationToken)" />.
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key for the object in the bucket.</param>
+  /// <param name="contentType">The MIME type to record for the assembled object, for example <c>application/pdf</c>.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A result object containing the UploadId and operation metrics.</returns>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the operation fails.</exception>
+  Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
+                                                      string            objectKey,
+                                                      string?           contentType,
                                                       CancellationToken cancellationToken = default);
 
   /// <summary>Completes a multipart upload after all parts are uploaded.</summary>

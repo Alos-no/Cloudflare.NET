@@ -876,5 +876,95 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     afterExpiry.StatusCode.Should().Be(HttpStatusCode.Forbidden);
   }
 
+  [IntegrationTest]
+  public async Task MultipartUpload_TakesItsContentTypeFromTheInitiateCall()
+  {
+    // Arrange - a multipart upload carrying a content type that R2 would never infer on its own.
+    // A single-part multipart upload is legal at any size, because the 5 MiB minimum applies to every
+    // part except the last one, and the only part here is also the last.
+    var       key         = $"multipart-content-type-{Guid.NewGuid():N}.bin";
+    var       contentType = "application/pdf";
+    using var tempFile    = new TempFile(64 * 1024);
+
+    var initiate = await _sut.InitiateMultipartUploadAsync(_bucketName, key, contentType);
+    var uploadId = initiate.Data;
+
+    try
+    {
+      // Act
+      await using var fileStream = File.OpenRead(tempFile.FilePath);
+
+      var partResponse = await _s3Client.UploadPartAsync(new UploadPartRequest
+      {
+        BucketName                       = _bucketName,
+        Key                              = key,
+        UploadId                         = uploadId,
+        PartNumber                       = 1,
+        PartSize                         = tempFile.FileSize,
+        InputStream                      = fileStream,
+        DisablePayloadSigning            = true,
+        DisableDefaultChecksumValidation = true
+      });
+
+      await _sut.CompleteMultipartUploadAsync(_bucketName, key, uploadId, [new PartETag(1, partResponse.ETag)]);
+
+      // Assert - the assembled object carries the value supplied when the upload started. The key ends in
+      // ".bin", so R2 could not have guessed "application/pdf" from the extension.
+      var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+      _output.WriteLine($"Content-Type reported by R2: {metadata.Headers.ContentType}");
+      metadata.Headers.ContentType.Should().Be(contentType,
+                                               "S3 records the assembled object's Content-Type from the initiate request, never from the parts");
+    }
+    catch
+    {
+      await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId);
+      throw;
+    }
+  }
+
+  [IntegrationTest]
+  public async Task MultipartUpload_WithoutAContentType_LeavesR2ToChooseOne()
+  {
+    // Arrange - the same upload with no content type supplied, which is what every caller of the older
+    // overload gets. This is the comparison that proves the content type argument is what changes the
+    // stored value, rather than something else about the upload.
+    var       key      = $"multipart-no-content-type-{Guid.NewGuid():N}.bin";
+    using var tempFile = new TempFile(64 * 1024);
+
+    var initiate = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var uploadId = initiate.Data;
+
+    try
+    {
+      // Act
+      await using var fileStream = File.OpenRead(tempFile.FilePath);
+
+      var partResponse = await _s3Client.UploadPartAsync(new UploadPartRequest
+      {
+        BucketName                       = _bucketName,
+        Key                              = key,
+        UploadId                         = uploadId,
+        PartNumber                       = 1,
+        PartSize                         = tempFile.FileSize,
+        InputStream                      = fileStream,
+        DisablePayloadSigning            = true,
+        DisableDefaultChecksumValidation = true
+      });
+
+      await _sut.CompleteMultipartUploadAsync(_bucketName, key, uploadId, [new PartETag(1, partResponse.ETag)]);
+
+      // Assert - R2 applies a default of its own choosing. The exact string is R2's to pick, so the test
+      // only proves it is not the value the other test supplies.
+      var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+      _output.WriteLine($"Content-Type chosen by R2 when none was supplied: {metadata.Headers.ContentType}");
+      metadata.Headers.ContentType.Should().NotBe("application/pdf");
+    }
+    catch
+    {
+      await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId);
+      throw;
+    }
+  }
+
   #endregion
 }
