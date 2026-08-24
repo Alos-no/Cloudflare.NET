@@ -45,6 +45,67 @@ Console.WriteLine($"Upload URL: {url}");
 | `Conditions` | `IEnumerable<S3PostCondition>?` | No | Additional S3 conditions |
 | `HeadersToSign` | `IReadOnlyDictionary<string, string>?` | No | Headers to include in signature |
 
+## Presigned Download URL
+
+`CreatePresignedGetUrl` produces a URL that lets the holder download one object without a Cloudflare
+credential and without your service relaying the bytes. Use it to hand a private object to a browser,
+a mobile client, or a third party for a limited window:
+
+```csharp
+var url = r2.CreatePresignedGetUrl("my-bucket", new PresignedGetRequest(
+    Key: "invoices/2026-08.pdf",
+    ExpiresAfter: TimeSpan.FromMinutes(15)
+));
+
+Console.WriteLine($"Download URL: {url}");
+```
+
+### PresignedGetRequest Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `Key` | `string` | Yes | Object key (path) |
+| `ExpiresAfter` | `TimeSpan` | Yes | URL validity duration |
+| `ResponseContentType` | `string?` | No | Overrides the `Content-Type` header R2 returns |
+| `ResponseContentDisposition` | `string?` | No | Overrides the `Content-Disposition` header R2 returns |
+
+### Controlling the Response Headers
+
+The two optional properties change the headers R2 sends when the URL is fetched, without touching the
+stored object. This is how you make a browser download a file under a different name, or open it
+inline rather than saving it:
+
+```csharp
+// The browser saves the file as "August invoice.pdf" no matter what the key is.
+var url = r2.CreatePresignedGetUrl("my-bucket", new PresignedGetRequest(
+    Key: "invoices/8f2c1a90.bin",
+    ExpiresAfter: TimeSpan.FromMinutes(5),
+    ResponseContentType: "application/pdf",
+    ResponseContentDisposition: "attachment; filename=\"August invoice.pdf\""
+));
+```
+
+Both values are part of the signature, so a recipient cannot edit them in the URL. Changing either
+one invalidates the signature and R2 rejects the request.
+
+### After Expiry
+
+Once `ExpiresAfter` has elapsed, R2 answers the URL with HTTP 403. Generate a fresh URL rather than
+issuing long-lived ones:
+
+```csharp
+[HttpGet("download/{id}")]
+public IActionResult GetDownloadUrl(string id)
+{
+    var url = r2.CreatePresignedGetUrl("documents", new PresignedGetRequest(
+        Key: $"user-uploads/{id}",
+        ExpiresAfter: TimeSpan.FromMinutes(10)
+    ));
+
+    return Redirect(url);
+}
+```
+
 ## Using Presigned URLs
 
 ### Server-Side (Generate URL)

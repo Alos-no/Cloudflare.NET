@@ -31,6 +31,13 @@ public class R2ClientUnitTests
     var loggerProvider = new XunitTestOutputLoggerProvider { Current = output };
     var loggerFactory  = new LoggerFactory([loggerProvider]);
     _sut = new R2Client(loggerFactory, _mockS3Client.Object);
+
+    // ClearBucketAsync aborts multipart uploads left open in the bucket unless the caller opts out, so it
+    // discovers them on every call. Answer that discovery with "no open uploads" by default; the tests that
+    // exercise the aborting behaviour override this setup with their own.
+    _mockS3Client
+      .Setup(c => c.ListMultipartUploadsAsync(It.IsAny<ListMultipartUploadsRequest>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListMultipartUploadsResponse { MultipartUploads = [], IsTruncated = false });
   }
 
   #endregion
@@ -463,8 +470,8 @@ public class R2ClientUnitTests
     // Assert
     _mockS3Client.Verify(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
-    // 2 lists (Class A) + 2 free deletes
-    result.ClassAOperations.Should().Be(2);
+    // 2 object lists + 1 list of open multipart uploads, all Class A; the 2 deletes are free.
+    result.ClassAOperations.Should().Be(3);
   }
 
   [Fact]
@@ -488,7 +495,8 @@ public class R2ClientUnitTests
     _mockS3Client.Verify(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()),
                          Times.Once);       // Only one batch had keys
-    result.ClassAOperations.Should().Be(2); // 2 list calls
+    // 2 object lists + 1 list of open multipart uploads, all Class A.
+    result.ClassAOperations.Should().Be(3);
   }
 
   [Fact]
@@ -558,6 +566,295 @@ public class R2ClientUnitTests
 
     _mockS3Client.Verify(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()), Times.Once);
     _mockS3Client.Verify(c => c.DeleteObjectsAsync(It.IsAny<DeleteObjectsRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+  }
+
+
+  [Fact]
+  public async Task ListObjectsPageAsync_ReturnsOnePageAndItsContinuationToken()
+  {
+    // Arrange: a truncated page, which is what a caller resuming the walk later receives.
+    var objects = Enumerable.Range(1, 3).Select(i => new S3Object { Key = $"key-{i}" }).ToList();
+
+    _mockS3Client
+      .Setup(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListObjectsV2Response
+      {
+        S3Objects             = objects,
+        IsTruncated           = true,
+        NextContinuationToken = "next-token"
+      });
+
+    // Act
+    var result = await _sut.ListObjectsPageAsync("bucket", "prefix/", 100, null);
+
+    // Assert: exactly one call, and the page carries the token the caller needs to continue.
+    _mockS3Client.Verify(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()),
+                         Times.Once);
+    result.Data.Objects.Should().HaveCount(3);
+    result.Data.IsTruncated.Should().BeTrue();
+    result.Data.NextContinuationToken.Should().Be("next-token");
+    result.Metrics.ClassAOperations.Should().Be(1);
+  }
+
+
+  [Fact]
+  public async Task ListObjectsPageAsync_PassesPrefixAndContinuationTokenToS3()
+  {
+    // Arrange: capture the request so the test can prove the caller's token reached R2 unchanged.
+    ListObjectsV2Request? capturedRequest = null;
+
+    _mockS3Client
+      .Setup(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .Callback<ListObjectsV2Request, CancellationToken>((r, _) => capturedRequest = r)
+      .ReturnsAsync(new ListObjectsV2Response { S3Objects = [], IsTruncated = false });
+
+    // Act
+    await _sut.ListObjectsPageAsync("bucket", "prefix/", 250, "resume-here");
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.BucketName.Should().Be("bucket");
+    capturedRequest.Prefix.Should().Be("prefix/");
+    capturedRequest.ContinuationToken.Should().Be("resume-here");
+    capturedRequest.MaxKeys.Should().Be(250);
+  }
+
+
+  [Theory]
+  [InlineData(0, 1000)]     // A caller asking for nothing gets the full page rather than an empty one.
+  [InlineData(-5, 1000)]    // Negative values are treated the same way.
+  [InlineData(5000, 1000)]  // Anything above the S3 ceiling is clamped down to it.
+  [InlineData(250, 250)]    // A value inside the range is passed through untouched.
+  public async Task ListObjectsPageAsync_ClampsMaxKeysToTheS3PageCeiling(int requestedMaxKeys, int expectedMaxKeys)
+  {
+    // Arrange
+    ListObjectsV2Request? capturedRequest = null;
+
+    _mockS3Client
+      .Setup(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .Callback<ListObjectsV2Request, CancellationToken>((r, _) => capturedRequest = r)
+      .ReturnsAsync(new ListObjectsV2Response { S3Objects = [], IsTruncated = false });
+
+    // Act
+    await _sut.ListObjectsPageAsync("bucket", null, requestedMaxKeys, null);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.MaxKeys.Should().Be(expectedMaxKeys);
+  }
+
+
+  [Fact]
+  public async Task ListObjectsPageAsync_WhenResponseCarriesNoObjectList_ReturnsEmptyPage()
+  {
+    // Arrange: R2 omits the object list entirely when the prefix matches nothing.
+    _mockS3Client
+      .Setup(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListObjectsV2Response { S3Objects = null, IsTruncated = false });
+
+    // Act
+    var result = await _sut.ListObjectsPageAsync("bucket", "empty-prefix/", 1000, null);
+
+    // Assert: the caller gets an empty list, never a null reference.
+    result.Data.Objects.Should().BeEmpty();
+    result.Data.IsTruncated.Should().BeFalse();
+    result.Data.NextContinuationToken.Should().BeNull();
+  }
+
+
+  [Fact]
+  public async Task ListObjectsPageAsync_OnS3Error_ThrowsCloudflareR2ListException()
+  {
+    // Arrange
+    var s3Exception = new AmazonS3Exception("List failed");
+
+    _mockS3Client
+      .Setup(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .ThrowsAsync(s3Exception);
+
+    // Act
+    var action = async () => await _sut.ListObjectsPageAsync("bucket", "prefix/", 1000, null);
+
+    // Assert: the failed call is still billed, so its cost is reported to the caller.
+    var ex = await action.Should().ThrowAsync<CloudflareR2ListException<S3Object>>();
+    ex.Which.InnerException.Should().Be(s3Exception);
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+  }
+
+
+  [Fact]
+  public async Task ListObjectsAsync_WhenProviderReturnsTruncatedWithNoToken_ThrowsToPreventInfiniteLoop()
+  {
+    // Arrange: R2 claims there is more data while returning no continuation token. Repeating the call would
+    // send the identical request and return this very page again, appending its objects on every pass.
+    var objects = new List<S3Object> { new() { Key = "key-1" } };
+
+    _mockS3Client
+      .SetupSequence(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListObjectsV2Response
+      {
+        S3Objects             = objects,
+        IsTruncated           = true,
+        NextContinuationToken = null
+      })
+      .ThrowsAsync(new AmazonS3Exception("This should not be called."));
+
+    // Act
+    var action = async () => await _sut.ListObjectsAsync("bucket", "prefix/");
+
+    // Assert: the objects already fetched are handed back, and only one call was made.
+    var ex = await action.Should().ThrowAsync<CloudflareR2ListException<S3Object>>();
+    ex.Which.InnerException.Should().BeOfType<InvalidOperationException>();
+    ex.Which.Message.Should().Contain("inconsistent pagination response");
+    ex.Which.PartialData.Should().HaveCount(1);
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1);
+  }
+
+
+  [Fact]
+  public async Task ListObjectsAsync_WhenAPageFails_ReportsObjectsFromEarlierPages()
+  {
+    // Arrange: the first page succeeds, the second fails. The caller must still receive the first page's
+    // objects, which is the partial listing this method has always promised.
+    var page1 = new List<S3Object> { new() { Key = "key-1" }, new() { Key = "key-2" } };
+    var s3Exception = new AmazonS3Exception("List failed");
+
+    _mockS3Client
+      .SetupSequence(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListObjectsV2Response
+      {
+        S3Objects             = page1,
+        IsTruncated           = true,
+        NextContinuationToken = "token"
+      })
+      .ThrowsAsync(s3Exception);
+
+    // Act
+    var action = async () => await _sut.ListObjectsAsync("bucket", "prefix/");
+
+    // Assert: both list attempts are billed, and the AWS SDK failure is preserved as the cause.
+    var ex = await action.Should().ThrowAsync<CloudflareR2ListException<S3Object>>();
+    ex.Which.PartialData.Should().HaveCount(2);
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(2);
+    ex.Which.InnerException.Should().Be(s3Exception);
+  }
+
+
+  [Fact]
+  public async Task ClearBucketAsync_AbortsMultipartUploadsLeftOpenInTheBucket()
+  {
+    // Arrange: an empty bucket that still holds two uploads that were started and never completed. Cloudflare
+    // refuses to delete a bucket while those exist, so clearing it must abort them.
+    _mockS3Client
+      .Setup(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListObjectsV2Response { S3Objects = [], IsTruncated = false });
+
+    _mockS3Client
+      .Setup(c => c.ListMultipartUploadsAsync(It.IsAny<ListMultipartUploadsRequest>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListMultipartUploadsResponse
+      {
+        MultipartUploads = [new MultipartUpload { Key = "a", UploadId = "upload-a" },
+                            new MultipartUpload { Key = "b", UploadId = "upload-b" }],
+        IsTruncated = false
+      });
+
+    var abortedUploadIds = new List<string>();
+    _mockS3Client
+      .Setup(c => c.AbortMultipartUploadAsync(It.IsAny<AbortMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<AbortMultipartUploadRequest, CancellationToken>((r, _) => abortedUploadIds.Add(r.UploadId))
+      .ReturnsAsync(new AbortMultipartUploadResponse());
+
+    // Act
+    var result = await _sut.ClearBucketAsync("bucket");
+
+    // Assert: every discovered upload is aborted, and aborting is free.
+    abortedUploadIds.Should().BeEquivalentTo(["upload-a", "upload-b"]);
+    // 1 object list + 1 list of open multipart uploads; the 2 aborts cost nothing.
+    result.ClassAOperations.Should().Be(2);
+  }
+
+
+  [Fact]
+  public async Task ClearBucketAsync_WhenAbortingIsDeclined_LeavesOpenMultipartUploadsAlone()
+  {
+    // Arrange
+    _mockS3Client
+      .Setup(c => c.ListObjectsV2Async(It.IsAny<ListObjectsV2Request>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListObjectsV2Response { S3Objects = [], IsTruncated = false });
+
+    // Act: the caller opts out of the multipart upload cleanup.
+    var result = await _sut.ClearBucketAsync("bucket", true, false);
+
+    // Assert: R2 is never asked about open uploads, so no extra Class A operation is billed.
+    _mockS3Client.Verify(
+      c => c.ListMultipartUploadsAsync(It.IsAny<ListMultipartUploadsRequest>(), It.IsAny<CancellationToken>()),
+      Times.Never);
+    _mockS3Client.Verify(
+      c => c.AbortMultipartUploadAsync(It.IsAny<AbortMultipartUploadRequest>(), It.IsAny<CancellationToken>()),
+      Times.Never);
+    result.ClassAOperations.Should().Be(1);
+  }
+
+
+  [Fact]
+  public async Task ListMultipartUploadsAsync_HandlesPagination()
+  {
+    // Arrange: a truncated first page that carries both continuation markers, then a final page.
+    var page1Uploads = new List<MultipartUpload> { new() { Key = "a", UploadId = "upload-a" } };
+    var page2Uploads = new List<MultipartUpload> { new() { Key = "b", UploadId = "upload-b" } };
+
+    _mockS3Client
+      .SetupSequence(c => c.ListMultipartUploadsAsync(It.IsAny<ListMultipartUploadsRequest>(),
+                                                      It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListMultipartUploadsResponse
+      {
+        MultipartUploads   = page1Uploads,
+        IsTruncated        = true,
+        NextKeyMarker      = "a",
+        NextUploadIdMarker = "upload-a"
+      })
+      .ReturnsAsync(new ListMultipartUploadsResponse { MultipartUploads = page2Uploads, IsTruncated = false });
+
+    // Act
+    var result = await _sut.ListMultipartUploadsAsync("bucket", "prefix/");
+
+    // Assert: both pages are accumulated, and each listing is one Class A operation.
+    result.Data.Should().HaveCount(2);
+    result.Metrics.ClassAOperations.Should().Be(2);
+    _mockS3Client.Verify(
+      c => c.ListMultipartUploadsAsync(It.IsAny<ListMultipartUploadsRequest>(), It.IsAny<CancellationToken>()),
+      Times.Exactly(2));
+  }
+
+
+  [Fact]
+  public async Task ListMultipartUploadsAsync_WhenProviderReturnsTruncatedWithNoMarkers_ThrowsToPreventInfiniteLoop()
+  {
+    // Arrange: the provider claims there is more data while returning neither continuation marker, so a second
+    // call would re-issue the identical request and return this very page again, for ever.
+    var page1Uploads = new List<MultipartUpload> { new() { Key = "a", UploadId = "upload-a" } };
+
+    _mockS3Client
+      .SetupSequence(c => c.ListMultipartUploadsAsync(It.IsAny<ListMultipartUploadsRequest>(),
+                                                      It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new ListMultipartUploadsResponse
+      {
+        MultipartUploads   = page1Uploads,
+        IsTruncated        = true,
+        NextKeyMarker      = null,
+        NextUploadIdMarker = null
+      })
+      .ThrowsAsync(new AmazonS3Exception("This should not be called."));
+
+    // Act
+    var action = () => _sut.ListMultipartUploadsAsync("bucket", "prefix/");
+
+    // Assert
+    var ex = await action.Should().ThrowAsync<CloudflareR2ListException<MultipartUpload>>();
+    ex.Which.InnerException.Should().BeOfType<InvalidOperationException>();
+    ex.Which.Message.Should().Contain("inconsistent pagination response");
+    ex.Which.PartialData.Should().HaveCount(1);
+    ex.Which.PartialMetrics.ClassAOperations.Should().Be(1); // Only one attempt should be made.
   }
 
 
@@ -656,6 +953,111 @@ public class R2ClientUnitTests
     var ex = action.Should().Throw<CloudflareR2OperationException>().Which;
     ex.InnerException.Should().Be(s3Exception);
     ex.Message.Should().Be("Failed to generate presigned PUT URL.");
+  }
+
+  [Fact]
+  public void CreatePresignedGetUrl_WithResponseHeaderOverrides_SignsOverridesIntoRequest()
+  {
+    // Arrange
+    var request = new PresignedGetRequest(
+      "manifests/manifest-1",
+      TimeSpan.FromMinutes(5),
+      ResponseContentType: "application/octet-stream",
+      ResponseContentDisposition: "attachment; filename=\"manifest-1\"");
+
+    // We mock the R2Client itself to override the virtual URL generation method and capture the SDK request it builds.
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? capturedRequest = null;
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => capturedRequest = r)
+      .Returns("https://example.com/presigned-get");
+
+    var sut = mockR2Client.Object;
+
+    // Act
+    var url = sut.CreatePresignedGetUrl("bucket", request);
+
+    // Assert
+    url.Should().Be("https://example.com/presigned-get");
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.BucketName.Should().Be("bucket");
+    capturedRequest.Key.Should().Be("manifests/manifest-1");
+    capturedRequest.Verb.Should().Be(HttpVerb.GET);
+    capturedRequest.Expires.Should().BeAfter(DateTime.UtcNow);
+    // The overrides are part of the signed query string, so they must land on the SDK request before signing.
+    capturedRequest.ResponseHeaderOverrides.ContentType.Should().Be("application/octet-stream");
+    capturedRequest.ResponseHeaderOverrides.ContentDisposition.Should().Be("attachment; filename=\"manifest-1\"");
+  }
+
+  [Fact]
+  public void CreatePresignedGetUrl_WithoutResponseHeaderOverrides_LeavesOverridesUnset()
+  {
+    // Arrange
+    var request = new PresignedGetRequest("key", TimeSpan.FromMinutes(5));
+
+    // We mock the R2Client itself to override the virtual URL generation method and capture the SDK request it builds.
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? capturedRequest = null;
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => capturedRequest = r)
+      .Returns("https://example.com/presigned-get");
+
+    var sut = mockR2Client.Object;
+
+    // Act
+    sut.CreatePresignedGetUrl("bucket", request);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.ResponseHeaderOverrides.ContentType.Should().BeNull();
+    capturedRequest.ResponseHeaderOverrides.ContentDisposition.Should().BeNull();
+  }
+
+  [Fact]
+  public void CreatePresignedGetUrl_OnS3Error_ThrowsCloudflareR2OperationException()
+  {
+    // Arrange
+    var s3Exception = new AmazonS3Exception("Presigning failed");
+    var request     = new PresignedGetRequest("key", TimeSpan.FromMinutes(5));
+
+    // We mock the R2Client itself to override the virtual URL generation method.
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Throws(s3Exception);
+
+    var sut = mockR2Client.Object;
+
+    // Act
+    var action = () => sut.CreatePresignedGetUrl("bucket", request);
+
+    // Assert
+    var ex = action.Should().Throw<CloudflareR2OperationException>().Which;
+    ex.InnerException.Should().Be(s3Exception);
+    ex.Message.Should().Be("Failed to generate presigned GET URL.");
   }
 
   [Fact]

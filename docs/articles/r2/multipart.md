@@ -108,6 +108,42 @@ foreach (var part in partsResult.Data)
 }
 ```
 
+### Listing Open Uploads
+
+`ListMultipartUploadsAsync` reports every multipart upload that was started in a bucket and has not
+yet been completed or aborted. Object listing cannot see these uploads, because their parts only
+become an object once the upload completes, so this is the only way to discover them:
+
+```csharp
+var open = await r2.ListMultipartUploadsAsync(
+    bucketName: "my-bucket",
+    prefix:     null); // or restrict to a key prefix
+
+foreach (var upload in open.Data)
+{
+    Console.WriteLine($"{upload.Key} started {upload.Initiated:O}");
+    Console.WriteLine($"  UploadId: {upload.UploadId}");
+}
+```
+
+The parts of an open upload still consume storage you are billed for, and R2 refuses to delete a
+bucket that has any upload left open. Pass the `UploadId` from this listing to
+`AbortMultipartUploadAsync` to release them:
+
+```csharp
+foreach (var upload in open.Data)
+{
+    await r2.AbortMultipartUploadAsync("my-bucket", upload.Key, upload.UploadId);
+}
+```
+
+> [!IMPORTANT]
+> R2 has been observed to report an upload identifier in this listing that differs from the one it
+> returned when the upload was started. Always abort using the `UploadId` that this listing supplied,
+> not one you recorded earlier.
+
+The method walks every page of results before returning, so the returned list is complete.
+
 ### Completing Upload
 
 After all parts are uploaded:
@@ -246,17 +282,26 @@ public async Task ResumeUploadAsync(
 
 ### Cleanup Incomplete Uploads
 
-R2 lifecycle policies can automatically clean up incomplete uploads, but you can also do it manually:
+R2 applies a lifecycle rule that expires incomplete uploads after seven days, but you can release
+their storage immediately by discovering the open uploads and aborting each one:
 
 ```csharp
-public async Task CleanupIncompleteUploadsAsync(string bucket, string key)
+public async Task<int> CleanupIncompleteUploadsAsync(string bucket, string? prefix = null)
 {
-    // This requires listing incomplete uploads (not directly exposed)
-    // Use AbortMultipartUploadAsync if you have the uploadId
+    var open = await r2.ListMultipartUploadsAsync(bucket, prefix);
 
-    await r2.AbortMultipartUploadAsync(bucket, key, "known-upload-id");
+    foreach (var upload in open.Data)
+    {
+        await r2.AbortMultipartUploadAsync(bucket, upload.Key, upload.UploadId);
+    }
+
+    return open.Data.Count;
 }
 ```
+
+`ClearBucketAsync` already does exactly this after it deletes the objects, so calling it is enough to
+leave a bucket that R2 will let you delete. See [Deleting Objects](deletes.md) for the parameter that
+turns that cleanup off.
 
 ## Size Limits
 
@@ -283,6 +328,7 @@ ActualLimit = 5 TiB (R2 limit)
 | CompleteMultipartUpload | Class A |
 | AbortMultipartUpload | Free |
 | ListParts | Class A |
+| ListMultipartUploads | Class A per page |
 
 ## Related
 

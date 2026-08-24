@@ -77,7 +77,7 @@ public class MultiJurisdictionService(IR2ClientFactory factory)
 ```
 
 > [!NOTE]
-> The same R2 credentials work across all jurisdictions within an account—only the S3 endpoint differs. Clients are cached by `(name, jurisdiction)` tuple and reused.
+> The same R2 credentials work across all jurisdictions within an account, only the S3 endpoint differs. Clients are cached by `(name, jurisdiction)` tuple and reused.
 
 ### Named Clients
 
@@ -161,7 +161,8 @@ public async Task DeleteObjectsAsync(string bucket, IEnumerable<string> keys)
     await r2.DeleteObjectsAsync(bucket, keys);
 }
 
-// Clear entire bucket
+// Clear entire bucket: deletes every object, then aborts every multipart
+// upload left open, since R2 will not delete a bucket while one is open.
 public async Task ClearBucketAsync(string bucket)
 {
     await r2.ClearBucketAsync(bucket);
@@ -171,31 +172,77 @@ public async Task ClearBucketAsync(string bucket)
 ### List Objects
 
 ```csharp
-// List all objects with automatic pagination
-public async IAsyncEnumerable<S3Object> ListAllAsync(string bucket, string? prefix = null)
+// Walk every page and return the complete set of objects
+public async Task<IReadOnlyList<S3Object>> ListAllAsync(string bucket, string? prefix = null)
 {
-    await foreach (var obj in r2.ListObjectsAsync(bucket, prefix))
+    var result = await r2.ListObjectsAsync(bucket, prefix);
+    return result.Data;
+}
+
+// Read one page at a time when the bucket is too large to hold in memory
+public async Task ProcessPageByPageAsync(string bucket, string? prefix)
+{
+    string? token = null;
+
+    do
     {
-        yield return obj;
+        var page = await r2.ListObjectsPageAsync(bucket, prefix, 1000, token);
+
+        foreach (var obj in page.Data.Objects)
+        {
+            await ProcessAsync(obj);
+        }
+
+        token = page.Data.NextContinuationToken;
     }
+    while (token is not null);
+}
+
+// Find multipart uploads that were started and never completed.
+// Their parts occupy storage that object listing cannot show you.
+public async Task<IReadOnlyList<MultipartUpload>> FindOpenUploadsAsync(string bucket)
+{
+    var result = await r2.ListMultipartUploadsAsync(bucket, null);
+    return result.Data;
 }
 ```
 
 ## Presigned URLs
 
-Generate presigned URLs for direct client uploads:
+Generate presigned URLs so clients can transfer bytes directly to and from R2:
 
 ```csharp
-// Generate presigned PUT URL (valid for 1 hour by default)
-public string GetPresignedUploadUrl(string bucket, string key)
+// Generate presigned PUT URL for a direct upload
+public string GetPresignedUploadUrl(string bucket, string key, long size, string contentType)
 {
-    return r2.CreatePresignedPutUrl(bucket, key, TimeSpan.FromHours(1));
+    return r2.CreatePresignedPutUrl(bucket, new PresignedPutRequest(
+        Key: key,
+        ExpiresAfter: TimeSpan.FromHours(1),
+        ContentLength: size,
+        ContentType: contentType));
 }
 
-// Generate presigned URL for multipart upload part
-public string GetPresignedPartUrl(string bucket, string key, string uploadId, int partNumber)
+// Generate presigned GET URL for a direct download,
+// naming the file the recipient's browser will save
+public string GetPresignedDownloadUrl(string bucket, string key, string downloadName)
 {
-    return r2.CreatePresignedUploadPartUrl(bucket, key, uploadId, partNumber);
+    return r2.CreatePresignedGetUrl(bucket, new PresignedGetRequest(
+        Key: key,
+        ExpiresAfter: TimeSpan.FromMinutes(15),
+        ResponseContentDisposition: $"attachment; filename=\"{downloadName}\""));
+}
+
+// Generate presigned URL for one part of a multipart upload
+public string GetPresignedPartUrl(
+    string bucket, string key, string uploadId, int partNumber, long partSize)
+{
+    return r2.CreatePresignedUploadPartUrl(bucket, new PresignedUploadPartRequest(
+        Key: key,
+        UploadId: uploadId,
+        PartNumber: partNumber,
+        ExpiresAfter: TimeSpan.FromHours(1),
+        ContentLength: partSize,
+        ContentType: "application/octet-stream"));
 }
 ```
 
