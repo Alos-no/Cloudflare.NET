@@ -119,6 +119,9 @@ The SDK tracks these metrics in the <xref:Cloudflare.NET.R2.Models.R2Result> obj
 | [`CreatePresignedUploadPartUrl`](presigned-urls.md#multipart-presigned-urls) | URL for multipart part |
 | [`CreatePresignedUploadPartsUrls`](presigned-urls.md#batch-presigned-urls) | Batch URLs for parts |
 
+The upload URL methods can bind the upload to a digest of the expected bytes, which R2 verifies against
+what actually arrives: see [Checksum Verification](presigned-urls.md#checksum-verification).
+
 ### Low-Level Multipart
 
 | Method | Description |

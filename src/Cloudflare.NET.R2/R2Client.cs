@@ -818,6 +818,11 @@ public class R2Client : IR2Client, IDisposable
         foreach (var header in request.HeadersToSign)
           presignedUrlRequest.Headers[header.Key] = header.Value;
 
+      // The typed checksum is applied after HeadersToSign, so on a collision the validated value wins.
+      // R2 verifies every admitted algorithm on a single-part PUT (wrong digest: 400 BadDigest).
+      if (request.Checksum is not null)
+        presignedUrlRequest.Headers[request.Checksum.Algorithm.HeaderName] = request.Checksum.Base64Digest;
+
       return GeneratePresignedUrl(presignedUrlRequest);
     }
     catch (AmazonS3Exception ex)
@@ -981,6 +986,14 @@ public class R2Client : IR2Client, IDisposable
         foreach (var header in request.HeadersToSign)
           presignedUrlRequest.Headers[header.Key] = header.Value;
 
+      // The typed checksum is applied after HeadersToSign, so on a collision the validated value wins.
+      // Refusing part-unsupported algorithms here spares the client a guaranteed 501 from R2.
+      if (request.Checksum is not null)
+      {
+        ThrowIfChecksumUnsupportedForParts(request.Checksum);
+        presignedUrlRequest.Headers[request.Checksum.Algorithm.HeaderName] = request.Checksum.Base64Digest;
+      }
+
       return GeneratePresignedUrl(presignedUrlRequest);
     }
     catch (AmazonS3Exception ex)
@@ -988,6 +1001,22 @@ public class R2Client : IR2Client, IDisposable
       _logger.PresignedUrlGenerationFailed(ex, request.Key, bucketName);
       throw new CloudflareR2OperationException("Failed to generate presigned part URL.", new R2Result(), ex);
     }
+  }
+
+  /// <summary>
+  ///   Rejects a checksum whose algorithm R2 refuses on multipart part uploads. R2 answers 501
+  ///   <c>NotImplemented</c> to a part upload carrying a SHA-1 or SHA-256 checksum header, whatever the digest's
+  ///   value, so signing such a URL would only manufacture a guaranteed failure for the client holding it.
+  /// </summary>
+  /// <param name="checksum">The checksum a part URL request carried.</param>
+  /// <exception cref="ArgumentException">Thrown when the algorithm is not verified by R2 on part uploads.</exception>
+  private static void ThrowIfChecksumUnsupportedForParts(UploadChecksum checksum)
+  {
+    if (!checksum.Algorithm.IsSupportedForPartUploads)
+      throw new ArgumentException(
+        $"R2 answers 501 NotImplemented to a part upload carrying a {checksum.Algorithm.Value} checksum header. "
+        + $"Use {R2ChecksumAlgorithm.Crc32.Value}, {R2ChecksumAlgorithm.Crc32C.Value} or {R2ChecksumAlgorithm.Md5.Value} for parts; "
+        + "SHA-1 and SHA-256 are only verified on single-part PUTs.");
   }
 
   /// <inheritdoc />
@@ -1041,44 +1070,61 @@ public class R2Client : IR2Client, IDisposable
     }
 
 
+    // Validate the per-part checksums before signing anything, so a bad entry fails the whole call
+    // rather than producing a partial batch.
+    if (request.ChecksumsByPartNumber is not null)
+      foreach (var (partNumber, checksum) in request.ChecksumsByPartNumber)
+      {
+        if (!request.PartNumberAndLength.ContainsKey(partNumber))
+          throw new ArgumentException(
+            $"A checksum was supplied for part {partNumber}, but {nameof(request.PartNumberAndLength)} has no such part.",
+            nameof(request));
+
+        ThrowIfChecksumUnsupportedForParts(checksum);
+      }
+
     // Pre-size the dictionary to the exact number of parts to avoid reallocations.
     var urls = new Dictionary<int, string>(request.PartNumberAndLength.Count);
 
+    // The signature timestamp is computed once so every part URL in the batch expires at the same instant.
+    var expiresAt = DateTime.UtcNow.Add(request.ExpiresAfter);
+
     try
     {
-      // Create the request object once, outside the loop, to minimize allocations.
-      // The parameters that change per part will be updated inside the loop.
-      var presignedUrlRequest = new GetPreSignedUrlRequest
-      {
-        BucketName = bucketName,
-        Key        = request.Key,
-        Verb       = HttpVerb.PUT,
-        Expires    = DateTime.UtcNow.Add(request.ExpiresAfter),
-        // UploadId and PartNumber must be set through these dedicated properties so that the URL carries
-        // the "uploadId" and "partNumber" query parameters the S3 UploadPart operation is keyed on. The
-        // Parameters collection is for arbitrary custom parameters and the AWS SDK prefixes those with
-        // "x-", which would make R2 treat each part upload as a plain object PUT over the key.
-        UploadId = request.UploadId,
-        // PartNumber will be updated in the loop. Initialize with a placeholder.
-        PartNumber = 0,
-        Headers =
-        {
-          // Content-Length will be updated in the loop. Initialize with a placeholder.
-          ["Content-Length"] = "0"
-        }
-      };
-
-      // Add headers that are fixed for all parts to the request object once.
-      if (request.HeadersToSign is not null)
-        foreach (var header in request.HeadersToSign)
-          presignedUrlRequest.Headers[header.Key] = header.Value;
-
-      // Iterate through the requested parts to generate a URL for each.
+      // Iterate through the requested parts to generate a URL for each. A fresh request object is built
+      // per part: each part may sign its own checksum header, and the AWS SDK's HeadersCollection offers
+      // no way to remove a header once set, so a shared object would leak one part's digest header into
+      // the URLs of every later part that has none.
       foreach (var (partNumber, contentLength) in request.PartNumberAndLength)
       {
-        // Update only the parameters that change per iteration.
-        presignedUrlRequest.PartNumber                = partNumber;
-        presignedUrlRequest.Headers["Content-Length"] = contentLength.ToString();
+        var presignedUrlRequest = new GetPreSignedUrlRequest
+        {
+          BucketName = bucketName,
+          Key        = request.Key,
+          Verb       = HttpVerb.PUT,
+          Expires    = expiresAt,
+          // UploadId and PartNumber must be set through these dedicated properties so that the URL carries
+          // the "uploadId" and "partNumber" query parameters the S3 UploadPart operation is keyed on. The
+          // Parameters collection is for arbitrary custom parameters and the AWS SDK prefixes those with
+          // "x-", which would make R2 treat each part upload as a plain object PUT over the key.
+          UploadId   = request.UploadId,
+          PartNumber = partNumber,
+          Headers =
+          {
+            ["Content-Length"] = contentLength.ToString()
+          }
+        };
+
+        // Add the headers the caller wants signed into every part's URL.
+        if (request.HeadersToSign is not null)
+          foreach (var header in request.HeadersToSign)
+            presignedUrlRequest.Headers[header.Key] = header.Value;
+
+        // Bind this part's own digest into its URL. The typed checksum is applied after HeadersToSign, so
+        // on a collision the validated value wins.
+        if (request.ChecksumsByPartNumber is not null
+            && request.ChecksumsByPartNumber.TryGetValue(partNumber, out var checksum))
+          presignedUrlRequest.Headers[checksum.Algorithm.HeaderName] = checksum.Base64Digest;
 
         // Generate the signed URL for the current part and add it to the dictionary.
         urls[partNumber] = GeneratePresignedUrl(presignedUrlRequest);

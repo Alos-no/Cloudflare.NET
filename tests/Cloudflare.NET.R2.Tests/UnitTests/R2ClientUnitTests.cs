@@ -1149,8 +1149,8 @@ public class R2ClientUnitTests
     var mockS3Client = new Mock<IAmazonS3>();
     var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
 
-    // The implementation reuses one request object across the loop, so the values are read at call time
-    // rather than the object being kept, which would only show the final part number twice.
+    // The values are read at call time rather than the captured object being kept, so the assertion holds
+    // whether the implementation builds one request object per part or reuses one across the loop.
     var seenUploadIds   = new List<string?>();
     var seenPartNumbers = new List<int?>();
     var seenParameters  = new List<int>();
@@ -1231,6 +1231,254 @@ public class R2ClientUnitTests
 
     // Assert
     action.Should().Throw<ArgumentException>();
+  }
+
+  [Theory]
+  // All five algorithms are verified by R2 on a single-part PUT, so every one must be signable. The digest
+  // header must land on the SDK request before signing so its name enters X-Amz-SignedHeaders and the
+  // client is forced to send the digest.
+  [InlineData("crc32", 4, "x-amz-checksum-crc32")]
+  [InlineData("crc32c", 4, "x-amz-checksum-crc32c")]
+  [InlineData("sha1", 20, "x-amz-checksum-sha1")]
+  [InlineData("sha256", 32, "x-amz-checksum-sha256")]
+  [InlineData("md5", 16, "Content-MD5")]
+  public void CreatePresignedPutUrl_WithChecksum_SignsTheAlgorithmDigestHeader(
+    string algorithmName,
+    int    digestByteLength,
+    string expectedHeaderName)
+  {
+    // Arrange
+    R2ChecksumAlgorithm.TryParse(algorithmName, out var algorithm).Should().BeTrue();
+    var digest  = Convert.ToBase64String(new byte[digestByteLength]);
+    var request = new PresignedPutRequest("key", TimeSpan.FromMinutes(5), 1024, "text/plain",
+                                          Checksum: new UploadChecksum(algorithm, digest));
+
+    // We mock the R2Client itself to override the virtual URL generation method and capture the SDK request it builds.
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? captured = null;
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => captured = r)
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    mockR2Client.Object.CreatePresignedPutUrl("bucket", request);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers[expectedHeaderName].Should().Be(digest);
+  }
+
+  [Fact]
+  public void CreatePresignedPutUrl_WithChecksumCollidingWithHeadersToSign_TypedChecksumWins()
+  {
+    // Arrange
+    // The caller signs a stale digest through the free-form HeadersToSign dictionary AND supplies a
+    // validated typed checksum for the same header. The typed value must win, because it is the one the
+    // library validated for base64 shape and digest length.
+    var validatedDigest = Convert.ToBase64String(new byte[32]);
+    var request = new PresignedPutRequest("key", TimeSpan.FromMinutes(5), 1024, "text/plain",
+                                          HeadersToSign: new Dictionary<string, string>
+                                          {
+                                            ["x-amz-checksum-sha256"] = "stale-value-from-free-form-headers"
+                                          },
+                                          Checksum: new UploadChecksum(R2ChecksumAlgorithm.Sha256, validatedDigest));
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? captured = null;
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => captured = r)
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    mockR2Client.Object.CreatePresignedPutUrl("bucket", request);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers["x-amz-checksum-sha256"].Should().Be(validatedDigest);
+  }
+
+  [Theory]
+  // R2 verifies crc32, crc32c and md5 on multipart part uploads, so these three must be signable on a
+  // single part URL.
+  [InlineData("crc32", 4, "x-amz-checksum-crc32")]
+  [InlineData("crc32c", 4, "x-amz-checksum-crc32c")]
+  [InlineData("md5", 16, "Content-MD5")]
+  public void CreatePresignedUploadPartUrl_WithPartSupportedChecksum_SignsTheAlgorithmDigestHeader(
+    string algorithmName,
+    int    digestByteLength,
+    string expectedHeaderName)
+  {
+    // Arrange
+    R2ChecksumAlgorithm.TryParse(algorithmName, out var algorithm).Should().BeTrue();
+    var digest = Convert.ToBase64String(new byte[digestByteLength]);
+    var request = new PresignedUploadPartRequest("key", "upload-id", 1, TimeSpan.FromMinutes(5), 1024,
+                                                 "application/octet-stream",
+                                                 Checksum: new UploadChecksum(algorithm, digest));
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? captured = null;
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => captured = r)
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    mockR2Client.Object.CreatePresignedUploadPartUrl("bucket", request);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers[expectedHeaderName].Should().Be(digest);
+  }
+
+  [Theory]
+  // R2 answers 501 NotImplemented to a part upload carrying a SHA-1 or SHA-256 checksum header, whatever
+  // the digest's value (verified against live R2, 2026-08-24). Signing such a URL would only manufacture
+  // a guaranteed failure for the client holding it, so URL generation refuses up front.
+  [InlineData("sha1", 20)]
+  [InlineData("sha256", 32)]
+  public void CreatePresignedUploadPartUrl_WithShaChecksum_ThrowsArgumentException(string algorithmName, int digestByteLength)
+  {
+    // Arrange
+    R2ChecksumAlgorithm.TryParse(algorithmName, out var algorithm).Should().BeTrue();
+    var request = new PresignedUploadPartRequest("key", "upload-id", 1, TimeSpan.FromMinutes(5), 1024,
+                                                 "application/octet-stream",
+                                                 Checksum: new UploadChecksum(
+                                                   algorithm, Convert.ToBase64String(new byte[digestByteLength])));
+
+    // Act
+    var action = () => _sut.CreatePresignedUploadPartUrl("bucket", request);
+
+    // Assert
+    action.Should().Throw<ArgumentException>().WithMessage("*501 NotImplemented*");
+  }
+
+  [Fact]
+  public void CreatePresignedUploadPartsUrls_WithPerPartChecksums_SignsEachPartsOwnDigestOnly()
+  {
+    // Arrange
+    // Three parts; part 1 carries a crc32 digest, part 3 an md5 digest, part 2 nothing. Part 2's URL must
+    // sign neither digest header: a leaked header would enter X-Amz-SignedHeaders and force the client to
+    // send another part's digest, which R2 would then reject.
+    const long partSize = 5L * 1024 * 1024;
+
+    var crc32Digest = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03, 0x04 });
+    var md5Digest   = Convert.ToBase64String(new byte[16]);
+
+    var request = new PresignedUploadPartsRequest("key", "upload-id", TimeSpan.FromMinutes(5),
+                                                  new Dictionary<int, long>
+                                                  {
+                                                    [1] = partSize,
+                                                    [2] = partSize,
+                                                    [3] = partSize
+                                                  },
+                                                  ChecksumsByPartNumber: new Dictionary<int, UploadChecksum>
+                                                  {
+                                                    [1] = new(R2ChecksumAlgorithm.Crc32, crc32Digest),
+                                                    [3] = new(R2ChecksumAlgorithm.Md5, md5Digest)
+                                                  });
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    // Snapshot each part's digest headers at call time, keyed by the part number the request carried.
+    var digestHeadersByPart = new Dictionary<int, Dictionary<string, string>>();
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r =>
+      {
+        var digestHeaders = new Dictionary<string, string>();
+
+        foreach (var headerName in new[] { "x-amz-checksum-crc32", "Content-MD5" })
+          if (r.Headers.Keys.Contains(headerName))
+            digestHeaders[headerName] = r.Headers[headerName];
+
+        digestHeadersByPart[r.PartNumber!.Value] = digestHeaders;
+      })
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    var urls = mockR2Client.Object.CreatePresignedUploadPartsUrls("bucket", request);
+
+    // Assert
+    urls.Should().HaveCount(3);
+    digestHeadersByPart[1].Should().Equal(new Dictionary<string, string> { ["x-amz-checksum-crc32"] = crc32Digest });
+    digestHeadersByPart[2].Should().BeEmpty("a part without a checksum must not inherit another part's digest header");
+    digestHeadersByPart[3].Should().Equal(new Dictionary<string, string> { ["Content-MD5"] = md5Digest });
+  }
+
+  [Fact]
+  public void CreatePresignedUploadPartsUrls_WithChecksumForUnknownPartNumber_ThrowsArgumentException()
+  {
+    // Arrange
+    // The checksum dictionary names part 2, but the request only defines part 1. A silently ignored digest
+    // would leave the caller believing part 2's bytes were bound when nothing was signed, so the whole
+    // call must fail before any URL is generated.
+    var request = new PresignedUploadPartsRequest("key", "upload-id", TimeSpan.FromMinutes(5),
+                                                  new Dictionary<int, long> { [1] = R2Client.R2MinPartSize },
+                                                  ChecksumsByPartNumber: new Dictionary<int, UploadChecksum>
+                                                  {
+                                                    [2] = new(R2ChecksumAlgorithm.Crc32,
+                                                              Convert.ToBase64String(new byte[4]))
+                                                  });
+
+    // Act
+    var action = () => _sut.CreatePresignedUploadPartsUrls("bucket", request);
+
+    // Assert
+    action.Should().Throw<ArgumentException>().WithMessage("*no such part*");
+  }
+
+  [Fact]
+  public void CreatePresignedUploadPartsUrls_WithShaChecksumForAPart_ThrowsArgumentException()
+  {
+    // Arrange
+    // The same refusal as the single part URL method: R2 answers 501 NotImplemented to a part upload
+    // carrying a SHA-256 checksum header, so the batch method refuses before signing anything.
+    var request = new PresignedUploadPartsRequest("key", "upload-id", TimeSpan.FromMinutes(5),
+                                                  new Dictionary<int, long> { [1] = R2Client.R2MinPartSize },
+                                                  ChecksumsByPartNumber: new Dictionary<int, UploadChecksum>
+                                                  {
+                                                    [1] = new(R2ChecksumAlgorithm.Sha256,
+                                                              Convert.ToBase64String(new byte[32]))
+                                                  });
+
+    // Act
+    var action = () => _sut.CreatePresignedUploadPartsUrls("bucket", request);
+
+    // Assert
+    action.Should().Throw<ArgumentException>().WithMessage("*501 NotImplemented*");
   }
 
   [Fact]
