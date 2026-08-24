@@ -44,6 +44,7 @@ Console.WriteLine($"Upload URL: {url}");
 | `ContentType` | `string` | Yes | MIME type of the file |
 | `Conditions` | `IEnumerable<S3PostCondition>?` | No | Additional S3 conditions |
 | `HeadersToSign` | `IReadOnlyDictionary<string, string>?` | No | Headers to include in signature |
+| `Checksum` | `UploadChecksum?` | No | Digest the uploaded bytes must hash to; see [Checksum Verification](#checksum-verification) |
 
 ## Presigned Download URL
 
@@ -252,6 +253,71 @@ all carry it assembles normally. R2 does not echo the header back in its respons
 > R2 encrypts every object at rest whether or not this header is sent, so signing it does not change
 > how the object is stored. What it changes is that a client cannot upload without presenting it.
 
+## Checksum Verification
+
+Bind a presigned upload to a digest of the expected bytes. The digest's header is signed into the URL,
+so the client must send it, and R2 hashes the bytes that actually arrive: when they do not hash to the
+stated digest, R2 rejects the upload with 400 `BadDigest` and stores nothing.
+
+```csharp
+// Compute the digest locally, then sign it into the URL.
+var checksum = UploadChecksum.FromDigestBytes(R2ChecksumAlgorithm.Sha256, SHA256.HashData(fileBytes));
+
+var url = r2.CreatePresignedPutUrl("my-bucket", new PresignedPutRequest(
+    Key: "uploads/document.pdf",
+    ExpiresAfter: TimeSpan.FromMinutes(15),
+    ContentLength: fileBytes.Length,
+    ContentType: "application/pdf",
+    Checksum: checksum
+));
+
+// The client must now send: x-amz-checksum-sha256: <the base64 digest>
+```
+
+`R2ChecksumAlgorithm` carries everything a caller would otherwise have to look up: the wire name, the
+header the digest travels in, and the exact digest length. The set is closed to the algorithms R2 was
+verified to enforce (verified against live R2, 2026-08-24, and pinned by this repository's integration
+tests):
+
+| Algorithm | Header | Digest bytes | Single-part PUT | Multipart part upload |
+|-----------|--------|--------------|-----------------|-----------------------|
+| `Crc32` | `x-amz-checksum-crc32` | 4 | Verified | Verified |
+| `Crc32C` | `x-amz-checksum-crc32c` | 4 | Verified | Verified |
+| `Sha1` | `x-amz-checksum-sha1` | 20 | Verified | Rejected: R2 answers 501 `NotImplemented` |
+| `Sha256` | `x-amz-checksum-sha256` | 32 | Verified | Rejected: R2 answers 501 `NotImplemented` |
+| `Md5` | `Content-MD5` | 16 | Verified | Verified |
+
+Because R2 answers 501 to any part upload carrying a SHA-1 or SHA-256 checksum header, the part URL
+methods refuse those two algorithms with `ArgumentException` before signing anything. Use `Crc32`,
+`Crc32C` or `Md5` for parts.
+
+`UploadChecksum` validates at construction: the digest must be well-formed base64 decoding to exactly
+the algorithm's digest length, so a URL is never signed for a digest R2 could not accept. For untrusted
+input, such as an algorithm name and digest arriving in an API request, use `TryCreate`:
+
+```csharp
+if (!UploadChecksum.TryCreate(request.Algorithm, request.Digest, out var checksum))
+    return BadRequest("Unknown checksum algorithm or malformed digest.");
+```
+
+The batch part URL generator takes one digest per part, keyed by part number. A part without an entry
+gets no checksum header; a part number missing from `PartNumberAndLength` fails the whole call:
+
+```csharp
+var partUrls = r2.CreatePresignedUploadPartsUrls("my-bucket", new PresignedUploadPartsRequest(
+    Key: "uploads/large-file.zip",
+    UploadId: uploadId,
+    ExpiresAfter: TimeSpan.FromHours(1),
+    PartNumberAndLength: partSizes,
+    ChecksumsByPartNumber: partDigests // IReadOnlyDictionary<int, UploadChecksum>
+));
+```
+
+> [!NOTE]
+> `Content-MD5` is a content header in `HttpClient`'s model: attach it to
+> `HttpContent.Headers`, not `HttpRequestMessage.Headers`. The `x-amz-checksum-*` headers are plain
+> request headers.
+
 ## Common Patterns
 
 ### Secure File Upload API
@@ -305,14 +371,13 @@ public class MultipartUploadSession(IR2Client r2)
         var initResult = await r2.InitiateMultipartUploadAsync(bucket, key);
         var uploadId = initResult.Data;
 
-        // Generate presigned URLs for all parts
+        // Generate presigned URLs for all parts. Each part is named with its exact size, because the
+        // size is signed into that part's URL.
         var partUrls = r2.CreatePresignedUploadPartsUrls(bucket, new PresignedUploadPartsRequest(
             Key: key,
             UploadId: uploadId,
-            PartNumbers: Enumerable.Range(1, partCount).ToArray(),
             ExpiresAfter: TimeSpan.FromHours(24),
-            ContentLength: partSize,
-            ContentType: "application/octet-stream"
+            PartNumberAndLength: Enumerable.Range(1, partCount).ToDictionary(n => n, _ => partSize)
         ));
 
         return new MultipartUploadInfo(uploadId, partUrls, partSize);

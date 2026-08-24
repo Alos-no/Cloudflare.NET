@@ -856,9 +856,12 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     using var tempFile = new TempFile(64);
     await _sut.UploadAsync(_bucketName, key, tempFile.FilePath);
 
+    // The window is several seconds wide, not one: the suite runs many tests in parallel, and a narrower
+    // window can close between signing and the first fetch below, failing the fetch that is supposed to
+    // prove the URL was well-formed while still valid.
     var presignedUrl = _sut.CreatePresignedGetUrl(
       _bucketName,
-      new PresignedGetRequest(key, TimeSpan.FromSeconds(1)));
+      new PresignedGetRequest(key, TimeSpan.FromSeconds(5)));
 
     using var httpClient = new HttpClient();
 
@@ -866,8 +869,8 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     var beforeExpiry = await httpClient.GetAsync(presignedUrl);
     beforeExpiry.EnsureSuccessStatusCode();
 
-    // Act - wait for the window to close, then use the same URL again.
-    await Task.Delay(TimeSpan.FromSeconds(4));
+    // Act - wait for the window to close (with margin for clock skew), then use the same URL again.
+    await Task.Delay(TimeSpan.FromSeconds(8));
 
     var afterExpiry = await httpClient.GetAsync(presignedUrl);
 

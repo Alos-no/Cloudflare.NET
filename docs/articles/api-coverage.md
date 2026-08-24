@@ -752,8 +752,8 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 <tr><td>List Objects (single page)</td><td><code>ListObjectsPageAsync</code></td><td>One page plus its continuation token</td></tr>
 <tr><td>List Multipart Uploads</td><td><code>ListMultipartUploadsAsync</code></td><td>Uploads started but never completed</td></tr>
 <tr><td>Presigned GET URL</td><td><code>CreatePresignedGetUrl</code></td><td>Presigned URL for download</td></tr>
-<tr><td>Presigned PUT URL</td><td><code>CreatePresignedPutUrl</code></td><td>Presigned URL for upload</td></tr>
-<tr><td>Presigned Part URL</td><td><code>CreatePresignedUploadPartUrl</code></td><td>Presigned URL for multipart part</td></tr>
+<tr><td>Presigned PUT URL</td><td><code>CreatePresignedPutUrl</code></td><td>Presigned URL for upload, with optional checksum enforcement</td></tr>
+<tr><td>Presigned Part URL</td><td><code>CreatePresignedUploadPartUrl</code></td><td>Presigned URL for multipart part, with optional checksum enforcement</td></tr>
 </tbody>
 </table>
 
