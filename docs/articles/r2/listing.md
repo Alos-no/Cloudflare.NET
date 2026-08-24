@@ -83,7 +83,7 @@ Console.WriteLine($"Class A operations: {metrics.ClassAOperations}");
 
 ## Pagination
 
-The SDK handles pagination automatically, fetching all pages:
+`ListObjectsAsync` handles pagination for you, fetching every page before it returns:
 
 ```csharp
 // This fetches ALL matching objects, regardless of how many pages
@@ -93,6 +93,66 @@ var result = await r2.ListObjectsAsync("my-bucket", null);
 Console.WriteLine($"Total objects: {result.Data.Count}");
 Console.WriteLine($"List operations: {result.Metrics.ClassAOperations}"); // Multiple if paginated
 ```
+
+### One Page at a Time
+
+`ListObjectsPageAsync` performs a single list request and hands back the continuation token, so your
+own code decides whether to ask for the next page. Use it when a bucket holds more keys than you want
+to hold in memory at once, or when you are feeding a paged user interface:
+
+```csharp
+var page = await r2.ListObjectsPageAsync(
+    bucketName:        "my-bucket",
+    prefix:            "documents/",
+    maxKeys:           500,   // clamped to the S3 ceiling of 1000
+    continuationToken: null); // null starts a fresh walk
+
+foreach (var obj in page.Data.Objects)
+{
+    Console.WriteLine($"{obj.Key}: {obj.Size} bytes");
+}
+
+if (page.Data.IsTruncated)
+{
+    // Pass this token back on the next call to continue where this page stopped.
+    var next = await r2.ListObjectsPageAsync(
+        "my-bucket", "documents/", 500, page.Data.NextContinuationToken);
+}
+```
+
+The returned `R2ObjectPage` carries three members:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Objects` | `IReadOnlyList<S3Object>` | The keys in this page. |
+| `NextContinuationToken` | `string?` | The token to pass on the next call. `null` when this is the last page. |
+| `IsTruncated` | `bool` | `true` when more pages follow. |
+
+Walking a whole prefix by hand looks like this:
+
+```csharp
+public async Task ProcessEveryObjectAsync(string bucket, string? prefix)
+{
+    string? token = null;
+
+    do
+    {
+        var page = await r2.ListObjectsPageAsync(bucket, prefix, 1000, token);
+
+        foreach (var obj in page.Data.Objects)
+        {
+            await ProcessAsync(obj);
+        }
+
+        token = page.Data.NextContinuationToken;
+    }
+    while (token is not null);
+}
+```
+
+`maxKeys` is clamped to the range 1 to 1000. A value of zero or below requests the maximum, matching
+the S3 default, and a value above 1000 is reduced to 1000 because R2 will never return more keys than
+that in one response.
 
 ## Error Handling
 

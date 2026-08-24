@@ -747,8 +747,10 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 <tr><td>Download</td><td><code>DownloadFileAsync</code></td><td>Download to file or stream</td></tr>
 <tr><td>Delete Object</td><td><code>DeleteObjectAsync</code></td><td>Single object delete</td></tr>
 <tr><td>Delete Objects</td><td><code>DeleteObjectsAsync</code></td><td>Batch delete (up to 1000 keys)</td></tr>
-<tr><td>Clear Bucket</td><td><code>ClearBucketAsync</code></td><td>List + batch delete all objects</td></tr>
+<tr><td>Clear Bucket</td><td><code>ClearBucketAsync</code></td><td>Batch delete all objects, then abort any upload left open</td></tr>
 <tr><td>List Objects</td><td><code>ListObjectsAsync</code></td><td>List with automatic pagination</td></tr>
+<tr><td>List Objects (single page)</td><td><code>ListObjectsPageAsync</code></td><td>One page plus its continuation token</td></tr>
+<tr><td>List Multipart Uploads</td><td><code>ListMultipartUploadsAsync</code></td><td>Uploads started but never completed</td></tr>
 <tr><td>Presigned GET URL</td><td><code>CreatePresignedGetUrl</code></td><td>Presigned URL for download</td></tr>
 <tr><td>Presigned PUT URL</td><td><code>CreatePresignedPutUrl</code></td><td>Presigned URL for upload</td></tr>
 <tr><td>Presigned Part URL</td><td><code>CreatePresignedUploadPartUrl</code></td><td>Presigned URL for multipart part</td></tr>

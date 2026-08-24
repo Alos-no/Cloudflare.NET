@@ -97,6 +97,30 @@ Console.WriteLine($"Cleared bucket with {result.ClassAOperations} list operation
 > [!WARNING]
 > This operation is irreversible. All objects in the bucket will be permanently deleted.
 
+### Incomplete Multipart Uploads
+
+Deleting every object is not enough to empty a bucket. A multipart upload that was started and never
+completed keeps its parts in storage, where object listing cannot see them, and R2 refuses to delete
+a bucket while any such upload is open. `ClearBucketAsync` therefore discovers the open uploads and
+aborts each one after the object deletes finish.
+
+Pass `abortIncompleteMultipartUploads: false` to skip that step, which is the right choice when
+another process is uploading to the same bucket and you would otherwise cancel its work:
+
+```csharp
+// Default: deletes every object, then aborts every upload left open.
+await r2.ClearBucketAsync("my-bucket");
+
+// Deletes every object but leaves in-progress uploads running.
+await r2.ClearBucketAsync(
+    bucketName:                      "my-bucket",
+    continueOnError:                 true,
+    abortIncompleteMultipartUploads: false);
+```
+
+The discovery call is billed as a Class A operation for each page it reads. The aborts themselves are
+free. See [Multipart Uploads](multipart.md) for how to inspect the open uploads yourself.
+
 ### With Continue on Error
 
 ```csharp

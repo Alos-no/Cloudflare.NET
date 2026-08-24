@@ -183,15 +183,30 @@ public interface IR2Client
                                     CancellationToken   cancellationToken = default);
 
   /// <summary>Clears all objects from an R2 bucket by repeatedly listing and deleting them in batches.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     Deleting every object does not by itself leave the bucket deletable. A multipart upload that was
+  ///     started and never completed or aborted keeps holding storage that object listing never reports, and
+  ///     Cloudflare then refuses to delete the bucket, reporting that it is not empty even though no object is
+  ///     visible. <paramref name="abortIncompleteMultipartUploads" /> controls whether this method also finds
+  ///     those uploads and aborts them.
+  ///   </para>
+  /// </remarks>
   /// <param name="bucketName">The name of the bucket to clear.</param>
   /// <param name="continueOnError">If true, the operation will continue even if some delete batches fail.</param>
+  /// <param name="abortIncompleteMultipartUploads">
+  ///   When <c>true</c> (the default), the method finds every multipart upload left open in the bucket and
+  ///   aborts each one after the objects are deleted, at the cost of one extra billable Class A operation for
+  ///   the discovery call. Aborting an upload is itself free. Set this to <c>false</c> to delete only objects.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
-  /// <returns>An <see cref="R2Result" /> detailing the total metrics of all list and delete operations.</returns>
+  /// <returns>An <see cref="R2Result" /> detailing the total metrics of all list, delete, and abort operations.</returns>
   /// <exception cref="CloudflareR2BatchException{T}">Thrown if some objects could not be deleted.</exception>
-  /// <exception cref="CloudflareR2ListException{T}">Thrown if listing objects fails.</exception>
+  /// <exception cref="CloudflareR2ListException{T}">Thrown if listing objects or open multipart uploads fails.</exception>
   Task<R2Result> ClearBucketAsync(string            bucketName,
-                                  bool              continueOnError   = true,
-                                  CancellationToken cancellationToken = default);
+                                  bool              continueOnError                 = true,
+                                  bool              abortIncompleteMultipartUploads = true,
+                                  CancellationToken cancellationToken               = default);
 
   /// <summary>Lists all objects in an R2 bucket, optionally filtered by a prefix, handling pagination automatically.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
@@ -205,6 +220,63 @@ public interface IR2Client
   Task<R2Result<IReadOnlyList<S3Object>>> ListObjectsAsync(string            bucketName,
                                                            string?           prefix,
                                                            CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Lists ONE page of objects under a prefix and returns the token that fetches the next page, leaving the walk
+  ///   across pages to the caller.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     <see cref="ListObjectsAsync" /> pages internally and returns the whole prefix. A caller that must bound how
+  ///     many pages it reads in one run, and resume the walk on a later run, needs the page and the token instead.
+  ///   </para>
+  ///   <para><paramref name="maxKeys" /> is clamped to the S3 page ceiling of 1000; a value at or below zero requests 1000.</para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="prefix">The prefix to filter the object listing by.</param>
+  /// <param name="maxKeys">The maximum number of keys to return in this page (clamped to 1000).</param>
+  /// <param name="continuationToken">
+  ///   The token returned by the previous page, or <c>null</c> to start from the beginning of the prefix.
+  /// </param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A result object containing one <see cref="R2ObjectPage" /> and the metrics of the single list call.</returns>
+  /// <exception cref="CloudflareR2ListException{T}">Thrown if listing fails.</exception>
+  Task<R2Result<R2ObjectPage>> ListObjectsPageAsync(string            bucketName,
+                                                    string?           prefix,
+                                                    int               maxKeys,
+                                                    string?           continuationToken,
+                                                    CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Lists every multipart upload initiated under a prefix that has neither completed nor been aborted, handling
+  ///   pagination internally.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     An open multipart upload's parts are invisible to <see cref="ListObjectsAsync" /> until the upload completes,
+  ///     so draining the objects under a prefix can never end one. A teardown that must leave the prefix genuinely
+  ///     empty discovers the open uploads here and aborts each one.
+  ///   </para>
+  ///   <para>
+  ///     Pass the <c>UploadId</c> from each returned <see cref="MultipartUpload" /> to
+  ///     <see cref="AbortMultipartUploadAsync" />. R2 has been observed to report an upload identifier here that
+  ///     differs from the one it returned when the upload was started, so the value from this listing is the one to
+  ///     use for the abort.
+  ///   </para>
+  ///   <para>
+  ///     <see cref="ClearBucketAsync" /> performs this discovery and abort itself unless the caller opts out.
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="prefix">The key prefix to restrict discovery to, or <c>null</c> for the whole bucket.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A result object containing every open multipart upload under the prefix and the aggregated metrics.</returns>
+  /// <exception cref="CloudflareR2ListException{T}">
+  ///   Thrown if listing fails mid-stream, containing any uploads fetched successfully.
+  /// </exception>
+  Task<R2Result<IReadOnlyList<MultipartUpload>>> ListMultipartUploadsAsync(string            bucketName,
+                                                                          string?           prefix,
+                                                                          CancellationToken cancellationToken = default);
 
   /// <summary>Lists the parts that have been uploaded for a specific multipart upload, transparently handling pagination.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
@@ -221,7 +293,7 @@ public interface IR2Client
                                                            string            uploadId,
                                                            CancellationToken cancellationToken = default);
 
-  /// <summary>Initiates a new multipart upload.</summary>
+  /// <summary>Initiates a new multipart upload, letting R2 choose the assembled object's content type.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key for the object in the bucket.</param>
   /// <param name="cancellationToken">A cancellation token.</param>
@@ -229,6 +301,30 @@ public interface IR2Client
   /// <exception cref="CloudflareR2OperationException">Thrown if the operation fails.</exception>
   Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
                                                       string            objectKey,
+                                                      CancellationToken cancellationToken = default);
+
+  /// <summary>Initiates a new multipart upload and records the content type the assembled object will carry.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     S3 reads the finished object's <c>Content-Type</c> from this request and never from the individual parts.
+  ///     A caller that hands out presigned part URLs therefore has no later opportunity to set it: the content type
+  ///     must be supplied here, when the upload starts.
+  ///   </para>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank string leaves the property unset, so R2 applies its own default
+  ///     and this method behaves exactly like
+  ///     <see cref="InitiateMultipartUploadAsync(string,string,CancellationToken)" />.
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key for the object in the bucket.</param>
+  /// <param name="contentType">The MIME type to record for the assembled object, for example <c>application/pdf</c>.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>A result object containing the UploadId and operation metrics.</returns>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the operation fails.</exception>
+  Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
+                                                      string            objectKey,
+                                                      string?           contentType,
                                                       CancellationToken cancellationToken = default);
 
   /// <summary>Completes a multipart upload after all parts are uploaded.</summary>
@@ -280,6 +376,16 @@ public interface IR2Client
   /// <returns>A dictionary mapping each part number to its generated presigned URL.</returns>
   /// <exception cref="CloudflareR2OperationException">Thrown if URL generation fails for any part.</exception>
   IReadOnlyDictionary<int, string> CreatePresignedUploadPartsUrls(string bucketName, PresignedUploadPartsRequest request);
+
+  /// <summary>
+  ///   Creates a presigned GET URL that allows for downloading an object directly from R2, optionally enforcing
+  ///   response header overrides via the signed query string.
+  /// </summary>
+  /// <param name="bucketName">The name of the bucket holding the object.</param>
+  /// <param name="request">A request object defining the key, validity window, and response header overrides.</param>
+  /// <returns>A string containing the generated presigned URL.</returns>
+  /// <exception cref="CloudflareR2OperationException">Thrown if URL generation fails.</exception>
+  string CreatePresignedGetUrl(string bucketName, PresignedGetRequest request);
 
 #if false // There is currently a NRE in the AWS SDK when using CreatePresignedPostUrl with R2.
   /// <summary>Creates a presigned POST URL for browser-based uploads, with conditions.</summary>

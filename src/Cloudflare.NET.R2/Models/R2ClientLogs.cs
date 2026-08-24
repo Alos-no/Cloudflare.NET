@@ -51,6 +51,19 @@ internal static partial class R2ClientLogs
   [LoggerMessage(EventId = 1014, Level = LogLevel.Error, Message = "AWS SDK Error while listing s3://{Bucket}/{Prefix}")]
   public static partial void ListObjectsFailed(this ILogger logger, Exception ex, string bucket, string? prefix);
 
+  [LoggerMessage(EventId = 1030, Level = LogLevel.Debug,
+                 Message =
+                   "Listed a page of {Count} objects in s3://{Bucket} with prefix {Prefix}; more pages follow: {IsTruncated}.")]
+  public static partial void ListedObjectsPage(this ILogger logger, int count, string bucket, string? prefix, bool isTruncated);
+
+  [LoggerMessage(EventId = 1031, Level = LogLevel.Debug,
+                 Message = "Discovered {Count} open multipart uploads in s3://{Bucket} with prefix {Prefix}.")]
+  public static partial void ListedMultipartUploads(this ILogger logger, int count, string bucket, string? prefix);
+
+  [LoggerMessage(EventId = 1032, Level = LogLevel.Error,
+                 Message = "AWS SDK Error while listing open multipart uploads in s3://{Bucket}/{Prefix}")]
+  public static partial void ListMultipartUploadsFailed(this ILogger logger, Exception ex, string bucket, string? prefix);
+
   [LoggerMessage(EventId = 1015, Level = LogLevel.Debug,
                  Message = "Initiated multipart upload for s3://{Bucket}/{Key} with UploadId {UploadId}")]
   public static partial void InitiatedMultipartUpload(this ILogger logger, string bucket, string key, string uploadId);
@@ -102,4 +115,20 @@ internal static partial class R2ClientLogs
                  Message =
                    "Inconsistent pagination from R2 for upload {UploadId}: IsTruncated is true, but NextPartNumberMarker is null. Aborting to prevent infinite loop.")]
   public static partial void ListPartsPaginationInconsistency(this ILogger logger, string uploadId);
+
+  [LoggerMessage(EventId = 1033, Level = LogLevel.Critical,
+                 Message =
+                   "Inconsistent pagination from R2 while listing open multipart uploads for Bucket={BucketName} Prefix={Prefix}: IsTruncated is true, but neither NextKeyMarker nor NextUploadIdMarker is set. Aborting to prevent infinite loop.")]
+  public static partial void ListMultipartUploadsPaginationInconsistency(this ILogger logger,
+                                                                        string        bucketName,
+                                                                        string?       prefix);
+
+  [LoggerMessage(EventId = 1034, Level = LogLevel.Critical,
+                 Message =
+                   "Inconsistent pagination from R2 while listing objects in Bucket={BucketName} Prefix={Prefix}: IsTruncated is true, but NextContinuationToken is null. Aborting to prevent infinite loop.")]
+  public static partial void ListObjectsPaginationInconsistency(this ILogger logger, string bucketName, string? prefix);
+
+  [LoggerMessage(EventId = 1035, Level = LogLevel.Debug,
+                 Message = "Aborted {Count} multipart uploads left open in s3://{Bucket}.")]
+  public static partial void AbortedOpenMultipartUploads(this ILogger logger, int count, string bucket);
 }

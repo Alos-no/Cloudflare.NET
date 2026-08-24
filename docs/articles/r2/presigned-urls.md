@@ -45,6 +45,67 @@ Console.WriteLine($"Upload URL: {url}");
 | `Conditions` | `IEnumerable<S3PostCondition>?` | No | Additional S3 conditions |
 | `HeadersToSign` | `IReadOnlyDictionary<string, string>?` | No | Headers to include in signature |
 
+## Presigned Download URL
+
+`CreatePresignedGetUrl` produces a URL that lets the holder download one object without a Cloudflare
+credential and without your service relaying the bytes. Use it to hand a private object to a browser,
+a mobile client, or a third party for a limited window:
+
+```csharp
+var url = r2.CreatePresignedGetUrl("my-bucket", new PresignedGetRequest(
+    Key: "invoices/2026-08.pdf",
+    ExpiresAfter: TimeSpan.FromMinutes(15)
+));
+
+Console.WriteLine($"Download URL: {url}");
+```
+
+### PresignedGetRequest Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `Key` | `string` | Yes | Object key (path) |
+| `ExpiresAfter` | `TimeSpan` | Yes | URL validity duration |
+| `ResponseContentType` | `string?` | No | Overrides the `Content-Type` header R2 returns |
+| `ResponseContentDisposition` | `string?` | No | Overrides the `Content-Disposition` header R2 returns |
+
+### Controlling the Response Headers
+
+The two optional properties change the headers R2 sends when the URL is fetched, without touching the
+stored object. This is how you make a browser download a file under a different name, or open it
+inline rather than saving it:
+
+```csharp
+// The browser saves the file as "August invoice.pdf" no matter what the key is.
+var url = r2.CreatePresignedGetUrl("my-bucket", new PresignedGetRequest(
+    Key: "invoices/8f2c1a90.bin",
+    ExpiresAfter: TimeSpan.FromMinutes(5),
+    ResponseContentType: "application/pdf",
+    ResponseContentDisposition: "attachment; filename=\"August invoice.pdf\""
+));
+```
+
+Both values are part of the signature, so a recipient cannot edit them in the URL. Changing either
+one invalidates the signature and R2 rejects the request.
+
+### After Expiry
+
+Once `ExpiresAfter` has elapsed, R2 answers the URL with HTTP 403. Generate a fresh URL rather than
+issuing long-lived ones:
+
+```csharp
+[HttpGet("download/{id}")]
+public IActionResult GetDownloadUrl(string id)
+{
+    var url = r2.CreatePresignedGetUrl("documents", new PresignedGetRequest(
+        Key: $"user-uploads/{id}",
+        ExpiresAfter: TimeSpan.FromMinutes(10)
+    ));
+
+    return Redirect(url);
+}
+```
+
 ## Using Presigned URLs
 
 ### Server-Side (Generate URL)
@@ -108,16 +169,17 @@ var partUrl = r2.CreatePresignedUploadPartUrl("my-bucket", new PresignedUploadPa
 
 ### Batch Presigned URLs
 
-Generate URLs for all parts at once:
+Generate URLs for all parts at once. Each part is given by its part number and its exact size in bytes,
+because the size is signed into that part's URL:
 
 ```csharp
+const long partSize = 100L * 1024 * 1024; // 100 MiB
+
 var partUrls = r2.CreatePresignedUploadPartsUrls("my-bucket", new PresignedUploadPartsRequest(
     Key: "uploads/large-file.zip",
     UploadId: "your-upload-id",
-    PartNumbers: Enumerable.Range(1, 10).ToArray(), // Parts 1-10
     ExpiresAfter: TimeSpan.FromHours(1),
-    ContentLength: 100 * 1024 * 1024, // Each part is 100 MiB
-    ContentType: "application/octet-stream"
+    PartNumberAndLength: Enumerable.Range(1, 10).ToDictionary(n => n, _ => partSize)
 ));
 
 foreach (var (partNumber, url) in partUrls)
@@ -125,6 +187,9 @@ foreach (var (partNumber, url) in partUrls)
     Console.WriteLine($"Part {partNumber}: {url}");
 }
 ```
+
+Every part except the last must be the same size, and each part must fall between 5 MiB and 5 GiB. The
+method throws `ArgumentException` before signing anything if those rules are broken.
 
 ## Signed Headers
 
@@ -145,6 +210,47 @@ var url = r2.CreatePresignedPutUrl("my-bucket", new PresignedPutRequest(
 
 // Client must include these headers when uploading
 ```
+
+A signed header is not a suggestion. The client's request is rejected unless it sends the header with
+exactly the signed value, because the header name appears in the URL's `X-Amz-SignedHeaders` list and
+its value feeds the signature. Omitting it, or sending a different value, produces a different
+signature and R2 answers 403 with `SignatureDoesNotMatch`. Nothing is stored.
+
+### Requiring Server-Side Encryption
+
+The same mechanism can force a client to declare server-side encryption on every upload:
+
+```csharp
+var encryptionHeader = new Dictionary<string, string>
+{
+    ["x-amz-server-side-encryption"] = "AES256"
+};
+
+var putUrl = r2.CreatePresignedPutUrl("my-bucket", new PresignedPutRequest(
+    Key: "uploads/document.pdf",
+    ExpiresAfter: TimeSpan.FromMinutes(15),
+    ContentLength: fileSize,
+    ContentType: "application/pdf",
+    HeadersToSign: encryptionHeader
+));
+
+var partUrl = r2.CreatePresignedUploadPartUrl("my-bucket", new PresignedUploadPartRequest(
+    Key: "uploads/large-file.zip",
+    UploadId: uploadId,
+    PartNumber: 1,
+    ExpiresAfter: TimeSpan.FromHours(1),
+    ContentLength: partSize,
+    ContentType: "application/octet-stream",
+    HeadersToSign: encryptionHeader
+));
+```
+
+R2 accepts this header on both a single-part PUT and a part upload, and a multipart upload whose parts
+all carry it assembles normally. R2 does not echo the header back in its response.
+
+> [!NOTE]
+> R2 encrypts every object at rest whether or not this header is sent, so signing it does not change
+> how the object is stored. What it changes is that a client cannot upload without presenting it.
 
 ## Common Patterns
 

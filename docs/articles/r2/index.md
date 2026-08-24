@@ -99,19 +99,22 @@ The SDK tracks these metrics in the <xref:Cloudflare.NET.R2.Models.R2Result> obj
 |--------|-------------|
 | [`DeleteObjectAsync`](deletes.md) | Delete single object (free) |
 | [`DeleteObjectsAsync`](deletes.md#batch-delete) | Batch delete (free) |
-| [`ClearBucketAsync`](deletes.md#clear-bucket) | Delete all objects (free) |
+| [`ClearBucketAsync`](deletes.md#clear-bucket) | Delete all objects, then abort any upload left open |
 
 ### List Operations
 
 | Method | Description |
 |--------|-------------|
-| [`ListObjectsAsync`](listing.md) | List objects with pagination |
-| [`ListPartsAsync`](multipart.md#listing-parts) | List multipart upload parts |
+| [`ListObjectsAsync`](listing.md) | List every object, walking all pages |
+| [`ListObjectsPageAsync`](listing.md#one-page-at-a-time) | List one page and return its continuation token |
+| [`ListPartsAsync`](multipart.md#listing-parts) | List the parts of one multipart upload |
+| [`ListMultipartUploadsAsync`](multipart.md#listing-open-uploads) | Find uploads started but never completed |
 
 ### Presigned URLs
 
 | Method | Description |
 |--------|-------------|
+| [`CreatePresignedGetUrl`](presigned-urls.md#presigned-download-url) | URL for direct download |
 | [`CreatePresignedPutUrl`](presigned-urls.md) | URL for direct upload |
 | [`CreatePresignedUploadPartUrl`](presigned-urls.md#multipart-presigned-urls) | URL for multipart part |
 | [`CreatePresignedUploadPartsUrls`](presigned-urls.md#batch-presigned-urls) | Batch URLs for parts |
@@ -120,7 +123,7 @@ The SDK tracks these metrics in the <xref:Cloudflare.NET.R2.Models.R2Result> obj
 
 | Method | Description |
 |--------|-------------|
-| [`InitiateMultipartUploadAsync`](multipart.md#manual-multipart-control) | Start multipart upload |
+| [`InitiateMultipartUploadAsync`](multipart.md#manual-multipart-control) | Start multipart upload, optionally naming the finished object's content type |
 | [`CompleteMultipartUploadAsync`](multipart.md#completing-upload) | Finalize multipart upload |
 | [`AbortMultipartUploadAsync`](multipart.md#aborting-upload) | Cancel multipart upload |
 

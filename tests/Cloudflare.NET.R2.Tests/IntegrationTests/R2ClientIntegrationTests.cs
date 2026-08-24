@@ -24,10 +24,11 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
 {
   #region Properties & Fields - Non-Public
 
-  private readonly IR2Client    _sut;
-  private readonly IAccountsApi _accountsApi;
-  private readonly IAmazonS3    _s3Client;
-  private readonly string       _bucketName = $"cfnet-r2-test-bucket-{Guid.NewGuid():N}";
+  private readonly IR2Client         _sut;
+  private readonly IAccountsApi      _accountsApi;
+  private readonly IAmazonS3         _s3Client;
+  private readonly ITestOutputHelper _output;
+  private readonly string            _bucketName = $"cfnet-r2-test-bucket-{Guid.NewGuid():N}";
 
   #endregion
 
@@ -38,6 +39,7 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     _sut         = fixture.R2Client;
     _accountsApi = fixture.AccountsApi;
     _s3Client    = fixture.S3Client;
+    _output      = output;
 
     // Wire up the logger provider to the current test's output.
     var loggerProvider = fixture.ServiceProvider.GetRequiredService<XunitTestOutputLoggerProvider>();
@@ -285,7 +287,9 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     var clearResult = await _sut.ClearBucketAsync(_bucketName);
 
     // Assert
-    clearResult.ClassAOperations.Should().Be(1); // One list operation, deletes are free
+    // Two Class A operations: one page of object listing, plus the ListMultipartUploads call that
+    // finds uploads left open. The deletes and the aborts themselves are free.
+    clearResult.ClassAOperations.Should().Be(2);
     var listResult = await _sut.ListObjectsAsync(_bucketName, null);
     listResult.Data.Should().BeEmpty();
   }
@@ -339,7 +343,9 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     var result = await _sut.ClearBucketAsync(_bucketName);
 
     // Assert
-    result.ClassAOperations.Should().Be(1); // Should only perform one List operation
+    // Two Class A operations even on an empty bucket: the object listing still costs one, and the
+    // ListMultipartUploads call that looks for uploads left open costs another.
+    result.ClassAOperations.Should().Be(2);
     var listResult = await _sut.ListObjectsAsync(_bucketName, null);
     listResult.Data.Should().BeEmpty();
   }
@@ -658,6 +664,307 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     listResult.Data.Should().ContainSingle().Which.Size.Should().Be(tempFile.FileSize);
   }
 #endif
+
+  /// <summary>
+  ///   Verifies that a caller can walk a prefix one page at a time by feeding the returned continuation token
+  ///   back into the next call, and that the pages together cover every object exactly once.
+  /// </summary>
+  [IntegrationTest]
+  public async Task ListObjectsPageAsync_WalksAPrefixOnePageAtATime()
+  {
+    // Arrange - five objects under one prefix, read back two at a time.
+    var       prefix   = $"paged-listing-{Guid.NewGuid():N}/";
+    using var tempFile = new TempFile(64);
+
+    var expectedKeys = new List<string>();
+
+    for (var i = 0; i < 5; i++)
+    {
+      var key = $"{prefix}object-{i}.bin";
+      await _sut.UploadAsync(_bucketName, key, tempFile.FilePath);
+      expectedKeys.Add(key);
+    }
+
+    // Act - drive the walk from the caller side, exactly as a resumable job would.
+    var       collectedKeys     = new List<string>();
+    string?   continuationToken = null;
+    var       pageCount         = 0;
+
+    do
+    {
+      var page = await _sut.ListObjectsPageAsync(_bucketName, prefix, 2, continuationToken);
+      pageCount++;
+
+      collectedKeys.AddRange(page.Data.Objects.Select(o => o.Key));
+
+      // Each page is a single billable list call.
+      page.Metrics.ClassAOperations.Should().Be(1);
+
+      continuationToken = page.Data.IsTruncated ? page.Data.NextContinuationToken : null;
+
+      // A truncated page must carry the token that continues the walk.
+      if (page.Data.IsTruncated)
+        continuationToken.Should().NotBeNullOrEmpty();
+    } while (continuationToken is not null);
+
+    // Assert - three pages of at most two keys cover all five objects, with no key seen twice.
+    pageCount.Should().Be(3);
+    collectedKeys.Should().BeEquivalentTo(expectedKeys);
+    collectedKeys.Should().OnlyHaveUniqueItems();
+  }
+
+
+  /// <summary>
+  ///   Verifies that a multipart upload which was started and never completed is invisible to object listing
+  ///   but is reported by <see cref="IR2Client.ListMultipartUploadsAsync" />, and that aborting it removes it.
+  /// </summary>
+  [IntegrationTest]
+  public async Task ListMultipartUploadsAsync_FindsAnUploadThatObjectListingCannotSee()
+  {
+    // Arrange - start an upload and send one part, then leave it open.
+    var key            = $"open-upload-{Guid.NewGuid():N}.bin";
+    var initiateResult = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var uploadId       = initiateResult.Data;
+
+    // Act - the object does not exist yet, because the upload was never completed.
+    var objectListing = await _sut.ListObjectsAsync(_bucketName, key);
+    objectListing.Data.Should().BeEmpty("an upload that has not completed produces no object");
+
+    // Assert - the open upload is discoverable, which is the only way to find it.
+    var openUploads = await _sut.ListMultipartUploadsAsync(_bucketName, key);
+    var discovered  = openUploads.Data.Should().ContainSingle().Which;
+    discovered.Key.Should().Be(key);
+    openUploads.Metrics.ClassAOperations.Should().BeGreaterThan(0, "listing uploads is a Class A operation");
+
+    // R2 does not return the same upload identifier here that it returned when the upload was started, so a
+    // cleanup must abort using the identifier the listing gave it. Both are recorded for diagnostics.
+    _output.WriteLine($"UploadId from InitiateMultipartUploadAsync: {uploadId}");
+    _output.WriteLine($"UploadId from ListMultipartUploadsAsync:    {discovered.UploadId}");
+
+    // Act - abort using the identifier the listing supplied, which is what the cleanup path does.
+    await _sut.AbortMultipartUploadAsync(_bucketName, discovered.Key, discovered.UploadId);
+
+    // Assert - the upload is gone, so the identifier from the listing is the one that works.
+    var afterAbort = await _sut.ListMultipartUploadsAsync(_bucketName, key);
+    afterAbort.Data.Should().BeEmpty("aborting with the identifier from the listing must remove the upload");
+  }
+
+
+  /// <summary>
+  ///   Verifies that clearing a bucket aborts multipart uploads left open in it, which is what allows the
+  ///   bucket to be deleted afterwards, and that opting out leaves those uploads in place.
+  /// </summary>
+  [IntegrationTest]
+  public async Task ClearBucketAsync_AbortsOpenMultipartUploadsUnlessTheCallerOptsOut()
+  {
+    // Arrange - an upload left open, with no completed object anywhere in the bucket.
+    var key = $"clear-open-upload-{Guid.NewGuid():N}.bin";
+    await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+
+    // Act - clear the bucket while declining the multipart upload cleanup.
+    await _sut.ClearBucketAsync(_bucketName, true, false);
+
+    // Assert - the upload survives, because the caller asked for objects only.
+    var afterOptOut = await _sut.ListMultipartUploadsAsync(_bucketName, key);
+    afterOptOut.Data.Should().ContainSingle()
+               .Which.Key.Should().Be(key, "declining the cleanup must leave the upload open");
+
+    // Act - clear the bucket again, this time with the default cleanup.
+    await _sut.ClearBucketAsync(_bucketName);
+
+    // Assert - the upload is gone, so Cloudflare will now accept a delete of the bucket.
+    var afterCleanup = await _sut.ListMultipartUploadsAsync(_bucketName, key);
+    afterCleanup.Data.Should().BeEmpty("clearing the bucket aborts uploads left open in it");
+  }
+
+
+  /// <summary>
+  ///   Verifies that a presigned GET URL downloads the object, and that the response header overrides signed
+  ///   into the URL are the headers R2 actually returns.
+  /// </summary>
+  [IntegrationTest]
+  public async Task CanGenerateAndUsePresignedGetUrl_WithResponseHeaderOverrides()
+  {
+    // Arrange - an object stored as one media type, to be served as another.
+    var       key      = $"presigned-get-{Guid.NewGuid():N}.bin";
+    using var tempFile = new TempFile(256);
+    await _sut.UploadAsync(_bucketName, key, tempFile.FilePath);
+
+    var request = new PresignedGetRequest(
+      key,
+      TimeSpan.FromMinutes(5),
+      ResponseContentType: "application/json",
+      ResponseContentDisposition: "attachment; filename=\"renamed-by-the-url.json\"");
+
+    // Act
+    var presignedUrl = _sut.CreatePresignedGetUrl(_bucketName, request);
+    presignedUrl.Should().NotBeNullOrEmpty();
+
+    using var httpClient   = new HttpClient();
+    var       httpResponse = await httpClient.GetAsync(presignedUrl);
+
+    // Assert - the download succeeds and returns the object's bytes.
+    httpResponse.EnsureSuccessStatusCode();
+    var downloadedBytes = await httpResponse.Content.ReadAsByteArrayAsync();
+    var originalBytes   = await File.ReadAllBytesAsync(tempFile.FilePath);
+    downloadedBytes.Should().BeEquivalentTo(originalBytes);
+
+    // Assert - R2 honored the overrides that were signed into the URL, rather than the stored metadata.
+    httpResponse.Content.Headers.ContentType?.MediaType.Should().Be("application/json");
+    httpResponse.Content.Headers.ContentDisposition.Should().NotBeNull();
+    httpResponse.Content.Headers.ContentDisposition!.DispositionType.Should().Be("attachment");
+    // The .NET header parser strips the quotes that the signed value carries around the filename.
+    httpResponse.Content.Headers.ContentDisposition.FileName.Should().Be("renamed-by-the-url.json");
+  }
+
+
+  /// <summary>
+  ///   Verifies that a presigned GET URL created without any response header overrides still downloads the
+  ///   object, leaving R2 to serve the stored metadata.
+  /// </summary>
+  [IntegrationTest]
+  public async Task CanGenerateAndUsePresignedGetUrl_WithoutOverrides()
+  {
+    // Arrange
+    var       key      = $"presigned-get-plain-{Guid.NewGuid():N}.bin";
+    using var tempFile = new TempFile(128);
+    await _sut.UploadAsync(_bucketName, key, tempFile.FilePath);
+
+    // Act
+    var presignedUrl = _sut.CreatePresignedGetUrl(_bucketName, new PresignedGetRequest(key, TimeSpan.FromMinutes(5)));
+
+    using var httpClient   = new HttpClient();
+    var       httpResponse = await httpClient.GetAsync(presignedUrl);
+
+    // Assert
+    httpResponse.EnsureSuccessStatusCode();
+    var downloadedBytes = await httpResponse.Content.ReadAsByteArrayAsync();
+    downloadedBytes.Should().HaveCount((int)tempFile.FileSize);
+  }
+
+
+  /// <summary>
+  ///   Verifies that a presigned GET URL stops working once its validity window has passed.
+  /// </summary>
+  [IntegrationTest]
+  public async Task PresignedGetUrl_AfterExpiry_IsRejected()
+  {
+    // Arrange - a well-formed URL with a very short validity window, so that waiting makes it expire. Asking
+    // for a negative window instead would produce a malformed request, which R2 rejects for a different
+    // reason (400) and would not prove that expiry itself is enforced.
+    var       key      = $"presigned-get-expired-{Guid.NewGuid():N}.bin";
+    using var tempFile = new TempFile(64);
+    await _sut.UploadAsync(_bucketName, key, tempFile.FilePath);
+
+    var presignedUrl = _sut.CreatePresignedGetUrl(
+      _bucketName,
+      new PresignedGetRequest(key, TimeSpan.FromSeconds(1)));
+
+    using var httpClient = new HttpClient();
+
+    // The URL works while its window is open.
+    var beforeExpiry = await httpClient.GetAsync(presignedUrl);
+    beforeExpiry.EnsureSuccessStatusCode();
+
+    // Act - wait for the window to close, then use the same URL again.
+    await Task.Delay(TimeSpan.FromSeconds(4));
+
+    var afterExpiry = await httpClient.GetAsync(presignedUrl);
+
+    // Assert - R2 refuses the expired URL instead of serving the object.
+    afterExpiry.IsSuccessStatusCode.Should().BeFalse("the URL's validity window has passed");
+    afterExpiry.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+  }
+
+  [IntegrationTest]
+  public async Task MultipartUpload_TakesItsContentTypeFromTheInitiateCall()
+  {
+    // Arrange - a multipart upload carrying a content type that R2 would never infer on its own.
+    // A single-part multipart upload is legal at any size, because the 5 MiB minimum applies to every
+    // part except the last one, and the only part here is also the last.
+    var       key         = $"multipart-content-type-{Guid.NewGuid():N}.bin";
+    var       contentType = "application/pdf";
+    using var tempFile    = new TempFile(64 * 1024);
+
+    var initiate = await _sut.InitiateMultipartUploadAsync(_bucketName, key, contentType);
+    var uploadId = initiate.Data;
+
+    try
+    {
+      // Act
+      await using var fileStream = File.OpenRead(tempFile.FilePath);
+
+      var partResponse = await _s3Client.UploadPartAsync(new UploadPartRequest
+      {
+        BucketName                       = _bucketName,
+        Key                              = key,
+        UploadId                         = uploadId,
+        PartNumber                       = 1,
+        PartSize                         = tempFile.FileSize,
+        InputStream                      = fileStream,
+        DisablePayloadSigning            = true,
+        DisableDefaultChecksumValidation = true
+      });
+
+      await _sut.CompleteMultipartUploadAsync(_bucketName, key, uploadId, [new PartETag(1, partResponse.ETag)]);
+
+      // Assert - the assembled object carries the value supplied when the upload started. The key ends in
+      // ".bin", so R2 could not have guessed "application/pdf" from the extension.
+      var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+      _output.WriteLine($"Content-Type reported by R2: {metadata.Headers.ContentType}");
+      metadata.Headers.ContentType.Should().Be(contentType,
+                                               "S3 records the assembled object's Content-Type from the initiate request, never from the parts");
+    }
+    catch
+    {
+      await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId);
+      throw;
+    }
+  }
+
+  [IntegrationTest]
+  public async Task MultipartUpload_WithoutAContentType_LeavesR2ToChooseOne()
+  {
+    // Arrange - the same upload with no content type supplied, which is what every caller of the older
+    // overload gets. This is the comparison that proves the content type argument is what changes the
+    // stored value, rather than something else about the upload.
+    var       key      = $"multipart-no-content-type-{Guid.NewGuid():N}.bin";
+    using var tempFile = new TempFile(64 * 1024);
+
+    var initiate = await _sut.InitiateMultipartUploadAsync(_bucketName, key);
+    var uploadId = initiate.Data;
+
+    try
+    {
+      // Act
+      await using var fileStream = File.OpenRead(tempFile.FilePath);
+
+      var partResponse = await _s3Client.UploadPartAsync(new UploadPartRequest
+      {
+        BucketName                       = _bucketName,
+        Key                              = key,
+        UploadId                         = uploadId,
+        PartNumber                       = 1,
+        PartSize                         = tempFile.FileSize,
+        InputStream                      = fileStream,
+        DisablePayloadSigning            = true,
+        DisableDefaultChecksumValidation = true
+      });
+
+      await _sut.CompleteMultipartUploadAsync(_bucketName, key, uploadId, [new PartETag(1, partResponse.ETag)]);
+
+      // Assert - R2 applies a default of its own choosing. The exact string is R2's to pick, so the test
+      // only proves it is not the value the other test supplies.
+      var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+      _output.WriteLine($"Content-Type chosen by R2 when none was supplied: {metadata.Headers.ContentType}");
+      metadata.Headers.ContentType.Should().NotBe("application/pdf");
+    }
+    catch
+    {
+      await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId);
+      throw;
+    }
+  }
 
   #endregion
 }

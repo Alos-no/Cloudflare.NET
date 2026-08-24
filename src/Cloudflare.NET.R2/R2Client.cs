@@ -32,6 +32,8 @@ public class R2Client : IR2Client, IDisposable
   internal const long DefaultPartSize = 50L * 1024 * 1024;
   /// <summary>The maximum number of keys allowed in a single DeleteObjects request.</summary>
   internal const int MaxKeysPerDelete = 1000;
+  /// <summary>The maximum number of keys S3 returns in a single list page.</summary>
+  internal const int MaxKeysPerListPage = 1000;
   /// <summary>The maximum number of parts allowed in a single multipart upload.</summary>
   internal const int MaxPartsPerUpload = 10000;
 
@@ -426,8 +428,9 @@ public class R2Client : IR2Client, IDisposable
 
   /// <inheritdoc />
   public async Task<R2Result> ClearBucketAsync(string            bucketName,
-                                               bool              continueOnError   = true,
-                                               CancellationToken cancellationToken = default)
+                                               bool              continueOnError                = true,
+                                               bool              abortIncompleteMultipartUploads = true,
+                                               CancellationToken cancellationToken              = default)
   {
     _logger.ClearingBucket(bucketName);
     var  totalMetrics      = new R2Result();
@@ -502,6 +505,24 @@ public class R2Client : IR2Client, IDisposable
         }
     } while (isTruncated);
 
+    // Deleting every object is not enough to leave the bucket deletable. An upload that was started and
+    // never completed or aborted keeps holding storage that object listing never reports, and Cloudflare
+    // then refuses to delete the bucket, reporting that it is not empty even though no object is visible.
+    if (abortIncompleteMultipartUploads)
+      try
+      {
+        totalMetrics += await AbortOpenMultipartUploadsAsync(bucketName, cancellationToken);
+      }
+      catch (Exception ex) when (ex is CloudflareR2ListException<MultipartUpload> or CloudflareR2OperationException)
+      {
+        // Objects that could not be deleted are the more actionable failure, so when both happen the batch
+        // exception below reports them and carries this one inside its AggregateException.
+        allExceptions.Add(ex);
+
+        if (allFailedKeys.Count == 0)
+          throw;
+      }
+
     if (allFailedKeys.Any())
       throw new CloudflareR2BatchException<string>(
         $"Failed to delete {allFailedKeys.Count} objects while clearing bucket {bucketName}.",
@@ -511,18 +532,158 @@ public class R2Client : IR2Client, IDisposable
     return totalMetrics;
   }
 
+
+  /// <summary>
+  ///   Discovers every multipart upload left open in the bucket and aborts each one, so that Cloudflare will
+  ///   accept a subsequent delete of the bucket.
+  /// </summary>
+  /// <param name="bucketName">The name of the bucket to clean up.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An <see cref="R2Result" /> carrying the metrics of the discovery call and every abort call.</returns>
+  private async Task<R2Result> AbortOpenMultipartUploadsAsync(string bucketName, CancellationToken cancellationToken)
+  {
+    // Pass no prefix: clearing the bucket means the whole bucket, not one prefix within it.
+    var discovered   = await ListMultipartUploadsAsync(bucketName, null, cancellationToken);
+    var totalMetrics = discovered.Metrics;
+
+    foreach (var upload in discovered.Data)
+    {
+      cancellationToken.ThrowIfCancellationRequested();
+
+      // Aborting an upload is a free operation, so this adds calls but no billable operations.
+      totalMetrics += await AbortMultipartUploadAsync(bucketName, upload.Key, upload.UploadId, cancellationToken);
+    }
+
+    if (discovered.Data.Count > 0)
+      _logger.AbortedOpenMultipartUploads(discovered.Data.Count, bucketName);
+
+    return totalMetrics;
+  }
+
   /// <inheritdoc />
   public async Task<R2Result<IReadOnlyList<S3Object>>> ListObjectsAsync(string            bucketName,
                                                                         string?           prefix,
                                                                         CancellationToken cancellationToken = default)
   {
-    var totalMetrics = new R2Result();
-    var allObjects   = new List<S3Object>();
+    var totalMetrics      = new R2Result();
+    var allObjects        = new List<S3Object>();
+    var continuationToken = (string?)null;
+
+    while (true)
+    {
+      cancellationToken.ThrowIfCancellationRequested();
+
+      R2Result<R2ObjectPage> pageResult;
+
+      try
+      {
+        // Ask for the largest page R2 allows: this method returns the whole prefix either way, so a smaller
+        // page would only cost extra billable list calls.
+        pageResult = await ListObjectsPageAsync(bucketName, prefix, MaxKeysPerListPage, continuationToken,
+                                                cancellationToken);
+      }
+      catch (CloudflareR2ListException<S3Object> ex)
+      {
+        // ListObjectsPageAsync already logged the AWS SDK failure, but it knows only about its own single
+        // call and so reports no objects. Re-throw carrying everything fetched by the earlier pages, which is
+        // the partial listing this method has always promised its callers.
+        throw new CloudflareR2ListException<S3Object>(
+          $"Listing objects failed for s3://{bucketName}/{prefix}",
+          allObjects, totalMetrics + ex.PartialMetrics, ex.InnerException ?? ex);
+      }
+
+      totalMetrics += pageResult.Metrics;
+      allObjects.AddRange(pageResult.Data.Objects);
+
+      if (!pageResult.Data.IsTruncated)
+        break;
+
+      // Continuing the walk needs the token the response returns. A provider that says there is more data
+      // while returning no token leaves the token unchanged, so the next call would re-fetch this same page
+      // for ever and re-add its objects to the accumulator on every pass. Throwing here is the same guard
+      // ListPartsAsync and ListMultipartUploadsAsync apply to their own markers.
+      if (string.IsNullOrEmpty(pageResult.Data.NextContinuationToken))
+      {
+        _logger.ListObjectsPaginationInconsistency(bucketName, prefix);
+
+        throw new CloudflareR2ListException<S3Object>(
+          $"Listing objects for s3://{bucketName}/{prefix} failed due to inconsistent pagination response from the provider (IsTruncated=true, but NextContinuationToken is null).",
+          allObjects,
+          totalMetrics,
+          new InvalidOperationException("Inconsistent pagination response from S3-compatible provider."));
+      }
+
+      continuationToken = pageResult.Data.NextContinuationToken;
+    }
+
+    _logger.ListedObjects(allObjects.Count, bucketName, prefix);
+
+    return new R2Result<IReadOnlyList<S3Object>>(allObjects, totalMetrics);
+  }
+
+  /// <inheritdoc />
+  public async Task<R2Result<R2ObjectPage>> ListObjectsPageAsync(string            bucketName,
+                                                                 string?           prefix,
+                                                                 int               maxKeys,
+                                                                 string?           continuationToken,
+                                                                 CancellationToken cancellationToken = default)
+  {
+    // One list call, so exactly one Class A operation regardless of the outcome.
+    var metrics = new R2Result(1);
+
+    // Clamp to the S3 page ceiling; a caller asking for zero or less gets the full page.
+    var effectiveMaxKeys = maxKeys <= 0 ? MaxKeysPerListPage : Math.Min(maxKeys, MaxKeysPerListPage);
 
     try
     {
-      ListObjectsV2Response response;
-      var                   request = new ListObjectsV2Request { BucketName = bucketName, Prefix = prefix };
+      cancellationToken.ThrowIfCancellationRequested();
+
+      var request = new ListObjectsV2Request
+      {
+        BucketName        = bucketName,
+        Prefix            = prefix,
+        MaxKeys           = effectiveMaxKeys,
+        ContinuationToken = continuationToken
+      };
+
+      var response = await _s3Client.ListObjectsV2Async(request, cancellationToken);
+
+      // The S3Objects list can be null if the response contains no objects.
+      IReadOnlyList<S3Object> objects = response.S3Objects ?? [];
+
+      // IsTruncated is type `bool?` on the SDK response.
+      var isTruncated = response.IsTruncated == true;
+
+      _logger.ListedObjectsPage(objects.Count, bucketName, prefix, isTruncated);
+
+      var page = new R2ObjectPage(objects, response.NextContinuationToken, isTruncated);
+
+      return new R2Result<R2ObjectPage>(page, metrics);
+    }
+    catch (AmazonS3Exception ex)
+    {
+      _logger.ListObjectsFailed(ex, bucketName, prefix);
+
+      throw new CloudflareR2ListException<S3Object>(
+        $"Listing a page of objects failed for s3://{bucketName}/{prefix}",
+        [], metrics, ex);
+    }
+  }
+
+  /// <inheritdoc />
+  public async Task<R2Result<IReadOnlyList<MultipartUpload>>> ListMultipartUploadsAsync(
+    string            bucketName,
+    string?           prefix,
+    CancellationToken cancellationToken = default)
+  {
+    var totalMetrics = new R2Result();
+    var allUploads   = new List<MultipartUpload>();
+
+    try
+    {
+      ListMultipartUploadsResponse response;
+
+      var request = new ListMultipartUploadsRequest { BucketName = bucketName, Prefix = prefix };
 
       do
       {
@@ -530,24 +691,45 @@ public class R2Client : IR2Client, IDisposable
 
         // Account for the Class A operation before the call.
         totalMetrics += new R2Result(1);
-        response     =  await _s3Client.ListObjectsV2Async(request, cancellationToken);
+        response     =  await _s3Client.ListMultipartUploadsAsync(request, cancellationToken);
 
-        // The S3Objects list can be null if the response contains no objects.
-        if (response.S3Objects is not null)
-          allObjects.AddRange(response.S3Objects);
+        // The MultipartUploads list can be null when no upload is open under the prefix.
+        if (response.MultipartUploads is not null)
+          allUploads.AddRange(response.MultipartUploads);
 
-        request.ContinuationToken = response.NextContinuationToken;
-      } while (response.IsTruncated == true); // IsTruncated is type `bool?`
+        if (response.IsTruncated != true) // IsTruncated is type `bool?`
+          break;
 
-      _logger.ListedObjects(allObjects.Count, bucketName, prefix);
-      return new R2Result<IReadOnlyList<S3Object>>(allObjects, totalMetrics);
+        // Continuing a multipart-upload listing needs BOTH markers the response returns. A provider that says there
+        // is more data while returning neither marker leaves the request unchanged, so the next call would re-fetch
+        // the same first page for ever and re-add its uploads to the accumulator on every pass. Throwing here is the
+        // same guard ListPartsAsync applies to its own marker.
+        if (string.IsNullOrEmpty(response.NextKeyMarker) && string.IsNullOrEmpty(response.NextUploadIdMarker))
+        {
+          _logger.ListMultipartUploadsPaginationInconsistency(bucketName, prefix);
+
+          throw new CloudflareR2ListException<MultipartUpload>(
+            $"Listing open multipart uploads for s3://{bucketName}/{prefix} failed due to inconsistent pagination response from the provider (IsTruncated=true, but neither NextKeyMarker nor NextUploadIdMarker is set).",
+            allUploads,
+            totalMetrics,
+            new InvalidOperationException("Inconsistent pagination response from S3-compatible provider."));
+        }
+
+        request.KeyMarker      = response.NextKeyMarker;
+        request.UploadIdMarker = response.NextUploadIdMarker;
+      } while (true);
+
+      _logger.ListedMultipartUploads(allUploads.Count, bucketName, prefix);
+
+      return new R2Result<IReadOnlyList<MultipartUpload>>(allUploads, totalMetrics);
     }
     catch (AmazonS3Exception ex)
     {
-      _logger.ListObjectsFailed(ex, bucketName, prefix);
-      throw new CloudflareR2ListException<S3Object>(
-        $"Listing objects failed for s3://{bucketName}/{prefix}",
-        allObjects, totalMetrics, ex);
+      _logger.ListMultipartUploadsFailed(ex, bucketName, prefix);
+
+      throw new CloudflareR2ListException<MultipartUpload>(
+        $"Listing open multipart uploads failed for s3://{bucketName}/{prefix}",
+        allUploads, totalMetrics, ex);
     }
   }
 
@@ -576,7 +758,10 @@ public class R2Client : IR2Client, IDisposable
         totalMetrics += new R2Result(1);
         var response = await _s3Client.ListPartsAsync(request, cancellationToken);
 
-        allParts.AddRange(response.Parts.Select(p => new ListedPart(p.PartNumber, p.ETag, p.Size, p.LastModified)));
+        // R2 omits the part list entirely when the upload has no parts yet, which the AWS SDK surfaces as a
+        // null collection rather than an empty one. Treat that as "no parts" instead of dereferencing it.
+        if (response.Parts is not null)
+          allParts.AddRange(response.Parts.Select(p => new ListedPart(p.PartNumber, p.ETag, p.Size, p.LastModified)));
 
         if (response.IsTruncated != true) // IsTruncated is type `bool?`
           break;
@@ -642,6 +827,37 @@ public class R2Client : IR2Client, IDisposable
     }
   }
 
+  /// <inheritdoc />
+  public string CreatePresignedGetUrl(string bucketName, PresignedGetRequest request)
+  {
+    try
+    {
+      var presignedUrlRequest = new GetPreSignedUrlRequest
+      {
+        BucketName = bucketName,
+        Key        = request.Key,
+        Verb       = HttpVerb.GET,
+        Expires    = DateTime.UtcNow.Add(request.ExpiresAfter)
+      };
+
+      // The overrides are part of the signed query string (response-content-type / response-content-disposition), so
+      // R2 stamps them on its own response and the URL holder cannot change them after signing. They let a download
+      // link name a media type and a save-as filename the stored object itself does not carry.
+      if (request.ResponseContentType is not null)
+        presignedUrlRequest.ResponseHeaderOverrides.ContentType = request.ResponseContentType;
+
+      if (request.ResponseContentDisposition is not null)
+        presignedUrlRequest.ResponseHeaderOverrides.ContentDisposition = request.ResponseContentDisposition;
+
+      return GeneratePresignedUrl(presignedUrlRequest);
+    }
+    catch (AmazonS3Exception ex)
+    {
+      _logger.PresignedUrlGenerationFailed(ex, request.Key, bucketName);
+      throw new CloudflareR2OperationException("Failed to generate presigned GET URL.", new R2Result(), ex);
+    }
+  }
+
 #if false // There is currently a NRE in the AWS SDK when using CreatePresignedPostUrl with R2.
   /// <inheritdoc />
   public async Task<PresignedPostResponse> CreatePresignedPostUrlAsync(string               bucketName,
@@ -692,8 +908,19 @@ public class R2Client : IR2Client, IDisposable
   }
 
   /// <inheritdoc />
+  public Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
+                                                             string            objectKey,
+                                                             CancellationToken cancellationToken = default)
+  {
+    // Defer to the overload that carries a content type. Passing null leaves the property unset on the
+    // request, which is exactly the behaviour this overload has always had.
+    return InitiateMultipartUploadAsync(bucketName, objectKey, null, cancellationToken);
+  }
+
+  /// <inheritdoc />
   public async Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
                                                                    string            objectKey,
+                                                                   string?           contentType,
                                                                    CancellationToken cancellationToken = default)
   {
     var metrics = new R2Result(1);
@@ -705,6 +932,12 @@ public class R2Client : IR2Client, IDisposable
         BucketName = bucketName,
         Key        = objectKey
       };
+
+      // S3 records the assembled object's Content-Type from this initiate request; the individual parts
+      // cannot carry it. Only assign the property when the caller supplied a value, so that a null or
+      // blank argument still lets R2 apply its own default rather than sending an empty header.
+      if (!string.IsNullOrWhiteSpace(contentType))
+        request.ContentType = contentType;
 
       var response = await _s3Client.InitiateMultipartUploadAsync(request, cancellationToken);
 
@@ -729,12 +962,14 @@ public class R2Client : IR2Client, IDisposable
         Key        = request.Key,
         Verb       = HttpVerb.PUT,
         Expires    = DateTime.UtcNow.Add(request.ExpiresAfter),
-        Parameters =
-        {
-          // Per-part parameters must be added to the parameters collection to be included in the signature.
-          ["uploadId"]   = request.UploadId,
-          ["partNumber"] = request.PartNumber.ToString()
-        },
+        // UploadId and PartNumber must be set through these dedicated properties, which emit the
+        // "uploadId" and "partNumber" query parameters that the S3 UploadPart operation is keyed on.
+        // Putting them in the Parameters collection instead emits them as "x-uploadId" and
+        // "x-partNumber", because that collection is for arbitrary custom parameters and the AWS SDK
+        // prefixes those with "x-". R2 then sees a PUT with no recognisable upload identifier, answers
+        // 200, and writes a plain object over the key instead of recording a part.
+        UploadId   = request.UploadId,
+        PartNumber = request.PartNumber,
         Headers =
         {
           // The Content-Length header is signed to enforce size on the provider side.
@@ -819,12 +1054,13 @@ public class R2Client : IR2Client, IDisposable
         Key        = request.Key,
         Verb       = HttpVerb.PUT,
         Expires    = DateTime.UtcNow.Add(request.ExpiresAfter),
-        Parameters =
-        {
-          ["uploadId"] = request.UploadId,
-          // PartNumber will be updated in the loop. Initialize with a placeholder.
-          ["partNumber"] = "0"
-        },
+        // UploadId and PartNumber must be set through these dedicated properties so that the URL carries
+        // the "uploadId" and "partNumber" query parameters the S3 UploadPart operation is keyed on. The
+        // Parameters collection is for arbitrary custom parameters and the AWS SDK prefixes those with
+        // "x-", which would make R2 treat each part upload as a plain object PUT over the key.
+        UploadId = request.UploadId,
+        // PartNumber will be updated in the loop. Initialize with a placeholder.
+        PartNumber = 0,
         Headers =
         {
           // Content-Length will be updated in the loop. Initialize with a placeholder.
@@ -841,7 +1077,7 @@ public class R2Client : IR2Client, IDisposable
       foreach (var (partNumber, contentLength) in request.PartNumberAndLength)
       {
         // Update only the parameters that change per iteration.
-        presignedUrlRequest.Parameters["partNumber"]  = partNumber.ToString();
+        presignedUrlRequest.PartNumber                = partNumber;
         presignedUrlRequest.Headers["Content-Length"] = contentLength.ToString();
 
         // Generate the signed URL for the current part and add it to the dictionary.
