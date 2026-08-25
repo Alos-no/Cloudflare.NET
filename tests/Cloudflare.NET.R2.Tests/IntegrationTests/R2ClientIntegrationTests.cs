@@ -969,5 +969,43 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
     }
   }
 
+  [IntegrationTest]
+  public async Task UploadSinglePartAsync_WithContentType_StoresTheTypeOnTheObject()
+  {
+    // Arrange - the key ends in ".bin", so R2 could not have guessed "image/webp" from the extension:
+    // the stored type can only come from the argument.
+    var       key         = $"single-part-content-type-{Guid.NewGuid():N}.bin";
+    var       contentType = "image/webp";
+    using var stream      = new MemoryStream(new byte[64 * 1024]);
+
+    // Act
+    await _sut.UploadSinglePartAsync(_bucketName, key, stream, contentType);
+
+    // Assert
+    var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+    _output.WriteLine($"Content-Type reported by R2: {metadata.Headers.ContentType}");
+    metadata.Headers.ContentType.Should().Be(contentType);
+  }
+
+  [IntegrationTest]
+  public async Task UploadMultipartAsync_WithContentType_StoresTheTypeOnTheAssembledObject()
+  {
+    // Arrange - the high-level multipart method must place the type on its own initiate call. A 64 KiB
+    // file is a legal multipart upload, because the 5 MiB minimum applies to every part except the last
+    // and the only part here is also the last.
+    var       key         = $"upload-multipart-content-type-{Guid.NewGuid():N}.bin";
+    var       contentType = "image/webp";
+    using var tempFile    = new TempFile(64 * 1024);
+
+    // Act
+    await _sut.UploadMultipartAsync(_bucketName, key, tempFile.FilePath, null, contentType);
+
+    // Assert
+    var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+    _output.WriteLine($"Content-Type reported by R2: {metadata.Headers.ContentType}");
+    metadata.Headers.ContentType.Should().Be(contentType,
+                                             "the high-level multipart upload records the type on the initiate request");
+  }
+
   #endregion
 }

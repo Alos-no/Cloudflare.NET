@@ -21,8 +21,8 @@ public class UploadService(IR2Client r2)
 ## Automatic Upload
 
 The `UploadAsync` method automatically chooses the best upload strategy:
-- Files <= 5 GiB: Single PUT request
-- Files > 5 GiB: Multipart upload
+- Files under 50 MiB: Single PUT request
+- Files of 50 MiB or more, and non-seekable streams: Multipart upload
 
 ### From File Path
 
@@ -93,6 +93,53 @@ var result = await r2.UploadSinglePartAsync(
     objectKey: "data.bin",
     inputStream: stream);
 ```
+
+## Content Type
+
+Every upload method has an overload taking a `contentType`, so the stored object carries the MIME type
+a CDN or browser needs to serve it correctly. Without it, R2 stores its own default
+(`application/octet-stream`):
+
+```csharp
+// Automatic strategy selection, with the type recorded either way:
+var result = await r2.UploadAsync(
+    bucketName: "my-bucket",
+    objectKey: "thumbnails/photo-small.webp",
+    filePath: "/path/to/photo-small.webp",
+    partSize: null,
+    contentType: "image/webp");
+
+// Single PUT:
+await r2.UploadSinglePartAsync("my-bucket", "thumbnails/photo-small.webp", stream, "image/webp");
+
+// Multipart (the type travels on the initiate request, the only place S3 reads it from):
+await r2.UploadMultipartAsync("my-bucket", "videos/clip.mp4", filePath, null, "video/mp4");
+```
+
+Passing `null` or a blank string leaves the property unset, so the overload behaves exactly like the one
+without the parameter. The value is applied verbatim: the client never infers a type from the file
+extension, the bytes, or the object key.
+
+## Checksums
+
+A single-part upload can be bound to a digest of its bytes. R2 hashes what actually arrives and fails
+the upload with 400 `BadDigest`, storing nothing, when the bytes do not hash to the stated digest. All
+five `R2ChecksumAlgorithm` values are verified on this path:
+
+```csharp
+var fileBytes = await File.ReadAllBytesAsync("/path/to/photo-small.webp");
+var checksum  = UploadChecksum.FromDigestBytes(R2ChecksumAlgorithm.Sha256, SHA256.HashData(fileBytes));
+
+await using var stream = new MemoryStream(fileBytes);
+
+await r2.UploadSinglePartAsync("my-bucket", "thumbnails/photo-small.webp", stream, "image/webp", checksum);
+```
+
+A checksum digests the whole object, but a multipart upload is verified per part and the client does not
+compute per-part digests. `UploadAsync` therefore throws `ArgumentException` when a checksum accompanies
+an input that would go multipart (50 MiB or more, or a non-seekable stream); use `UploadSinglePartAsync`
+for objects up to 5 GiB, or upload without a checksum. For presigned uploads, where checksums guard
+against an untrusted client, see [Checksum Verification](presigned-urls.md#checksum-verification).
 
 ## R2Result
 
@@ -211,7 +258,7 @@ public async Task<R2Result> UploadJsonAsync<T>(string bucket, string key, T data
     var bytes = Encoding.UTF8.GetBytes(json);
 
     await using var stream = new MemoryStream(bytes);
-    return await r2.UploadSinglePartAsync(bucket, key, stream);
+    return await r2.UploadSinglePartAsync(bucket, key, stream, "application/json");
 }
 ```
 

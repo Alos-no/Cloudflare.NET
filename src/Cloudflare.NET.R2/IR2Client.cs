@@ -33,6 +33,52 @@ public interface IR2Client
                              CancellationToken cancellationToken = default);
 
   /// <summary>
+  ///   Uploads a file from a local path, automatically choosing between a single PUT request or a multipart upload
+  ///   based on the file size, and records the object's content type.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank <paramref name="contentType" /> leaves the property unset, so R2
+  ///     applies its own default and this method behaves exactly like
+  ///     <see cref="UploadAsync(string,string,string,long?,CancellationToken)" />. A non-blank value is applied
+  ///     verbatim; the type is never inferred from the file extension, the bytes, or the object key. When the file is
+  ///     large enough to go multipart, the type is recorded on the initiate request, the only place S3 reads the
+  ///     assembled object's <c>Content-Type</c> from.
+  ///   </para>
+  ///   <para>
+  ///     A <paramref name="checksum" /> binds the upload to a digest of the whole object: R2 hashes the arriving
+  ///     bytes and fails the upload with <c>BadDigest</c>, storing nothing, when they do not hash to the stated
+  ///     digest. Because the digest covers the whole object while a multipart upload is verified per part, a checksum
+  ///     is only accepted for files small enough for a single PUT; a multipart-sized file with a checksum throws
+  ///     before anything is sent.
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key (path) for the object in the bucket.</param>
+  /// <param name="filePath">The path to the local file to upload.</param>
+  /// <param name="partSize">
+  ///   The desired size in bytes for each part in a multipart upload. If null, a sensible default is
+  ///   used. The value is clamped between 5MiB and 5GiB.
+  /// </param>
+  /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
+  /// <param name="checksum">An optional digest of the whole object's bytes for R2 to verify on a single-part upload.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">
+  ///   Thrown if the file size exceeds R2's 5 TiB limit, or if a <paramref name="checksum" /> accompanies a file
+  ///   large enough to go multipart.
+  /// </exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
+  /// <exception cref="FileNotFoundException">Thrown if the specified <paramref name="filePath" /> does not exist.</exception>
+  Task<R2Result> UploadAsync(string            bucketName,
+                             string            objectKey,
+                             string            filePath,
+                             long?             partSize,
+                             string?           contentType,
+                             UploadChecksum?   checksum          = null,
+                             CancellationToken cancellationToken = default);
+
+  /// <summary>
   ///   Uploads a file from a stream, automatically choosing between a single PUT request or a multipart upload. If
   ///   the stream is seekable, the choice is based on its length. If it is not seekable, it will always attempt a multipart
   ///   upload.
@@ -56,6 +102,53 @@ public interface IR2Client
                              CancellationToken cancellationToken = default);
 
   /// <summary>
+  ///   Uploads a file from a stream, automatically choosing between a single PUT request or a multipart upload, and
+  ///   records the object's content type. If the stream is seekable, the choice is based on its length. If it is not
+  ///   seekable, it will always attempt a multipart upload.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank <paramref name="contentType" /> leaves the property unset, so R2
+  ///     applies its own default and this method behaves exactly like
+  ///     <see cref="UploadAsync(string,string,Stream,long?,CancellationToken)" />. A non-blank value is applied
+  ///     verbatim; the type is never inferred from the stream contents or the object key. When the stream goes
+  ///     multipart, the type is recorded on the initiate request, the only place S3 reads the assembled object's
+  ///     <c>Content-Type</c> from.
+  ///   </para>
+  ///   <para>
+  ///     A <paramref name="checksum" /> binds the upload to a digest of the whole object: R2 hashes the arriving
+  ///     bytes and fails the upload with <c>BadDigest</c>, storing nothing, when they do not hash to the stated
+  ///     digest. Because the digest covers the whole object while a multipart upload is verified per part, a checksum
+  ///     is only accepted when the stream takes the single PUT path; a stream that would go multipart (too large, or
+  ///     not seekable) with a checksum throws before anything is sent.
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key (path) for the object in the bucket.</param>
+  /// <param name="fileStream">The stream to upload.</param>
+  /// <param name="partSize">
+  ///   The desired size in bytes for each part in a multipart upload. If null, a sensible default is
+  ///   used. The value is clamped between 5MiB and 5GiB.
+  /// </param>
+  /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
+  /// <param name="checksum">An optional digest of the whole object's bytes for R2 to verify on a single-part upload.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">
+  ///   Thrown if the stream is seekable and its length exceeds R2's 5 TiB limit, or if a <paramref name="checksum" />
+  ///   accompanies a stream that would go multipart.
+  /// </exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
+  /// <exception cref="NotSupportedException">Thrown if a multipart upload is attempted but the stream is not seekable.</exception>
+  Task<R2Result> UploadAsync(string            bucketName,
+                             string            objectKey,
+                             Stream            fileStream,
+                             long?             partSize,
+                             string?           contentType,
+                             UploadChecksum?   checksum          = null,
+                             CancellationToken cancellationToken = default);
+
+  /// <summary>
   ///   Uploads a file using a single PUT request. This method provides direct control and should be used when the
   ///   automatic selection in <see cref="UploadAsync(string,string,string,long?,CancellationToken)" /> is not desired.
   /// </summary>
@@ -69,6 +162,40 @@ public interface IR2Client
   Task<R2Result> UploadSinglePartAsync(string            bucketName,
                                        string            objectKey,
                                        string            filePath,
+                                       CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Uploads a file using a single PUT request, recording the object's content type and optionally binding the
+  ///   upload to a checksum.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank <paramref name="contentType" /> leaves the property unset, so R2
+  ///     applies its own default and this method behaves exactly like
+  ///     <see cref="UploadSinglePartAsync(string,string,string,CancellationToken)" />. A non-blank value is applied
+  ///     verbatim; the type is never inferred from the file extension, the bytes, or the object key.
+  ///   </para>
+  ///   <para>
+  ///     A <paramref name="checksum" /> binds the upload to a digest of the object's bytes. R2 hashes what actually
+  ///     arrives and fails the upload with <c>BadDigest</c>, storing nothing, when the bytes do not hash to the
+  ///     stated digest (verified against live R2 for every <see cref="R2ChecksumAlgorithm" /> on single-part
+  ///     uploads).
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key (path) for the object in the bucket.</param>
+  /// <param name="filePath">The path to the local file to upload.</param>
+  /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
+  /// <param name="checksum">An optional digest of the object's bytes for R2 to verify.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the file size exceeds the 5 GiB single-part upload limit.</exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
+  Task<R2Result> UploadSinglePartAsync(string            bucketName,
+                                       string            objectKey,
+                                       string            filePath,
+                                       string?           contentType,
+                                       UploadChecksum?   checksum          = null,
                                        CancellationToken cancellationToken = default);
 
   /// <summary>
@@ -91,6 +218,43 @@ public interface IR2Client
                                        Stream            inputStream,
                                        CancellationToken cancellationToken = default);
 
+  /// <summary>
+  ///   Uploads a file from a stream using a single PUT request, recording the object's content type and optionally
+  ///   binding the upload to a checksum.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank <paramref name="contentType" /> leaves the property unset, so R2
+  ///     applies its own default and this method behaves exactly like
+  ///     <see cref="UploadSinglePartAsync(string,string,Stream,CancellationToken)" />. A non-blank value is applied
+  ///     verbatim; the type is never inferred from the stream contents or the object key.
+  ///   </para>
+  ///   <para>
+  ///     A <paramref name="checksum" /> binds the upload to a digest of the object's bytes. R2 hashes what actually
+  ///     arrives and fails the upload with <c>BadDigest</c>, storing nothing, when the bytes do not hash to the
+  ///     stated digest (verified against live R2 for every <see cref="R2ChecksumAlgorithm" /> on single-part
+  ///     uploads).
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key (path) for the object in the bucket.</param>
+  /// <param name="inputStream">The stream to upload.</param>
+  /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
+  /// <param name="checksum">An optional digest of the object's bytes for R2 to verify.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">
+  ///   Thrown if the stream is seekable and its length exceeds the 5 GiB single-part
+  ///   upload limit.
+  /// </exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if the upload fails.</exception>
+  Task<R2Result> UploadSinglePartAsync(string            bucketName,
+                                       string            objectKey,
+                                       Stream            inputStream,
+                                       string?           contentType,
+                                       UploadChecksum?   checksum          = null,
+                                       CancellationToken cancellationToken = default);
+
   /// <summary>Uploads a file using a multipart upload. This method provides direct control over multipart uploads.</summary>
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key (path) for the object in the bucket.</param>
@@ -107,6 +271,38 @@ public interface IR2Client
                                       string            objectKey,
                                       string            filePath,
                                       long?             partSize          = null,
+                                      CancellationToken cancellationToken = default);
+
+  /// <summary>Uploads a file using a multipart upload, recording the content type the assembled object will carry.</summary>
+  /// <remarks>
+  ///   <para>
+  ///     The type is recorded on the initiate request, because S3 reads the assembled object's <c>Content-Type</c>
+  ///     from the initiate call and never from the individual parts.
+  ///   </para>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank <paramref name="contentType" /> leaves the property unset, so R2
+  ///     applies its own default and this method behaves exactly like
+  ///     <see cref="UploadMultipartAsync(string,string,string,long?,CancellationToken)" />. A non-blank value is
+  ///     applied verbatim; the type is never inferred from the file extension, the bytes, or the object key.
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key (path) for the object in the bucket.</param>
+  /// <param name="filePath">The path to the local file to upload.</param>
+  /// <param name="partSize">
+  ///   The desired size in bytes for each part. If null, a sensible default is used. The value is
+  ///   clamped between 5MiB and 5GiB.
+  /// </param>
+  /// <param name="contentType">The MIME type to record for the assembled object, for example <c>image/webp</c>.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An <see cref="R2Result" /> detailing the aggregate metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the file size exceeds R2's 5 TiB limit.</exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if any part of the upload fails.</exception>
+  Task<R2Result> UploadMultipartAsync(string            bucketName,
+                                      string            objectKey,
+                                      string            filePath,
+                                      long?             partSize,
+                                      string?           contentType,
                                       CancellationToken cancellationToken = default);
 
   /// <summary>
@@ -129,6 +325,42 @@ public interface IR2Client
                                       string            objectKey,
                                       Stream            inputStream,
                                       long?             partSize          = null,
+                                      CancellationToken cancellationToken = default);
+
+  /// <summary>
+  ///   Uploads a file from a stream using a multipart upload, recording the content type the assembled object will
+  ///   carry. The stream must be seekable.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     The type is recorded on the initiate request, because S3 reads the assembled object's <c>Content-Type</c>
+  ///     from the initiate call and never from the individual parts.
+  ///   </para>
+  ///   <para>
+  ///     Passing <see langword="null" /> or a blank <paramref name="contentType" /> leaves the property unset, so R2
+  ///     applies its own default and this method behaves exactly like
+  ///     <see cref="UploadMultipartAsync(string,string,Stream,long?,CancellationToken)" />. A non-blank value is
+  ///     applied verbatim; the type is never inferred from the stream contents or the object key.
+  ///   </para>
+  /// </remarks>
+  /// <param name="bucketName">The name of the target bucket.</param>
+  /// <param name="objectKey">The key (path) for the object in the bucket.</param>
+  /// <param name="inputStream">The stream to upload. Must be seekable.</param>
+  /// <param name="partSize">
+  ///   The desired size in bytes for each part. If null, a sensible default is used. The value is
+  ///   clamped between 5MiB and 5GiB.
+  /// </param>
+  /// <param name="contentType">The MIME type to record for the assembled object, for example <c>image/webp</c>.</param>
+  /// <param name="cancellationToken">A cancellation token.</param>
+  /// <returns>An <see cref="R2Result" /> detailing the aggregate metrics of the operation.</returns>
+  /// <exception cref="ArgumentException">Thrown if the stream length exceeds R2's 5 TiB limit.</exception>
+  /// <exception cref="CloudflareR2OperationException">Thrown if any part of the upload fails.</exception>
+  /// <exception cref="NotSupportedException">Thrown if the provided stream is not seekable.</exception>
+  Task<R2Result> UploadMultipartAsync(string            bucketName,
+                                      string            objectKey,
+                                      Stream            inputStream,
+                                      long?             partSize,
+                                      string?           contentType,
                                       CancellationToken cancellationToken = default);
 
   /// <summary>Downloads a file from an R2 bucket to a local file path.</summary>

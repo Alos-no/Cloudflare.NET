@@ -7,7 +7,9 @@ namespace Cloudflare.NET.R2.Tests.IntegrationTests;
 using System.Net;
 using System.Security.Cryptography;
 using Accounts;
+using Amazon.S3;
 using Amazon.S3.Model;
+using Exceptions;
 using Fixtures;
 using FluentAssertions;
 using Helpers;
@@ -334,6 +336,67 @@ public class R2ChecksumIntegrationTests : IClassFixture<R2ClientTestFixture>, IA
       if (!succeeded)
         await _sut.AbortMultipartUploadAsync(_bucketName, key, uploadId);
     }
+  }
+
+  [IntegrationTestTheory]
+  // The direct server-side upload path: the client itself sends the bytes and copies the caller's digest
+  // onto the matching PutObjectRequest property. Every admitted algorithm must be verified by R2 there
+  // exactly as on a presigned PUT.
+  [InlineData("crc32")]
+  [InlineData("crc32c")]
+  [InlineData("sha1")]
+  [InlineData("sha256")]
+  [InlineData("md5")]
+  public async Task DirectUpload_WithCorrectChecksum_StoresTheObject(string algorithmName)
+  {
+    // Arrange
+    R2ChecksumAlgorithm.TryParse(algorithmName, out var algorithm).Should().BeTrue();
+
+    var       key      = $"direct-checksum-ok-{algorithmName}-{Guid.NewGuid():N}.bin";
+    var       payload  = RandomPayload(2048);
+    var       checksum = UploadChecksum.FromDigestBytes(algorithm, ComputeDigest(algorithm, payload));
+    using var stream   = new MemoryStream(payload);
+
+    // Act
+    await _sut.UploadSinglePartAsync(_bucketName, key, stream, "application/octet-stream", checksum);
+
+    // Assert - R2 verified the digest against the bytes and stored the object.
+    var listing = await _sut.ListObjectsAsync(_bucketName, key);
+    listing.Data.Should().ContainSingle().Which.Size.Should().Be(payload.Length);
+  }
+
+  [IntegrationTestTheory]
+  // The rejection half: a digest of the wrong bytes fails the upload with BadDigest and nothing is
+  // stored. The library surfaces the failure as its usual single-part upload exception.
+  [InlineData("crc32")]
+  [InlineData("crc32c")]
+  [InlineData("sha1")]
+  [InlineData("sha256")]
+  [InlineData("md5")]
+  public async Task DirectUpload_WithWrongChecksum_ThrowsAndStoresNothing(string algorithmName)
+  {
+    // Arrange - the digest is computed over a payload that differs from the one uploaded in its first
+    // byte, so it is well-formed and correctly sized but wrong.
+    R2ChecksumAlgorithm.TryParse(algorithmName, out var algorithm).Should().BeTrue();
+
+    var key           = $"direct-checksum-bad-{algorithmName}-{Guid.NewGuid():N}.bin";
+    var payload       = RandomPayload(2048);
+    var otherPayload  = (byte[])payload.Clone();
+    otherPayload[0]  ^= 0xFF;
+    var wrongChecksum = UploadChecksum.FromDigestBytes(algorithm, ComputeDigest(algorithm, otherPayload));
+
+    using var stream = new MemoryStream(payload);
+
+    // Act
+    var action = () => _sut.UploadSinglePartAsync(_bucketName, key, stream, "application/octet-stream", wrongChecksum);
+
+    // Assert - R2 answers 400 BadDigest; the library wraps it in its single-part upload exception.
+    var ex = await action.Should().ThrowAsync<CloudflareR2OperationException>();
+    ex.Which.InnerException.Should().BeOfType<AmazonS3Exception>()
+      .Which.ErrorCode.Should().Be("BadDigest", $"the {algorithmName} digest does not match the uploaded bytes");
+
+    var listing = await _sut.ListObjectsAsync(_bucketName, key);
+    listing.Data.Should().BeEmpty("the rejected upload must not have stored an object");
   }
 
   #endregion

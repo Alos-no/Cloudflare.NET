@@ -70,6 +70,16 @@ public class R2Client : IR2Client, IDisposable
                                     string            filePath,
                                     long?             partSize          = null,
                                     CancellationToken cancellationToken = default)
+    => UploadAsync(bucketName, objectKey, filePath, partSize, null, null, cancellationToken);
+
+  /// <inheritdoc />
+  public Task<R2Result> UploadAsync(string            bucketName,
+                                    string            objectKey,
+                                    string            filePath,
+                                    long?             partSize,
+                                    string?           contentType,
+                                    UploadChecksum?   checksum          = null,
+                                    CancellationToken cancellationToken = default)
   {
     var fileInfo = new FileInfo(filePath);
 
@@ -78,9 +88,13 @@ public class R2Client : IR2Client, IDisposable
                                   nameof(filePath));
 
     if (fileInfo.Length < R2MutlipartFileSizeThreshold)
-      return UploadSinglePartAsync(bucketName, objectKey, filePath, cancellationToken);
+      return UploadSinglePartAsync(bucketName, objectKey, filePath, contentType, checksum, cancellationToken);
 
-    return UploadMultipartAsync(bucketName, objectKey, filePath, partSize, cancellationToken);
+    // A checksum digests the whole object, but a multipart upload is verified per part and this client
+    // does not compute per-part digests, so the caller's digest could never be checked on this path.
+    ThrowIfChecksumOnMultipartPath(checksum);
+
+    return UploadMultipartAsync(bucketName, objectKey, filePath, partSize, contentType, cancellationToken);
   }
 
   /// <inheritdoc />
@@ -89,33 +103,65 @@ public class R2Client : IR2Client, IDisposable
                                     Stream            fileStream,
                                     long?             partSize          = null,
                                     CancellationToken cancellationToken = default)
+    => UploadAsync(bucketName, objectKey, fileStream, partSize, null, null, cancellationToken);
+
+  /// <inheritdoc />
+  public Task<R2Result> UploadAsync(string            bucketName,
+                                    string            objectKey,
+                                    Stream            fileStream,
+                                    long?             partSize,
+                                    string?           contentType,
+                                    UploadChecksum?   checksum          = null,
+                                    CancellationToken cancellationToken = default)
   {
     if (fileStream is { CanSeek: true, Length: > R2MaxMultipartFileSize })
       throw new ArgumentException($"Stream length ({fileStream.Length} bytes) exceeds the maximum R2 object size of 5 TiB.",
                                   nameof(fileStream));
 
     if (fileStream is { CanSeek: true, Length: < R2MutlipartFileSizeThreshold })
-      return UploadSinglePartAsync(bucketName, objectKey, fileStream, cancellationToken);
+      return UploadSinglePartAsync(bucketName, objectKey, fileStream, contentType, checksum, cancellationToken);
 
     // If we can't determine the length or it's large, use multipart.
-    return UploadMultipartAsync(bucketName, objectKey, fileStream, partSize, cancellationToken);
+    // A checksum digests the whole object, but a multipart upload is verified per part and this client
+    // does not compute per-part digests, so the caller's digest could never be checked on this path.
+    ThrowIfChecksumOnMultipartPath(checksum);
+
+    return UploadMultipartAsync(bucketName, objectKey, fileStream, partSize, contentType, cancellationToken);
   }
+
+  /// <inheritdoc />
+  public Task<R2Result> UploadSinglePartAsync(string            bucketName,
+                                              string            objectKey,
+                                              string            filePath,
+                                              CancellationToken cancellationToken = default)
+    => UploadSinglePartAsync(bucketName, objectKey, filePath, null, null, cancellationToken);
 
   /// <inheritdoc />
   public async Task<R2Result> UploadSinglePartAsync(string            bucketName,
                                                     string            objectKey,
                                                     string            filePath,
+                                                    string?           contentType,
+                                                    UploadChecksum?   checksum          = null,
                                                     CancellationToken cancellationToken = default)
   {
     await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
-    return await UploadSinglePartAsync(bucketName, objectKey, fileStream, cancellationToken);
+    return await UploadSinglePartAsync(bucketName, objectKey, fileStream, contentType, checksum, cancellationToken);
   }
+
+  /// <inheritdoc />
+  public Task<R2Result> UploadSinglePartAsync(string            bucketName,
+                                              string            objectKey,
+                                              Stream            inputStream,
+                                              CancellationToken cancellationToken = default)
+    => UploadSinglePartAsync(bucketName, objectKey, inputStream, null, null, cancellationToken);
 
   /// <inheritdoc />
   public async Task<R2Result> UploadSinglePartAsync(string            bucketName,
                                                     string            objectKey,
                                                     Stream            inputStream,
+                                                    string?           contentType,
+                                                    UploadChecksum?   checksum          = null,
                                                     CancellationToken cancellationToken = default)
   {
     // Pre-flight check for single-part upload size limit if the stream is seekable.
@@ -143,6 +189,17 @@ public class R2Client : IR2Client, IDisposable
         DisableDefaultChecksumValidation = true
       };
 
+      // A blank content type is treated as absent, so R2 applies its own default; the value is never
+      // inferred from the key or the bytes.
+      if (!string.IsNullOrWhiteSpace(contentType))
+        request.ContentType = contentType;
+
+      // The caller's digest goes on the request property matching its algorithm; the SDK sends it as a
+      // plain header and R2 fails the upload with BadDigest, storing nothing, when the bytes do not hash
+      // to it (verified against live R2 for all five algorithms, 2026-08-25).
+      if (checksum is not null)
+        ApplyChecksum(request, checksum);
+
       await _s3Client.PutObjectAsync(request, cancellationToken);
       _logger.UploadedSinglePart(bucketName, objectKey);
 
@@ -160,22 +217,40 @@ public class R2Client : IR2Client, IDisposable
   }
 
   /// <inheritdoc />
+  public Task<R2Result> UploadMultipartAsync(string            bucketName,
+                                             string            objectKey,
+                                             string            filePath,
+                                             long?             partSize          = null,
+                                             CancellationToken cancellationToken = default)
+    => UploadMultipartAsync(bucketName, objectKey, filePath, partSize, null, cancellationToken);
+
+  /// <inheritdoc />
   public async Task<R2Result> UploadMultipartAsync(string            bucketName,
                                                    string            objectKey,
                                                    string            filePath,
                                                    long?             partSize,
+                                                   string?           contentType,
                                                    CancellationToken cancellationToken = default)
   {
     await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
-    return await UploadMultipartAsync(bucketName, objectKey, fileStream, partSize, cancellationToken);
+    return await UploadMultipartAsync(bucketName, objectKey, fileStream, partSize, contentType, cancellationToken);
   }
+
+  /// <inheritdoc />
+  public Task<R2Result> UploadMultipartAsync(string            bucketName,
+                                             string            objectKey,
+                                             Stream            inputStream,
+                                             long?             partSize          = null,
+                                             CancellationToken cancellationToken = default)
+    => UploadMultipartAsync(bucketName, objectKey, inputStream, partSize, null, cancellationToken);
 
   /// <inheritdoc />
   public async Task<R2Result> UploadMultipartAsync(string            bucketName,
                                                    string            objectKey,
                                                    Stream            inputStream,
                                                    long?             partSize,
+                                                   string?           contentType,
                                                    CancellationToken cancellationToken = default)
   {
     // Pre-flight check for total object size limit. This is the definitive check for multipart.
@@ -204,8 +279,10 @@ public class R2Client : IR2Client, IDisposable
 
     var totalMetrics = new R2Result();
 
-    // 1. Initiate (1 Class A op)
-    var initResult = await InitiateMultipartUploadAsync(bucketName, objectKey, cancellationToken);
+    // 1. Initiate (1 Class A op). The content type travels on the initiate request, the only place S3
+    // reads the assembled object's Content-Type from; the initiate overload treats a blank value as
+    // absent.
+    var initResult = await InitiateMultipartUploadAsync(bucketName, objectKey, contentType, cancellationToken);
 
     totalMetrics += initResult.Metrics;
     var uploadId = initResult.Data;
@@ -1017,6 +1094,48 @@ public class R2Client : IR2Client, IDisposable
         $"R2 answers 501 NotImplemented to a part upload carrying a {checksum.Algorithm.Value} checksum header. "
         + $"Use {R2ChecksumAlgorithm.Crc32.Value}, {R2ChecksumAlgorithm.Crc32C.Value} or {R2ChecksumAlgorithm.Md5.Value} for parts; "
         + "SHA-1 and SHA-256 are only verified on single-part PUTs.");
+  }
+
+  /// <summary>
+  ///   Rejects a checksum on an upload that will go multipart. The caller's digest covers the whole object, but a
+  ///   multipart upload is verified per part and this client does not compute per-part digests, so accepting the
+  ///   digest here would silently skip the verification the caller asked for.
+  /// </summary>
+  /// <param name="checksum">The checksum the caller supplied, or null for none.</param>
+  /// <exception cref="ArgumentException">Thrown when a checksum accompanies an upload taking the multipart path.</exception>
+  private static void ThrowIfChecksumOnMultipartPath(UploadChecksum? checksum)
+  {
+    if (checksum is not null)
+      throw new ArgumentException(
+        "A checksum can only be verified on a single-part upload: the digest covers the whole object, but a multipart "
+        + $"upload is verified per part and this client does not compute per-part digests. Use {nameof(UploadSinglePartAsync)} "
+        + "for objects up to 5 GiB, or upload without a checksum.",
+        nameof(checksum));
+  }
+
+  /// <summary>
+  ///   Copies a caller-supplied digest onto the <see cref="PutObjectRequest" /> property matching its algorithm, so
+  ///   the SDK sends it in the algorithm's header and R2 verifies the uploaded bytes against it.
+  /// </summary>
+  /// <param name="request">The request the digest is applied to.</param>
+  /// <param name="checksum">The digest to apply.</param>
+  private static void ApplyChecksum(PutObjectRequest request, UploadChecksum checksum)
+  {
+    if (checksum.Algorithm == R2ChecksumAlgorithm.Crc32)
+      request.ChecksumCRC32 = checksum.Base64Digest;
+    else if (checksum.Algorithm == R2ChecksumAlgorithm.Crc32C)
+      request.ChecksumCRC32C = checksum.Base64Digest;
+    else if (checksum.Algorithm == R2ChecksumAlgorithm.Sha1)
+      request.ChecksumSHA1 = checksum.Base64Digest;
+    else if (checksum.Algorithm == R2ChecksumAlgorithm.Sha256)
+      request.ChecksumSHA256 = checksum.Base64Digest;
+    else if (checksum.Algorithm == R2ChecksumAlgorithm.Md5)
+      request.MD5Digest = checksum.Base64Digest;
+    else
+      // Unreachable while R2ChecksumAlgorithm stays a closed set; a new algorithm added there must be
+      // mapped to its PutObjectRequest property here.
+      throw new ArgumentOutOfRangeException(nameof(checksum), checksum.Algorithm.Value,
+                                            "No PutObjectRequest property mapping for this checksum algorithm.");
   }
 
   /// <inheritdoc />

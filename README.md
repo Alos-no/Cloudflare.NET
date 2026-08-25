@@ -86,7 +86,7 @@ public class MyService(ICloudflareApiClient cf)
 | **Workers KV** | Namespace CRUD, Key-Value CRUD, Metadata, Expiration, Bulk Operations |
 | **D1 Database** | Database CRUD, SQL Queries, Raw Queries, Export/Import |
 | **Turnstile** | Widget CRUD, Secret Rotation |
-| **R2 Client** | Upload, Download, Multipart, Presigned URLs, Batch Delete |
+| **R2 Client** | Upload, Download, Multipart, Presigned URLs, Batch Delete, Content Types, Checksum Verification |
 | **Analytics** | GraphQL queries for traffic, security, and R2 metrics |
 
 See [API Coverage](https://alos.no/cfnet/articles/api-coverage.html) for full details and roadmap.
