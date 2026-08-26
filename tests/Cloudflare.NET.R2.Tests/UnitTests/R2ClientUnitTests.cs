@@ -1640,5 +1640,370 @@ public class R2ClientUnitTests
     ex.Which.InnerException.Should().BeOfType<AmazonS3Exception>();
   }
 
+  [Fact]
+  public async Task UploadSinglePartAsync_WithContentType_SetsItOnThePutObjectRequest()
+  {
+    // Arrange
+    using var stream = new MemoryStream(new byte[1024]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadSinglePartAsync("bucket", "thumb.webp", stream, "image/webp");
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.ContentType.Should().Be("image/webp");
+  }
+
+  [Theory]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("   ")]
+  public async Task UploadSinglePartAsync_WithNoUsableContentType_LeavesThePutObjectRequestTypeUnset(string? contentType)
+  {
+    // Arrange: an absent or blank content type must leave the property alone so that R2 applies its own
+    // default, rather than the client sending an empty Content-Type header.
+    using var stream = new MemoryStream(new byte[1024]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadSinglePartAsync("bucket", "key.bin", stream, contentType);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.ContentType.Should().BeNull();
+  }
+
+  [Fact]
+  public async Task UploadSinglePartAsync_WithoutContentTypeArgument_SendsWhatItAlwaysSent()
+  {
+    // Arrange: this covers the overload that predates the content type and checksum, proving it still
+    // sends exactly what it always sent: no content type and no digest property.
+    using var stream = new MemoryStream(new byte[1024]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadSinglePartAsync("bucket", "key.bin", stream);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.ContentType.Should().BeNull();
+    captured.ChecksumCRC32.Should().BeNull();
+    captured.ChecksumCRC32C.Should().BeNull();
+    captured.ChecksumSHA1.Should().BeNull();
+    captured.ChecksumSHA256.Should().BeNull();
+    captured.MD5Digest.Should().BeNull();
+  }
+
+  [Theory]
+  // Every admitted algorithm maps to its own PutObjectRequest property; the SDK sends each property in
+  // that algorithm's header. Exactly one property must carry the digest and the other four stay unset.
+  [InlineData("crc32", 4)]
+  [InlineData("crc32c", 4)]
+  [InlineData("sha1", 20)]
+  [InlineData("sha256", 32)]
+  [InlineData("md5", 16)]
+  public async Task UploadSinglePartAsync_WithChecksum_SetsTheMatchingPutObjectRequestProperty(
+    string algorithmName,
+    int    digestByteLength)
+  {
+    // Arrange
+    R2ChecksumAlgorithm.TryParse(algorithmName, out var algorithm).Should().BeTrue();
+    var       digest = Convert.ToBase64String(new byte[digestByteLength]);
+    using var stream = new MemoryStream(new byte[1024]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadSinglePartAsync("bucket", "key.bin", stream, "application/octet-stream",
+                                     new UploadChecksum(algorithm, digest));
+
+    // Assert
+    captured.Should().NotBeNull();
+
+    var digestProperties = new Dictionary<string, string?>
+    {
+      ["crc32"]  = captured!.ChecksumCRC32,
+      ["crc32c"] = captured.ChecksumCRC32C,
+      ["sha1"]   = captured.ChecksumSHA1,
+      ["sha256"] = captured.ChecksumSHA256,
+      ["md5"]    = captured.MD5Digest
+    };
+
+    digestProperties[algorithmName].Should().Be(digest);
+    digestProperties.Where(p => p.Key != algorithmName).Should().OnlyContain(p => p.Value == null);
+  }
+
+  [Fact]
+  public async Task UploadMultipartAsync_WithContentType_SetsItOnTheInitiateRequest()
+  {
+    // Arrange: the content type S3 records for the assembled object comes from the initiate call and from
+    // nowhere else, so the multipart overload must place its value there.
+    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
+
+    InitiateMultipartUploadRequest? capturedInitiate = null;
+    SetupSuccessfulMultipart(r => capturedInitiate = r);
+
+    // Act
+    await _sut.UploadMultipartAsync("bucket", "large.webp", stream, null, "image/webp");
+
+    // Assert
+    capturedInitiate.Should().NotBeNull();
+    capturedInitiate!.ContentType.Should().Be("image/webp");
+  }
+
+  [Theory]
+  [InlineData(null)]
+  [InlineData("   ")]
+  public async Task UploadMultipartAsync_WithNoUsableContentType_LeavesTheInitiateRequestTypeUnset(string? contentType)
+  {
+    // Arrange
+    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
+
+    InitiateMultipartUploadRequest? capturedInitiate = null;
+    SetupSuccessfulMultipart(r => capturedInitiate = r);
+
+    // Act
+    await _sut.UploadMultipartAsync("bucket", "key.bin", stream, null, contentType);
+
+    // Assert
+    capturedInitiate.Should().NotBeNull();
+    capturedInitiate!.ContentType.Should().BeNull();
+  }
+
+  [Fact]
+  public async Task UploadMultipartAsync_WithoutContentTypeArgument_LeavesTheInitiateRequestTypeUnset()
+  {
+    // Arrange: this covers the overload that predates the content type, proving it still sends exactly
+    // what it always sent.
+    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
+
+    InitiateMultipartUploadRequest? capturedInitiate = null;
+    SetupSuccessfulMultipart(r => capturedInitiate = r);
+
+    // Act
+    await _sut.UploadMultipartAsync("bucket", "key.bin", stream, null);
+
+    // Assert
+    capturedInitiate.Should().NotBeNull();
+    capturedInitiate!.ContentType.Should().BeNull();
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithSmallStream_ForwardsContentTypeAndChecksumToTheSinglePartPut()
+  {
+    // Arrange: a stream under the 50 MiB threshold takes the single PUT branch, so both values must land
+    // on the PutObjectRequest.
+    var       payload = new byte[1024];
+    using var stream  = new MemoryStream(payload);
+    var       digest  = Convert.ToBase64String(new byte[32]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadAsync("bucket", "thumb.webp", stream, null, "image/webp",
+                           new UploadChecksum(R2ChecksumAlgorithm.Sha256, digest));
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.ContentType.Should().Be("image/webp");
+    captured.ChecksumSHA256.Should().Be(digest);
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithLargeStream_ForwardsContentTypeToTheInitiateRequest()
+  {
+    // Arrange: a stream over the 50 MiB threshold takes the multipart branch, so the type must land on
+    // the initiate request.
+    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
+
+    InitiateMultipartUploadRequest? capturedInitiate = null;
+    SetupSuccessfulMultipart(r => capturedInitiate = r);
+
+    // Act
+    await _sut.UploadAsync("bucket", "large.webp", stream, null, "image/webp");
+
+    // Assert
+    capturedInitiate.Should().NotBeNull();
+    capturedInitiate!.ContentType.Should().Be("image/webp");
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithLargeStreamAndChecksum_ThrowsBeforeInitiatingAnything()
+  {
+    // Arrange: the digest covers the whole object, but a multipart upload is verified per part and the
+    // client does not compute per-part digests, so accepting the digest would silently skip the
+    // verification the caller asked for. The call must fail before any request is sent.
+    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
+
+    var checksum = new UploadChecksum(R2ChecksumAlgorithm.Sha256, Convert.ToBase64String(new byte[32]));
+
+    // Act
+    var action = () => _sut.UploadAsync("bucket", "key.bin", stream, null, "image/webp", checksum);
+
+    // Assert
+    await action.Should().ThrowAsync<ArgumentException>().WithMessage("*single-part upload*");
+    _mockS3Client.Verify(
+      c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()),
+      Times.Never);
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithNonSeekableStreamAndChecksum_ThrowsBeforeInitiatingAnything()
+  {
+    // Arrange: a non-seekable stream always takes the multipart branch, so a checksum must be refused the
+    // same way as for an oversized stream.
+    var mockStream = new Mock<Stream>();
+    mockStream.Setup(s => s.CanSeek).Returns(false);
+
+    var checksum = new UploadChecksum(R2ChecksumAlgorithm.Crc32, Convert.ToBase64String(new byte[4]));
+
+    // Act
+    var action = () => _sut.UploadAsync("bucket", "key.bin", mockStream.Object, null, null, checksum);
+
+    // Assert
+    await action.Should().ThrowAsync<ArgumentException>().WithMessage("*single-part upload*");
+    _mockS3Client.Verify(
+      c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()),
+      Times.Never);
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithSmallFile_ForwardsContentTypeAndChecksumToTheSinglePartPut()
+  {
+    // Arrange
+    var filePath = CreateTempFileOfSize(1024);
+    var digest   = Convert.ToBase64String(new byte[32]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    try
+    {
+      // Act
+      await _sut.UploadAsync("bucket", "thumb.webp", filePath, null, "image/webp",
+                             new UploadChecksum(R2ChecksumAlgorithm.Sha256, digest));
+    }
+    finally
+    {
+      File.Delete(filePath);
+    }
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.ContentType.Should().Be("image/webp");
+    captured.ChecksumSHA256.Should().Be(digest);
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithLargeFile_ForwardsContentTypeToTheInitiateRequest()
+  {
+    // Arrange: a file over the 50 MiB threshold takes the multipart branch, so the type must land on the
+    // initiate request. The file is created by extending its length, so nothing is actually written.
+    var filePath = CreateTempFileOfSize(60L * 1024 * 1024);
+
+    InitiateMultipartUploadRequest? capturedInitiate = null;
+    SetupSuccessfulMultipart(r => capturedInitiate = r);
+
+    try
+    {
+      // Act
+      await _sut.UploadAsync("bucket", "large.webp", filePath, null, "image/webp");
+    }
+    finally
+    {
+      File.Delete(filePath);
+    }
+
+    // Assert
+    capturedInitiate.Should().NotBeNull();
+    capturedInitiate!.ContentType.Should().Be("image/webp");
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithLargeFileAndChecksum_ThrowsBeforeInitiatingAnything()
+  {
+    // Arrange
+    var filePath = CreateTempFileOfSize(60L * 1024 * 1024);
+    var checksum = new UploadChecksum(R2ChecksumAlgorithm.Sha256, Convert.ToBase64String(new byte[32]));
+
+    try
+    {
+      // Act
+      var action = () => _sut.UploadAsync("bucket", "key.bin", filePath, null, "image/webp", checksum);
+
+      // Assert
+      await action.Should().ThrowAsync<ArgumentException>().WithMessage("*single-part upload*");
+      _mockS3Client.Verify(
+        c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()),
+        Times.Never);
+    }
+    finally
+    {
+      File.Delete(filePath);
+    }
+  }
+
+  #endregion
+
+
+  #region Methods - Non-Public
+
+  /// <summary>Captures every <see cref="PutObjectRequest" /> the client sends, answering each with success.</summary>
+  /// <param name="onPut">Receives each captured request.</param>
+  private void SetupPutObjectCapture(Action<PutObjectRequest> onPut)
+  {
+    _mockS3Client
+      .Setup(c => c.PutObjectAsync(It.IsAny<PutObjectRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<PutObjectRequest, CancellationToken>((r, _) => onPut(r))
+      .ReturnsAsync(new PutObjectResponse());
+  }
+
+  /// <summary>
+  ///   Mocks a fully successful multipart flow (initiate, every part, complete) and captures the initiate request,
+  ///   where the assembled object's content type must travel.
+  /// </summary>
+  /// <param name="onInitiate">Receives the captured initiate request.</param>
+  private void SetupSuccessfulMultipart(Action<InitiateMultipartUploadRequest> onInitiate)
+  {
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<InitiateMultipartUploadRequest, CancellationToken>((r, _) => onInitiate(r))
+      .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = "upload-id" });
+
+    _mockS3Client
+      .Setup(c => c.UploadPartAsync(It.IsAny<UploadPartRequest>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync((UploadPartRequest req, CancellationToken _) =>
+                      new UploadPartResponse { PartNumber = req.PartNumber, ETag = "etag" });
+
+    _mockS3Client
+      .Setup(c => c.CompleteMultipartUploadAsync(It.IsAny<CompleteMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new CompleteMultipartUploadResponse());
+  }
+
+  /// <summary>
+  ///   Creates a temporary file of the requested size by extending its length, so a large file costs no
+  ///   write time. The caller deletes the file.
+  /// </summary>
+  /// <param name="sizeInBytes">The size the file reports.</param>
+  /// <returns>The path of the created file.</returns>
+  private static string CreateTempFileOfSize(long sizeInBytes)
+  {
+    var path = Path.GetTempFileName();
+
+    using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Write);
+    fileStream.SetLength(sizeInBytes);
+
+    return path;
+  }
+
   #endregion
 }

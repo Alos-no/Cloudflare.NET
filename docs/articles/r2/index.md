@@ -83,9 +83,9 @@ The SDK tracks these metrics in the <xref:Cloudflare.NET.R2.Models.R2Result> obj
 
 | Method | Description |
 |--------|-------------|
-| [`UploadAsync`](uploads.md) | Auto-select upload strategy |
-| [`UploadSinglePartAsync`](uploads.md#single-part-upload) | Force single PUT request |
-| [`UploadMultipartAsync`](multipart.md) | Force multipart upload |
+| [`UploadAsync`](uploads.md) | Auto-select upload strategy, with optional content type and checksum |
+| [`UploadSinglePartAsync`](uploads.md#single-part-upload) | Force single PUT request, with optional content type and checksum |
+| [`UploadMultipartAsync`](multipart.md) | Force multipart upload, with optional content type |
 
 ### Download Operations
 
