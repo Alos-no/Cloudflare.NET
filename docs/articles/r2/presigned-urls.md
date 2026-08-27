@@ -45,6 +45,7 @@ Console.WriteLine($"Upload URL: {url}");
 | `Conditions` | `IEnumerable<S3PostCondition>?` | No | Additional S3 conditions |
 | `HeadersToSign` | `IReadOnlyDictionary<string, string>?` | No | Headers to include in signature |
 | `Checksum` | `UploadChecksum?` | No | Digest the uploaded bytes must hash to; see [Checksum Verification](#checksum-verification) |
+| `CacheControl` | `string?` | No | `Cache-Control` to store on the object; see [Storing Cache-Control](#storing-cache-control) |
 
 ## Presigned Download URL
 
@@ -317,6 +318,34 @@ var partUrls = r2.CreatePresignedUploadPartsUrls("my-bucket", new PresignedUploa
 > `Content-MD5` is a content header in `HttpClient`'s model: attach it to
 > `HttpContent.Headers`, not `HttpRequestMessage.Headers`. The `x-amz-checksum-*` headers are plain
 > request headers.
+
+## Storing Cache-Control
+
+R2 stores the `Cache-Control` header a PUT carries and serves it on every GET, which is what drives
+Cloudflare edge and browser caching when the object is served through the bucket's custom domain. For a
+browser upload, pass the value as `CacheControl` on `PresignedPutRequest`: the header is signed into the
+URL, so the uploading client must send exactly that value (omitting or changing it produces 403 with
+`SignatureDoesNotMatch`, and nothing is stored):
+
+```csharp
+var url = r2.CreatePresignedPutUrl("my-bucket", new PresignedPutRequest(
+    Key: "thumbnails/photo-small.webp",
+    ExpiresAfter: TimeSpan.FromMinutes(15),
+    ContentLength: fileSize,
+    ContentType: "image/webp",
+    CacheControl: "public, max-age=3600"
+));
+
+// The client must now send: Cache-Control: public, max-age=3600
+```
+
+For an upload whose parts go through presigned part URLs, the assembled object's headers come from the
+initiate call and never from the parts, so state the value when the upload starts:
+
+```csharp
+var initiate = await r2.InitiateMultipartUploadAsync(
+    "my-bucket", "videos/clip.mp4", "video/mp4", "public, max-age=3600");
+```
 
 ## Common Patterns
 

@@ -1007,5 +1007,116 @@ public class R2ClientIntegrationTests : IClassFixture<R2ClientTestFixture>, IAsy
                                              "the high-level multipart upload records the type on the initiate request");
   }
 
+  [IntegrationTest]
+  public async Task UploadSinglePartAsync_WithCacheControl_StoresTheHeaderAndServesItOnGet()
+  {
+    // Arrange
+    var       key          = $"cache-control-single-{Guid.NewGuid():N}.json";
+    var       cacheControl = "public, max-age=3600";
+    using var stream       = new MemoryStream(new byte[2048]);
+
+    // Act
+    await _sut.UploadSinglePartAsync(_bucketName, key, stream, "application/json", cacheControl: cacheControl);
+
+    // Assert - the stored object carries the header.
+    var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+    _output.WriteLine($"Cache-Control reported by R2: {metadata.Headers.CacheControl}");
+    metadata.Headers.CacheControl.Should().Be(cacheControl);
+
+    // And a GET actually serves it, which is what edge and browser caches act on.
+    var getUrl = _sut.CreatePresignedGetUrl(_bucketName, new PresignedGetRequest(key, TimeSpan.FromMinutes(5)));
+
+    using var httpClient  = new HttpClient();
+    using var getResponse = await httpClient.GetAsync(getUrl);
+
+    getResponse.EnsureSuccessStatusCode();
+    getResponse.Headers.TryGetValues("Cache-Control", out var servedValues).Should().BeTrue();
+    string.Join(", ", servedValues!).Should().Be(cacheControl);
+  }
+
+  [IntegrationTest]
+  public async Task UploadMultipartAsync_WithCacheControl_StoresTheHeaderOnTheAssembledObject()
+  {
+    // Arrange - the high-level multipart method must place the value on its own initiate call, because
+    // the assembled object's headers come from the initiate request and never from the parts. A 64 KiB
+    // file is a legal multipart upload (the 5 MiB minimum applies to every part except the last).
+    var       key          = $"cache-control-multipart-{Guid.NewGuid():N}.bin";
+    var       cacheControl = "public, max-age=3600";
+    using var tempFile     = new TempFile(64 * 1024);
+
+    // Act
+    await _sut.UploadMultipartAsync(_bucketName, key, tempFile.FilePath, null, "application/octet-stream", cacheControl);
+
+    // Assert
+    var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+    _output.WriteLine($"Cache-Control reported by R2: {metadata.Headers.CacheControl}");
+    metadata.Headers.CacheControl.Should().Be(cacheControl);
+  }
+
+  [IntegrationTest]
+  public async Task PresignedPutUrl_WithCacheControl_SucceedsWhenTheClientSendsIt()
+  {
+    // Arrange
+    var       key          = $"cache-control-presigned-{Guid.NewGuid():N}.json";
+    var       cacheControl = "public, max-age=3600";
+    var       contentType  = "application/json";
+    using var tempFile     = new TempFile(512);
+
+    var presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, new PresignedPutRequest(
+                                                    key, TimeSpan.FromMinutes(5), tempFile.FileSize, contentType,
+                                                    CacheControl: cacheControl));
+
+    // Act - the client sends the header the signature obliges it to send.
+    using var httpClient = new HttpClient();
+    using var message    = new HttpRequestMessage(HttpMethod.Put, presignedUrl);
+
+    await using var fileStream  = File.OpenRead(tempFile.FilePath);
+    using var       fileContent = new StreamContent(fileStream);
+    fileContent.Headers.ContentType   = new MediaTypeHeaderValue(contentType);
+    fileContent.Headers.ContentLength = tempFile.FileSize;
+    message.Content                   = fileContent;
+    message.Headers.TryAddWithoutValidation("Cache-Control", cacheControl);
+
+    using var response = await httpClient.SendAsync(message);
+
+    // Assert - R2 accepts the upload and stores the header.
+    response.EnsureSuccessStatusCode();
+
+    var metadata = await _s3Client.GetObjectMetadataAsync(_bucketName, key);
+    _output.WriteLine($"Cache-Control reported by R2: {metadata.Headers.CacheControl}");
+    metadata.Headers.CacheControl.Should().Be(cacheControl);
+  }
+
+  [IntegrationTest]
+  public async Task PresignedPutUrl_WithCacheControl_IsRejectedWhenTheClientOmitsIt()
+  {
+    // Arrange - the URL is signed exactly as in the passing case; the only difference is what the client
+    // sends. This is what makes the signed header mandatory rather than merely suggested.
+    var       key         = $"cache-control-presigned-missing-{Guid.NewGuid():N}.json";
+    var       contentType = "application/json";
+    using var tempFile    = new TempFile(512);
+
+    var presignedUrl = _sut.CreatePresignedPutUrl(_bucketName, new PresignedPutRequest(
+                                                    key, TimeSpan.FromMinutes(5), tempFile.FileSize, contentType,
+                                                    CacheControl: "public, max-age=3600"));
+
+    // Act - the client omits the signed header.
+    using var httpClient = new HttpClient();
+
+    await using var fileStream  = File.OpenRead(tempFile.FilePath);
+    using var       fileContent = new StreamContent(fileStream);
+    fileContent.Headers.ContentType   = new MediaTypeHeaderValue(contentType);
+    fileContent.Headers.ContentLength = tempFile.FileSize;
+
+    using var response = await httpClient.PutAsync(presignedUrl, fileContent);
+
+    // Assert - omitting a signed header changes the canonical request, so the signature no longer
+    // matches; R2 refuses the upload and stores nothing.
+    response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+    var listing = await _sut.ListObjectsAsync(_bucketName, key);
+    listing.Data.Should().BeEmpty("the rejected upload must not have stored an object");
+  }
+
   #endregion
 }

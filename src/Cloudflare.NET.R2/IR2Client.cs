@@ -62,6 +62,11 @@ public interface IR2Client
   /// </param>
   /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
   /// <param name="checksum">An optional digest of the whole object's bytes for R2 to verify on a single-part upload.</param>
+  /// <param name="cacheControl">
+  ///   An optional <c>Cache-Control</c> value to store on the object; R2 serves it on every GET, which drives edge
+  ///   and browser caching. <see langword="null" /> or a blank string leaves the header unset. On the multipart
+  ///   path the value is recorded on the initiate request, alongside the content type.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
   /// <exception cref="ArgumentException">
@@ -76,6 +81,7 @@ public interface IR2Client
                              long?             partSize,
                              string?           contentType,
                              UploadChecksum?   checksum          = null,
+                             string?           cacheControl      = null,
                              CancellationToken cancellationToken = default);
 
   /// <summary>
@@ -132,6 +138,11 @@ public interface IR2Client
   /// </param>
   /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
   /// <param name="checksum">An optional digest of the whole object's bytes for R2 to verify on a single-part upload.</param>
+  /// <param name="cacheControl">
+  ///   An optional <c>Cache-Control</c> value to store on the object; R2 serves it on every GET, which drives edge
+  ///   and browser caching. <see langword="null" /> or a blank string leaves the header unset. On the multipart
+  ///   path the value is recorded on the initiate request, alongside the content type.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
   /// <exception cref="ArgumentException">
@@ -146,6 +157,7 @@ public interface IR2Client
                              long?             partSize,
                              string?           contentType,
                              UploadChecksum?   checksum          = null,
+                             string?           cacheControl      = null,
                              CancellationToken cancellationToken = default);
 
   /// <summary>
@@ -187,6 +199,10 @@ public interface IR2Client
   /// <param name="filePath">The path to the local file to upload.</param>
   /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
   /// <param name="checksum">An optional digest of the object's bytes for R2 to verify.</param>
+  /// <param name="cacheControl">
+  ///   An optional <c>Cache-Control</c> value to store on the object; R2 serves it on every GET, which drives edge
+  ///   and browser caching. <see langword="null" /> or a blank string leaves the header unset.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
   /// <exception cref="ArgumentException">Thrown if the file size exceeds the 5 GiB single-part upload limit.</exception>
@@ -196,6 +212,7 @@ public interface IR2Client
                                        string            filePath,
                                        string?           contentType,
                                        UploadChecksum?   checksum          = null,
+                                       string?           cacheControl      = null,
                                        CancellationToken cancellationToken = default);
 
   /// <summary>
@@ -241,6 +258,10 @@ public interface IR2Client
   /// <param name="inputStream">The stream to upload.</param>
   /// <param name="contentType">The MIME type to record for the object, for example <c>image/webp</c>.</param>
   /// <param name="checksum">An optional digest of the object's bytes for R2 to verify.</param>
+  /// <param name="cacheControl">
+  ///   An optional <c>Cache-Control</c> value to store on the object; R2 serves it on every GET, which drives edge
+  ///   and browser caching. <see langword="null" /> or a blank string leaves the header unset.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the metrics of the operation.</returns>
   /// <exception cref="ArgumentException">
@@ -253,6 +274,7 @@ public interface IR2Client
                                        Stream            inputStream,
                                        string?           contentType,
                                        UploadChecksum?   checksum          = null,
+                                       string?           cacheControl      = null,
                                        CancellationToken cancellationToken = default);
 
   /// <summary>Uploads a file using a multipart upload. This method provides direct control over multipart uploads.</summary>
@@ -294,6 +316,11 @@ public interface IR2Client
   ///   clamped between 5MiB and 5GiB.
   /// </param>
   /// <param name="contentType">The MIME type to record for the assembled object, for example <c>image/webp</c>.</param>
+  /// <param name="cacheControl">
+  ///   An optional <c>Cache-Control</c> value to store on the assembled object, recorded on the initiate request
+  ///   like the content type; R2 serves it on every GET, which drives edge and browser caching.
+  ///   <see langword="null" /> or a blank string leaves the header unset.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the aggregate metrics of the operation.</returns>
   /// <exception cref="ArgumentException">Thrown if the file size exceeds R2's 5 TiB limit.</exception>
@@ -303,6 +330,7 @@ public interface IR2Client
                                       string            filePath,
                                       long?             partSize,
                                       string?           contentType,
+                                      string?           cacheControl      = null,
                                       CancellationToken cancellationToken = default);
 
   /// <summary>
@@ -351,6 +379,11 @@ public interface IR2Client
   ///   clamped between 5MiB and 5GiB.
   /// </param>
   /// <param name="contentType">The MIME type to record for the assembled object, for example <c>image/webp</c>.</param>
+  /// <param name="cacheControl">
+  ///   An optional <c>Cache-Control</c> value to store on the assembled object, recorded on the initiate request
+  ///   like the content type; R2 serves it on every GET, which drives edge and browser caching.
+  ///   <see langword="null" /> or a blank string leaves the header unset.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>An <see cref="R2Result" /> detailing the aggregate metrics of the operation.</returns>
   /// <exception cref="ArgumentException">Thrown if the stream length exceeds R2's 5 TiB limit.</exception>
@@ -361,6 +394,7 @@ public interface IR2Client
                                       Stream            inputStream,
                                       long?             partSize,
                                       string?           contentType,
+                                      string?           cacheControl      = null,
                                       CancellationToken cancellationToken = default);
 
   /// <summary>Downloads a file from an R2 bucket to a local file path.</summary>
@@ -551,12 +585,19 @@ public interface IR2Client
   /// <param name="bucketName">The name of the target bucket.</param>
   /// <param name="objectKey">The key for the object in the bucket.</param>
   /// <param name="contentType">The MIME type to record for the assembled object, for example <c>application/pdf</c>.</param>
+  /// <param name="cacheControl">
+  ///   An optional <c>Cache-Control</c> value to store on the assembled object; R2 serves it on every GET, which
+  ///   drives edge and browser caching. Like the content type, it can only be supplied here: the individual parts
+  ///   cannot carry it, so a flow uploading parts through presigned URLs must state it when the upload starts.
+  ///   <see langword="null" /> or a blank string leaves the header unset.
+  /// </param>
   /// <param name="cancellationToken">A cancellation token.</param>
   /// <returns>A result object containing the UploadId and operation metrics.</returns>
   /// <exception cref="CloudflareR2OperationException">Thrown if the operation fails.</exception>
   Task<R2Result<string>> InitiateMultipartUploadAsync(string            bucketName,
                                                       string            objectKey,
                                                       string?           contentType,
+                                                      string?           cacheControl      = null,
                                                       CancellationToken cancellationToken = default);
 
   /// <summary>Completes a multipart upload after all parts are uploaded.</summary>

@@ -18,6 +18,13 @@ using Amazon.S3.Model;
 ///   do not hash to the stated digest. All five <see cref="R2ChecksumAlgorithm" /> values are verified on a
 ///   single-part PUT. When the same header also appears in <paramref name="HeadersToSign" />, this parameter wins.
 /// </param>
+/// <param name="CacheControl">
+///   An optional <c>Cache-Control</c> value to store on the object. The header is signed into the URL, so the
+///   client must send it with exactly this value or R2 answers 403; R2 persists the stored value and serves it on
+///   every GET, which drives edge and browser caching. Passing <see langword="null" /> or a blank string leaves
+///   the header unset. When the same header also appears in <paramref name="HeadersToSign" />, this parameter
+///   wins.
+/// </param>
 public record PresignedPutRequest(
   string                               Key,
   TimeSpan                             ExpiresAfter,
@@ -25,5 +32,6 @@ public record PresignedPutRequest(
   string                               ContentType,
   IEnumerable<S3PostCondition>?        Conditions    = null,
   IReadOnlyDictionary<string, string>? HeadersToSign = null,
-  UploadChecksum?                      Checksum      = null
+  UploadChecksum?                      Checksum      = null,
+  string?                              CacheControl  = null
 );

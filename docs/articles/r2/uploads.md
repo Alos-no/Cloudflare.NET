@@ -120,6 +120,25 @@ Passing `null` or a blank string leaves the property unset, so the overload beha
 without the parameter. The value is applied verbatim: the client never infers a type from the file
 extension, the bytes, or the object key.
 
+## Cache-Control
+
+Every upload method also takes an optional `cacheControl`. R2 stores the value on the object and serves
+it on every GET, which is what drives Cloudflare edge and browser caching for objects served through a
+bucket's custom domain:
+
+```csharp
+// The stored object is served with "Cache-Control: public, max-age=3600", so no cache
+// may serve it stale for more than an hour after it changes or is deleted.
+await r2.UploadSinglePartAsync(
+    "my-bucket", "configs/tenant-42.json", stream,
+    contentType: "application/json",
+    cacheControl: "public, max-age=3600");
+```
+
+The same null-or-blank rule applies: no value leaves the header unset. On the multipart path the value
+travels on the initiate request, like the content type, because the assembled object's headers come from
+the initiate call and never from the parts.
+
 ## Checksums
 
 A single-part upload can be bound to a digest of its bytes. R2 hashes what actually arrives and fails
