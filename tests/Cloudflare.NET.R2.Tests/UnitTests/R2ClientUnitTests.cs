@@ -1699,6 +1699,238 @@ public class R2ClientUnitTests
     captured.ChecksumSHA1.Should().BeNull();
     captured.ChecksumSHA256.Should().BeNull();
     captured.MD5Digest.Should().BeNull();
+    captured.Headers.CacheControl.Should().BeNull();
+  }
+
+  [Fact]
+  public async Task UploadSinglePartAsync_WithCacheControl_SetsItOnThePutObjectRequest()
+  {
+    // Arrange
+    using var stream = new MemoryStream(new byte[1024]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadSinglePartAsync("bucket", "config.json", stream, "application/json",
+                                     cacheControl: "public, max-age=3600");
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers.CacheControl.Should().Be("public, max-age=3600");
+  }
+
+  [Theory]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("   ")]
+  public async Task UploadSinglePartAsync_WithNoUsableCacheControl_LeavesTheHeaderUnset(string? cacheControl)
+  {
+    // Arrange: an absent or blank Cache-Control must leave the header alone, so the request goes out
+    // exactly as it did before the parameter existed.
+    using var stream = new MemoryStream(new byte[1024]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadSinglePartAsync("bucket", "key.bin", stream, null, cacheControl: cacheControl);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers.CacheControl.Should().BeNull();
+  }
+
+  [Fact]
+  public async Task UploadMultipartAsync_WithCacheControl_SetsItOnTheInitiateRequest()
+  {
+    // Arrange: like the content type, the assembled object's Cache-Control comes from the initiate call
+    // and from nowhere else, so the multipart overload must place its value there.
+    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
+
+    InitiateMultipartUploadRequest? capturedInitiate = null;
+    SetupSuccessfulMultipart(r => capturedInitiate = r);
+
+    // Act
+    await _sut.UploadMultipartAsync("bucket", "large.bin", stream, null, null, "public, max-age=3600");
+
+    // Assert
+    capturedInitiate.Should().NotBeNull();
+    capturedInitiate!.Headers.CacheControl.Should().Be("public, max-age=3600");
+  }
+
+  [Fact]
+  public async Task InitiateMultipartUploadAsync_WithCacheControl_SendsItOnTheInitiateRequest()
+  {
+    // Arrange
+    InitiateMultipartUploadRequest? capturedRequest = null;
+
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<InitiateMultipartUploadRequest, CancellationToken>((r, _) => capturedRequest = r)
+      .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = "upload-id" });
+
+    // Act
+    await _sut.InitiateMultipartUploadAsync("bucket", "config.json", "application/json", "public, max-age=3600");
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.ContentType.Should().Be("application/json");
+    capturedRequest.Headers.CacheControl.Should().Be("public, max-age=3600");
+  }
+
+  [Theory]
+  [InlineData(null)]
+  [InlineData("   ")]
+  public async Task InitiateMultipartUploadAsync_WithNoUsableCacheControl_LeavesTheHeaderUnset(string? cacheControl)
+  {
+    // Arrange
+    InitiateMultipartUploadRequest? capturedRequest = null;
+
+    _mockS3Client
+      .Setup(c => c.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), It.IsAny<CancellationToken>()))
+      .Callback<InitiateMultipartUploadRequest, CancellationToken>((r, _) => capturedRequest = r)
+      .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = "upload-id" });
+
+    // Act
+    await _sut.InitiateMultipartUploadAsync("bucket", "key.bin", null, cacheControl);
+
+    // Assert
+    capturedRequest.Should().NotBeNull();
+    capturedRequest!.Headers.CacheControl.Should().BeNull();
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithSmallStream_ForwardsCacheControlToTheSinglePartPut()
+  {
+    // Arrange: a stream under the 50 MiB threshold takes the single PUT branch, so the value must land
+    // on the PutObjectRequest.
+    using var stream = new MemoryStream(new byte[1024]);
+
+    PutObjectRequest? captured = null;
+    SetupPutObjectCapture(r => captured = r);
+
+    // Act
+    await _sut.UploadAsync("bucket", "config.json", stream, null, "application/json",
+                           cacheControl: "public, max-age=3600");
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers.CacheControl.Should().Be("public, max-age=3600");
+  }
+
+  [Fact]
+  public async Task UploadAsync_WithLargeStream_ForwardsCacheControlToTheInitiateRequest()
+  {
+    // Arrange: a stream over the 50 MiB threshold takes the multipart branch, so the value must land on
+    // the initiate request.
+    using var stream = new MemoryStream(new byte[60 * 1024 * 1024]);
+
+    InitiateMultipartUploadRequest? capturedInitiate = null;
+    SetupSuccessfulMultipart(r => capturedInitiate = r);
+
+    // Act
+    await _sut.UploadAsync("bucket", "large.bin", stream, null, null, cacheControl: "public, max-age=3600");
+
+    // Assert
+    capturedInitiate.Should().NotBeNull();
+    capturedInitiate!.Headers.CacheControl.Should().Be("public, max-age=3600");
+  }
+
+  [Fact]
+  public void CreatePresignedPutUrl_WithCacheControl_SignsTheHeader()
+  {
+    // Arrange: the header must land on the SDK request before signing, so its name enters
+    // X-Amz-SignedHeaders and the client is forced to send exactly this value.
+    var request = new PresignedPutRequest("config.json", TimeSpan.FromMinutes(5), 1024, "application/json",
+                                          CacheControl: "public, max-age=3600");
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? captured = null;
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => captured = r)
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    mockR2Client.Object.CreatePresignedPutUrl("bucket", request);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers.CacheControl.Should().Be("public, max-age=3600");
+  }
+
+  [Fact]
+  public void CreatePresignedPutUrl_WithCacheControlCollidingWithHeadersToSign_TypedValueWins()
+  {
+    // Arrange: the caller signs a stale value through the free-form HeadersToSign dictionary AND supplies
+    // the typed parameter for the same header. The typed value must win, matching the checksum rule.
+    var request = new PresignedPutRequest("config.json", TimeSpan.FromMinutes(5), 1024, "application/json",
+                                          HeadersToSign: new Dictionary<string, string>
+                                          {
+                                            ["Cache-Control"] = "no-store"
+                                          },
+                                          CacheControl: "public, max-age=3600");
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? captured = null;
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => captured = r)
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    mockR2Client.Object.CreatePresignedPutUrl("bucket", request);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers.CacheControl.Should().Be("public, max-age=3600");
+  }
+
+  [Fact]
+  public void CreatePresignedPutUrl_WithoutCacheControl_LeavesTheHeaderUnsigned()
+  {
+    // Arrange: a request without the parameter must not sign the header, so clients that send no
+    // Cache-Control keep working.
+    var request = new PresignedPutRequest("key.bin", TimeSpan.FromMinutes(5), 1024, "application/octet-stream");
+
+    var mockLoggerFactory = new Mock<ILoggerFactory>();
+    mockLoggerFactory
+      .Setup(f => f.CreateLogger(It.IsAny<string>()))
+      .Returns(new Mock<ILogger<R2Client>>().Object);
+    var mockS3Client = new Mock<IAmazonS3>();
+    var mockR2Client = new Mock<R2Client>(mockLoggerFactory.Object, mockS3Client.Object) { CallBase = true };
+
+    GetPreSignedUrlRequest? captured = null;
+
+    mockR2Client
+      .Protected()
+      .Setup<string>("GeneratePresignedUrl", ItExpr.IsAny<GetPreSignedUrlRequest>())
+      .Callback<GetPreSignedUrlRequest>(r => captured = r)
+      .Returns("https://example.invalid/signed");
+
+    // Act
+    mockR2Client.Object.CreatePresignedPutUrl("bucket", request);
+
+    // Assert
+    captured.Should().NotBeNull();
+    captured!.Headers.CacheControl.Should().BeNull();
   }
 
   [Theory]

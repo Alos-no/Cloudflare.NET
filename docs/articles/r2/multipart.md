@@ -91,21 +91,23 @@ var uploadId = result.Data;
 Console.WriteLine($"Upload ID: {uploadId}");
 ```
 
-#### Setting the Object's Content-Type
+#### Setting the Object's Content-Type and Cache-Control
 
-S3 reads the assembled object's `Content-Type` from the call that starts the upload and never from the
-individual parts. A caller that hands out presigned part URLs therefore has no later opportunity to set
-it, so supply it here:
+S3 reads the assembled object's `Content-Type` and `Cache-Control` from the call that starts the upload
+and never from the individual parts. A caller that hands out presigned part URLs therefore has no later
+opportunity to set them, so supply them here:
 
 ```csharp
 var result = await r2.InitiateMultipartUploadAsync(
-    bucketName:  "my-bucket",
-    objectKey:   "uploads/report.pdf",
-    contentType: "application/pdf");
+    bucketName:   "my-bucket",
+    objectKey:    "uploads/report.pdf",
+    contentType:  "application/pdf",
+    cacheControl: "public, max-age=3600");
 ```
 
-Omitting the argument, or passing `null` or a blank string, leaves R2 to choose. R2's default is
-`application/octet-stream`, which is what browsers download rather than display.
+Omitting either argument, or passing `null` or a blank string, leaves that header unset. For the content
+type R2's default is `application/octet-stream`, which is what browsers download rather than display;
+without a stored `Cache-Control`, caches fall back to their own heuristics.
 
 ### Listing Parts
 

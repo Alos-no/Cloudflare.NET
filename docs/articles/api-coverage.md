@@ -741,9 +741,9 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 </colgroup>
 <thead><tr><th>Operation</th><th>Method</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td>Upload</td><td><code>UploadAsync</code></td><td>Auto-selects single-part or multipart, with optional content type and checksum</td></tr>
-<tr><td>Upload Single Part</td><td><code>UploadSinglePartAsync</code></td><td>Direct PUT (≤5 GiB), with optional content type and checksum</td></tr>
-<tr><td>Upload Multipart</td><td><code>UploadMultipartAsync</code></td><td>Multipart upload (5 MiB–5 GiB parts), with optional content type</td></tr>
+<tr><td>Upload</td><td><code>UploadAsync</code></td><td>Auto-selects single-part or multipart, with optional content type, checksum and Cache-Control</td></tr>
+<tr><td>Upload Single Part</td><td><code>UploadSinglePartAsync</code></td><td>Direct PUT (≤5 GiB), with optional content type, checksum and Cache-Control</td></tr>
+<tr><td>Upload Multipart</td><td><code>UploadMultipartAsync</code></td><td>Multipart upload (5 MiB–5 GiB parts), with optional content type and Cache-Control</td></tr>
 <tr><td>Download</td><td><code>DownloadFileAsync</code></td><td>Download to file or stream</td></tr>
 <tr><td>Delete Object</td><td><code>DeleteObjectAsync</code></td><td>Single object delete</td></tr>
 <tr><td>Delete Objects</td><td><code>DeleteObjectsAsync</code></td><td>Batch delete (up to 1000 keys)</td></tr>
@@ -752,7 +752,7 @@ This document provides a comprehensive overview of the Cloudflare API endpoints 
 <tr><td>List Objects (single page)</td><td><code>ListObjectsPageAsync</code></td><td>One page plus its continuation token</td></tr>
 <tr><td>List Multipart Uploads</td><td><code>ListMultipartUploadsAsync</code></td><td>Uploads started but never completed</td></tr>
 <tr><td>Presigned GET URL</td><td><code>CreatePresignedGetUrl</code></td><td>Presigned URL for download</td></tr>
-<tr><td>Presigned PUT URL</td><td><code>CreatePresignedPutUrl</code></td><td>Presigned URL for upload, with optional checksum enforcement</td></tr>
+<tr><td>Presigned PUT URL</td><td><code>CreatePresignedPutUrl</code></td><td>Presigned URL for upload, with optional checksum enforcement and signed Cache-Control</td></tr>
 <tr><td>Presigned Part URL</td><td><code>CreatePresignedUploadPartUrl</code></td><td>Presigned URL for multipart part, with optional checksum enforcement</td></tr>
 </tbody>
 </table>

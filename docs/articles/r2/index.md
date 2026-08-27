@@ -83,9 +83,9 @@ The SDK tracks these metrics in the <xref:Cloudflare.NET.R2.Models.R2Result> obj
 
 | Method | Description |
 |--------|-------------|
-| [`UploadAsync`](uploads.md) | Auto-select upload strategy, with optional content type and checksum |
-| [`UploadSinglePartAsync`](uploads.md#single-part-upload) | Force single PUT request, with optional content type and checksum |
-| [`UploadMultipartAsync`](multipart.md) | Force multipart upload, with optional content type |
+| [`UploadAsync`](uploads.md) | Auto-select upload strategy, with optional content type, checksum and Cache-Control |
+| [`UploadSinglePartAsync`](uploads.md#single-part-upload) | Force single PUT request, with optional content type, checksum and Cache-Control |
+| [`UploadMultipartAsync`](multipart.md) | Force multipart upload, with optional content type and Cache-Control |
 
 ### Download Operations
 
@@ -126,7 +126,7 @@ what actually arrives: see [Checksum Verification](presigned-urls.md#checksum-ve
 
 | Method | Description |
 |--------|-------------|
-| [`InitiateMultipartUploadAsync`](multipart.md#manual-multipart-control) | Start multipart upload, optionally naming the finished object's content type |
+| [`InitiateMultipartUploadAsync`](multipart.md#manual-multipart-control) | Start multipart upload, optionally naming the finished object's content type and Cache-Control |
 | [`CompleteMultipartUploadAsync`](multipart.md#completing-upload) | Finalize multipart upload |
 | [`AbortMultipartUploadAsync`](multipart.md#aborting-upload) | Cancel multipart upload |
 
