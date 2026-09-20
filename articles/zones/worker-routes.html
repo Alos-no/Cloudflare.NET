@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Worker Routes | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Worker Routes | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/worker-routes.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="worker-routes">Worker Routes</h1>
+
+<p>Manage Worker routes that map URL patterns to Worker scripts within a zone.</p>
+<h2 id="overview">Overview</h2>
+<p>Access Worker routes through <code>cf.Workers</code>:</p>
+<pre><code class="lang-csharp">public class WorkerRouteService(ICloudflareApiClient cf)
+{
+    public async Task&lt;WorkerRoute&gt; CreateRouteAsync(
+        string zoneId,
+        string pattern,
+        string scriptName)
+    {
+        return await cf.Workers.CreateRouteAsync(zoneId,
+            new CreateWorkerRouteRequest(
+                Pattern: pattern,
+                Script: scriptName
+            ));
+    }
+}
+</code></pre>
+<h2 id="listing-routes">Listing Routes</h2>
+<pre><code class="lang-csharp">var routes = await cf.Workers.ListRoutesAsync(zoneId);
+
+foreach (var route in routes)
+{
+    Console.WriteLine($&quot;{route.Pattern} -&gt; {route.Script ?? &quot;(disabled)&quot;}&quot;);
+}
+</code></pre>
+<h2 id="getting-route-details">Getting Route Details</h2>
+<pre><code class="lang-csharp">var route = await cf.Workers.GetRouteAsync(zoneId, routeId);
+
+Console.WriteLine($&quot;ID: {route.Id}&quot;);
+Console.WriteLine($&quot;Pattern: {route.Pattern}&quot;);
+Console.WriteLine($&quot;Script: {route.Script ?? &quot;None (route disabled)&quot;}&quot;);
+</code></pre>
+<h2 id="creating-routes">Creating Routes</h2>
+<h3 id="route-with-worker-script">Route with Worker Script</h3>
+<pre><code class="lang-csharp">var route = await cf.Workers.CreateRouteAsync(zoneId,
+    new CreateWorkerRouteRequest(
+        Pattern: &quot;api.example.com/*&quot;,
+        Script: &quot;api-handler&quot;
+    ));
+
+Console.WriteLine($&quot;Created route: {route.Id}&quot;);
+</code></pre>
+<h3 id="disabled-route-no-script">Disabled Route (No Script)</h3>
+<p>Create a route that doesn't invoke any Worker (useful for excluding paths):</p>
+<pre><code class="lang-csharp">var route = await cf.Workers.CreateRouteAsync(zoneId,
+    new CreateWorkerRouteRequest(
+        Pattern: &quot;api.example.com/health&quot;,
+        Script: null  // No Worker invoked
+    ));
+</code></pre>
+<h2 id="route-patterns">Route Patterns</h2>
+<p>Worker route patterns support wildcards:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Matches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>example.com/*</code></td>
+<td>All paths on example.com</td>
+</tr>
+<tr>
+<td><code>*.example.com/*</code></td>
+<td>All subdomains and paths</td>
+</tr>
+<tr>
+<td><code>example.com/api/*</code></td>
+<td>Only /api/ paths</td>
+</tr>
+<tr>
+<td><code>example.com/v1/users/*</code></td>
+<td>Specific API paths</td>
+</tr>
+</tbody>
+</table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>More specific routes take precedence over less specific ones.</p>
+</div>
+<h2 id="updating-routes">Updating Routes</h2>
+<pre><code class="lang-csharp">var updated = await cf.Workers.UpdateRouteAsync(zoneId, routeId,
+    new UpdateWorkerRouteRequest(
+        Pattern: &quot;api.example.com/v2/*&quot;,
+        Script: &quot;api-handler-v2&quot;
+    ));
+</code></pre>
+<h3 id="change-script">Change Script</h3>
+<pre><code class="lang-csharp">var updated = await cf.Workers.UpdateRouteAsync(zoneId, routeId,
+    new UpdateWorkerRouteRequest(
+        Pattern: existingRoute.Pattern,
+        Script: &quot;new-worker-script&quot;
+    ));
+</code></pre>
+<h3 id="disable-route">Disable Route</h3>
+<p>Remove the script to disable the route:</p>
+<pre><code class="lang-csharp">var updated = await cf.Workers.UpdateRouteAsync(zoneId, routeId,
+    new UpdateWorkerRouteRequest(
+        Pattern: existingRoute.Pattern,
+        Script: null
+    ));
+</code></pre>
+<h2 id="deleting-routes">Deleting Routes</h2>
+<pre><code class="lang-csharp">await cf.Workers.DeleteRouteAsync(zoneId, routeId);
+Console.WriteLine($&quot;Deleted route: {routeId}&quot;);
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="workerroute">WorkerRoute</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Route identifier</td>
+</tr>
+<tr>
+<td><code>Pattern</code></td>
+<td><code>string</code></td>
+<td>URL pattern to match</td>
+</tr>
+<tr>
+<td><code>Script</code></td>
+<td><code>string?</code></td>
+<td>Worker script name (null = disabled)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="createworkerrouterequest">CreateWorkerRouteRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pattern</code></td>
+<td><code>string</code></td>
+<td>URL pattern to match</td>
+</tr>
+<tr>
+<td><code>Script</code></td>
+<td><code>string?</code></td>
+<td>Worker script name</td>
+</tr>
+</tbody>
+</table>
+<h3 id="updateworkerrouterequest">UpdateWorkerRouteRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pattern</code></td>
+<td><code>string</code></td>
+<td>New URL pattern</td>
+</tr>
+<tr>
+<td><code>Script</code></td>
+<td><code>string?</code></td>
+<td>New Worker script name</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="find-route-by-pattern">Find Route by Pattern</h3>
+<pre><code class="lang-csharp">public async Task&lt;WorkerRoute?&gt; FindRouteByPatternAsync(
+    string zoneId,
+    string pattern)
+{
+    var routes = await cf.Workers.ListRoutesAsync(zoneId);
+
+    return routes.FirstOrDefault(r =&gt;
+        r.Pattern.Equals(pattern, StringComparison.OrdinalIgnoreCase));
+}
+</code></pre>
+<h3 id="update-or-create-route">Update or Create Route</h3>
+<pre><code class="lang-csharp">public async Task&lt;WorkerRoute&gt; UpsertRouteAsync(
+    string zoneId,
+    string pattern,
+    string script)
+{
+    var existing = await FindRouteByPatternAsync(zoneId, pattern);
+
+    if (existing is not null)
+    {
+        return await cf.Workers.UpdateRouteAsync(zoneId, existing.Id,
+            new UpdateWorkerRouteRequest(Pattern: pattern, Script: script));
+    }
+
+    return await cf.Workers.CreateRouteAsync(zoneId,
+        new CreateWorkerRouteRequest(Pattern: pattern, Script: script));
+}
+</code></pre>
+<h3 id="deploy-routes-for-api-versions">Deploy Routes for API Versions</h3>
+<pre><code class="lang-csharp">public async Task DeployApiVersionAsync(
+    string zoneId,
+    string version,
+    string scriptName)
+{
+    var patterns = new[]
+    {
+        $&quot;api.example.com/{version}/*&quot;,
+        $&quot;*.api.example.com/{version}/*&quot;
+    };
+
+    foreach (var pattern in patterns)
+    {
+        await cf.Workers.CreateRouteAsync(zoneId,
+            new CreateWorkerRouteRequest(Pattern: pattern, Script: scriptName));
+
+        Console.WriteLine($&quot;Created route: {pattern} -&gt; {scriptName}&quot;);
+    }
+}
+</code></pre>
+<h3 id="list-routes-by-script">List Routes by Script</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;WorkerRoute&gt;&gt; GetRoutesByScriptAsync(
+    string zoneId,
+    string scriptName)
+{
+    var routes = await cf.Workers.ListRoutesAsync(zoneId);
+
+    return routes
+        .Where(r =&gt; r.Script?.Equals(scriptName, StringComparison.OrdinalIgnoreCase) == true)
+        .ToList();
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers Routes</td>
+<td>Zone</td>
+<td>Read (for listing/get)</td>
+</tr>
+<tr>
+<td>Workers Routes</td>
+<td>Zone</td>
+<td>Write (for create/update/delete)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="zone-management.html">Zone Management</a> - Manage zones</li>
+<li><a href="dns-records.html">DNS Records</a> - Manage DNS</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/worker-routes.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

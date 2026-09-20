@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Struct R2ChecksumAlgorithm | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Struct R2ChecksumAlgorithm | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="A digest algorithm R2 verifies against the bytes of an upload, together with the request header its digest travels in and the exact number of raw bytes its digest consists of.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_R2_Models_R2ChecksumAlgorithm.md&amp;value=---%0Auid%3A%20Cloudflare.NET.R2.Models.R2ChecksumAlgorithm%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm">
+
+
+
+  <h1 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm" class="text-break">
+Struct R2ChecksumAlgorithm  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.R2.html">R2</a>.<a class="xref" href="Cloudflare.NET.R2.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.R2.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A digest algorithm R2 verifies against the bytes of an upload, together with the request header its digest
+travels in and the exact number of raw bytes its digest consists of.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct R2ChecksumAlgorithm : IEquatable&lt;R2ChecksumAlgorithm&gt;</code></pre>
+  </div>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  This set is closed on purpose. R2 rejects an upload whose bytes do not hash to the digest stated in one of
+  these headers, and that rejection is the entire value of signing the header into a presigned URL: the
+  signature forces the client to send the digest, and R2 does the verifying. A header R2 does not verify
+  would give a caller the impression its bytes were checked when nothing checked them, so no such header is
+  representable here.
+</p>
+<p>
+  Verified against live R2 on 2026-08-24, by signing a digest of the wrong bytes into a presigned URL and
+  observing the upload:
+</p>
+<ul><li>
+      On a single-part PUT, R2 verifies all five algorithms: a wrong digest is rejected with 400
+      <code>BadDigest</code> and nothing is stored.
+    </li><li>
+      On a multipart part upload, R2 verifies <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html#Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Crc32">Crc32</a>, <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html#Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Crc32C">Crc32C</a> and
+      <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html#Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Md5">Md5</a> the same way, but answers 501 <code>NotImplemented</code> whenever a <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html#Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Sha1">Sha1</a>
+      or <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html#Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Sha256">Sha256</a> header accompanies the part, regardless of the digest's correctness.
+      <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html#Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_IsSupportedForPartUploads">IsSupportedForPartUploads</a> captures this split.
+    </li></ul>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_All_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.All*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_All" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.All">
+  All
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Every algorithm R2 verifies, in a fixed order suitable for enumeration and diagnostics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;R2ChecksumAlgorithm&gt; All { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Crc32_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Crc32*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Crc32" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Crc32">
+  Crc32
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The 32-bit cyclic redundancy check (IEEE polynomial). Verified on single-part PUTs and part uploads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2ChecksumAlgorithm Crc32 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Crc32C_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Crc32C*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Crc32C" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Crc32C">
+  Crc32C
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The Castagnoli 32-bit cyclic redundancy check. Verified on single-part PUTs and part uploads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2ChecksumAlgorithm Crc32C { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_DigestByteLength_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.DigestByteLength*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_DigestByteLength" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.DigestByteLength">
+  DigestByteLength
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The exact number of raw bytes a digest of this algorithm consists of, before base64 encoding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int DigestByteLength { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_HeaderName_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.HeaderName*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_HeaderName" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.HeaderName">
+  HeaderName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The request header this algorithm's digest travels in, and therefore the header a presigned URL signs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string HeaderName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_IsSupportedForPartUploads_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.IsSupportedForPartUploads*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_IsSupportedForPartUploads" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.IsSupportedForPartUploads">
+  IsSupportedForPartUploads
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether R2 accepts this algorithm's header on a multipart part upload. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, R2
+answers 501 <code>NotImplemented</code> to the part upload regardless of the digest's correctness.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsSupportedForPartUploads { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Md5_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Md5*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Md5" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Md5">
+  Md5
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The MD5 digest. Verified on single-part PUTs and part uploads. Its digest travels in the standard
+<code>Content-MD5</code> header rather than an <code>x-amz-checksum-</code> header.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2ChecksumAlgorithm Md5 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Sha1_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Sha1*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Sha1" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Sha1">
+  Sha1
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The SHA-1 digest. Verified on single-part PUTs; R2 answers 501 <code>NotImplemented</code> when this header
+accompanies a part upload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2ChecksumAlgorithm Sha1 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Sha256_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Sha256*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Sha256" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Sha256">
+  Sha256
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The SHA-256 digest. Verified on single-part PUTs; R2 answers 501 <code>NotImplemented</code> when this header
+accompanies a part upload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static R2ChecksumAlgorithm Sha256 { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Value_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Value*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Value" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The lower-case wire name of the algorithm (for example <code>&quot;sha256&quot;</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Equals_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Equals_Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Equals(Cloudflare.NET.R2.Models.R2ChecksumAlgorithm)">
+  Equals(R2ChecksumAlgorithm)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(R2ChecksumAlgorithm other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd><p>An object to compare with this object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current object is equal to the <code class="paramref">other</code> parameter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Equals_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Equals*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Equals_System_Object_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare with the current instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> and this instance are the same type and represent the same value; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_GetHashCode_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.GetHashCode*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_GetHashCode" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit signed integer that is the hash code for this instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_ToString_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.ToString*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_ToString" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the fully qualified type name of this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The fully qualified type name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_TryParse_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.TryParse*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_TryParse_System_String_Cloudflare_NET_R2_Models_R2ChecksumAlgorithm__" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.TryParse(System.String,Cloudflare.NET.R2.Models.R2ChecksumAlgorithm@)">
+  TryParse(string?, out R2ChecksumAlgorithm)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves an algorithm from its wire name, case-insensitively.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(string? name, out R2ChecksumAlgorithm algorithm)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name to resolve (for example <code>&quot;sha256&quot;</code> or <code>&quot;SHA256&quot;</code>).</p>
+</dd>
+    <dt><code>algorithm</code> <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd><p>The resolved algorithm, when the name matches one R2 verifies.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the name matches an algorithm R2 verifies.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_op_Equality_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.op_Equality*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_op_Equality_Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.op_Equality(Cloudflare.NET.R2.Models.R2ChecksumAlgorithm,Cloudflare.NET.R2.Models.R2ChecksumAlgorithm)">
+  operator ==(R2ChecksumAlgorithm, R2ChecksumAlgorithm)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Equality by wire name, case-insensitively.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(R2ChecksumAlgorithm left, R2ChecksumAlgorithm right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_op_Inequality_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.op_Inequality*"></a>
+
+  <h3 id="Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_op_Inequality_Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_Cloudflare_NET_R2_Models_R2ChecksumAlgorithm_" data-uid="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.op_Inequality(Cloudflare.NET.R2.Models.R2ChecksumAlgorithm,Cloudflare.NET.R2.Models.R2ChecksumAlgorithm)">
+  operator !=(R2ChecksumAlgorithm, R2ChecksumAlgorithm)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inequality by wire name, case-insensitively.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(R2ChecksumAlgorithm left, R2ChecksumAlgorithm right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/Models/R2ChecksumAlgorithm.cs/#L38" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class RoleConstants | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class RoleConstants | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Constants for Cloudflare account roles.    These are the standard role names returned by the Cloudflare API.   Role availability varies by account type and subscription plan.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Roles_RoleConstants.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Roles.RoleConstants%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Roles.RoleConstants">
+
+
+
+  <h1 id="Cloudflare_NET_Roles_RoleConstants" data-uid="Cloudflare.NET.Roles.RoleConstants" class="text-break">
+Class RoleConstants  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Roles.html">Roles</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Constants for Cloudflare account roles.</p>
+<p>
+  These are the standard role names returned by the Cloudflare API.
+  Role availability varies by account type and subscription plan.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class RoleConstants</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">RoleConstants</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Cloudflare_NET_Roles_RoleConstants_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p><b>Documentation:</b> https://developers.cloudflare.com/fundamentals/manage-members/roles/</p>
+<p>
+  Not all roles are available on all account types. Free accounts may have
+  access to a limited subset of roles. Use <a class="xref" href="Cloudflare.NET.Roles.IRolesApi.html#Cloudflare_NET_Roles_IRolesApi_ListAccountRolesAsync_System_String_Cloudflare_NET_Roles_Models_ListAccountRolesFilters_System_Threading_CancellationToken_">ListAccountRolesAsync(string, ListAccountRolesFilters?, CancellationToken)</a>
+  to discover which roles are available for a specific account.
+</p>
+</div>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_Administrator" data-uid="Cloudflare.NET.Roles.RoleConstants.Administrator">
+  Administrator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Standard Administrator role.</p>
+<p>Administrative access to the entire account.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Administrator = &quot;Administrator&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_AdministratorReadOnly" data-uid="Cloudflare.NET.Roles.RoleConstants.AdministratorReadOnly">
+  AdministratorReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Read-only administrator access.</p>
+<p>Can view all settings but cannot make changes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string AdministratorReadOnly = &quot;Administrator Read Only&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_Analytics" data-uid="Cloudflare.NET.Roles.RoleConstants.Analytics">
+  Analytics
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Analytics access role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Analytics = &quot;Analytics&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ApiGateway" data-uid="Cloudflare.NET.Roles.RoleConstants.ApiGateway">
+  ApiGateway
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>API Gateway role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ApiGateway = &quot;API Gateway&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ApiGatewayRead" data-uid="Cloudflare.NET.Roles.RoleConstants.ApiGatewayRead">
+  ApiGatewayRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>API Gateway read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ApiGatewayRead = &quot;API Gateway Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_AuditLogsViewer" data-uid="Cloudflare.NET.Roles.RoleConstants.AuditLogsViewer">
+  AuditLogsViewer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Audit logs viewer role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string AuditLogsViewer = &quot;Audit Logs Viewer&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_Billing" data-uid="Cloudflare.NET.Roles.RoleConstants.Billing">
+  Billing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Billing management role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Billing = &quot;Billing&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_BotManagement" data-uid="Cloudflare.NET.Roles.RoleConstants.BotManagement">
+  BotManagement
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Bot management (account-wide) role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string BotManagement = &quot;Bot Management (Account-wide)&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CachePurge" data-uid="Cloudflare.NET.Roles.RoleConstants.CachePurge">
+  CachePurge
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cache purge role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CachePurge = &quot;Cache Purge&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareAccess" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareAccess">
+  CloudflareAccess
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Access role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareAccess = &quot;Cloudflare Access&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareCasb" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareCasb">
+  CloudflareCasb
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare CASB role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareCasb = &quot;Cloudflare CASB&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareCasbRead" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareCasbRead">
+  CloudflareCasbRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare CASB read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareCasbRead = &quot;Cloudflare CASB Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareDex" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareDex">
+  CloudflareDex
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare DEX (Digital Experience) role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareDex = &quot;Cloudflare DEX&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareGateway" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareGateway">
+  CloudflareGateway
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Gateway role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareGateway = &quot;Cloudflare Gateway&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareImages" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareImages">
+  CloudflareImages
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Images role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareImages = &quot;Cloudflare Images&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareR2Admin" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareR2Admin">
+  CloudflareR2Admin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare R2 admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareR2Admin = &quot;Cloudflare R2 Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareR2Read" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareR2Read">
+  CloudflareR2Read
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare R2 read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareR2Read = &quot;Cloudflare R2 Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareStream" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareStream">
+  CloudflareStream
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L177"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Stream role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareStream = &quot;Cloudflare Stream&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareZeroTrust" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareZeroTrust">
+  CloudflareZeroTrust
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Zero Trust full access role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareZeroTrust = &quot;Cloudflare Zero Trust&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareZeroTrustDnsLocationsWrite" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareZeroTrustDnsLocationsWrite">
+  CloudflareZeroTrustDnsLocationsWrite
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Zero Trust DNS locations write role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareZeroTrustDnsLocationsWrite = &quot;Cloudflare Zero Trust DNS Locations Write&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareZeroTrustPii" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareZeroTrustPii">
+  CloudflareZeroTrustPii
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Zero Trust PII access role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareZeroTrustPii = &quot;Cloudflare Zero Trust PII&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareZeroTrustReadOnly" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareZeroTrustReadOnly">
+  CloudflareZeroTrustReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Zero Trust read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareZeroTrustReadOnly = &quot;Cloudflare Zero Trust Read Only&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_CloudflareZeroTrustReporting" data-uid="Cloudflare.NET.Roles.RoleConstants.CloudflareZeroTrustReporting">
+  CloudflareZeroTrustReporting
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Cloudflare Zero Trust reporting role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CloudflareZeroTrustReporting = &quot;Cloudflare Zero Trust Reporting&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ConnectivityDirectoryAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.ConnectivityDirectoryAdmin">
+  ConnectivityDirectoryAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L280"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Connectivity Directory admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ConnectivityDirectoryAdmin = &quot;Connectivity Directory Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ConnectivityDirectoryBind" data-uid="Cloudflare.NET.Roles.RoleConstants.ConnectivityDirectoryBind">
+  ConnectivityDirectoryBind
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L277"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Connectivity Directory bind role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ConnectivityDirectoryBind = &quot;Connectivity Directory Bind&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ConnectivityDirectoryRead" data-uid="Cloudflare.NET.Roles.RoleConstants.ConnectivityDirectoryRead">
+  ConnectivityDirectoryRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Connectivity Directory read role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ConnectivityDirectoryRead = &quot;Connectivity Directory Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_Dns" data-uid="Cloudflare.NET.Roles.RoleConstants.Dns">
+  Dns
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>DNS management role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Dns = &quot;DNS&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_EmailConfigurationAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.EmailConfigurationAdmin">
+  EmailConfigurationAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Email configuration admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EmailConfigurationAdmin = &quot;Email Configuration Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_EmailIntegrationAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.EmailIntegrationAdmin">
+  EmailIntegrationAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Email integration admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EmailIntegrationAdmin = &quot;Email Integration Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_EmailSecurityAnalyst" data-uid="Cloudflare.NET.Roles.RoleConstants.EmailSecurityAnalyst">
+  EmailSecurityAnalyst
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Email security analyst role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EmailSecurityAnalyst = &quot;Email security Analyst&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_EmailSecurityPolicyAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.EmailSecurityPolicyAdmin">
+  EmailSecurityPolicyAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Email security policy admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EmailSecurityPolicyAdmin = &quot;Email security Policy Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_EmailSecurityReadOnly" data-uid="Cloudflare.NET.Roles.RoleConstants.EmailSecurityReadOnly">
+  EmailSecurityReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L217"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Email security read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EmailSecurityReadOnly = &quot;Email security Read Only&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_EmailSecurityReporting" data-uid="Cloudflare.NET.Roles.RoleConstants.EmailSecurityReporting">
+  EmailSecurityReporting
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Email security reporting role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EmailSecurityReporting = &quot;Email security Reporting&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_Firewall" data-uid="Cloudflare.NET.Roles.RoleConstants.Firewall">
+  Firewall
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Firewall management role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Firewall = &quot;Firewall&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_HyperdriveAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.HyperdriveAdmin">
+  HyperdriveAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Hyperdrive admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string HyperdriveAdmin = &quot;Hyperdrive Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_HyperdriveRead" data-uid="Cloudflare.NET.Roles.RoleConstants.HyperdriveRead">
+  HyperdriveRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Hyperdrive read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string HyperdriveRead = &quot;Hyperdrive Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_LoadBalancer" data-uid="Cloudflare.NET.Roles.RoleConstants.LoadBalancer">
+  LoadBalancer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Load balancer management role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string LoadBalancer = &quot;Load Balancer&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_LogShare" data-uid="Cloudflare.NET.Roles.RoleConstants.LogShare">
+  LogShare
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Log share role with full access.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string LogShare = &quot;Log Share&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_LogShareReader" data-uid="Cloudflare.NET.Roles.RoleConstants.LogShareReader">
+  LogShareReader
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Log share reader role (read-only).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string LogShareReader = &quot;Log Share Reader&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_MagicNetworkMonitoring" data-uid="Cloudflare.NET.Roles.RoleConstants.MagicNetworkMonitoring">
+  MagicNetworkMonitoring
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L237"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Magic Network Monitoring role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MagicNetworkMonitoring = &quot;Magic Network Monitoring&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_MagicNetworkMonitoringAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.MagicNetworkMonitoringAdmin">
+  MagicNetworkMonitoringAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L240"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Magic Network Monitoring admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MagicNetworkMonitoringAdmin = &quot;Magic Network Monitoring Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_MagicNetworkMonitoringReadOnly" data-uid="Cloudflare.NET.Roles.RoleConstants.MagicNetworkMonitoringReadOnly">
+  MagicNetworkMonitoringReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L243"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Magic Network Monitoring read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MagicNetworkMonitoringReadOnly = &quot;Magic Network Monitoring Read-Only&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_MinimalAccountAccess" data-uid="Cloudflare.NET.Roles.RoleConstants.MinimalAccountAccess">
+  MinimalAccountAccess
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Minimal account access role.</p>
+<p>Most restricted role with minimal permissions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MinimalAccountAccess = &quot;Minimal Account Access&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_NetworkServicesRead" data-uid="Cloudflare.NET.Roles.RoleConstants.NetworkServicesRead">
+  NetworkServicesRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Network services read (Magic) role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string NetworkServicesRead = &quot;Network Services Read (Magic)&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_NetworkServicesWrite" data-uid="Cloudflare.NET.Roles.RoleConstants.NetworkServicesWrite">
+  NetworkServicesWrite
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Network services write (Magic) role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string NetworkServicesWrite = &quot;Network Services Write (Magic)&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_PageShield" data-uid="Cloudflare.NET.Roles.RoleConstants.PageShield">
+  PageShield
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Page Shield role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string PageShield = &quot;Page Shield&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_PageShieldRead" data-uid="Cloudflare.NET.Roles.RoleConstants.PageShieldRead">
+  PageShieldRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Page Shield read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string PageShieldRead = &quot;Page Shield Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SecretsStoreAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.SecretsStoreAdmin">
+  SecretsStoreAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L265"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Secrets Store admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SecretsStoreAdmin = &quot;Secrets Store Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SecretsStoreDeployer" data-uid="Cloudflare.NET.Roles.RoleConstants.SecretsStoreDeployer">
+  SecretsStoreDeployer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L268"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Secrets Store deployer role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SecretsStoreDeployer = &quot;Secrets Store Deployer&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SecretsStoreReporter" data-uid="Cloudflare.NET.Roles.RoleConstants.SecretsStoreReporter">
+  SecretsStoreReporter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L271"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Secrets Store reporter role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SecretsStoreReporter = &quot;Secrets Store Reporter&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SecurityCenterBrandProtection" data-uid="Cloudflare.NET.Roles.RoleConstants.SecurityCenterBrandProtection">
+  SecurityCenterBrandProtection
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L251"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Security Center brand protection role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SecurityCenterBrandProtection = &quot;Security Center Brand Protection&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SecurityCenterCloudforceOneAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.SecurityCenterCloudforceOneAdmin">
+  SecurityCenterCloudforceOneAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Security Center Cloudforce One admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SecurityCenterCloudforceOneAdmin = &quot;Security Center Cloudforce One Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SecurityCenterCloudforceOneRead" data-uid="Cloudflare.NET.Roles.RoleConstants.SecurityCenterCloudforceOneRead">
+  SecurityCenterCloudforceOneRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L257"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Security Center Cloudforce One read role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SecurityCenterCloudforceOneRead = &quot;Security Center Cloudforce One Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SslTlsCachingPerformance" data-uid="Cloudflare.NET.Roles.RoleConstants.SslTlsCachingPerformance">
+  SslTlsCachingPerformance
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L194"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>SSL/TLS, caching, performance, page rules, and customization role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SslTlsCachingPerformance = &quot;SSL/TLS Caching Performance Page Rules and Customization&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_SuperAdministrator" data-uid="Cloudflare.NET.Roles.RoleConstants.SuperAdministrator">
+  SuperAdministrator
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Super Administrator with all privileges.</p>
+<p>Full administrative access to all account features and settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string SuperAdministrator = &quot;Super Administrator - All Privileges&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_TrustAndSafety" data-uid="Cloudflare.NET.Roles.RoleConstants.TrustAndSafety">
+  TrustAndSafety
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Trust and Safety role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string TrustAndSafety = &quot;Trust and Safety&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_Turnstile" data-uid="Cloudflare.NET.Roles.RoleConstants.Turnstile">
+  Turnstile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L291"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Turnstile management role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Turnstile = &quot;Turnstile&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_TurnstileRead" data-uid="Cloudflare.NET.Roles.RoleConstants.TurnstileRead">
+  TurnstileRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L294"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Turnstile read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string TurnstileRead = &quot;Turnstile Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_VectorizeAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.VectorizeAdmin">
+  VectorizeAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Vectorize admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string VectorizeAdmin = &quot;Vectorize Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_VectorizeReadOnly" data-uid="Cloudflare.NET.Roles.RoleConstants.VectorizeReadOnly">
+  VectorizeReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Vectorize read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string VectorizeReadOnly = &quot;Vectorize Read only&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_Waf" data-uid="Cloudflare.NET.Roles.RoleConstants.Waf">
+  Waf
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>WAF (Web Application Firewall) management role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Waf = &quot;WAF&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_WaitingRoomAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.WaitingRoomAdmin">
+  WaitingRoomAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Waiting room admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WaitingRoomAdmin = &quot;Waiting Room Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_WaitingRoomRead" data-uid="Cloudflare.NET.Roles.RoleConstants.WaitingRoomRead">
+  WaitingRoomRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Waiting room read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WaitingRoomRead = &quot;Waiting Room Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_WorkersPlatformAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.WorkersPlatformAdmin">
+  WorkersPlatformAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Workers Platform admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WorkersPlatformAdmin = &quot;Workers Platform Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_WorkersPlatformReadOnly" data-uid="Cloudflare.NET.Roles.RoleConstants.WorkersPlatformReadOnly">
+  WorkersPlatformReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L151"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Workers Platform read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WorkersPlatformReadOnly = &quot;Workers Platform (Read-only)&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ZarazAdmin" data-uid="Cloudflare.NET.Roles.RoleConstants.ZarazAdmin">
+  ZarazAdmin
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L297"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Zaraz admin role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ZarazAdmin = &quot;Zaraz Admin&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ZarazEdit" data-uid="Cloudflare.NET.Roles.RoleConstants.ZarazEdit">
+  ZarazEdit
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Zaraz edit role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ZarazEdit = &quot;Zaraz Edit&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ZarazRead" data-uid="Cloudflare.NET.Roles.RoleConstants.ZarazRead">
+  ZarazRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Zaraz read-only role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ZarazRead = &quot;Zaraz Read&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ZoneVersioning" data-uid="Cloudflare.NET.Roles.RoleConstants.ZoneVersioning">
+  ZoneVersioning
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Zone versioning (account-wide) role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ZoneVersioning = &quot;Zone Versioning (Account-Wide)&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Roles_RoleConstants_ZoneVersioningRead" data-uid="Cloudflare.NET.Roles.RoleConstants.ZoneVersioningRead">
+  ZoneVersioningRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Zone versioning read access (account-wide) role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ZoneVersioningRead = &quot;Zone Versioning Read (Account-Wide)&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Roles/RoleConstants.cs/#L19" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

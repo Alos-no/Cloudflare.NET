@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Custom Domains | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Custom Domains | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/custom-domains.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-custom-domains">R2 Custom Domains</h1>
+
+<p>Attach custom hostnames to R2 buckets to serve content from your own domain instead of the default <code>r2.dev</code> URL.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class DomainService(ICloudflareApiClient cf)
+{
+    public async Task AttachDomainAsync(string bucket, string hostname, string zoneId)
+    {
+        var result = await cf.Accounts.Buckets.AttachCustomDomainAsync(bucket, hostname, zoneId);
+        Console.WriteLine($&quot;Status: {result.Status}&quot;);
+    }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Jurisdictional Buckets:</strong> If your bucket was created with a jurisdiction (e.g., <code>R2Jurisdiction.EuropeanUnion</code>), you must pass the jurisdiction parameter to all custom domain operations. See <a href="buckets.html#working-with-jurisdictional-buckets">Working with Jurisdictional Buckets</a>.</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.AttachCustomDomainAsync(&quot;my-eu-bucket&quot;, hostname, zoneId, R2Jurisdiction.EuropeanUnion);
+</code></pre>
+</div>
+<h2 id="listing-custom-domains">Listing Custom Domains</h2>
+<p>List all custom domains attached to a bucket:</p>
+<pre><code class="lang-csharp">var domains = await cf.Accounts.Buckets.ListCustomDomainsAsync(&quot;my-bucket&quot;);
+
+foreach (var domain in domains)
+{
+    Console.WriteLine($&quot;Domain: {domain.Domain}&quot;);
+    Console.WriteLine($&quot;  Enabled: {domain.Enabled}&quot;);
+    Console.WriteLine($&quot;  Status: {domain.Status?.Ownership ?? &quot;pending&quot;}&quot;);
+    Console.WriteLine($&quot;  Zone: {domain.ZoneName}&quot;);
+}
+</code></pre>
+<h2 id="attaching-a-custom-domain">Attaching a Custom Domain</h2>
+<pre><code class="lang-csharp">var result = await cf.Accounts.Buckets.AttachCustomDomainAsync(
+    bucketName: &quot;my-bucket&quot;,
+    hostname: &quot;cdn.example.com&quot;,
+    zoneId: &quot;your-zone-id&quot;
+);
+
+Console.WriteLine($&quot;Domain: {result.Domain}&quot;);
+Console.WriteLine($&quot;Status: {result.Status}&quot;);
+Console.WriteLine($&quot;Edge Hostname: {result.EdgeHostname}&quot;);
+</code></pre>
+<h3 id="prerequisites">Prerequisites</h3>
+<ol>
+<li>The domain must be in a zone you control</li>
+<li>The zone must be active in Cloudflare</li>
+<li>You need the zone ID</li>
+</ol>
+<h2 id="checking-domain-status">Checking Domain Status</h2>
+<pre><code class="lang-csharp">var status = await cf.Accounts.Buckets.GetCustomDomainStatusAsync(
+    bucketName: &quot;my-bucket&quot;,
+    hostname: &quot;cdn.example.com&quot;
+);
+
+Console.WriteLine($&quot;Status: {status.Status}&quot;);
+</code></pre>
+<h3 id="status-values">Status Values</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pending</code></td>
+<td>Domain attachment in progress</td>
+</tr>
+<tr>
+<td><code>active</code></td>
+<td>Domain is active and serving traffic</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Attachment failed (check DNS/zone config)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="updating-custom-domain-configuration">Updating Custom Domain Configuration</h2>
+<p>Update settings for an existing custom domain, such as enabling/disabling it or changing the minimum TLS version:</p>
+<pre><code class="lang-csharp">// Disable a custom domain
+var result = await cf.Accounts.Buckets.UpdateCustomDomainAsync(
+    bucketName: &quot;my-bucket&quot;,
+    hostname: &quot;cdn.example.com&quot;,
+    new UpdateCustomDomainRequest(Enabled: false)
+);
+
+// Set minimum TLS version
+var result = await cf.Accounts.Buckets.UpdateCustomDomainAsync(
+    bucketName: &quot;my-bucket&quot;,
+    hostname: &quot;cdn.example.com&quot;,
+    new UpdateCustomDomainRequest(MinTls: &quot;1.3&quot;)
+);
+
+// Enable with minimum TLS 1.2
+var result = await cf.Accounts.Buckets.UpdateCustomDomainAsync(
+    bucketName: &quot;my-bucket&quot;,
+    hostname: &quot;cdn.example.com&quot;,
+    new UpdateCustomDomainRequest(Enabled: true, MinTls: &quot;1.2&quot;)
+);
+</code></pre>
+<h2 id="detaching-a-custom-domain">Detaching a Custom Domain</h2>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.DetachCustomDomainAsync(
+    bucketName: &quot;my-bucket&quot;,
+    hostname: &quot;cdn.example.com&quot;
+);
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>To disable the r2.dev public URL for enhanced security, see <a href="managed-domains.html">Managed Domains (r2.dev)</a>.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="customdomain">CustomDomain</h3>
+<p>Returned when listing custom domains for a bucket:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Domain</code></td>
+<td><code>string</code></td>
+<td>The custom domain hostname</td>
+</tr>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td>Whether the domain is enabled</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td><code>CustomDomainStatusObject?</code></td>
+<td>Ownership and SSL status</td>
+</tr>
+<tr>
+<td><code>MinTls</code></td>
+<td><code>string?</code></td>
+<td>Minimum TLS version (e.g., &quot;1.2&quot;, &quot;1.3&quot;)</td>
+</tr>
+<tr>
+<td><code>ZoneId</code></td>
+<td><code>string?</code></td>
+<td>The Zone ID the domain belongs to</td>
+</tr>
+<tr>
+<td><code>ZoneName</code></td>
+<td><code>string?</code></td>
+<td>The Zone name the domain belongs to</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customdomainresponse">CustomDomainResponse</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Domain</code></td>
+<td><code>string</code></td>
+<td>The custom domain hostname</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td><code>string</code></td>
+<td>Current status (<code>pending</code>, <code>active</code>, <code>failed</code>)</td>
+</tr>
+<tr>
+<td><code>EdgeHostname</code></td>
+<td><code>string?</code></td>
+<td>Cloudflare edge hostname for CNAME</td>
+</tr>
+</tbody>
+</table>
+<h3 id="updatecustomdomainrequest">UpdateCustomDomainRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool?</code></td>
+<td>Whether the domain should be enabled</td>
+</tr>
+<tr>
+<td><code>MinTls</code></td>
+<td><code>string?</code></td>
+<td>Minimum TLS version (e.g., &quot;1.2&quot;, &quot;1.3&quot;)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="attach-domain-with-status-check">Attach Domain with Status Check</h3>
+<pre><code class="lang-csharp">public async Task&lt;bool&gt; AttachAndVerifyAsync(
+    string bucket,
+    string hostname,
+    string zoneId,
+    int maxAttempts = 10)
+{
+    await cf.Accounts.Buckets.AttachCustomDomainAsync(bucket, hostname, zoneId);
+
+    for (int i = 0; i &lt; maxAttempts; i++)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(5));
+
+        var status = await cf.Accounts.Buckets.GetCustomDomainStatusAsync(bucket, hostname);
+
+        if (status.Status == &quot;active&quot;)
+            return true;
+
+        if (status.Status == &quot;failed&quot;)
+            return false;
+    }
+
+    return false;
+}
+</code></pre>
+<h3 id="setup-complete-cdn-configuration">Setup Complete CDN Configuration</h3>
+<pre><code class="lang-csharp">public async Task SetupCdnAsync(string bucket, string hostname, string zoneId)
+{
+    // 1. Attach custom domain
+    await cf.Accounts.Buckets.AttachCustomDomainAsync(bucket, hostname, zoneId);
+
+    // 2. Disable dev URL for security
+    await cf.Accounts.Buckets.DisableManagedDomainAsync(bucket);
+
+    // 3. Configure CORS for web access
+    await cf.Accounts.Buckets.SetCorsAsync(bucket, new BucketCorsPolicy([
+        new CorsRule(
+            Allowed: new CorsAllowed(
+                Methods: [&quot;GET&quot;, &quot;HEAD&quot;],
+                Origins: [$&quot;https://{hostname}&quot;]
+            ),
+            MaxAgeSeconds: 86400
+        )
+    ]));
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers R2 Storage</td>
+<td>Account</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dns-configuration">DNS Configuration</h2>
+<p>After attaching a custom domain, configure your DNS:</p>
+<ol>
+<li>Add a CNAME record pointing to the edge hostname</li>
+<li>Or use Cloudflare DNS (recommended) for automatic setup</li>
+</ol>
+<pre><code>cdn.example.com CNAME &lt;edge-hostname&gt;
+</code></pre>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="buckets.html">Bucket Management</a> - Create and manage buckets</li>
+<li><a href="managed-domains.html">Managed Domains (r2.dev)</a> - Enable/disable public access</li>
+<li><a href="cors.html">CORS Configuration</a> - Configure cross-origin access</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/custom-domains.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

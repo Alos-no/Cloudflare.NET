@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Turnstile Widgets | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Turnstile Widgets | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/turnstile.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="turnstile-widgets">Turnstile Widgets</h1>
+
+<p>Manage Turnstile widgets for bot protection. Turnstile is Cloudflare's CAPTCHA alternative that provides protection without user friction.</p>
+<h2 id="overview">Overview</h2>
+<p>Access Turnstile through <code>cf.Turnstile</code>:</p>
+<pre><code class="lang-csharp">public class TurnstileService(ICloudflareApiClient cf)
+{
+    public async Task&lt;TurnstileWidget&gt; CreateWidgetAsync(
+        string accountId,
+        string name,
+        IEnumerable&lt;string&gt; domains)
+    {
+        return await cf.Turnstile.CreateWidgetAsync(accountId,
+            new CreateTurnstileWidgetRequest(
+                Name: name,
+                Domains: domains.ToList(),
+                Mode: WidgetMode.Managed
+            ));
+    }
+}
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Widget secrets are only returned when created or rotated. Store them securely.</p>
+</div>
+<h2 id="listing-widgets">Listing Widgets</h2>
+<h3 id="with-pagination">With Pagination</h3>
+<pre><code class="lang-csharp">var result = await cf.Turnstile.ListWidgetsAsync(accountId,
+    new ListTurnstileWidgetsFilters(
+        Order: TurnstileOrderField.CreatedOn,
+        Direction: ListOrderDirection.Desc
+    ));
+
+foreach (var widget in result.Result)
+{
+    Console.WriteLine($&quot;{widget.Name}: {widget.Sitekey}&quot;);
+    Console.WriteLine($&quot;  Mode: {widget.Mode}&quot;);
+    Console.WriteLine($&quot;  Domains: {string.Join(&quot;, &quot;, widget.Domains)}&quot;);
+}
+</code></pre>
+<h3 id="list-all-widgets">List All Widgets</h3>
+<pre><code class="lang-csharp">await foreach (var widget in cf.Turnstile.ListAllWidgetsAsync(accountId))
+{
+    Console.WriteLine($&quot;{widget.Name} [{widget.Mode}]&quot;);
+}
+</code></pre>
+<h2 id="getting-widget-details">Getting Widget Details</h2>
+<pre><code class="lang-csharp">var widget = await cf.Turnstile.GetWidgetAsync(accountId, sitekey);
+
+Console.WriteLine($&quot;Name: {widget.Name}&quot;);
+Console.WriteLine($&quot;Sitekey: {widget.Sitekey}&quot;);
+Console.WriteLine($&quot;Mode: {widget.Mode}&quot;);
+Console.WriteLine($&quot;Domains: {string.Join(&quot;, &quot;, widget.Domains)}&quot;);
+Console.WriteLine($&quot;Bot Fight Mode: {widget.BotFightMode}&quot;);
+Console.WriteLine($&quot;Created: {widget.CreatedOn}&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The secret is <strong>not</strong> returned when getting widget details. It's only available at creation or after rotation.</p>
+</div>
+<h2 id="creating-widgets">Creating Widgets</h2>
+<h3 id="basic-widget">Basic Widget</h3>
+<pre><code class="lang-csharp">var widget = await cf.Turnstile.CreateWidgetAsync(accountId,
+    new CreateTurnstileWidgetRequest(
+        Name: &quot;Login Form&quot;,
+        Domains: new[] { &quot;example.com&quot;, &quot;www.example.com&quot; },
+        Mode: WidgetMode.Managed
+    ));
+
+// IMPORTANT: Store this secret securely!
+Console.WriteLine($&quot;Sitekey: {widget.Sitekey}&quot;);
+Console.WriteLine($&quot;Secret: {widget.Secret}&quot;);
+</code></pre>
+<h3 id="widget-modes">Widget Modes</h3>
+<p><a class="xref" href="../../api/Cloudflare.NET.Turnstile.Models.WidgetMode.html">WidgetMode</a> is an extensible enum controlling user interaction level:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>API Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Managed</code></td>
+<td><code>managed</code></td>
+<td>Cloudflare dynamically decides when to show challenges</td>
+</tr>
+<tr>
+<td><code>NonInteractive</code></td>
+<td><code>non-interactive</code></td>
+<td>Challenge runs without visible interaction</td>
+</tr>
+<tr>
+<td><code>Invisible</code></td>
+<td><code>invisible</code></td>
+<td>Completely invisible - automatic verification</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Cloudflare.NET.Turnstile.Models;
+
+// Invisible widget for seamless UX
+var invisible = await cf.Turnstile.CreateWidgetAsync(accountId,
+    new CreateTurnstileWidgetRequest(
+        Name: &quot;Invisible Protection&quot;,
+        Domains: new[] { &quot;example.com&quot; },
+        Mode: WidgetMode.Invisible
+    ));
+
+// Extensible for future modes
+WidgetMode customMode = &quot;future-mode&quot;;
+</code></pre>
+<h3 id="with-bot-fight-mode">With Bot Fight Mode</h3>
+<p>Enable additional bot protection:</p>
+<pre><code class="lang-csharp">var widget = await cf.Turnstile.CreateWidgetAsync(accountId,
+    new CreateTurnstileWidgetRequest(
+        Name: &quot;Contact Form&quot;,
+        Domains: new[] { &quot;example.com&quot; },
+        Mode: WidgetMode.Managed,
+        BotFightMode: true
+    ));
+</code></pre>
+<h3 id="with-custom-region">With Custom Region</h3>
+<pre><code class="lang-csharp">var widget = await cf.Turnstile.CreateWidgetAsync(accountId,
+    new CreateTurnstileWidgetRequest(
+        Name: &quot;EU Form&quot;,
+        Domains: new[] { &quot;eu.example.com&quot; },
+        Mode: WidgetMode.Managed,
+        Region: TurnstileRegion.World
+    ));
+</code></pre>
+<h2 id="updating-widgets">Updating Widgets</h2>
+<pre><code class="lang-csharp">var updated = await cf.Turnstile.UpdateWidgetAsync(accountId, sitekey,
+    new UpdateTurnstileWidgetRequest(
+        Name: &quot;Updated Widget Name&quot;,
+        Domains: new[] { &quot;example.com&quot;, &quot;api.example.com&quot; },
+        Mode: WidgetMode.NonInteractive
+    ));
+</code></pre>
+<h3 id="add-domain">Add Domain</h3>
+<pre><code class="lang-csharp">var widget = await cf.Turnstile.GetWidgetAsync(accountId, sitekey);
+
+var domains = widget.Domains.ToList();
+domains.Add(&quot;new.example.com&quot;);
+
+await cf.Turnstile.UpdateWidgetAsync(accountId, sitekey,
+    new UpdateTurnstileWidgetRequest(
+        Name: widget.Name,
+        Domains: domains,
+        Mode: widget.Mode
+    ));
+</code></pre>
+<h2 id="deleting-widgets">Deleting Widgets</h2>
+<pre><code class="lang-csharp">await cf.Turnstile.DeleteWidgetAsync(accountId, sitekey);
+Console.WriteLine($&quot;Deleted widget: {sitekey}&quot;);
+</code></pre>
+<h2 id="rotating-secrets">Rotating Secrets</h2>
+<h3 id="with-grace-period-default">With Grace Period (Default)</h3>
+<p>The old secret remains valid for 2 hours:</p>
+<pre><code class="lang-csharp">var result = await cf.Turnstile.RotateSecretAsync(accountId, sitekey);
+
+Console.WriteLine($&quot;New secret: {result.Secret}&quot;);
+Console.WriteLine(&quot;Old secret valid for 2 more hours&quot;);
+</code></pre>
+<h3 id="immediate-invalidation">Immediate Invalidation</h3>
+<p>Revoke the old secret immediately:</p>
+<pre><code class="lang-csharp">var result = await cf.Turnstile.RotateSecretAsync(
+    accountId,
+    sitekey,
+    invalidateImmediately: true);
+
+Console.WriteLine($&quot;New secret: {result.Secret}&quot;);
+Console.WriteLine(&quot;Old secret is now invalid&quot;);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Immediate invalidation may cause validation failures for in-flight requests.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="turnstilewidget">TurnstileWidget</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Sitekey</code></td>
+<td><code>string</code></td>
+<td>Public key for client-side integration</td>
+</tr>
+<tr>
+<td><code>Secret</code></td>
+<td><code>string?</code></td>
+<td>Private key (only on create/rotate)</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Widget name</td>
+</tr>
+<tr>
+<td><code>Domains</code></td>
+<td><code>IReadOnlyList&lt;string&gt;</code></td>
+<td>Allowed domains</td>
+</tr>
+<tr>
+<td><code>Mode</code></td>
+<td><code>WidgetMode</code></td>
+<td>Challenge mode</td>
+</tr>
+<tr>
+<td><code>BotFightMode</code></td>
+<td><code>bool</code></td>
+<td>Extra bot protection</td>
+</tr>
+<tr>
+<td><code>Region</code></td>
+<td><code>TurnstileRegion?</code></td>
+<td>Processing region</td>
+</tr>
+<tr>
+<td><code>CreatedOn</code></td>
+<td><code>DateTime</code></td>
+<td>Creation timestamp</td>
+</tr>
+<tr>
+<td><code>ModifiedOn</code></td>
+<td><code>DateTime</code></td>
+<td>Last modification</td>
+</tr>
+</tbody>
+</table>
+<h3 id="widgetmode-extensible-enum">WidgetMode (Extensible Enum)</h3>
+<p><a class="xref" href="../../api/Cloudflare.NET.Turnstile.Models.WidgetMode.html">WidgetMode</a> controls user interaction level:</p>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>API Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Managed</code></td>
+<td><code>managed</code></td>
+<td>Cloudflare decides when to challenge</td>
+</tr>
+<tr>
+<td><code>NonInteractive</code></td>
+<td><code>non-interactive</code></td>
+<td>Challenge runs without visible interaction</td>
+</tr>
+<tr>
+<td><code>Invisible</code></td>
+<td><code>invisible</code></td>
+<td>Completely invisible</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clearancelevel-extensible-enum">ClearanceLevel (Extensible Enum)</h3>
+<p><a class="xref" href="../../api/Cloudflare.NET.Turnstile.Models.ClearanceLevel.html">ClearanceLevel</a> controls challenge difficulty:</p>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>API Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NoClearance</code></td>
+<td><code>no_clearance</code></td>
+<td>No challenge - only monitors for bot patterns</td>
+</tr>
+<tr>
+<td><code>JsChallenge</code></td>
+<td><code>jschallenge</code></td>
+<td>JavaScript challenge execution</td>
+</tr>
+<tr>
+<td><code>Managed</code></td>
+<td><code>managed</code></td>
+<td>Cloudflare manages difficulty based on risk</td>
+</tr>
+<tr>
+<td><code>Interactive</code></td>
+<td><code>interactive</code></td>
+<td>Always requires explicit user interaction</td>
+</tr>
+</tbody>
+</table>
+<h3 id="createturnstilewidgetrequest">CreateTurnstileWidgetRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Widget name</td>
+</tr>
+<tr>
+<td><code>Domains</code></td>
+<td><code>IReadOnlyList&lt;string&gt;</code></td>
+<td>Allowed domains</td>
+</tr>
+<tr>
+<td><code>Mode</code></td>
+<td><code>WidgetMode</code></td>
+<td>Challenge mode</td>
+</tr>
+<tr>
+<td><code>BotFightMode</code></td>
+<td><code>bool?</code></td>
+<td>Enable bot fight mode</td>
+</tr>
+<tr>
+<td><code>Region</code></td>
+<td><code>TurnstileRegion?</code></td>
+<td>Processing region</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rotatewidgetsecretresult">RotateWidgetSecretResult</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Secret</code></td>
+<td><code>string</code></td>
+<td>New secret key</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="find-widget-by-name">Find Widget by Name</h3>
+<pre><code class="lang-csharp">public async Task&lt;TurnstileWidget?&gt; FindWidgetByNameAsync(
+    string accountId,
+    string name)
+{
+    await foreach (var widget in cf.Turnstile.ListAllWidgetsAsync(accountId))
+    {
+        if (widget.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+        {
+            return widget;
+        }
+    }
+
+    return null;
+}
+</code></pre>
+<h3 id="create-widget-if-not-exists">Create Widget If Not Exists</h3>
+<pre><code class="lang-csharp">public async Task&lt;TurnstileWidget&gt; EnsureWidgetExistsAsync(
+    string accountId,
+    string name,
+    IEnumerable&lt;string&gt; domains)
+{
+    var existing = await FindWidgetByNameAsync(accountId, name);
+
+    if (existing is not null)
+    {
+        return existing;
+    }
+
+    return await cf.Turnstile.CreateWidgetAsync(accountId,
+        new CreateTurnstileWidgetRequest(
+            Name: name,
+            Domains: domains.ToList(),
+            Mode: WidgetMode.Managed
+        ));
+}
+</code></pre>
+<h3 id="rotate-all-secrets">Rotate All Secrets</h3>
+<pre><code class="lang-csharp">public async Task&lt;Dictionary&lt;string, string&gt;&gt; RotateAllSecretsAsync(
+    string accountId)
+{
+    var newSecrets = new Dictionary&lt;string, string&gt;();
+
+    await foreach (var widget in cf.Turnstile.ListAllWidgetsAsync(accountId))
+    {
+        var result = await cf.Turnstile.RotateSecretAsync(accountId, widget.Sitekey);
+        newSecrets[widget.Name] = result.Secret;
+
+        Console.WriteLine($&quot;Rotated secret for: {widget.Name}&quot;);
+    }
+
+    return newSecrets;
+}
+</code></pre>
+<h2 id="client-side-integration">Client-Side Integration</h2>
+<p>After creating a widget, use the sitekey in your HTML:</p>
+<pre><code class="lang-html">&lt;script src=&quot;https://challenges.cloudflare.com/turnstile/v0/api.js&quot; async defer&gt;&lt;/script&gt;
+&lt;div class=&quot;cf-turnstile&quot; data-sitekey=&quot;YOUR_SITEKEY&quot;&gt;&lt;/div&gt;
+</code></pre>
+<p>Then validate the token server-side using the secret.</p>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Turnstile</td>
+<td>Account</td>
+<td>Read (for listing/get)</td>
+</tr>
+<tr>
+<td>Turnstile</td>
+<td>Account</td>
+<td>Write (for create/update/delete/rotate)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="account-management.html">Account Management</a> - Manage accounts</li>
+<li><a href="../zones/zone-settings.html">Zone Settings</a> - Zone security settings</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/turnstile.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

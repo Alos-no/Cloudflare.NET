@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface ICloudflareApiClient | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface ICloudflareApiClient | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Defines the contract for the primary client for interacting with the Cloudflare API. This client acts as a facade, providing access to different API resource areas such as Accounts, User, and Zones.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_ICloudflareApiClient.md&amp;value=---%0Auid%3A%20Cloudflare.NET.ICloudflareApiClient%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.ICloudflareApiClient">
+
+
+
+  <h1 id="Cloudflare_NET_ICloudflareApiClient" data-uid="Cloudflare.NET.ICloudflareApiClient" class="text-break">
+Interface ICloudflareApiClient  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the contract for the primary client for interacting with the Cloudflare API. This client acts as a
+facade, providing access to different API resource areas such as Accounts, User, and Zones.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ICloudflareApiClient : IDisposable</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable.dispose">IDisposable.Dispose()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Cloudflare_NET_ICloudflareApiClient_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  This is the main entry point for the SDK. It should be registered with a dependency injection container as a
+  transient service using the <code>AddCloudflareApiClient()</code> extension method.
+</p>
+<example>
+  Inject this interface into your services to access all Cloudflare APIs:
+  <pre><code class="lang-csharp">public class MyService(ICloudflareApiClient cf)
+  {
+      public async Task DoSomething()
+      {
+          var zones = await cf.Zones.ListZonesAsync();
+          var user = await cf.User.GetUserAsync();
+          // ...
+      }
+  }</code></pre>
+</example>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Accounts_" data-uid="Cloudflare.NET.ICloudflareApiClient.Accounts*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Accounts" data-uid="Cloudflare.NET.ICloudflareApiClient.Accounts">
+  Accounts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing Account-level resources. This includes R2 buckets, account-wide IP Access
+Rules, and account-level WAF custom rulesets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAccountsApi Accounts { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.IAccountsApi.html">IAccountsApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_ApiTokens_" data-uid="Cloudflare.NET.ICloudflareApiClient.ApiTokens*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_ApiTokens" data-uid="Cloudflare.NET.ICloudflareApiClient.ApiTokens">
+  ApiTokens
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing API tokens.</p>
+<p>
+  API tokens provide fine-grained access control for Cloudflare API operations.
+  Each token has policies that define what resources and actions are allowed.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IApiTokensApi ApiTokens { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.ApiTokens.IApiTokensApi.html">IApiTokensApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_ApiTokens_examples">Examples</h4>
+  <pre><code class="lang-csharp">// Create a new token
+var result = await cf.ApiTokens.CreateAccountTokenAsync(accountId,
+  new CreateApiTokenRequest(
+    Name: "CI/CD Token",
+    Policies: new[]
+    {
+      new CreateTokenPolicyRequest(
+        Effect: "allow",
+        PermissionGroups: new[] { new TokenPermissionGroupReference(permGroupId) },
+        Resources: new Dictionary&lt;string, string&gt;
+        {
+          ["com.cloudflare.api.account.*"] = "*"
+        })
+    }));
+
+Console.WriteLine($"Token: {result.Value}"); // Store securely!</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_AuditLogs_" data-uid="Cloudflare.NET.ICloudflareApiClient.AuditLogs*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_AuditLogs" data-uid="Cloudflare.NET.ICloudflareApiClient.AuditLogs">
+  AuditLogs
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for accessing audit logs.</p>
+<p>
+  Audit logs provide a record of actions taken on account resources, useful for
+  security monitoring, compliance, and troubleshooting. Logs are retained for 30 days.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAuditLogsApi AuditLogs { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.AuditLogs.IAuditLogsApi.html">IAuditLogsApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_AuditLogs_examples">Examples</h4>
+  <pre><code class="lang-csharp">// Get recent audit logs
+var logs = await cf.AuditLogs.GetAccountAuditLogsAsync(accountId,
+  new ListAuditLogsFilters(Since: DateTime.UtcNow.AddDays(-7)));
+
+foreach (var log in logs.Items)
+{
+  Console.WriteLine($"{log.Action.Time}: {log.Action.Type} by {log.Actor.Email}");
+}</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Dns_" data-uid="Cloudflare.NET.ICloudflareApiClient.Dns*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Dns" data-uid="Cloudflare.NET.ICloudflareApiClient.Dns">
+  Dns
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing DNS records.</p>
+<p>
+  Provides complete CRUD operations for DNS records, including batch operations,
+  import/export functionality, and searching by hostname.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IDnsApi Dns { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Dns.IDnsApi.html">IDnsApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Dns_examples">Examples</h4>
+  <pre><code class="lang-csharp">// Create a DNS record
+var record = await cf.Dns.CreateDnsRecordAsync(zoneId, new CreateDnsRecordRequest(
+  DnsRecordType.A, "www.example.com", "192.0.2.1"
+));
+
+// List all DNS records
+await foreach (var r in cf.Dns.ListAllDnsRecordsAsync(zoneId))
+{
+  Console.WriteLine($"{r.Name}: {r.Content}");
+}</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Members_" data-uid="Cloudflare.NET.ICloudflareApiClient.Members*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Members" data-uid="Cloudflare.NET.ICloudflareApiClient.Members">
+  Members
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing account members.</p>
+<p>
+  Account members are users who have been granted access to a Cloudflare account.
+  Members are assigned roles that determine their permissions within the account.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IMembersApi Members { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Members.IMembersApi.html">IMembersApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Members_examples">Examples</h4>
+  <pre><code class="lang-csharp">// List all account members
+await foreach (var member in cf.Members.ListAllAccountMembersAsync(accountId))
+{
+  Console.WriteLine($"{member.User.Email}: {member.Status}");
+  foreach (var role in member.Roles)
+    Console.WriteLine($"  - {role.Name}");
+}
+
+// Invite a new member
+var newMember = await cf.Members.CreateAccountMemberAsync(accountId,
+  new CreateAccountMemberRequest(
+    Email: "newuser@example.com",
+    Roles: new[] { adminRoleId },
+    Status: MemberStatus.Pending));</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Roles_" data-uid="Cloudflare.NET.ICloudflareApiClient.Roles*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Roles" data-uid="Cloudflare.NET.ICloudflareApiClient.Roles">
+  Roles
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing account roles.</p>
+<p>
+  Roles are predefined by Cloudflare and define sets of permissions
+  that can be assigned to account members. This API is read-only.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IRolesApi Roles { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Roles.IRolesApi.html">IRolesApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Roles_examples">Examples</h4>
+  <pre><code class="lang-csharp">// List all available roles
+await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+{
+  Console.WriteLine($"{role.Name}: {role.Description}");
+  if (role.Permissions.Dns?.Write == true)
+    Console.WriteLine("  - Can modify DNS");
+}</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Subscriptions_" data-uid="Cloudflare.NET.ICloudflareApiClient.Subscriptions*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Subscriptions" data-uid="Cloudflare.NET.ICloudflareApiClient.Subscriptions">
+  Subscriptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing subscriptions.</p>
+<p>
+  Subscriptions manage billing plans and add-ons for Cloudflare services.
+  This API provides access to account-level subscription management.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ISubscriptionsApi Subscriptions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Subscriptions.ISubscriptionsApi.html">ISubscriptionsApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Subscriptions_examples">Examples</h4>
+  <pre><code class="lang-csharp">// List account subscriptions
+var subscriptions = await cf.Subscriptions.ListAccountSubscriptionsAsync(accountId);
+foreach (var sub in subscriptions)
+{
+  Console.WriteLine($"{sub.RatePlan?.PublicName}: {sub.State}");
+  Console.WriteLine($"  Price: {sub.Price} {sub.Currency}/{sub.Frequency}");
+}
+
+// Create a new subscription
+var newSub = await cf.Subscriptions.CreateAccountSubscriptionAsync(accountId,
+  new CreateAccountSubscriptionRequest(
+    RatePlan: new RatePlanReference("rate_plan_id"),
+    Frequency: SubscriptionFrequency.Monthly));</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Subscriptions_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  <b>Billing Permissions Required:</b> Requires tokens with Billing Read/Write permissions.
+</p>
+<p>
+  <b>Cost Warning:</b> Creating or updating subscriptions may incur charges.
+</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Turnstile_" data-uid="Cloudflare.NET.ICloudflareApiClient.Turnstile*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Turnstile" data-uid="Cloudflare.NET.ICloudflareApiClient.Turnstile">
+  Turnstile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing Turnstile widgets.</p>
+<p>
+  Turnstile is Cloudflare's CAPTCHA alternative that provides bot protection
+  without user friction. Widgets are account-scoped resources.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ITurnstileApi Turnstile { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Turnstile.ITurnstileApi.html">ITurnstileApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Turnstile_examples">Examples</h4>
+  <pre><code class="lang-csharp">// Create a Turnstile widget
+var widget = await cf.Turnstile.CreateWidgetAsync(accountId,
+  new CreateTurnstileWidgetRequest(
+    Name: "Contact Form",
+    Domains: new[] { "example.com" },
+    Mode: WidgetMode.Managed));
+
+// IMPORTANT: Store the secret securely - it won't be available again!
+Console.WriteLine($"Sitekey: {widget.Sitekey}");
+Console.WriteLine($"Secret: {widget.Secret}");
+
+// Later, rotate the secret
+var result = await cf.Turnstile.RotateSecretAsync(accountId, widget.Sitekey);
+Console.WriteLine($"New secret: {result.Secret}");</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Turnstile_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  <b>Important:</b> Widget secrets are only returned on creation and rotation.
+  Store them securely as they cannot be retrieved again.
+</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_User_" data-uid="Cloudflare.NET.ICloudflareApiClient.User*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_User" data-uid="Cloudflare.NET.ICloudflareApiClient.User">
+  User
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing the authenticated user's profile.</p>
+<p>
+  This includes retrieving and editing the current user's personal information,
+  such as name, country, and contact details.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IUserApi User { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.User.IUserApi.html">IUserApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Workers_" data-uid="Cloudflare.NET.ICloudflareApiClient.Workers*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Workers" data-uid="Cloudflare.NET.ICloudflareApiClient.Workers">
+  Workers
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L241"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing Worker routes.</p>
+<p>
+  Worker routes map URL patterns to Worker scripts, determining which requests
+  are handled by which Workers. Routes are zone-scoped resources.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IWorkersApi Workers { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Workers.IWorkersApi.html">IWorkersApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ICloudflareApiClient_Workers_examples">Examples</h4>
+  <pre><code class="lang-csharp">// List all Worker routes in a zone
+var routes = await cf.Workers.ListRoutesAsync(zoneId);
+foreach (var route in routes)
+{
+  Console.WriteLine($"{route.Pattern} -&gt; {route.Script ?? "(disabled)"}");
+}
+
+// Create a new route
+var newRoute = await cf.Workers.CreateRouteAsync(zoneId,
+  new CreateWorkerRouteRequest(
+    Pattern: "api.example.com/*",
+    Script: "api-handler"));</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ICloudflareApiClient_Zones_" data-uid="Cloudflare.NET.ICloudflareApiClient.Zones*"></a>
+
+  <h3 id="Cloudflare_NET_ICloudflareApiClient_Zones" data-uid="Cloudflare.NET.ICloudflareApiClient.Zones">
+  Zones
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API resource for managing Zone-level resources. This includes DNS records, zone-specific IP Access
+Rules, WAF configurations, and other settings scoped to a specific zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IZonesApi Zones { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html">IZonesApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ICloudflareApiClient.cs/#L39" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

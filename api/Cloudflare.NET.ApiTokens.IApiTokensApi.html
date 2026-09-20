@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IApiTokensApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IApiTokensApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Defines the contract for API token management operations.    API tokens provide fine-grained access control for Cloudflare API operations.   This interface handles account-scoped tokens. User-scoped tokens will be   added in F17.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_ApiTokens_IApiTokensApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.ApiTokens.IApiTokensApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi">
+
+
+
+  <h1 id="Cloudflare_NET_ApiTokens_IApiTokensApi" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi" class="text-break">
+Interface IApiTokensApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.ApiTokens.html">ApiTokens</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the contract for API token management operations.</p>
+<p>
+  API tokens provide fine-grained access control for Cloudflare API operations.
+  This interface handles account-scoped tokens. User-scoped tokens will be
+  added in F17.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IApiTokensApi</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h2 id="Cloudflare_NET_ApiTokens_IApiTokensApi_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Create a new token
+var result = await client.ApiTokens.CreateAccountTokenAsync(accountId,
+  new CreateApiTokenRequest(
+    Name: "CI/CD Token",
+    Policies: new[]
+    {
+      new CreateTokenPolicyRequest(
+        Effect: "allow",
+        PermissionGroups: new[] { new TokenPermissionGroupReference(permissionGroupId) },
+        Resources: new Dictionary&lt;string, string&gt;
+        {
+          ["com.cloudflare.api.account.*"] = "*"
+        })
+    }));
+
+// Store the token value securely - it cannot be retrieved again!
+Console.WriteLine($"Token: {result.Value}");
+
+// Later, roll the token to generate a new secret
+var newValue = await client.ApiTokens.RollAccountTokenAsync(accountId, result.Id);</code></pre>
+
+
+  <h2 id="Cloudflare_NET_ApiTokens_IApiTokensApi_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  Key features of API tokens:
+  <ul><li>Policy-based access control with allow/deny effects</li><li>IP address restrictions using CIDR notation</li><li>Time-bounded validity with not_before and expires_on</li><li>Secret rotation without recreating the token</li></ul>
+
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_CreateAccountTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.CreateAccountTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_CreateAccountTokenAsync_System_String_Cloudflare_NET_ApiTokens_Models_CreateApiTokenRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.CreateAccountTokenAsync(System.String,Cloudflare.NET.ApiTokens.Models.CreateApiTokenRequest,System.Threading.CancellationToken)">
+  CreateAccountTokenAsync(string, CreateApiTokenRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new API token.</p>
+<p>
+  <b>Important:</b> The returned <a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.html#Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Value">Value</a> contains
+  the token secret. Store it securely - it cannot be retrieved again.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;CreateApiTokenResult&gt; CreateAccountTokenAsync(string accountId, CreateApiTokenRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenRequest.html">CreateApiTokenRequest</a></dt>
+    <dd><p>The token creation parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.html">CreateApiTokenResult</a>&gt;</dt>
+    <dd><p>The created token including its secret value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_CreateAccountTokenAsync_System_String_Cloudflare_NET_ApiTokens_Models_CreateApiTokenRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.ApiTokens.CreateAccountTokenAsync(accountId,
+  new CreateApiTokenRequest(
+    Name: "CI/CD Token",
+    Policies: new[]
+    {
+      new CreateTokenPolicyRequest(
+        Effect: "allow",
+        PermissionGroups: new[] { new TokenPermissionGroupReference("...") },
+        Resources: new Dictionary&lt;string, string&gt;
+        {
+          ["com.cloudflare.api.account.*"] = "*"
+        })
+    },
+    ExpiresOn: DateTime.UtcNow.AddYears(1)));
+
+Console.WriteLine($"Token: {result.Value}"); // Store securely!</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_CreateUserTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.CreateUserTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_CreateUserTokenAsync_Cloudflare_NET_ApiTokens_Models_CreateApiTokenRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.CreateUserTokenAsync(Cloudflare.NET.ApiTokens.Models.CreateApiTokenRequest,System.Threading.CancellationToken)">
+  CreateUserTokenAsync(CreateApiTokenRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L383"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new API token for the authenticated user.</p>
+<p>
+  <b>Important:</b> The returned <a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.html#Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Value">Value</a> contains
+  the token secret. Store it securely - it cannot be retrieved again.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;CreateApiTokenResult&gt; CreateUserTokenAsync(CreateApiTokenRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenRequest.html">CreateApiTokenRequest</a></dt>
+    <dd><p>The token creation parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.html">CreateApiTokenResult</a>&gt;</dt>
+    <dd><p>The created token including its secret value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_CreateUserTokenAsync_Cloudflare_NET_ApiTokens_Models_CreateApiTokenRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.ApiTokens.CreateUserTokenAsync(
+  new CreateApiTokenRequest(
+    Name: "Personal Token",
+    Policies: new[]
+    {
+      new CreateTokenPolicyRequest(
+        Effect: "allow",
+        PermissionGroups: new[] { new TokenPermissionGroupReference("...") },
+        Resources: new Dictionary&lt;string, string&gt;
+        {
+          ["com.cloudflare.api.user"] = "*"
+        })
+    },
+    ExpiresOn: DateTime.UtcNow.AddYears(1)));
+
+Console.WriteLine($"Token: {result.Value}"); // Store securely!</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_DeleteAccountTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.DeleteAccountTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_DeleteAccountTokenAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.DeleteAccountTokenAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteAccountTokenAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an API token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task DeleteAccountTokenAsync(string accountId, string tokenId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_DeleteAccountTokenAsync_System_String_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await client.ApiTokens.DeleteAccountTokenAsync(accountId, tokenId);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> or <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_DeleteUserTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.DeleteUserTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_DeleteUserTokenAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.DeleteUserTokenAsync(System.String,System.Threading.CancellationToken)">
+  DeleteUserTokenAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L423"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an API token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task DeleteUserTokenAsync(string tokenId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_DeleteUserTokenAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await client.ApiTokens.DeleteUserTokenAsync(tokenId);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAccountPermissionGroupsAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAccountPermissionGroupsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAccountPermissionGroupsAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAccountPermissionGroupsAsync(System.String,Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters,System.Threading.CancellationToken)">
+  GetAccountPermissionGroupsAsync(string, ListPermissionGroupsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L261"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists available permission groups for API tokens.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;PagePaginatedResult&lt;PermissionGroup&gt;&gt; GetAccountPermissionGroupsAsync(string accountId, ListPermissionGroupsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters.html">ListPermissionGroupsFilters</a></dt>
+    <dd><p>Optional filtering options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.PermissionGroup.html">PermissionGroup</a>&gt;&gt;</dt>
+    <dd><p>A page of permission groups.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAccountPermissionGroupsAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.ApiTokens.GetAccountPermissionGroupsAsync(accountId);
+foreach (var group in result.Items)
+{
+  Console.WriteLine($"{group.Name} ({group.Id})");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAccountTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAccountTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAccountTokenAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAccountTokenAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetAccountTokenAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets details for a specific API token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;ApiToken&gt; GetAccountTokenAsync(string accountId, string tokenId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;</dt>
+    <dd><p>The API token details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAccountTokenAsync_System_String_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var token = await client.ApiTokens.GetAccountTokenAsync(accountId, tokenId);
+Console.WriteLine($"Token: {token.Name}");
+Console.WriteLine($"Status: {token.Status}");
+Console.WriteLine($"Expires: {token.ExpiresOn}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> or <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAllAccountPermissionGroupsAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAllAccountPermissionGroupsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAllAccountPermissionGroupsAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAllAccountPermissionGroupsAsync(System.String,Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters,System.Threading.CancellationToken)">
+  GetAllAccountPermissionGroupsAsync(string, ListPermissionGroupsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L284"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all available permission groups, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;PermissionGroup&gt; GetAllAccountPermissionGroupsAsync(string accountId, ListPermissionGroupsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters.html">ListPermissionGroupsFilters</a></dt>
+    <dd><p>Optional filtering options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.PermissionGroup.html">PermissionGroup</a>&gt;</dt>
+    <dd><p>An async enumerable of all permission groups.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAllAccountPermissionGroupsAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Find permission groups for a specific scope
+await foreach (var group in client.ApiTokens.GetAllAccountPermissionGroupsAsync(accountId))
+{
+  if (group.Scopes.Contains("zone:read"))
+    Console.WriteLine($"Found group with zone:read: {group.Name}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAllUserPermissionGroupsAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAllUserPermissionGroupsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAllUserPermissionGroupsAsync_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetAllUserPermissionGroupsAsync(Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters,System.Threading.CancellationToken)">
+  GetAllUserPermissionGroupsAsync(ListPermissionGroupsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L504"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all available permission groups for user tokens, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;PermissionGroup&gt; GetAllUserPermissionGroupsAsync(ListPermissionGroupsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters.html">ListPermissionGroupsFilters</a></dt>
+    <dd><p>Optional filtering options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.PermissionGroup.html">PermissionGroup</a>&gt;</dt>
+    <dd><p>An async enumerable of all permission groups.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetAllUserPermissionGroupsAsync_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Find permission groups for a specific scope
+await foreach (var group in client.ApiTokens.GetAllUserPermissionGroupsAsync())
+{
+  if (group.Scopes.Contains("zone:read"))
+    Console.WriteLine($"Found group with zone:read: {group.Name}");
+}</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetUserPermissionGroupsAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetUserPermissionGroupsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetUserPermissionGroupsAsync_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetUserPermissionGroupsAsync(Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters,System.Threading.CancellationToken)">
+  GetUserPermissionGroupsAsync(ListPermissionGroupsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L484"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists available permission groups for user API tokens.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;PagePaginatedResult&lt;PermissionGroup&gt;&gt; GetUserPermissionGroupsAsync(ListPermissionGroupsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListPermissionGroupsFilters.html">ListPermissionGroupsFilters</a></dt>
+    <dd><p>Optional filtering options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.PermissionGroup.html">PermissionGroup</a>&gt;&gt;</dt>
+    <dd><p>A page of permission groups.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetUserPermissionGroupsAsync_Cloudflare_NET_ApiTokens_Models_ListPermissionGroupsFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.ApiTokens.GetUserPermissionGroupsAsync();
+foreach (var group in result.Items)
+{
+  Console.WriteLine($"{group.Name} ({group.Id})");
+}</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetUserTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetUserTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetUserTokenAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.GetUserTokenAsync(System.String,System.Threading.CancellationToken)">
+  GetUserTokenAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L348"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets details for a specific API token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;ApiToken&gt; GetUserTokenAsync(string tokenId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;</dt>
+    <dd><p>The API token details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_GetUserTokenAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var token = await client.ApiTokens.GetUserTokenAsync(tokenId);
+Console.WriteLine($"Token: {token.Name}");
+Console.WriteLine($"Status: {token.Status}");
+Console.WriteLine($"Expires: {token.ExpiresOn}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAccountTokensAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListAccountTokensAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAccountTokensAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListAccountTokensAsync(System.String,Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters,System.Threading.CancellationToken)">
+  ListAccountTokensAsync(string, ListApiTokensFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all API tokens for the account.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;PagePaginatedResult&lt;ApiToken&gt;&gt; ListAccountTokensAsync(string accountId, ListApiTokensFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters.html">ListApiTokensFilters</a></dt>
+    <dd><p>Optional filtering and pagination options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;&gt;</dt>
+    <dd><p>A page of API tokens.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAccountTokensAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Get first page of tokens
+var result = await client.ApiTokens.ListAccountTokensAsync(accountId);
+foreach (var token in result.Items)
+{
+  Console.WriteLine($"{token.Name}: {token.Status}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAllAccountTokensAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListAllAccountTokensAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAllAccountTokensAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListAllAccountTokensAsync(System.String,Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters,System.Threading.CancellationToken)">
+  ListAllAccountTokensAsync(string, ListApiTokensFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all API tokens for the account, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;ApiToken&gt; ListAllAccountTokensAsync(string accountId, ListApiTokensFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters.html">ListApiTokensFilters</a></dt>
+    <dd><p>Optional filtering options. Pagination parameters are managed internally.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;</dt>
+    <dd><p>An async enumerable of all API tokens.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAllAccountTokensAsync_System_String_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Iterate through all tokens with automatic pagination
+await foreach (var token in client.ApiTokens.ListAllAccountTokensAsync(accountId))
+{
+  Console.WriteLine($"{token.Name}: {token.Status}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAllUserTokensAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListAllUserTokensAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAllUserTokensAsync_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListAllUserTokensAsync(Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters,System.Threading.CancellationToken)">
+  ListAllUserTokensAsync(ListApiTokensFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L329"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all API tokens for the authenticated user, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;ApiToken&gt; ListAllUserTokensAsync(ListApiTokensFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters.html">ListApiTokensFilters</a></dt>
+    <dd><p>Optional filtering options. Pagination parameters are managed internally.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;</dt>
+    <dd><p>An async enumerable of all API tokens.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListAllUserTokensAsync_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Iterate through all tokens with automatic pagination
+await foreach (var token in client.ApiTokens.ListAllUserTokensAsync())
+{
+  Console.WriteLine($"{token.Name}: {token.Status}");
+}</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListUserTokensAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListUserTokensAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListUserTokensAsync_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.ListUserTokensAsync(Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters,System.Threading.CancellationToken)">
+  ListUserTokensAsync(ListApiTokensFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L310"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all API tokens created by the authenticated user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;PagePaginatedResult&lt;ApiToken&gt;&gt; ListUserTokensAsync(ListApiTokensFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.ListApiTokensFilters.html">ListApiTokensFilters</a></dt>
+    <dd><p>Optional filtering and pagination options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;&gt;</dt>
+    <dd><p>A page of API tokens.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_ListUserTokensAsync_Cloudflare_NET_ApiTokens_Models_ListApiTokensFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Get first page of user tokens
+var result = await client.ApiTokens.ListUserTokensAsync();
+foreach (var token in result.Items)
+{
+  Console.WriteLine($"{token.Name}: {token.Status}");
+}</code></pre>
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_RollAccountTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.RollAccountTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_RollAccountTokenAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.RollAccountTokenAsync(System.String,System.String,System.Threading.CancellationToken)">
+  RollAccountTokenAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L239"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rolls (rotates) a token's secret, generating a new value.</p>
+<p>
+  The old token value becomes invalid immediately. All clients
+  using the old value must be updated with the new one.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;string&gt; RollAccountTokenAsync(string accountId, string tokenId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The new token secret value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_RollAccountTokenAsync_System_String_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Rotate the token secret
+var newValue = await client.ApiTokens.RollAccountTokenAsync(accountId, tokenId);
+Console.WriteLine($"New token value: {newValue}"); // Store securely!</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> or <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_RollUserTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.RollUserTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_RollUserTokenAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.RollUserTokenAsync(System.String,System.Threading.CancellationToken)">
+  RollUserTokenAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L465"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rolls (rotates) a token's secret, generating a new value.</p>
+<p>
+  The old token value becomes invalid immediately. All clients
+  using the old value must be updated with the new one.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;string&gt; RollUserTokenAsync(string tokenId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The new token secret value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_RollUserTokenAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Rotate the token secret
+var newValue = await client.ApiTokens.RollUserTokenAsync(tokenId);
+Console.WriteLine($"New token value: {newValue}"); // Store securely!</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_UpdateAccountTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.UpdateAccountTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_UpdateAccountTokenAsync_System_String_System_String_Cloudflare_NET_ApiTokens_Models_UpdateApiTokenRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.UpdateAccountTokenAsync(System.String,System.String,Cloudflare.NET.ApiTokens.Models.UpdateApiTokenRequest,System.Threading.CancellationToken)">
+  UpdateAccountTokenAsync(string, string, UpdateApiTokenRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing API token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;ApiToken&gt; UpdateAccountTokenAsync(string accountId, string tokenId, UpdateApiTokenRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.UpdateApiTokenRequest.html">UpdateApiTokenRequest</a></dt>
+    <dd><p>The update parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;</dt>
+    <dd><p>The updated token.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_UpdateAccountTokenAsync_System_String_System_String_Cloudflare_NET_ApiTokens_Models_UpdateApiTokenRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Disable a token
+var updated = await client.ApiTokens.UpdateAccountTokenAsync(accountId, tokenId,
+  new UpdateApiTokenRequest(
+    Name: token.Name,
+    Policies: token.Policies.Select(p =&gt; new CreateTokenPolicyRequest(
+      p.Effect, p.PermissionGroups, p.Resources)).ToList(),
+    Status: TokenStatus.Disabled));</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> or <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_UpdateUserTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.UpdateUserTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_UpdateUserTokenAsync_System_String_Cloudflare_NET_ApiTokens_Models_UpdateApiTokenRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.UpdateUserTokenAsync(System.String,Cloudflare.NET.ApiTokens.Models.UpdateApiTokenRequest,System.Threading.CancellationToken)">
+  UpdateUserTokenAsync(string, UpdateApiTokenRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L407"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing API token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;ApiToken&gt; UpdateUserTokenAsync(string tokenId, UpdateApiTokenRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tokenId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.UpdateApiTokenRequest.html">UpdateApiTokenRequest</a></dt>
+    <dd><p>The update parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.ApiToken.html">ApiToken</a>&gt;</dt>
+    <dd><p>The updated token.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_UpdateUserTokenAsync_System_String_Cloudflare_NET_ApiTokens_Models_UpdateApiTokenRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Disable a token
+var updated = await client.ApiTokens.UpdateUserTokenAsync(tokenId,
+  new UpdateApiTokenRequest(
+    Name: token.Name,
+    Policies: token.Policies.Select(p =&gt; new CreateTokenPolicyRequest(
+      p.Effect, p.PermissionGroups, p.Resources)).ToList(),
+    Status: TokenStatus.Disabled));</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">tokenId</code> is null or whitespace.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_VerifyAccountTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.VerifyAccountTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_VerifyAccountTokenAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.VerifyAccountTokenAsync(System.String,System.Threading.CancellationToken)">
+  VerifyAccountTokenAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies that the current token being used is valid and working.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;VerifyTokenResult&gt; VerifyAccountTokenAsync(string accountId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>accountId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The account identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.VerifyTokenResult.html">VerifyTokenResult</a>&gt;</dt>
+    <dd><p>Token verification status.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_VerifyAccountTokenAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.ApiTokens.VerifyAccountTokenAsync(accountId);
+Console.WriteLine($"Token {result.Id} is {result.Status}");
+if (result.ExpiresOn.HasValue)
+  Console.WriteLine($"Expires: {result.ExpiresOn}");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">accountId</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_IApiTokensApi_VerifyUserTokenAsync_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.VerifyUserTokenAsync*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_IApiTokensApi_VerifyUserTokenAsync_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.ApiTokens.IApiTokensApi.VerifyUserTokenAsync(System.Threading.CancellationToken)">
+  VerifyUserTokenAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L444"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies that the current token being used is valid and working.</p>
+<p>
+  This endpoint can be used to test whether a token is properly configured
+  and has the expected permissions.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;VerifyTokenResult&gt; VerifyUserTokenAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.VerifyTokenResult.html">VerifyTokenResult</a>&gt;</dt>
+    <dd><p>Token verification status.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_ApiTokens_IApiTokensApi_VerifyUserTokenAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.ApiTokens.VerifyUserTokenAsync();
+Console.WriteLine($"Token {result.Id} is {result.Status}");
+if (result.ExpiresOn.HasValue)
+  Console.WriteLine($"Expires: {result.ExpiresOn}");</code></pre>
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/IApiTokensApi.cs/#L49" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

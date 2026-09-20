@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Zone WAF Rulesets | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Zone WAF Rulesets | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/rulesets.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="zone-waf-rulesets">Zone WAF Rulesets</h1>
+
+<p>WAF Rulesets allow you to create custom firewall rules and rate limiting rules at the zone level using Cloudflare's Ruleset Engine.</p>
+<h2 id="overview">Overview</h2>
+<p>Access the Zone Rulesets API through <code>cf.Zones.Rulesets</code>:</p>
+<pre><code class="lang-csharp">public class WafService(ICloudflareApiClient cf)
+{
+    public async Task CreateBlockingRuleAsync(string zoneId)
+    {
+        await cf.Zones.Rulesets.CreateAsync(zoneId,
+            new CreateRulesetRequest(
+                Name: &quot;Custom Security Rules&quot;,
+                Kind: &quot;zone&quot;,
+                Phase: SecurityConstants.RulesetPhases.HttpRequestFirewallCustom,
+                Rules: [
+                    new CreateRuleRequest(
+                        Action: RulesetAction.Block,
+                        Expression: &quot;(http.request.uri.path contains \&quot;/admin\&quot;)&quot;,
+                        Description: &quot;Block admin access&quot;,
+                        Enabled: true
+                    )
+                ]
+            ));
+    }
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Use <a class="xref" href="../../../api/Cloudflare.NET.Security.SecurityConstants.html">SecurityConstants</a> for type-safe phase and rate limiting constants.</p>
+</div>
+<h2 id="ruleset-phases">Ruleset Phases</h2>
+<p>Use <a class="xref" href="../../../api/Cloudflare.NET.Security.SecurityConstants.RulesetPhases.html">SecurityConstants.RulesetPhases</a> for phase constants:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Phase</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HttpRequestFirewallManaged</code></td>
+<td><code>http_request_firewall_managed</code></td>
+<td>Managed WAF rules</td>
+</tr>
+<tr>
+<td><code>HttpRequestFirewallCustom</code></td>
+<td><code>http_request_firewall_custom</code></td>
+<td>Custom WAF rules</td>
+</tr>
+<tr>
+<td><code>HttpRateLimit</code></td>
+<td><code>http_ratelimit</code></td>
+<td>Rate limiting rules</td>
+</tr>
+<tr>
+<td><code>HttpRequestLateTransform</code></td>
+<td><code>http_request_late_transform</code></td>
+<td>Header modification</td>
+</tr>
+<tr>
+<td><code>HttpRequestOrigin</code></td>
+<td><code>http_request_origin</code></td>
+<td>HTTP origin rules</td>
+</tr>
+<tr>
+<td><code>HttpRequestSanitize</code></td>
+<td><code>http_request_sanitize</code></td>
+<td>HTTP request sanitize</td>
+</tr>
+<tr>
+<td><code>HttpRequestDynamicRedirect</code></td>
+<td><code>http_request_dynamic_redirect</code></td>
+<td>URL redirects</td>
+</tr>
+<tr>
+<td><code>HttpResponseHeadersTransform</code></td>
+<td><code>http_response_headers_transform</code></td>
+<td>Response header modification</td>
+</tr>
+<tr>
+<td><code>HttpLogCustomFields</code></td>
+<td><code>http_log_custom_fields</code></td>
+<td>Log custom fields</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Cloudflare.NET.Security;
+
+// Use constants for type-safe phase references
+var phase = SecurityConstants.RulesetPhases.HttpRequestFirewallCustom;
+var rateLimitPhase = SecurityConstants.RulesetPhases.HttpRateLimit;
+</code></pre>
+<h2 id="creating-rulesets">Creating Rulesets</h2>
+<h3 id="custom-waf-ruleset">Custom WAF Ruleset</h3>
+<pre><code class="lang-csharp">var ruleset = await cf.Zones.Rulesets.CreateAsync(zoneId,
+    new CreateRulesetRequest(
+        Name: &quot;Security Rules&quot;,
+        Kind: &quot;zone&quot;,
+        Phase: SecurityConstants.RulesetPhases.HttpRequestFirewallCustom,
+        Description: &quot;Custom security rules for the zone&quot;,
+        Rules: [
+            new CreateRuleRequest(
+                Action: RulesetAction.Block,
+                Expression: &quot;(http.request.uri.query contains \&quot;&lt;script\&quot;)&quot;,
+                Description: &quot;Block XSS attempts&quot;,
+                Enabled: true
+            ),
+            new CreateRuleRequest(
+                Action: RulesetAction.Challenge,
+                Expression: &quot;(cf.threat_score gt 50)&quot;,
+                Description: &quot;Challenge high threat scores&quot;,
+                Enabled: true
+            )
+        ]
+    ));
+</code></pre>
+<h3 id="rate-limiting-ruleset">Rate Limiting Ruleset</h3>
+<pre><code class="lang-csharp">var ruleset = await cf.Zones.Rulesets.CreateAsync(zoneId,
+    new CreateRulesetRequest(
+        Name: &quot;API Rate Limits&quot;,
+        Kind: &quot;zone&quot;,
+        Phase: SecurityConstants.RulesetPhases.HttpRateLimit,
+        Rules: [
+            new CreateRuleRequest(
+                Action: RulesetAction.Block,
+                Expression: &quot;(http.request.uri.path starts_with \&quot;/api/\&quot;)&quot;,
+                Description: &quot;Rate limit API endpoints&quot;,
+                Enabled: true,
+                Ratelimit: new RateLimitParameters
+                {
+                    Characteristics = [SecurityConstants.RateLimiting.Characteristics.IpSource],
+                    Period = SecurityConstants.RateLimiting.Periods.P60_SECONDS,
+                    RequestsPerPeriod = 100,
+                    MitigationTimeout = 60
+                }
+            )
+        ]
+    ));
+</code></pre>
+<h2 id="phase-entrypoints">Phase Entrypoints</h2>
+<p>Phase entrypoints are the main rulesets that execute for each phase.</p>
+<h3 id="get-phase-entrypoint">Get Phase Entrypoint</h3>
+<pre><code class="lang-csharp">var entrypoint = await cf.Zones.Rulesets.GetPhaseEntrypointAsync(
+    zoneId,
+    SecurityConstants.RulesetPhases.HttpRequestFirewallCustom);
+</code></pre>
+<h3 id="update-phase-entrypoint">Update Phase Entrypoint</h3>
+<p>Replace all rules in a phase:</p>
+<pre><code class="lang-csharp">var updated = await cf.Zones.Rulesets.UpdatePhaseEntrypointAsync(
+    zoneId,
+    SecurityConstants.RulesetPhases.HttpRequestFirewallCustom,
+    [
+        new CreateRuleRequest(
+            Action: RulesetAction.Block,
+            Expression: &quot;(ip.src eq 192.168.1.1)&quot;,
+            Description: &quot;Block specific IP&quot;,
+            Enabled: true
+        )
+    ]);
+</code></pre>
+<h2 id="managing-rules">Managing Rules</h2>
+<h3 id="add-a-rule-to-existing-ruleset">Add a Rule to Existing Ruleset</h3>
+<pre><code class="lang-csharp">var updated = await cf.Zones.Rulesets.AddRuleAsync(zoneId, rulesetId,
+    new CreateRuleRequest(
+        Action: RulesetAction.Log,
+        Expression: &quot;(http.request.uri.path eq \&quot;/debug\&quot;)&quot;,
+        Description: &quot;Log debug requests&quot;,
+        Enabled: true
+    ));
+</code></pre>
+<h3 id="update-a-rule">Update a Rule</h3>
+<pre><code class="lang-csharp">var updated = await cf.Zones.Rulesets.UpdateRuleAsync(zoneId, rulesetId, ruleId,
+    new { enabled = false });
+</code></pre>
+<h3 id="delete-a-rule">Delete a Rule</h3>
+<pre><code class="lang-csharp">var updated = await cf.Zones.Rulesets.DeleteRuleAsync(zoneId, rulesetId, ruleId);
+</code></pre>
+<h2 id="listing-rulesets">Listing Rulesets</h2>
+<h3 id="list-all-rulesets">List All Rulesets</h3>
+<pre><code class="lang-csharp">await foreach (var ruleset in cf.Zones.Rulesets.ListAllAsync(zoneId))
+{
+    Console.WriteLine($&quot;{ruleset.Name} ({ruleset.Phase}): {ruleset.Rules?.Count ?? 0} rules&quot;);
+}
+</code></pre>
+<h3 id="get-ruleset-details">Get Ruleset Details</h3>
+<pre><code class="lang-csharp">var ruleset = await cf.Zones.Rulesets.GetAsync(zoneId, rulesetId);
+
+foreach (var rule in ruleset.Rules ?? [])
+{
+    Console.WriteLine($&quot;  {rule.Description}: {rule.Action}&quot;);
+}
+</code></pre>
+<h2 id="rule-actions">Rule Actions</h2>
+<p><a class="xref" href="../../../api/Cloudflare.NET.Security.Rulesets.Models.RulesetAction.html">RulesetAction</a> is an extensible enum that defines what happens when a rule matches.</p>
+<h3 id="terminating-actions">Terminating Actions</h3>
+<p>These actions stop rule evaluation for the request:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>API Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Block</code></td>
+<td><code>block</code></td>
+<td>Returns 403 Forbidden (429 for rate limits)</td>
+</tr>
+<tr>
+<td><code>Challenge</code></td>
+<td><code>challenge</code></td>
+<td>Presents interactive CAPTCHA challenge</td>
+</tr>
+<tr>
+<td><code>JsChallenge</code></td>
+<td><code>js_challenge</code></td>
+<td>JavaScript challenge (blocks most bots)</td>
+</tr>
+<tr>
+<td><code>ManagedChallenge</code></td>
+<td><code>managed_challenge</code></td>
+<td>Cloudflare dynamically chooses challenge type</td>
+</tr>
+<tr>
+<td><code>Redirect</code></td>
+<td><code>redirect</code></td>
+<td>Redirects to another URL</td>
+</tr>
+<tr>
+<td><code>ServeError</code></td>
+<td><code>serve_error</code></td>
+<td>Serves custom error content</td>
+</tr>
+</tbody>
+</table>
+<h3 id="non-terminating-actions">Non-Terminating Actions</h3>
+<p>These actions allow continued rule evaluation:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>API Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Log</code></td>
+<td><code>log</code></td>
+<td>Log without blocking (Enterprise only)</td>
+</tr>
+<tr>
+<td><code>Skip</code></td>
+<td><code>skip</code></td>
+<td>Skip subsequent rules/products</td>
+</tr>
+<tr>
+<td><code>Execute</code></td>
+<td><code>execute</code></td>
+<td>Execute another ruleset</td>
+</tr>
+<tr>
+<td><code>Rewrite</code></td>
+<td><code>rewrite</code></td>
+<td>Modify URI/headers (Transform Rules)</td>
+</tr>
+<tr>
+<td><code>Route</code></td>
+<td><code>route</code></td>
+<td>Adjust routing to origin (Origin Rules)</td>
+</tr>
+<tr>
+<td><code>SetConfig</code></td>
+<td><code>set_config</code></td>
+<td>Change Cloudflare settings</td>
+</tr>
+<tr>
+<td><code>CompressResponse</code></td>
+<td><code>compress_response</code></td>
+<td>Configure compression</td>
+</tr>
+<tr>
+<td><code>SetCacheSettings</code></td>
+<td><code>set_cache_settings</code></td>
+<td>Configure caching</td>
+</tr>
+<tr>
+<td><code>LogCustomField</code></td>
+<td><code>log_custom_field</code></td>
+<td>Add custom Logpush fields</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Cloudflare.NET.Security.Rulesets.Models;
+
+// Use the static properties for IntelliSense support
+var action = RulesetAction.Block;
+var challenge = RulesetAction.ManagedChallenge;
+
+// Extensible - custom values work too
+RulesetAction customAction = &quot;future-action&quot;;
+</code></pre>
+<h2 id="managed-waf-override-actions">Managed WAF Override Actions</h2>
+<p>When overriding rules in managed WAF rulesets, use <a class="xref" href="../../../api/Cloudflare.NET.Security.Rulesets.Models.ManagedWafOverrideAction.html">ManagedWafOverrideAction</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ManagedChallenge</code></td>
+<td>Dynamically chooses challenge type</td>
+</tr>
+<tr>
+<td><code>Challenge</code></td>
+<td>Interactive challenge</td>
+</tr>
+<tr>
+<td><code>JsChallenge</code></td>
+<td>JavaScript challenge</td>
+</tr>
+<tr>
+<td><code>Block</code></td>
+<td>Block the request</td>
+</tr>
+<tr>
+<td><code>Log</code></td>
+<td>Log only (Enterprise)</td>
+</tr>
+<tr>
+<td><code>Default</code></td>
+<td>Remove override, use default behavior</td>
+</tr>
+</tbody>
+</table>
+<h2 id="skip-products">Skip Products</h2>
+<p>Use <a class="xref" href="../../../api/Cloudflare.NET.Security.SecurityConstants.SkipProducts.html">SecurityConstants.SkipProducts</a> to skip specific security products:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZoneLockdown</code></td>
+<td><code>zoneLockdown</code></td>
+<td>Zone Lockdown</td>
+</tr>
+<tr>
+<td><code>UaBlock</code></td>
+<td><code>uaBlock</code></td>
+<td>User-Agent blocking</td>
+</tr>
+<tr>
+<td><code>Bic</code></td>
+<td><code>bic</code></td>
+<td>Browser Integrity Check</td>
+</tr>
+<tr>
+<td><code>Hot</code></td>
+<td><code>hot</code></td>
+<td>Hotlink Protection</td>
+</tr>
+<tr>
+<td><code>SecurityLevel</code></td>
+<td><code>securityLevel</code></td>
+<td>Security Level</td>
+</tr>
+<tr>
+<td><code>RateLimit</code></td>
+<td><code>rateLimit</code></td>
+<td>Rate Limiting (legacy)</td>
+</tr>
+<tr>
+<td><code>Waf</code></td>
+<td><code>waf</code></td>
+<td>Web Application Firewall</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">new CreateRuleRequest(
+    Action: RulesetAction.Skip,
+    Expression: &quot;(http.request.uri.path starts_with \&quot;/internal\&quot;)&quot;,
+    Description: &quot;Skip WAF for internal paths&quot;,
+    Enabled: true,
+    ActionParameters: new
+    {
+        products = new[] { SecurityConstants.SkipProducts.Waf }
+    }
+)
+</code></pre>
+<h2 id="rate-limiting">Rate Limiting</h2>
+<h3 id="ratelimitparameters">RateLimitParameters</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Characteristics</code></td>
+<td><code>string[]</code></td>
+<td>Properties to count (e.g., <code>ip.src</code>)</td>
+</tr>
+<tr>
+<td><code>Period</code></td>
+<td><code>int</code></td>
+<td>Time window in seconds</td>
+</tr>
+<tr>
+<td><code>RequestsPerPeriod</code></td>
+<td><code>int</code></td>
+<td>Request threshold</td>
+</tr>
+<tr>
+<td><code>MitigationTimeout</code></td>
+<td><code>int</code></td>
+<td>Block duration in seconds</td>
+</tr>
+<tr>
+<td><code>CountingExpression</code></td>
+<td><code>string?</code></td>
+<td>Custom counting expression</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rate-limit-periods">Rate Limit Periods</h3>
+<p>Use <a class="xref" href="../../../api/Cloudflare.NET.Security.SecurityConstants.RateLimiting.Periods.html">SecurityConstants.RateLimiting.Periods</a> for valid periods:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>P10_SECONDS</code></td>
+<td>10</td>
+<td>10 second window</td>
+</tr>
+<tr>
+<td><code>P60_SECONDS</code></td>
+<td>60</td>
+<td>1 minute window</td>
+</tr>
+<tr>
+<td><code>P120_SECONDS</code></td>
+<td>120</td>
+<td>2 minute window</td>
+</tr>
+<tr>
+<td><code>P300_SECONDS</code></td>
+<td>300</td>
+<td>5 minute window</td>
+</tr>
+<tr>
+<td><code>P600_SECONDS</code></td>
+<td>600</td>
+<td>10 minute window</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rate-limit-characteristics">Rate Limit Characteristics</h3>
+<p>Use <a class="xref" href="../../../api/Cloudflare.NET.Security.SecurityConstants.RateLimiting.Characteristics.html">SecurityConstants.RateLimiting.Characteristics</a> for counting properties:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IpSource</code></td>
+<td><code>ip.src</code></td>
+<td>Client IP address</td>
+</tr>
+<tr>
+<td><code>UriPath</code></td>
+<td><code>http.request.uri.path</code></td>
+<td>Request path</td>
+</tr>
+<tr>
+<td><code>HttpMethod</code></td>
+<td><code>http.request.method</code></td>
+<td>HTTP method</td>
+</tr>
+<tr>
+<td><code>CfConnectingIp</code></td>
+<td><code>http.request.headers[&quot;cf-connecting-ip&quot;]</code></td>
+<td>CF-Connecting-IP header</td>
+</tr>
+<tr>
+<td><code>XForwardedFor</code></td>
+<td><code>http.request.headers[&quot;x-forwarded-for&quot;]</code></td>
+<td>X-Forwarded-For header</td>
+</tr>
+<tr>
+<td><code>ColoId</code></td>
+<td><code>cf.colo.id</code></td>
+<td>Cloudflare colo ID</td>
+</tr>
+<tr>
+<td><code>BotManagementScore</code></td>
+<td><code>cf.bot_management.score</code></td>
+<td>Bot management score</td>
+</tr>
+<tr>
+<td><code>ThreatScore</code></td>
+<td><code>cf.threat_score</code></td>
+<td>Threat score</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rate-limit-response-content-types">Rate Limit Response Content Types</h3>
+<p>Use <a class="xref" href="../../../api/Cloudflare.NET.Security.SecurityConstants.RateLimiting.ContentTypes.html">SecurityConstants.RateLimiting.ContentTypes</a> for custom response content types:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TextPlain</code></td>
+<td><code>text/plain</code></td>
+</tr>
+<tr>
+<td><code>TextXml</code></td>
+<td><code>text/xml</code></td>
+</tr>
+<tr>
+<td><code>ApplicationJson</code></td>
+<td><code>application/json</code></td>
+</tr>
+<tr>
+<td><code>TextHtml</code></td>
+<td><code>text/html</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="protect-login-endpoint">Protect Login Endpoint</h3>
+<pre><code class="lang-csharp">var ruleset = await cf.Zones.Rulesets.CreateAsync(zoneId,
+    new CreateRulesetRequest(
+        Name: &quot;Login Protection&quot;,
+        Kind: &quot;zone&quot;,
+        Phase: SecurityConstants.RulesetPhases.HttpRateLimit,
+        Rules: [
+            new CreateRuleRequest(
+                Action: RulesetAction.Block,
+                Expression: &quot;(http.request.uri.path eq \&quot;/login\&quot; and http.request.method eq \&quot;POST\&quot;)&quot;,
+                Description: &quot;Rate limit login attempts&quot;,
+                Enabled: true,
+                Ratelimit: new RateLimitParameters
+                {
+                    Characteristics = [SecurityConstants.RateLimiting.Characteristics.IpSource],
+                    Period = SecurityConstants.RateLimiting.Periods.P60_SECONDS,
+                    RequestsPerPeriod = 5,
+                    MitigationTimeout = 300
+                }
+            )
+        ]
+    ));
+</code></pre>
+<h3 id="block-bad-bots">Block Bad Bots</h3>
+<pre><code class="lang-csharp">new CreateRuleRequest(
+    Action: RulesetAction.Block,
+    Expression: &quot;(cf.bot_management.score lt 30 and not cf.bot_management.verified_bot)&quot;,
+    Description: &quot;Block likely bots&quot;,
+    Enabled: true
+)
+</code></pre>
+<h3 id="api-rate-limiting-with-custom-response">API Rate Limiting with Custom Response</h3>
+<pre><code class="lang-csharp">new CreateRuleRequest(
+    Action: RulesetAction.Block,
+    Expression: &quot;(http.request.uri.path starts_with \&quot;/api/\&quot;)&quot;,
+    Description: &quot;API rate limit&quot;,
+    Enabled: true,
+    Ratelimit: new RateLimitParameters
+    {
+        Characteristics = [
+            SecurityConstants.RateLimiting.Characteristics.IpSource,
+            SecurityConstants.RateLimiting.Characteristics.UriPath
+        ],
+        Period = SecurityConstants.RateLimiting.Periods.P60_SECONDS,
+        RequestsPerPeriod = 100,
+        MitigationTimeout = 60
+    }
+)
+</code></pre>
+<h3 id="geographic-restrictions">Geographic Restrictions</h3>
+<pre><code class="lang-csharp">new CreateRuleRequest(
+    Action: RulesetAction.Block,
+    Expression: &quot;(ip.geoip.country in {\&quot;CN\&quot; \&quot;RU\&quot; \&quot;KP\&quot;})&quot;,
+    Description: &quot;Block specific countries&quot;,
+    Enabled: true
+)
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="ruleset">Ruleset</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Ruleset identifier</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Ruleset name</td>
+</tr>
+<tr>
+<td><code>Description</code></td>
+<td><code>string?</code></td>
+<td>Ruleset description</td>
+</tr>
+<tr>
+<td><code>Kind</code></td>
+<td><code>string</code></td>
+<td>Ruleset kind (<code>zone</code>, <code>custom</code>, <code>managed</code>)</td>
+</tr>
+<tr>
+<td><code>Phase</code></td>
+<td><code>string</code></td>
+<td>Execution phase</td>
+</tr>
+<tr>
+<td><code>Version</code></td>
+<td><code>string</code></td>
+<td>Ruleset version</td>
+</tr>
+<tr>
+<td><code>Rules</code></td>
+<td><code>IReadOnlyList&lt;Rule&gt;?</code></td>
+<td>List of rules</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rule">Rule</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Rule identifier</td>
+</tr>
+<tr>
+<td><code>Action</code></td>
+<td><code>RulesetAction</code></td>
+<td>Action to take</td>
+</tr>
+<tr>
+<td><code>Expression</code></td>
+<td><code>string</code></td>
+<td>Filter expression</td>
+</tr>
+<tr>
+<td><code>Description</code></td>
+<td><code>string?</code></td>
+<td>Rule description</td>
+</tr>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td>Whether rule is enabled</td>
+</tr>
+<tr>
+<td><code>Ratelimit</code></td>
+<td><code>RateLimitParameters?</code></td>
+<td>Rate limit config</td>
+</tr>
+<tr>
+<td><code>ActionParameters</code></td>
+<td><code>object?</code></td>
+<td>Action-specific parameters</td>
+</tr>
+</tbody>
+</table>
+<h3 id="createrulesetrequest">CreateRulesetRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Ruleset name</td>
+</tr>
+<tr>
+<td><code>Kind</code></td>
+<td><code>string</code></td>
+<td>Ruleset kind</td>
+</tr>
+<tr>
+<td><code>Phase</code></td>
+<td><code>string</code></td>
+<td>Execution phase</td>
+</tr>
+<tr>
+<td><code>Description</code></td>
+<td><code>string?</code></td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>Rules</code></td>
+<td><code>CreateRuleRequest[]?</code></td>
+<td>Rules to create</td>
+</tr>
+</tbody>
+</table>
+<h3 id="createrulerequest">CreateRuleRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Action</code></td>
+<td><code>RulesetAction</code></td>
+<td>Action to take</td>
+</tr>
+<tr>
+<td><code>Expression</code></td>
+<td><code>string</code></td>
+<td>Filter expression</td>
+</tr>
+<tr>
+<td><code>Description</code></td>
+<td><code>string?</code></td>
+<td>Rule description</td>
+</tr>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td>Whether rule is enabled</td>
+</tr>
+<tr>
+<td><code>Ratelimit</code></td>
+<td><code>RateLimitParameters?</code></td>
+<td>Rate limit config</td>
+</tr>
+<tr>
+<td><code>ActionParameters</code></td>
+<td><code>object?</code></td>
+<td>Action-specific parameters</td>
+</tr>
+</tbody>
+</table>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zone WAF</td>
+<td>Zone</td>
+<td>Read (for listing)</td>
+</tr>
+<tr>
+<td>Zone WAF</td>
+<td>Zone</td>
+<td>Write (for create/update/delete)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../../accounts/security/rulesets.html">Account Rulesets</a> - Account-level rulesets</li>
+<li><a href="access-rules.html">Access Rules</a> - IP/country blocking</li>
+<li><a href="lockdown.html">Lockdown</a> - URL-based access control</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/rulesets.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

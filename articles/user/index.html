@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>User API | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="User API | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/user/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="user-api">User API</h1>
+
+<p>The User API provides access to operations for the currently authenticated user. All operations in this API affect only your own profile and resources.</p>
+<h2 id="quick-links">Quick Links</h2>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="profile.html">Profile</a></td>
+<td><code>cf.User</code></td>
+<td>View and edit your user profile</td>
+</tr>
+<tr>
+<td><a href="memberships.html">Memberships</a></td>
+<td><code>cf.User</code></td>
+<td>Manage your account memberships</td>
+</tr>
+<tr>
+<td><a href="invitations.html">Invitations</a></td>
+<td><code>cf.User</code></td>
+<td>Accept or reject account invitations</td>
+</tr>
+<tr>
+<td><a href="api-tokens.html">API Tokens</a></td>
+<td><code>cf.ApiTokens</code></td>
+<td>Manage your personal API tokens</td>
+</tr>
+<tr>
+<td><a href="audit-logs.html">Audit Logs</a></td>
+<td><code>cf.AuditLogs</code></td>
+<td>View your activity logs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="authentication">Authentication</h2>
+<p>All User API operations use the currently authenticated API token. The operations affect only the user who owns the token.</p>
+<pre><code class="lang-csharp">public class UserService(ICloudflareApiClient cf)
+{
+    public async Task&lt;User&gt; GetProfileAsync()
+    {
+        return await cf.User.GetUserAsync();
+    }
+}
+</code></pre>
+<h2 id="user-vs-account-operations">User vs Account Operations</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>User API</th>
+<th>Account API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scope</strong></td>
+<td>Self only</td>
+<td>All account resources</td>
+</tr>
+<tr>
+<td><strong>Profile</strong></td>
+<td>Edit own profile</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><strong>Memberships</strong></td>
+<td>View/leave accounts</td>
+<td>Invite/manage members</td>
+</tr>
+<tr>
+<td><strong>Invitations</strong></td>
+<td>Accept/reject</td>
+<td>Send invitations</td>
+</tr>
+<tr>
+<td><strong>API Tokens</strong></td>
+<td>Personal tokens</td>
+<td>Account-scoped tokens</td>
+</tr>
+<tr>
+<td><strong>Audit Logs</strong></td>
+<td>Own activity</td>
+<td>All account activity</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../accounts/account-management.html">Account Management</a> - Manage accounts</li>
+<li><a href="../getting-started.html">Getting Started</a> - SDK setup</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/user/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

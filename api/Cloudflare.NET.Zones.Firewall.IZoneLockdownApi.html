@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IZoneLockdownApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IZoneLockdownApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Defines the contract for managing Zone Lockdown rules.    Lockdown rules specify a list of IP addresses that are the only ones allowed to access a given URL or set of   URLs.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Zones_Firewall_IZoneLockdownApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Zones.Firewall.IZoneLockdownApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi">
+
+
+
+  <h1 id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi" class="text-break">
+Interface IZoneLockdownApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Zones.html">Zones</a>.<a class="xref" href="Cloudflare.NET.Zones.Firewall.html">Firewall</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the contract for managing Zone Lockdown rules.</p>
+<p>
+  Lockdown rules specify a list of IP addresses that are the only ones allowed to access a given URL or set of
+  URLs.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IZoneLockdownApi</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_CreateAsync_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.CreateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_CreateAsync_System_String_Cloudflare_NET_Security_Firewall_Models_CreateLockdownRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.CreateAsync(System.String,Cloudflare.NET.Security.Firewall.Models.CreateLockdownRequest,System.Threading.CancellationToken)">
+  CreateAsync(string, CreateLockdownRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new Lockdown rule for a zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Lockdown&gt; CreateAsync(string zoneId, CreateLockdownRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Security.Firewall.Models.CreateLockdownRequest.html">CreateLockdownRequest</a></dt>
+    <dd><p>The request containing the details of the rule to create.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Firewall.Models.Lockdown.html">Lockdown</a>&gt;</dt>
+    <dd><p>The created Lockdown rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_DeleteAsync_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_DeleteAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.DeleteAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a Lockdown rule from a zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;string&gt; DeleteAsync(string zoneId, string lockdownId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>lockdownId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the rule to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The ID of the deleted rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_GetAsync_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_GetAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.GetAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a single Lockdown rule by its ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Lockdown&gt; GetAsync(string zoneId, string lockdownId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>lockdownId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the Lockdown rule.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Firewall.Models.Lockdown.html">Lockdown</a>&gt;</dt>
+    <dd><p>The requested Lockdown rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_ListAllAsync_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.ListAllAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_ListAllAsync_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.ListAllAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  ListAllAsync(string, int?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all Lockdown rules for a zone, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;Lockdown&gt; ListAllAsync(string zoneId, int? perPage = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>perPage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The number of results to fetch per API page.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Firewall.Models.Lockdown.html">Lockdown</a>&gt;</dt>
+    <dd><p>An asynchronous stream of all Lockdown rules for the zone.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_ListAllAsync_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method simplifies fetching all rules by abstracting away the pagination logic.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_ListAsync_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.ListAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_ListAsync_System_String_Cloudflare_NET_Security_Firewall_Models_ListLockdownFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.ListAsync(System.String,Cloudflare.NET.Security.Firewall.Models.ListLockdownFilters,System.Threading.CancellationToken)">
+  ListAsync(string, ListLockdownFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all Lockdown rules for a zone, allowing for manual pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;PagePaginatedResult&lt;Lockdown&gt;&gt; ListAsync(string zoneId, ListLockdownFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Security.Firewall.Models.ListLockdownFilters.html">ListLockdownFilters</a></dt>
+    <dd><p>Optional pagination filters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Firewall.Models.Lockdown.html">Lockdown</a>&gt;&gt;</dt>
+    <dd><p>A single page of Lockdown rules along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_ListAsync_System_String_Cloudflare_NET_Security_Firewall_Models_ListLockdownFilters_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is intended for developers who need to control the pagination process manually. Use the properties
+of the returned <a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult&lt;T&gt;</a> to determine if there are more pages and to construct the
+filter for the next call.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_UpdateAsync_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.UpdateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_Firewall_IZoneLockdownApi_UpdateAsync_System_String_System_String_Cloudflare_NET_Security_Firewall_Models_UpdateLockdownRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.UpdateAsync(System.String,System.String,Cloudflare.NET.Security.Firewall.Models.UpdateLockdownRequest,System.Threading.CancellationToken)">
+  UpdateAsync(string, string, UpdateLockdownRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing Lockdown rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Lockdown&gt; UpdateAsync(string zoneId, string lockdownId, UpdateLockdownRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>lockdownId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the rule to update.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Security.Firewall.Models.UpdateLockdownRequest.html">UpdateLockdownRequest</a></dt>
+    <dd><p>The request containing the fields to update.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Security.Firewall.Models.Lockdown.html">Lockdown</a>&gt;</dt>
+    <dd><p>The updated Lockdown rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/Firewall/IZoneLockdownApi.cs/#L13" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

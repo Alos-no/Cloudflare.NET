@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ApiResource | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ApiResource | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Base class for API resource clients, providing shared functionality.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Core_ApiResource.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Core.ApiResource%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Core.ApiResource">
+
+
+
+  <h1 id="Cloudflare_NET_Core_ApiResource" data-uid="Cloudflare.NET.Core.ApiResource" class="text-break">
+Class ApiResource  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Core.html">Core</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Base class for API resource clients, providing shared functionality.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class ApiResource</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ApiResource</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.AccessRules.AccountAccessRulesApi.html">AccountAccessRulesApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.AccountsApi.html">AccountsApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.Buckets.R2BucketsApi.html">R2BucketsApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.D1.D1Api.html">D1Api</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.Kv.KvApi.html">KvApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Accounts.Rulesets.AccountRulesetsApi.html">AccountRulesetsApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.ApiTokens.ApiTokensApi.html">ApiTokensApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.AuditLogs.AuditLogsApi.html">AuditLogsApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Dns.DnsApi.html">DnsApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Members.MembersApi.html">MembersApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Roles.RolesApi.html">RolesApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Subscriptions.SubscriptionsApi.html">SubscriptionsApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Turnstile.TurnstileApi.html">TurnstileApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.User.UserApi.html">UserApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Workers.WorkersApi.html">WorkersApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Zones.AccessRules.ZoneAccessRulesApi.html">ZoneAccessRulesApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.CustomHostnamesApi.html">CustomHostnamesApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Zones.Firewall.ZoneLockdownApi.html">ZoneLockdownApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Zones.Firewall.ZoneUaRulesApi.html">ZoneUaRulesApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Zones.Rulesets.ZoneRulesetsApi.html">ZoneRulesetsApi</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Zones.ZonesApi.html">ZonesApi</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Core_ApiResource__ctor_" data-uid="Cloudflare.NET.Core.ApiResource.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource__ctor_System_Net_Http_HttpClient_Microsoft_Extensions_Logging_ILogger_" data-uid="Cloudflare.NET.Core.ApiResource.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILogger)">
+  ApiResource(HttpClient, ILogger)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the ApiResource.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ApiResource(HttpClient httpClient, ILogger logger)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd><p>The HttpClient to use for requests.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger for this API resource.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_HttpClient" data-uid="Cloudflare.NET.Core.ApiResource.HttpClient">
+  HttpClient
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The configured HttpClient for making API requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected readonly HttpClient HttpClient</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_Logger" data-uid="Cloudflare.NET.Core.ApiResource.Logger">
+  Logger
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The logger for this API resource.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected readonly ILogger Logger</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_DeleteAsync_" data-uid="Cloudflare.NET.Core.ApiResource.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.DeleteAsync``1(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  DeleteAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L333"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a DELETE request with optional custom headers to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; DeleteAsync&lt;TResult&gt;(string requestUri, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in the request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_DeleteAsync_" data-uid="Cloudflare.NET.Core.ApiResource.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.DeleteAsync``1(System.String,System.Threading.CancellationToken)">
+  DeleteAsync&lt;TResult&gt;(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L324"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a DELETE request to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; DeleteAsync&lt;TResult&gt;(string requestUri, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetAsync``1(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  GetAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a GET request with optional custom headers to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; GetAsync&lt;TResult&gt;(string requestUri, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in the request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetAsync``1(System.String,System.Threading.CancellationToken)">
+  GetAsync&lt;TResult&gt;(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a GET request to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; GetAsync&lt;TResult&gt;(string requestUri, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedAsync``1(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetCursorPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L584"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a paginated list of resources using cursor-based pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IAsyncEnumerable&lt;TItem&gt; GetCursorPaginatedAsync&lt;TItem&gt;(string baseUri, int? perPage, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>baseUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The base request URI, without any cursor or per_page parameters.</p>
+</dd>
+    <dt><code>perPage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The number of items to request per page.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;TItem&gt;</dt>
+    <dd><p>An asynchronous stream of items.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd><p>The type of the item in the list.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedAsync``2(System.String,System.Nullable{System.Int32},System.Func{``0,System.Collections.Generic.IReadOnlyList{``1}},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L627"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a paginated list of resources using cursor-based pagination where the item list is nested within a
+wrapper object, with optional custom headers. This is the core implementation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IAsyncEnumerable&lt;TItem&gt; GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string baseUri, int? perPage, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt; listExtractor, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>baseUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The base request URI, without any cursor or per_page parameters.</p>
+</dd>
+    <dt><code>perPage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The number of items to request per page.</p>
+</dd>
+    <dt><code>listExtractor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TWrapper, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A function to extract the list of items from the wrapper object.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in each paginated request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;TItem&gt;</dt>
+    <dd><p>An asynchronous stream of items.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TWrapper</code></dt>
+    <dd><p>The type of the wrapper object in the 'result' field.</p>
+</dd>
+    <dt><code>TItem</code></dt>
+    <dd><p>The type of the item in the list.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedAsync``2(System.String,System.Nullable{System.Int32},System.Func{``0,System.Collections.Generic.IReadOnlyList{``1}},System.Threading.CancellationToken)">
+  GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L608"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a paginated list of resources using cursor-based pagination where the item list is nested within a
+wrapper object. This is the core implementation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IAsyncEnumerable&lt;TItem&gt; GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string baseUri, int? perPage, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt; listExtractor, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>baseUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The base request URI, without any cursor or per_page parameters.</p>
+</dd>
+    <dt><code>perPage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The number of items to request per page.</p>
+</dd>
+    <dt><code>listExtractor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TWrapper, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A function to extract the list of items from the wrapper object.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;TItem&gt;</dt>
+    <dd><p>An asynchronous stream of items.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TWrapper</code></dt>
+    <dd><p>The type of the wrapper object in the 'result' field.</p>
+</dd>
+    <dt><code>TItem</code></dt>
+    <dd><p>The type of the item in the list.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedResultAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__1_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedResultAsync``1(System.String,System.Threading.CancellationToken)">
+  GetCursorPaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L450"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a single page of results from a cursor-based paginated endpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;CursorPaginatedResult&lt;TItem&gt;&gt; GetCursorPaginatedResultAsync&lt;TItem&gt;(string requestUri, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A result object containing the items for the page and the cursor metadata.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedResultAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedResultAsync``2(System.String,System.Func{``0,System.Collections.Generic.IReadOnlyList{``1}},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L490"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a single page of results from a cursor-based paginated endpoint where the item list is nested within a
+wrapper object in the API response, with optional custom headers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;CursorPaginatedResult&lt;TItem&gt;&gt; GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string requestUri, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt; listExtractor, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full request URI for the API endpoint.</p>
+</dd>
+    <dt><code>listExtractor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TWrapper, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A function to extract the list of items from the wrapper object.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in the request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A result object containing the items for the page and the cursor metadata.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TWrapper</code></dt>
+    <dd><p>The type of the wrapper object in the 'result' field.</p>
+</dd>
+    <dt><code>TItem</code></dt>
+    <dd><p>The type of the item in the list.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedResultAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetCursorPaginatedResultAsync``2(System.String,System.Func{``0,System.Collections.Generic.IReadOnlyList{``1}},System.Threading.CancellationToken)">
+  GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L473"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a single page of results from a cursor-based paginated endpoint where the item list is nested within a
+wrapper object in the API response. This is the core implementation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;CursorPaginatedResult&lt;TItem&gt;&gt; GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string requestUri, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt; listExtractor, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The full request URI for the API endpoint.</p>
+</dd>
+    <dt><code>listExtractor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TWrapper, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A function to extract the list of items from the wrapper object.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.CursorPaginatedResult-1.html">CursorPaginatedResult</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A result object containing the items for the page and the cursor metadata.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TWrapper</code></dt>
+    <dd><p>The type of the wrapper object in the 'result' field.</p>
+</dd>
+    <dt><code>TItem</code></dt>
+    <dd><p>The type of the item in the list.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetPagePaginatedResultAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync__1_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetPagePaginatedResultAsync``1(System.String,System.Threading.CancellationToken)">
+  GetPagePaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L434"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a single page of results from a page-based paginated endpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;PagePaginatedResult&lt;TItem&gt;&gt; GetPagePaginatedResultAsync&lt;TItem&gt;(string requestUri, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;TItem&gt;&gt;</dt>
+    <dd><p>A result object containing the items for the page and the pagination metadata.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetPaginatedAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetPaginatedAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetPaginatedAsync``1(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L542"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a paginated list of resources, automatically handling multiple pages of results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IAsyncEnumerable&lt;TItem&gt; GetPaginatedAsync&lt;TItem&gt;(string baseUri, int? perPage = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>baseUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The base request URI, without any page or per_page parameters.</p>
+</dd>
+    <dt><code>perPage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The number of items to request per page. If null, the API default is used.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;TItem&gt;</dt>
+    <dd><p>An asynchronous stream of items.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd><p>The type of the item in the list.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_GetStringAsync_" data-uid="Cloudflare.NET.Core.ApiResource.GetStringAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_GetStringAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.GetStringAsync(System.String,System.Threading.CancellationToken)">
+  GetStringAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L368"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a GET request to an endpoint that returns a raw string response (e.g., BIND file export).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;string&gt; GetStringAsync(string requestUri, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The raw string content of the response body.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown if the API returns a JSON error envelope.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown if the API returns a non-success status code that is not a JSON error.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PatchAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PatchAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PatchAsync``1(System.String,System.Object,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  PatchAsync&lt;TResult&gt;(string, object?, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L286"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a PATCH request with a JSON payload and optional custom headers to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PatchAsync&lt;TResult&gt;(string requestUri, object? payload, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>payload</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to serialize as the JSON request body.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in the request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PatchAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PatchAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PatchAsync``1(System.String,System.Object,System.Threading.CancellationToken)">
+  PatchAsync&lt;TResult&gt;(string, object?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a PATCH request with a JSON payload to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PatchAsync&lt;TResult&gt;(string requestUri, object? payload, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>payload</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to serialize as the JSON request body.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PostAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PostAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PostAsync``1(System.String,System.Object,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  PostAsync&lt;TResult&gt;(string, object?, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a POST request with a JSON payload and optional custom headers to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PostAsync&lt;TResult&gt;(string requestUri, object? payload, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>payload</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to serialize as the JSON request body.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in the request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PostAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PostAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PostAsync``1(System.String,System.Object,System.Threading.CancellationToken)">
+  PostAsync&lt;TResult&gt;(string, object?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a POST request with a JSON payload to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PostAsync&lt;TResult&gt;(string requestUri, object? payload, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>payload</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to serialize as the JSON request body.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PostJsonAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PostJsonAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PostJsonAsync``1(System.String,System.String,System.Threading.CancellationToken)">
+  PostJsonAsync&lt;TResult&gt;(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a POST request with a pre-serialized JSON string to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PostJsonAsync&lt;TResult&gt;(string requestUri, string jsonContent, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>jsonContent</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The pre-serialized JSON string to send as the request body.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case). The caller is
+responsible for serializing the payload to JSON.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PostMultipartFileAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync__1_System_String_System_IO_Stream_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PostMultipartFileAsync``1(System.String,System.IO.Stream,System.String,System.String,System.Threading.CancellationToken)">
+  PostMultipartFileAsync&lt;TResult&gt;(string, Stream, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L415"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a POST request with a multipart/form-data payload containing a single file stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PostMultipartFileAsync&lt;TResult&gt;(string requestUri, Stream stream, string fileName, string formKey = &quot;file&quot;, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream content to upload.</p>
+</dd>
+    <dt><code>fileName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the file in the form data.</p>
+</dd>
+    <dt><code>formKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key for the file in the form data.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync_" data-uid="Cloudflare.NET.Core.ApiResource.ProcessAndDeserializeAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.ProcessAndDeserializeAsync``1(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+  ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L723"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Handles the common logic for processing an API response: checking for non-success status, deserializing, and
+checking the internal 'success' flag.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;ApiResponse&lt;T&gt;&gt; ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage response, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>response</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.ApiResponse-1.html">ApiResponse</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The full, successfully deserialized <a class="xref" href="Cloudflare.NET.Core.Models.ApiResponse-1.html">ApiResponse&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_ProcessResponse_" data-uid="Cloudflare.NET.Core.ApiResource.ProcessResponse*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_ProcessResponse__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.ProcessResponse``1(System.Net.Http.HttpResponseMessage,System.Threading.CancellationToken)">
+  ProcessResponse&lt;T&gt;(HttpResponseMessage, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L709"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Processes the HttpResponseMessage from a Cloudflare API call.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;T&gt; ProcessResponse&lt;T&gt;(HttpResponseMessage response, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>response</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a></dt>
+    <dd><p>The HttpResponseMessage to process.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;T&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httprequestexception">HttpRequestException</a></dt>
+    <dd><p>Thrown if the API call returns a non-success status code.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonexception">JsonException</a></dt>
+    <dd><p>Thrown if the API response body cannot be deserialized.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a></dt>
+    <dd><p>Thrown if the API returns a success status code but the response indicates
+failure (e.g., <code>success: false</code>).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PutAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PutAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PutAsync``1(System.String,System.Object,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  PutAsync&lt;TResult&gt;(string, object?, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a PUT request with a JSON payload and optional custom headers to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PutAsync&lt;TResult&gt;(string requestUri, object? payload, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>payload</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to serialize as the JSON request body.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in the request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PutAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PutAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PutAsync``1(System.String,System.Object,System.Threading.CancellationToken)">
+  PutAsync&lt;TResult&gt;(string, object?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a PUT request with a JSON payload to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PutAsync&lt;TResult&gt;(string requestUri, object? payload, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>payload</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to serialize as the JSON request body.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PutJsonAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PutJsonAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PutJsonAsync``1(System.String,System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Threading.CancellationToken)">
+  PutJsonAsync&lt;TResult&gt;(string, string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L236"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a PUT request with a pre-serialized JSON string and optional custom headers to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PutJsonAsync&lt;TResult&gt;(string requestUri, string jsonContent, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;? headers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>jsonContent</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The pre-serialized JSON string to send as the request body.</p>
+</dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>Optional custom headers to include in the request.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case). The caller is
+responsible for serializing the payload to JSON.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Core_ApiResource_PutJsonAsync_" data-uid="Cloudflare.NET.Core.ApiResource.PutJsonAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Core.ApiResource.PutJsonAsync``1(System.String,System.String,System.Threading.CancellationToken)">
+  PutJsonAsync&lt;TResult&gt;(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sends a PUT request with a pre-serialized JSON string to the specified URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; PutJsonAsync&lt;TResult&gt;(string requestUri, string jsonContent, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>requestUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The URI to send the request to.</p>
+</dd>
+    <dt><code>jsonContent</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The pre-serialized JSON string to send as the request body.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>The deserialized &quot;result&quot; object from the API response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The expected type of the &quot;result&quot; object in the JSON response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this method when you need custom JSON serialization (e.g., camelCase instead of snake_case). The caller is
+responsible for serializing the payload to JSON.</p>
+</div>
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Core/ApiResource.cs/#L13" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

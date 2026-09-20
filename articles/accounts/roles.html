@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Account Roles | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Account Roles | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/roles.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="account-roles">Account Roles</h1>
+
+<p>View predefined roles available for account members. Roles define sets of permissions that can be assigned to members.</p>
+<h2 id="overview">Overview</h2>
+<p>Access roles through <code>cf.Roles</code>:</p>
+<pre><code class="lang-csharp">public class RoleService(ICloudflareApiClient cf)
+{
+    public async Task&lt;IReadOnlyList&lt;AccountRole&gt;&gt; GetAllRolesAsync(string accountId)
+    {
+        var roles = new List&lt;AccountRole&gt;();
+
+        await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+        {
+            roles.Add(role);
+        }
+
+        return roles;
+    }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Roles are predefined by Cloudflare and cannot be created, modified, or deleted via the API. Available roles depend on your account type and subscription plan.</p>
+</div>
+<h2 id="using-role-constants">Using Role Constants</h2>
+<p>The SDK provides <a class="xref" href="../../api/Cloudflare.NET.Roles.RoleConstants.html">RoleConstants</a> for type-safe role name lookups. This eliminates magic strings and provides IntelliSense support:</p>
+<pre><code class="lang-csharp">using Cloudflare.NET.Roles;
+
+public class RoleHelper(ICloudflareApiClient cf)
+{
+    public async Task&lt;AccountRole?&gt; FindRoleByNameAsync(
+        string accountId,
+        string roleName)
+    {
+        await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+        {
+            if (role.Name.Equals(roleName, StringComparison.OrdinalIgnoreCase))
+            {
+                return role;
+            }
+        }
+
+        return null;
+    }
+
+    public async Task&lt;AccountRole?&gt; GetAdministratorRoleAsync(string accountId)
+    {
+        // Use RoleConstants for type-safe role lookup
+        return await FindRoleByNameAsync(accountId, RoleConstants.Administrator);
+    }
+
+    public async Task&lt;AccountRole?&gt; GetDnsRoleAsync(string accountId)
+    {
+        return await FindRoleByNameAsync(accountId, RoleConstants.Dns);
+    }
+
+    public async Task&lt;AccountRole?&gt; GetBillingRoleAsync(string accountId)
+    {
+        return await FindRoleByNameAsync(accountId, RoleConstants.Billing);
+    }
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Always use <a class="xref" href="../../api/Cloudflare.NET.Roles.RoleConstants.html">RoleConstants</a> instead of hardcoded strings to avoid typos and benefit from compile-time checking. See the <a href="#annex-role-constants-reference">complete role reference</a> for all available constants.</p>
+</div>
+<h2 id="listing-roles">Listing Roles</h2>
+<h3 id="with-pagination">With Pagination</h3>
+<pre><code class="lang-csharp">var result = await cf.Roles.ListAccountRolesAsync(accountId,
+    new ListAccountRolesFilters(Page: 1, PerPage: 50));
+
+foreach (var role in result.Items)
+{
+    Console.WriteLine($&quot;{role.Name}: {role.Description}&quot;);
+}
+</code></pre>
+<h3 id="list-all-roles">List All Roles</h3>
+<pre><code class="lang-csharp">await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+{
+    Console.WriteLine($&quot;{role.Id}: {role.Name}&quot;);
+
+    // Check specific permissions
+    if (role.Permissions.Dns?.Write == true)
+    {
+        Console.WriteLine(&quot;  - Can modify DNS&quot;);
+    }
+}
+</code></pre>
+<h2 id="getting-role-details">Getting Role Details</h2>
+<pre><code class="lang-csharp">var role = await cf.Roles.GetAccountRoleAsync(accountId, roleId);
+
+Console.WriteLine($&quot;Role: {role.Name}&quot;);
+Console.WriteLine($&quot;Description: {role.Description}&quot;);
+Console.WriteLine();
+Console.WriteLine(&quot;Permissions:&quot;);
+
+// Check DNS permissions
+if (role.Permissions.DnsRecords is { Read: true, Write: true })
+{
+    Console.WriteLine(&quot;  - Full DNS access&quot;);
+}
+else if (role.Permissions.DnsRecords?.Read == true)
+{
+    Console.WriteLine(&quot;  - DNS read-only&quot;);
+}
+
+// Check Zone permissions
+if (role.Permissions.Zone?.Write == true)
+{
+    Console.WriteLine(&quot;  - Can modify zones&quot;);
+}
+</code></pre>
+<h2 id="common-roles">Common Roles</h2>
+<p>The most frequently used roles include:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Administrator</code></td>
+<td>Administrator</td>
+<td>Full administrative access</td>
+</tr>
+<tr>
+<td><code>AdministratorReadOnly</code></td>
+<td>Administrator Read Only</td>
+<td>View-only access to all resources</td>
+</tr>
+<tr>
+<td><code>Dns</code></td>
+<td>DNS</td>
+<td>DNS management</td>
+</tr>
+<tr>
+<td><code>Firewall</code></td>
+<td>Firewall</td>
+<td>Firewall management</td>
+</tr>
+<tr>
+<td><code>Billing</code></td>
+<td>Billing</td>
+<td>Billing management</td>
+</tr>
+<tr>
+<td><code>AuditLogsViewer</code></td>
+<td>Audit Logs Viewer</td>
+<td>View audit logs</td>
+</tr>
+</tbody>
+</table>
+<p>For the complete list of 60+ role constants organized by category, see the <a href="#annex-role-constants-reference">Annex</a>.</p>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="accountrole">AccountRole</h3>
+<p>Represents a Cloudflare account role.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Role identifier</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Role name (matches <a class="xref" href="../../api/Cloudflare.NET.Roles.RoleConstants.html">RoleConstants</a> values)</td>
+</tr>
+<tr>
+<td><code>Description</code></td>
+<td><code>string</code></td>
+<td>Role description</td>
+</tr>
+<tr>
+<td><code>Permissions</code></td>
+<td><code>RolePermissions</code></td>
+<td>Detailed permission flags</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rolepermissions">RolePermissions</h3>
+<p>Contains nested permission groups for granular access control.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Zone</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>Zone-level permissions</td>
+</tr>
+<tr>
+<td><code>ZoneSettings</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>Zone settings permissions</td>
+</tr>
+<tr>
+<td><code>Dns</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>DNS permissions</td>
+</tr>
+<tr>
+<td><code>DnsRecords</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>DNS record permissions</td>
+</tr>
+<tr>
+<td><code>Firewall</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>Firewall permissions</td>
+</tr>
+<tr>
+<td><code>Waf</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>WAF permissions</td>
+</tr>
+<tr>
+<td><code>Billing</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>Billing permissions</td>
+</tr>
+<tr>
+<td><code>AuditLogs</code></td>
+<td><code>PermissionFlags?</code></td>
+<td>Audit log permissions</td>
+</tr>
+</tbody>
+</table>
+<h3 id="permissionflags">PermissionFlags</h3>
+<p>Represents read/write permission flags.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Read</code></td>
+<td><code>bool?</code></td>
+<td>Read access granted</td>
+</tr>
+<tr>
+<td><code>Write</code></td>
+<td><code>bool?</code></td>
+<td>Write access granted</td>
+</tr>
+</tbody>
+</table>
+<h3 id="listaccountrolesfilters">ListAccountRolesFilters</h3>
+<p>Filter parameters for listing account roles.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Page</code></td>
+<td><code>int?</code></td>
+<td>Page number (1-based)</td>
+</tr>
+<tr>
+<td><code>PerPage</code></td>
+<td><code>int?</code></td>
+<td>Results per page</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="find-role-by-name">Find Role by Name</h3>
+<pre><code class="lang-csharp">public async Task&lt;AccountRole?&gt; FindRoleByNameAsync(
+    string accountId,
+    string roleName)
+{
+    await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+    {
+        if (role.Name.Equals(roleName, StringComparison.OrdinalIgnoreCase))
+        {
+            return role;
+        }
+    }
+
+    return null;
+}
+
+// Usage with RoleConstants
+var adminRole = await FindRoleByNameAsync(accountId, RoleConstants.Administrator);
+var r2Role = await FindRoleByNameAsync(accountId, RoleConstants.CloudflareR2Admin);
+</code></pre>
+<h3 id="find-roles-with-specific-permission">Find Roles with Specific Permission</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;AccountRole&gt;&gt; FindRolesWithDnsWriteAsync(
+    string accountId)
+{
+    var matching = new List&lt;AccountRole&gt;();
+
+    await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+    {
+        if (role.Permissions.DnsRecords?.Write == true ||
+            role.Permissions.Dns?.Write == true)
+        {
+            matching.Add(role);
+        }
+    }
+
+    return matching;
+}
+</code></pre>
+<h3 id="display-role-matrix">Display Role Matrix</h3>
+<pre><code class="lang-csharp">public async Task DisplayRoleMatrixAsync(string accountId)
+{
+    Console.WriteLine(&quot;Role Permission Matrix&quot;);
+    Console.WriteLine(&quot;=====================&quot;);
+    Console.WriteLine();
+    Console.WriteLine($&quot;{&quot;Role&quot;,-30} {&quot;DNS&quot;,-8} {&quot;Zone&quot;,-8} {&quot;Firewall&quot;,-10} {&quot;Billing&quot;,-8}&quot;);
+    Console.WriteLine(new string('-', 70));
+
+    await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+    {
+        var dns = role.Permissions.DnsRecords?.Write == true ? &quot;Write&quot; :
+                  role.Permissions.DnsRecords?.Read == true ? &quot;Read&quot; : &quot;-&quot;;
+
+        var zone = role.Permissions.Zone?.Write == true ? &quot;Write&quot; :
+                   role.Permissions.Zone?.Read == true ? &quot;Read&quot; : &quot;-&quot;;
+
+        var fw = role.Permissions.Firewall?.Write == true ? &quot;Write&quot; :
+                 role.Permissions.Firewall?.Read == true ? &quot;Read&quot; : &quot;-&quot;;
+
+        var billing = role.Permissions.Billing?.Write == true ? &quot;Write&quot; :
+                      role.Permissions.Billing?.Read == true ? &quot;Read&quot; : &quot;-&quot;;
+
+        Console.WriteLine($&quot;{role.Name,-30} {dns,-8} {zone,-8} {fw,-10} {billing,-8}&quot;);
+    }
+}
+</code></pre>
+<h3 id="get-roles-by-category">Get Roles by Category</h3>
+<pre><code class="lang-csharp">public async Task&lt;IReadOnlyList&lt;AccountRole&gt;&gt; GetZeroTrustRolesAsync(string accountId)
+{
+    var zeroTrustRoleNames = new[]
+    {
+        RoleConstants.CloudflareAccess,
+        RoleConstants.CloudflareZeroTrust,
+        RoleConstants.CloudflareZeroTrustReadOnly,
+        RoleConstants.CloudflareZeroTrustReporting,
+        RoleConstants.CloudflareGateway,
+        RoleConstants.CloudflareDex,
+        RoleConstants.CloudflareCasb
+    };
+
+    var roles = new List&lt;AccountRole&gt;();
+
+    await foreach (var role in cf.Roles.ListAllAccountRolesAsync(accountId))
+    {
+        if (zeroTrustRoleNames.Contains(role.Name, StringComparer.OrdinalIgnoreCase))
+        {
+            roles.Add(role);
+        }
+    }
+
+    return roles;
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account Members</td>
+<td>Account</td>
+<td>Read</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="members.html">Account Members</a> - Assign roles to members</li>
+<li><a href="../user/memberships.html">User Memberships</a> - User's view of roles</li>
+<li><a href="account-management.html">Account Management</a> - Manage accounts</li>
+</ul>
+<hr>
+<h2 id="annex-role-constants-reference">Annex: Role Constants Reference</h2>
+<p>The following tables list all role constants available in <a class="xref" href="../../api/Cloudflare.NET.Roles.RoleConstants.html">RoleConstants</a>. Role availability varies by account type and subscription plan.</p>
+<h3 id="core-administrative-roles">Core Administrative Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SuperAdministrator</code></td>
+<td>Super Administrator - All Privileges</td>
+<td>Full administrative access to all account features and settings</td>
+</tr>
+<tr>
+<td><code>Administrator</code></td>
+<td>Administrator</td>
+<td>Administrative access to the entire account</td>
+</tr>
+<tr>
+<td><code>AdministratorReadOnly</code></td>
+<td>Administrator Read Only</td>
+<td>View all settings but cannot make changes</td>
+</tr>
+<tr>
+<td><code>MinimalAccountAccess</code></td>
+<td>Minimal Account Access</td>
+<td>Most restricted role with minimal permissions</td>
+</tr>
+</tbody>
+</table>
+<h3 id="analytics-and-monitoring-roles">Analytics and Monitoring Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Analytics</code></td>
+<td>Analytics</td>
+<td>Access to analytics data</td>
+</tr>
+<tr>
+<td><code>AuditLogsViewer</code></td>
+<td>Audit Logs Viewer</td>
+<td>View audit logs</td>
+</tr>
+<tr>
+<td><code>LogShare</code></td>
+<td>Log Share</td>
+<td>Full log sharing access</td>
+</tr>
+<tr>
+<td><code>LogShareReader</code></td>
+<td>Log Share Reader</td>
+<td>Read-only log sharing access</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dns-and-domain-roles">DNS and Domain Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dns</code></td>
+<td>DNS</td>
+<td>DNS management</td>
+</tr>
+<tr>
+<td><code>ZoneVersioning</code></td>
+<td>Zone Versioning (Account-Wide)</td>
+<td>Zone versioning management</td>
+</tr>
+<tr>
+<td><code>ZoneVersioningRead</code></td>
+<td>Zone Versioning Read (Account-Wide)</td>
+<td>Read-only zone versioning access</td>
+</tr>
+</tbody>
+</table>
+<h3 id="security-roles">Security Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Firewall</code></td>
+<td>Firewall</td>
+<td>Firewall management</td>
+</tr>
+<tr>
+<td><code>Waf</code></td>
+<td>WAF</td>
+<td>Web Application Firewall management</td>
+</tr>
+<tr>
+<td><code>BotManagement</code></td>
+<td>Bot Management (Account-wide)</td>
+<td>Bot management configuration</td>
+</tr>
+<tr>
+<td><code>PageShield</code></td>
+<td>Page Shield</td>
+<td>Page Shield management</td>
+</tr>
+<tr>
+<td><code>PageShieldRead</code></td>
+<td>Page Shield Read</td>
+<td>Read-only Page Shield access</td>
+</tr>
+<tr>
+<td><code>TrustAndSafety</code></td>
+<td>Trust and Safety</td>
+<td>Trust and safety management</td>
+</tr>
+</tbody>
+</table>
+<h3 id="zero-trust-and-access-roles">Zero Trust and Access Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CloudflareAccess</code></td>
+<td>Cloudflare Access</td>
+<td>Cloudflare Access management</td>
+</tr>
+<tr>
+<td><code>CloudflareZeroTrust</code></td>
+<td>Cloudflare Zero Trust</td>
+<td>Full Zero Trust access</td>
+</tr>
+<tr>
+<td><code>CloudflareZeroTrustReadOnly</code></td>
+<td>Cloudflare Zero Trust Read Only</td>
+<td>Read-only Zero Trust access</td>
+</tr>
+<tr>
+<td><code>CloudflareZeroTrustReporting</code></td>
+<td>Cloudflare Zero Trust Reporting</td>
+<td>Zero Trust reporting access</td>
+</tr>
+<tr>
+<td><code>CloudflareZeroTrustPii</code></td>
+<td>Cloudflare Zero Trust PII</td>
+<td>Zero Trust PII access</td>
+</tr>
+<tr>
+<td><code>CloudflareZeroTrustDnsLocationsWrite</code></td>
+<td>Cloudflare Zero Trust DNS Locations Write</td>
+<td>DNS locations write access</td>
+</tr>
+<tr>
+<td><code>CloudflareGateway</code></td>
+<td>Cloudflare Gateway</td>
+<td>Gateway management</td>
+</tr>
+<tr>
+<td><code>CloudflareDex</code></td>
+<td>Cloudflare DEX</td>
+<td>Digital Experience management</td>
+</tr>
+<tr>
+<td><code>CloudflareCasb</code></td>
+<td>Cloudflare CASB</td>
+<td>CASB management</td>
+</tr>
+<tr>
+<td><code>CloudflareCasbRead</code></td>
+<td>Cloudflare CASB Read</td>
+<td>Read-only CASB access</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-and-developer-roles">API and Developer Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ApiGateway</code></td>
+<td>API Gateway</td>
+<td>API Gateway management</td>
+</tr>
+<tr>
+<td><code>ApiGatewayRead</code></td>
+<td>API Gateway Read</td>
+<td>Read-only API Gateway access</td>
+</tr>
+<tr>
+<td><code>WorkersPlatformAdmin</code></td>
+<td>Workers Platform Admin</td>
+<td>Workers platform administration</td>
+</tr>
+<tr>
+<td><code>WorkersPlatformReadOnly</code></td>
+<td>Workers Platform (Read-only)</td>
+<td>Read-only Workers platform access</td>
+</tr>
+<tr>
+<td><code>HyperdriveAdmin</code></td>
+<td>Hyperdrive Admin</td>
+<td>Hyperdrive administration</td>
+</tr>
+<tr>
+<td><code>HyperdriveRead</code></td>
+<td>Hyperdrive Read</td>
+<td>Read-only Hyperdrive access</td>
+</tr>
+<tr>
+<td><code>VectorizeAdmin</code></td>
+<td>Vectorize Admin</td>
+<td>Vectorize administration</td>
+</tr>
+<tr>
+<td><code>VectorizeReadOnly</code></td>
+<td>Vectorize Read only</td>
+<td>Read-only Vectorize access</td>
+</tr>
+</tbody>
+</table>
+<h3 id="storage-roles">Storage Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CloudflareR2Admin</code></td>
+<td>Cloudflare R2 Admin</td>
+<td>R2 storage administration</td>
+</tr>
+<tr>
+<td><code>CloudflareR2Read</code></td>
+<td>Cloudflare R2 Read</td>
+<td>Read-only R2 access</td>
+</tr>
+<tr>
+<td><code>CloudflareStream</code></td>
+<td>Cloudflare Stream</td>
+<td>Stream video management</td>
+</tr>
+<tr>
+<td><code>CloudflareImages</code></td>
+<td>Cloudflare Images</td>
+<td>Images management</td>
+</tr>
+</tbody>
+</table>
+<h3 id="performance-and-caching-roles">Performance and Caching Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CachePurge</code></td>
+<td>Cache Purge</td>
+<td>Cache purge access</td>
+</tr>
+<tr>
+<td><code>LoadBalancer</code></td>
+<td>Load Balancer</td>
+<td>Load balancer management</td>
+</tr>
+<tr>
+<td><code>SslTlsCachingPerformance</code></td>
+<td>SSL/TLS Caching Performance Page Rules and Customization</td>
+<td>SSL/TLS, caching, performance, and customization</td>
+</tr>
+<tr>
+<td><code>WaitingRoomAdmin</code></td>
+<td>Waiting Room Admin</td>
+<td>Waiting room administration</td>
+</tr>
+<tr>
+<td><code>WaitingRoomRead</code></td>
+<td>Waiting Room Read</td>
+<td>Read-only waiting room access</td>
+</tr>
+</tbody>
+</table>
+<h3 id="email-security-roles">Email Security Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EmailConfigurationAdmin</code></td>
+<td>Email Configuration Admin</td>
+<td>Email configuration administration</td>
+</tr>
+<tr>
+<td><code>EmailIntegrationAdmin</code></td>
+<td>Email Integration Admin</td>
+<td>Email integration administration</td>
+</tr>
+<tr>
+<td><code>EmailSecurityAnalyst</code></td>
+<td>Email security Analyst</td>
+<td>Email security analysis</td>
+</tr>
+<tr>
+<td><code>EmailSecurityReadOnly</code></td>
+<td>Email security Read Only</td>
+<td>Read-only email security access</td>
+</tr>
+<tr>
+<td><code>EmailSecurityReporting</code></td>
+<td>Email security Reporting</td>
+<td>Email security reporting</td>
+</tr>
+<tr>
+<td><code>EmailSecurityPolicyAdmin</code></td>
+<td>Email security Policy Admin</td>
+<td>Email security policy administration</td>
+</tr>
+</tbody>
+</table>
+<h3 id="network-and-magic-roles">Network and Magic Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NetworkServicesWrite</code></td>
+<td>Network Services Write (Magic)</td>
+<td>Network services write access</td>
+</tr>
+<tr>
+<td><code>NetworkServicesRead</code></td>
+<td>Network Services Read (Magic)</td>
+<td>Network services read access</td>
+</tr>
+<tr>
+<td><code>MagicNetworkMonitoring</code></td>
+<td>Magic Network Monitoring</td>
+<td>Magic network monitoring</td>
+</tr>
+<tr>
+<td><code>MagicNetworkMonitoringAdmin</code></td>
+<td>Magic Network Monitoring Admin</td>
+<td>Magic network monitoring administration</td>
+</tr>
+<tr>
+<td><code>MagicNetworkMonitoringReadOnly</code></td>
+<td>Magic Network Monitoring Read-Only</td>
+<td>Read-only magic network monitoring</td>
+</tr>
+</tbody>
+</table>
+<h3 id="security-center-roles">Security Center Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SecurityCenterBrandProtection</code></td>
+<td>Security Center Brand Protection</td>
+<td>Brand protection management</td>
+</tr>
+<tr>
+<td><code>SecurityCenterCloudforceOneAdmin</code></td>
+<td>Security Center Cloudforce One Admin</td>
+<td>Cloudforce One administration</td>
+</tr>
+<tr>
+<td><code>SecurityCenterCloudforceOneRead</code></td>
+<td>Security Center Cloudforce One Read</td>
+<td>Read-only Cloudforce One access</td>
+</tr>
+</tbody>
+</table>
+<h3 id="secrets-and-connectivity-roles">Secrets and Connectivity Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SecretsStoreAdmin</code></td>
+<td>Secrets Store Admin</td>
+<td>Secrets store administration</td>
+</tr>
+<tr>
+<td><code>SecretsStoreDeployer</code></td>
+<td>Secrets Store Deployer</td>
+<td>Secrets store deployment</td>
+</tr>
+<tr>
+<td><code>SecretsStoreReporter</code></td>
+<td>Secrets Store Reporter</td>
+<td>Secrets store reporting</td>
+</tr>
+<tr>
+<td><code>ConnectivityDirectoryRead</code></td>
+<td>Connectivity Directory Read</td>
+<td>Connectivity directory read access</td>
+</tr>
+<tr>
+<td><code>ConnectivityDirectoryBind</code></td>
+<td>Connectivity Directory Bind</td>
+<td>Connectivity directory bind access</td>
+</tr>
+<tr>
+<td><code>ConnectivityDirectoryAdmin</code></td>
+<td>Connectivity Directory Admin</td>
+<td>Connectivity directory administration</td>
+</tr>
+</tbody>
+</table>
+<h3 id="other-roles">Other Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Role Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Billing</code></td>
+<td>Billing</td>
+<td>Billing management</td>
+</tr>
+<tr>
+<td><code>Turnstile</code></td>
+<td>Turnstile</td>
+<td>Turnstile management</td>
+</tr>
+<tr>
+<td><code>TurnstileRead</code></td>
+<td>Turnstile Read</td>
+<td>Read-only Turnstile access</td>
+</tr>
+<tr>
+<td><code>ZarazAdmin</code></td>
+<td>Zaraz Admin</td>
+<td>Zaraz administration</td>
+</tr>
+<tr>
+<td><code>ZarazEdit</code></td>
+<td>Zaraz Edit</td>
+<td>Zaraz editing</td>
+</tr>
+<tr>
+<td><code>ZarazRead</code></td>
+<td>Zaraz Read</td>
+<td>Read-only Zaraz access</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/roles.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

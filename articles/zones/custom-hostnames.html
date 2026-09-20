@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Custom Hostnames (Cloudflare for SaaS) | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Custom Hostnames (Cloudflare for SaaS) | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/custom-hostnames.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="custom-hostnames-cloudflare-for-saas">Custom Hostnames (Cloudflare for SaaS)</h1>
+
+<p>Custom Hostnames enable SaaS providers to extend Cloudflare's security and performance benefits to their customers' vanity domains. This is the foundation of <a href="https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/">Cloudflare for SaaS</a>.</p>
+<h2 id="overview">Overview</h2>
+<p>Access the Custom Hostnames API through <code>cf.Zones.CustomHostnames</code>:</p>
+<pre><code class="lang-csharp">public class SaasService(ICloudflareApiClient cf)
+{
+    public async Task OnboardCustomerAsync(string zoneId, string customerDomain)
+    {
+        var hostname = await cf.Zones.CustomHostnames.CreateAsync(zoneId,
+            new CreateCustomHostnameRequest(
+                Hostname: customerDomain,
+                Ssl: new SslConfiguration(Method: DcvMethod.Txt)
+            ));
+
+        Console.WriteLine($&quot;Status: {hostname.Status}&quot;);
+    }
+}
+</code></pre>
+<h2 id="creating-custom-hostnames">Creating Custom Hostnames</h2>
+<h3 id="basic-creation">Basic Creation</h3>
+<pre><code class="lang-csharp">var hostname = await cf.Zones.CustomHostnames.CreateAsync(zoneId,
+    new CreateCustomHostnameRequest(
+        Hostname: &quot;app.customer.com&quot;,
+        Ssl: new SslConfiguration(Method: DcvMethod.Txt)
+    ));
+</code></pre>
+<h3 id="with-custom-origin-server">With Custom Origin Server</h3>
+<p>Route traffic to a specific origin for this hostname:</p>
+<pre><code class="lang-csharp">var hostname = await cf.Zones.CustomHostnames.CreateAsync(zoneId,
+    new CreateCustomHostnameRequest(
+        Hostname: &quot;app.customer.com&quot;,
+        Ssl: new SslConfiguration(Method: DcvMethod.Http),
+        CustomOriginServer: &quot;customer-123.origin.example.com&quot;
+    ));
+</code></pre>
+<h3 id="with-custom-metadata">With Custom Metadata</h3>
+<p>Attach arbitrary metadata to the hostname:</p>
+<pre><code class="lang-csharp">var metadata = JsonSerializer.SerializeToElement(new
+{
+    customerId = &quot;cust_123&quot;,
+    plan = &quot;enterprise&quot;,
+    region = &quot;us-east&quot;
+});
+
+var hostname = await cf.Zones.CustomHostnames.CreateAsync(zoneId,
+    new CreateCustomHostnameRequest(
+        Hostname: &quot;app.customer.com&quot;,
+        Ssl: new SslConfiguration(Method: DcvMethod.Txt),
+        CustomMetadata: metadata
+    ));
+</code></pre>
+<h2 id="domain-validation">Domain Validation</h2>
+<p>Custom hostnames require domain ownership verification before SSL certificates are issued.</p>
+<h3 id="txt-validation">TXT Validation</h3>
+<p>The customer adds a TXT record to their DNS:</p>
+<pre><code class="lang-csharp">var hostname = await cf.Zones.CustomHostnames.GetAsync(zoneId, hostnameId);
+
+if (hostname.OwnershipVerification is { } verification)
+{
+    Console.WriteLine($&quot;Add TXT record:&quot;);
+    Console.WriteLine($&quot;  Name: {verification.Name}&quot;);
+    Console.WriteLine($&quot;  Value: {verification.Value}&quot;);
+}
+</code></pre>
+<h3 id="http-validation">HTTP Validation</h3>
+<p>The customer serves a token at a specific URL:</p>
+<pre><code class="lang-csharp">if (hostname.OwnershipVerificationHttp is { } httpVerification)
+{
+    Console.WriteLine($&quot;Serve content at: {httpVerification.HttpUrl}&quot;);
+    Console.WriteLine($&quot;Content: {httpVerification.HttpBody}&quot;);
+}
+</code></pre>
+<h3 id="checking-validation-errors">Checking Validation Errors</h3>
+<pre><code class="lang-csharp">if (hostname.VerificationErrors?.Count &gt; 0)
+{
+    foreach (var error in hostname.VerificationErrors)
+    {
+        Console.WriteLine($&quot;Error: {error}&quot;);
+    }
+}
+</code></pre>
+<h2 id="listing-custom-hostnames">Listing Custom Hostnames</h2>
+<h3 id="list-with-pagination">List with Pagination</h3>
+<pre><code class="lang-csharp">var page = await cf.Zones.CustomHostnames.ListAsync(zoneId,
+    new ListCustomHostnamesFilters
+    {
+        Page = 1,
+        PerPage = 50
+    });
+
+foreach (var hostname in page.Items)
+{
+    Console.WriteLine($&quot;{hostname.Hostname}: {hostname.Status}&quot;);
+}
+</code></pre>
+<h3 id="list-all-hostnames">List All Hostnames</h3>
+<pre><code class="lang-csharp">await foreach (var hostname in cf.Zones.CustomHostnames.ListAllAsync(zoneId))
+{
+    Console.WriteLine($&quot;{hostname.Hostname}: {hostname.Status}, SSL: {hostname.Ssl.Status}&quot;);
+}
+</code></pre>
+<h3 id="filter-by-hostname">Filter by Hostname</h3>
+<pre><code class="lang-csharp">var filters = new ListCustomHostnamesFilters
+{
+    Hostname = &quot;app.customer.com&quot;
+};
+
+await foreach (var hostname in cf.Zones.CustomHostnames.ListAllAsync(zoneId, filters))
+{
+    // Process matching hostnames
+}
+</code></pre>
+<h2 id="updating-custom-hostnames">Updating Custom Hostnames</h2>
+<p>Update hostname configuration (PATCH operation):</p>
+<pre><code class="lang-csharp">var updated = await cf.Zones.CustomHostnames.UpdateAsync(zoneId, hostnameId,
+    new UpdateCustomHostnameRequest(
+        CustomOriginServer: &quot;new-origin.example.com&quot;
+    ));
+</code></pre>
+<h3 id="refresh-validation-status">Refresh Validation Status</h3>
+<p>Send an empty update to refresh the validation status:</p>
+<pre><code class="lang-csharp">var refreshed = await cf.Zones.CustomHostnames.UpdateAsync(zoneId, hostnameId,
+    new UpdateCustomHostnameRequest());
+</code></pre>
+<h2 id="deleting-custom-hostnames">Deleting Custom Hostnames</h2>
+<pre><code class="lang-csharp">await cf.Zones.CustomHostnames.DeleteAsync(zoneId, hostnameId);
+</code></pre>
+<h2 id="fallback-origin">Fallback Origin</h2>
+<p>The fallback origin is used when a custom hostname doesn't have a specific <code>CustomOriginServer</code> configured.</p>
+<h3 id="get-fallback-origin">Get Fallback Origin</h3>
+<pre><code class="lang-csharp">var fallback = await cf.Zones.CustomHostnames.GetFallbackOriginAsync(zoneId);
+Console.WriteLine($&quot;Fallback origin: {fallback.Origin}&quot;);
+</code></pre>
+<h3 id="set-fallback-origin">Set Fallback Origin</h3>
+<pre><code class="lang-csharp">var fallback = await cf.Zones.CustomHostnames.UpdateFallbackOriginAsync(zoneId,
+    new UpdateFallbackOriginRequest(Origin: &quot;fallback.origin.example.com&quot;));
+</code></pre>
+<h3 id="delete-fallback-origin">Delete Fallback Origin</h3>
+<pre><code class="lang-csharp">await cf.Zones.CustomHostnames.DeleteFallbackOriginAsync(zoneId);
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="customhostname">CustomHostname</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Unique identifier</td>
+</tr>
+<tr>
+<td><code>Hostname</code></td>
+<td><code>string</code></td>
+<td>The custom hostname (e.g., <code>app.customer.com</code>)</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td><code>CustomHostnameStatus</code></td>
+<td>Current status (see enum below)</td>
+</tr>
+<tr>
+<td><code>Ssl</code></td>
+<td><code>SslResponse</code></td>
+<td>SSL certificate status and configuration</td>
+</tr>
+<tr>
+<td><code>OwnershipVerification</code></td>
+<td><code>OwnershipVerification?</code></td>
+<td>TXT validation details</td>
+</tr>
+<tr>
+<td><code>OwnershipVerificationHttp</code></td>
+<td><code>OwnershipVerificationHttp?</code></td>
+<td>HTTP validation details</td>
+</tr>
+<tr>
+<td><code>VerificationErrors</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>Validation error messages</td>
+</tr>
+<tr>
+<td><code>CustomMetadata</code></td>
+<td><code>JsonElement?</code></td>
+<td>Arbitrary JSON metadata</td>
+</tr>
+<tr>
+<td><code>CustomOriginServer</code></td>
+<td><code>string?</code></td>
+<td>Custom origin hostname</td>
+</tr>
+<tr>
+<td><code>CustomOriginSni</code></td>
+<td><code>string?</code></td>
+<td>SNI for origin TLS handshake</td>
+</tr>
+<tr>
+<td><code>CreatedAt</code></td>
+<td><code>DateTimeOffset?</code></td>
+<td>Creation timestamp</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customhostnamestatus">CustomHostnameStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pending</code></td>
+<td>Pending initial validation</td>
+</tr>
+<tr>
+<td><code>Active</code></td>
+<td>Active and serving traffic</td>
+</tr>
+<tr>
+<td><code>ActiveRedeploying</code></td>
+<td>Active, changes being redeployed</td>
+</tr>
+<tr>
+<td><code>Moved</code></td>
+<td>Moved to another zone</td>
+</tr>
+<tr>
+<td><code>PendingDeletion</code></td>
+<td>Pending deletion</td>
+</tr>
+<tr>
+<td><code>Deleted</code></td>
+<td>Deleted</td>
+</tr>
+<tr>
+<td><code>Blocked</code></td>
+<td>Blocked due to policy violation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sslstatus">SslStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Initializing</code></td>
+<td>Certificate being initialized</td>
+</tr>
+<tr>
+<td><code>PendingValidation</code></td>
+<td>Pending domain control validation</td>
+</tr>
+<tr>
+<td><code>PendingIssuance</code></td>
+<td>Pending CA issuance</td>
+</tr>
+<tr>
+<td><code>PendingDeployment</code></td>
+<td>Pending edge deployment</td>
+</tr>
+<tr>
+<td><code>Active</code></td>
+<td>Active and serving traffic</td>
+</tr>
+<tr>
+<td><code>Expired</code></td>
+<td>Certificate expired</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dcvmethod-domain-control-validation">DcvMethod (Domain Control Validation)</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Http</code></td>
+<td>Serve token at specific URL</td>
+</tr>
+<tr>
+<td><code>Txt</code></td>
+<td>Add TXT record to DNS</td>
+</tr>
+<tr>
+<td><code>Email</code></td>
+<td>Email approval to domain contacts</td>
+</tr>
+</tbody>
+</table>
+<h3 id="certificateauthority">CertificateAuthority</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Digicert</code></td>
+<td>DigiCert CA</td>
+</tr>
+<tr>
+<td><code>Google</code></td>
+<td>Google Trust Services</td>
+</tr>
+<tr>
+<td><code>LetsEncrypt</code></td>
+<td>Let's Encrypt</td>
+</tr>
+<tr>
+<td><code>SslCom</code></td>
+<td>SSL.com</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="complete-onboarding-flow">Complete Onboarding Flow</h3>
+<pre><code class="lang-csharp">public class CustomerOnboardingService(ICloudflareApiClient cf)
+{
+    public async Task&lt;OnboardingResult&gt; OnboardAsync(
+        string zoneId,
+        string customerDomain,
+        string customerId)
+    {
+        // Create hostname with metadata
+        var metadata = JsonSerializer.SerializeToElement(new { customerId });
+
+        var hostname = await cf.Zones.CustomHostnames.CreateAsync(zoneId,
+            new CreateCustomHostnameRequest(
+                Hostname: customerDomain,
+                Ssl: new SslConfiguration(Method: DcvMethod.Txt),
+                CustomMetadata: metadata
+            ));
+
+        return new OnboardingResult
+        {
+            HostnameId = hostname.Id,
+            Status = hostname.Status,
+            TxtName = hostname.OwnershipVerification?.Name,
+            TxtValue = hostname.OwnershipVerification?.Value
+        };
+    }
+
+    public async Task&lt;bool&gt; CheckValidationAsync(string zoneId, string hostnameId)
+    {
+        var hostname = await cf.Zones.CustomHostnames.GetAsync(zoneId, hostnameId);
+        return hostname.Status == CustomHostnameStatus.Active;
+    }
+}
+</code></pre>
+<h3 id="bulk-status-check">Bulk Status Check</h3>
+<pre><code class="lang-csharp">public async Task&lt;Dictionary&lt;string, CustomHostnameStatus&gt;&gt; GetStatusesAsync(string zoneId)
+{
+    var statuses = new Dictionary&lt;string, CustomHostnameStatus&gt;();
+
+    await foreach (var hostname in cf.Zones.CustomHostnames.ListAllAsync(zoneId))
+    {
+        statuses[hostname.Hostname] = hostname.Status;
+    }
+
+    return statuses;
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSL and Certificates</td>
+<td>Zone</td>
+<td>Read (for listing/get)</td>
+</tr>
+<tr>
+<td>SSL and Certificates</td>
+<td>Zone</td>
+<td>Write (for create/update/delete)</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/custom-hostnames.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
