@@ -490,8 +490,18 @@ public class KvApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IA
 
     try
     {
-      // Act
-      var result = await _sut.ListKeysAsync(_namespaceId, new ListKvKeysFilters(Prefix: prefix));
+      // Act. The KV list index is eventually consistent: a just-written key can be absent from the
+      // first list response (observed in CI on 2026-08-27), so poll until both keys appear or the
+      // deadline expires, mirroring the propagation polling in BulkDeleteAsync_CanDeleteMultipleKeys.
+      var       deadline     = DateTime.UtcNow + TimeSpan.FromSeconds(120);
+      const int retryDelayMs = 5000;
+      var       result       = await _sut.ListKeysAsync(_namespaceId, new ListKvKeysFilters(Prefix: prefix));
+
+      while (result.Items.Count < 2 && DateTime.UtcNow < deadline)
+      {
+        await Task.Delay(retryDelayMs);
+        result = await _sut.ListKeysAsync(_namespaceId, new ListKvKeysFilters(Prefix: prefix));
+      }
 
       // Assert
       result.Items.Should().HaveCount(2, "only keys with the prefix should be returned");
@@ -521,10 +531,26 @@ public class KvApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IA
 
     try
     {
-      // Act
-      var allKeys = new List<KvKey>();
-      await foreach (var key in _sut.ListAllKeysAsync(_namespaceId, prefix))
-        allKeys.Add(key);
+      // Act. The KV list index is eventually consistent: a just-written key can be absent from the
+      // first list response (observed in CI on 2026-08-27), so re-enumerate until all five keys
+      // appear or the deadline expires, mirroring the propagation polling in
+      // BulkDeleteAsync_CanDeleteMultipleKeys.
+      var       deadline     = DateTime.UtcNow + TimeSpan.FromSeconds(120);
+      const int retryDelayMs = 5000;
+      var       allKeys      = new List<KvKey>();
+
+      while (true)
+      {
+        allKeys.Clear();
+
+        await foreach (var key in _sut.ListAllKeysAsync(_namespaceId, prefix))
+          allKeys.Add(key);
+
+        if (allKeys.Count >= 5 || DateTime.UtcNow >= deadline)
+          break;
+
+        await Task.Delay(retryDelayMs);
+      }
 
       // Assert
       allKeys.Should().HaveCount(5, "all keys with the prefix should be returned");
@@ -549,8 +575,19 @@ public class KvApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>, IA
 
     try
     {
-      // Act
-      var result = await _sut.ListKeysAsync(_namespaceId, new ListKvKeysFilters(Prefix: key));
+      // Act. The KV list index is eventually consistent: a just-written key can be absent from the
+      // first list response (this exact assertion failed in CI on 2026-08-27 with an empty list),
+      // so poll until the key appears or the deadline expires, mirroring the propagation polling in
+      // BulkDeleteAsync_CanDeleteMultipleKeys.
+      var       deadline     = DateTime.UtcNow + TimeSpan.FromSeconds(120);
+      const int retryDelayMs = 5000;
+      var       result       = await _sut.ListKeysAsync(_namespaceId, new ListKvKeysFilters(Prefix: key));
+
+      while (result.Items.Count == 0 && DateTime.UtcNow < deadline)
+      {
+        await Task.Delay(retryDelayMs);
+        result = await _sut.ListKeysAsync(_namespaceId, new ListKvKeysFilters(Prefix: key));
+      }
 
       // Assert
       result.Items.Should().ContainSingle();
