@@ -796,16 +796,18 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       .Where(ex => ex.StatusCode == HttpStatusCode.NotFound);
   }
 
-  /// <summary>I23: Verifies that GetAccountTokenAsync with a malformed account ID returns HTTP 400.</summary>
+  /// <summary>I23: Verifies that GetAccountTokenAsync with a malformed account ID fails at the routing layer.</summary>
   /// <remarks>
   ///   Malformed account IDs containing special characters that cannot be parsed as valid
-  ///   identifiers return 400 BadRequest with error code 7003 "Could not route to..."
-  ///   because the request fails at the routing/parsing layer.
+  ///   identifiers fail with error code 7003 "Could not route to..." because the request
+  ///   fails at the routing/parsing layer. Cloudflare returned this as 400 BadRequest until at
+  ///   least 2026-08-27 and as 404 NotFound from 2026-09-20 (observed in CI); both statuses are
+  ///   accepted so the test pins the routing failure rather than the transport status.
   /// </remarks>
   [IntegrationTest]
-  public async Task GetAccountTokenAsync_MalformedAccountId_ThrowsBadRequest()
+  public async Task GetAccountTokenAsync_MalformedAccountId_ThrowsRoutingError()
   {
-    // Arrange - Use special characters that cause a parsing error (400 BadRequest)
+    // Arrange - Use special characters that cause a parsing error at the routing layer
     var malformedAccountId = "!@#$%^&*()";
     // Token ID format is valid (32 hex chars) - actual existence doesn't matter since
     // account ID validation occurs first and will reject the malformed account ID
@@ -814,7 +816,7 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     // Act & Assert
     var action = async () => await _sut.GetAccountTokenAsync(malformedAccountId, validFormatTokenId);
     await action.Should().ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest || ex.StatusCode == HttpStatusCode.NotFound);
   }
 
   /// <summary>I24: Verifies that GetAccountTokenAsync with a malformed token ID returns 400 Bad Request.</summary>
@@ -831,22 +833,24 @@ public class ApiTokensApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
   }
 
-  /// <summary>I25: Verifies that ListAccountTokensAsync with a malformed account ID returns HTTP 400.</summary>
+  /// <summary>I25: Verifies that ListAccountTokensAsync with a malformed account ID fails at the routing layer.</summary>
   /// <remarks>
   ///   Malformed account IDs containing special characters that cannot be parsed as valid
-  ///   identifiers return 400 BadRequest with error code 7003 "Could not route to..."
-  ///   because the request fails at the routing/parsing layer.
+  ///   identifiers fail with error code 7003 "Could not route to..." because the request
+  ///   fails at the routing/parsing layer. Cloudflare returned this as 400 BadRequest until at
+  ///   least 2026-08-27 and as 404 NotFound from 2026-09-20 (observed in CI); both statuses are
+  ///   accepted so the test pins the routing failure rather than the transport status.
   /// </remarks>
   [IntegrationTest]
-  public async Task ListAccountTokensAsync_MalformedAccountId_ThrowsBadRequest()
+  public async Task ListAccountTokensAsync_MalformedAccountId_ThrowsRoutingError()
   {
-    // Arrange - Use special characters that cause a parsing error (400 BadRequest)
+    // Arrange - Use special characters that cause a parsing error at the routing layer
     var malformedAccountId = "!@#$%^&*()";
 
     // Act & Assert
     var action = async () => await _sut.ListAccountTokensAsync(malformedAccountId);
     await action.Should().ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest || ex.StatusCode == HttpStatusCode.NotFound);
   }
 
   #endregion

@@ -647,7 +647,7 @@ public class LegacyR2BucketApiUnitTests
 
     // Assert
     result.Should()
-          .BeEquivalentTo(new CustomDomainResponse(hostname, $"{hostname}.cdn.cloudflare.net", "active"));
+          .BeEquivalentTo(new CustomDomainResponse(hostname, $"{hostname}.cdn.cloudflare.net", "active", "active"));
     capturedRequest.Should().NotBeNull();
     capturedRequest!.Method.Should().Be(HttpMethod.Get);
     capturedRequest.RequestUri!.ToString().Should()

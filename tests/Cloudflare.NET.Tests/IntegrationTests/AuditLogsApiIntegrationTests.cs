@@ -441,11 +441,13 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
       .Where(ex => ex.StatusCode == HttpStatusCode.Forbidden);
   }
 
-  /// <summary>I16: Verifies that a malformed account ID with special characters returns HTTP 400.</summary>
+  /// <summary>I16: Verifies that a malformed account ID with special characters fails at the routing layer.</summary>
   /// <remarks>
   ///   Malformed account IDs containing special characters that are not valid in URL paths
-  ///   return 400 BadRequest with error code 7003 "Could not route to..." because the
-  ///   request cannot be parsed correctly at the routing layer.
+  ///   fail with error code 7003 "Could not route to..." because the request cannot be parsed
+  ///   correctly at the routing layer. Cloudflare returned this as 400 BadRequest until at least
+  ///   2026-08-27 and as 404 NotFound from 2026-09-20 (observed in CI); both statuses are accepted
+  ///   so the test pins the routing failure rather than the transport status.
   /// </remarks>
   [IntegrationTest]
   public async Task GetAccountAuditLogsAsync_MalformedAccountId_ReturnsError()
@@ -457,9 +459,9 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
     // Act
     var act = () => _sut.GetAccountAuditLogsAsync(malformedAccountId, filters);
 
-    // Assert - Special characters return 400 BadRequest (routing/parsing error)
+    // Assert - Special characters fail at the routing layer (400 or 404 depending on the API's current behavior)
     await act.Should().ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest);
+      .Where(ex => ex.StatusCode == HttpStatusCode.BadRequest || ex.StatusCode == HttpStatusCode.NotFound);
   }
 
   #endregion

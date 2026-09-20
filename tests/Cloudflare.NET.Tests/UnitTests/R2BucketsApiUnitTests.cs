@@ -1436,7 +1436,7 @@ public class R2BucketsApiUnitTests
     var result = await sut.GetCustomDomainStatusAsync(bucketName, hostname);
 
     // Assert
-    result.Should().BeEquivalentTo(new CustomDomainResponse(hostname, $"{hostname}.cdn.cloudflare.net", "active"));
+    result.Should().BeEquivalentTo(new CustomDomainResponse(hostname, $"{hostname}.cdn.cloudflare.net", "active", "active"));
     capturedRequest.Should().NotBeNull();
     capturedRequest!.Method.Should().Be(HttpMethod.Get);
     capturedRequest.RequestUri!.ToString().Should().Be($"https://api.cloudflare.com/client/v4/accounts/{TestAccountId}/r2/buckets/{bucketName}/domains/custom/{hostname}");

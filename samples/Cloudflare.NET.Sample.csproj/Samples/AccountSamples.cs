@@ -542,7 +542,9 @@ public class AccountSamples(ICloudflareApiClient cf, ILogger<AccountSamples> log
     // 4. Get Custom Domain Status.
     logger.LogInformation("Getting status for custom domain: {Hostname}", hostname);
     var statusResult = await cf.Accounts.Buckets.GetCustomDomainStatusAsync(bucketName, hostname);
-    logger.LogInformation("Got status. Domain: {Domain}, Status: {Status}", statusResult.Domain, statusResult.Status);
+    // The hostname only serves traffic once the certificate status (SslStatus) is "active"; ownership alone is not enough.
+    logger.LogInformation("Got status. Domain: {Domain}, Ownership: {Status}, Certificate: {SslStatus}",
+                          statusResult.Domain, statusResult.Status, statusResult.SslStatus ?? "not reported");
 
     // 5. Update Custom Domain (set minimum TLS version).
     logger.LogInformation("Updating custom domain {Hostname} to require TLS 1.2", hostname);
