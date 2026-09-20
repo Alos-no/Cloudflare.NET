@@ -184,6 +184,10 @@ public class R2BucketApiIntegrationTests : IClassFixture<CloudflareApiTestFixtur
       statusResult.Should().NotBeNull();
       statusResult.Status.Should()
                   .BeOneOf("pending", "active"); // Status depends on timing
+      // The GET response always carries the nested status object, so the certificate status is reported too.
+      // Its value depends on timing; the documented set is checked rather than one fixed value.
+      statusResult.SslStatus.Should()
+                  .BeOneOf("initializing", "pending", "active", "deactivated", "error", "unknown");
 
       // 3. Update Custom Domain (set minimum TLS version)
       var updateRequest = new UpdateCustomDomainRequest(Enabled: true, MinTls: "1.2");

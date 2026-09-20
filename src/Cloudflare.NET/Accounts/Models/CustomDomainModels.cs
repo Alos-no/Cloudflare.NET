@@ -98,11 +98,25 @@ public record ListCustomDomainsResponse(
 ///   Represents the response from attaching or querying a custom domain. The custom converter handles the
 ///   polymorphic 'status' field. The EdgeHostname may be null in some responses.
 /// </summary>
+/// <param name="Domain">The custom domain hostname (e.g., "files.example.com").</param>
+/// <param name="EdgeHostname">The Cloudflare edge hostname the domain resolves to, when the API reports it.</param>
+/// <param name="Status">
+///   The hostname ownership status. When the API returns the nested status object (GET), this is its
+///   <c>ownership</c> value; when the API returns a plain string (POST/PUT), this is that string.
+/// </param>
+/// <param name="SslStatus">
+///   The certificate status of the custom domain, taken from the nested status object's <c>ssl</c> value
+///   (documented values: "initializing", "pending", "active", "deactivated", "error", "unknown"). A hostname that
+///   no wildcard certificate covers only serves traffic once this is "active", regardless of <paramref name="Status" />.
+///   Null when the API response carried no nested status object, which is the case for the attach (POST) and
+///   update (PUT) responses.
+/// </param>
 [JsonConverter(typeof(CustomDomainResponseConverter))]
 public record CustomDomainResponse(
   string  Domain,
   string? EdgeHostname,
-  string  Status
+  string  Status,
+  string? SslStatus = null
 );
 
 /// <summary>
@@ -135,6 +149,8 @@ public class CustomDomainResponseConverter : JsonConverter<CustomDomainResponse>
     string? edgeHostname = null;
     // Default status, as a successful POST might not include it immediately.
     var status = "pending_validation";
+    // The certificate status is only reported inside the nested status object; it stays null otherwise.
+    string? sslStatus = null;
 
     while (reader.Read())
     {
@@ -142,7 +158,8 @@ public class CustomDomainResponseConverter : JsonConverter<CustomDomainResponse>
         return new CustomDomainResponse(
           domain ?? throw new JsonException("Missing required 'domain' property in CustomDomainResponse."),
           edgeHostname, // edgeHostname can be missing in some API responses.
-          status
+          status,
+          sslStatus // Null unless the nested status object was present.
         );
 
       if (reader.TokenType == JsonTokenType.PropertyName)
@@ -170,6 +187,9 @@ public class CustomDomainResponseConverter : JsonConverter<CustomDomainResponse>
               // We pass the existing options to the nested deserialization call.
               var statusObj = JsonSerializer.Deserialize<CustomDomainStatusObject>(ref reader, options);
               status = statusObj?.Ownership ?? "pending";
+              // The 'ssl' field is surfaced separately: a hostname that no wildcard certificate covers only
+              // serves traffic once the certificate status is "active", whatever the ownership status says.
+              sslStatus = statusObj?.Ssl;
             }
 
             break;
@@ -202,6 +222,10 @@ public class CustomDomainResponseConverter : JsonConverter<CustomDomainResponse>
 
     // Write "status" property.
     writer.WriteString(namingPolicy.ConvertName(nameof(value.Status)), value.Status);
+
+    // Write "ssl_status" property if it's not null.
+    if (value.SslStatus is not null)
+      writer.WriteString(namingPolicy.ConvertName(nameof(value.SslStatus)), value.SslStatus);
 
     writer.WriteEndObject();
   }

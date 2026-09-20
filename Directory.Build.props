@@ -74,9 +74,11 @@
     <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>
 
-  <!-- SourceLink Package -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-  </ItemGroup>
+  <!--
+    SourceLink Package - intentionally absent.
+    The .NET 8+ SDK bundles Microsoft.SourceLink.GitHub, so an explicit PackageReference is redundant.
+    The explicit 8.0.0 reference was removed on 2026-09-19 because Microsoft.Build.Tasks.Git 8.0.0 carries
+    advisory GHSA-23fw-v26w-5fgq (CVE-2026-62900) with no patched 8.x release, and NuGet audit fails the build.
+  -->
 
 </Project>
