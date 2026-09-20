@@ -337,15 +337,18 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
       .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
-  /// <summary>I15: Verifies that malformed zone ID returns 400 Bad Request.</summary>
+  /// <summary>I15: Verifies that a malformed zone ID fails at the routing layer.</summary>
   /// <remarks>
   ///   Per Cloudflare API: Malformed zone IDs with invalid characters fail at the routing layer.
   ///   Error code 7003: "Could not route to /zones/{id}/subscription, perhaps your object identifier is invalid?"
   ///   Error code 7000: "No route for that URI"
   ///   https://developers.cloudflare.com/api/resources/zones/
+  ///   Cloudflare returned this as 400 BadRequest until at least 2026-08-27 and as 404 NotFound from
+  ///   2026-09-20 (observed in CI); both statuses are accepted so the test pins the routing failure
+  ///   rather than the transport status.
   /// </remarks>
   [IntegrationTest]
-  public async Task GetZoneSubscriptionAsync_MalformedId_ThrowsBadRequest()
+  public async Task GetZoneSubscriptionAsync_MalformedId_ThrowsRoutingError()
   {
     // Arrange
     var malformedId = "!!!invalid-format!!!";
@@ -353,10 +356,10 @@ public class ZoneSubscriptionsApiIntegrationTests : IClassFixture<CloudflareApiT
     // Act
     var act = () => _sut.GetZoneSubscriptionAsync(malformedId);
 
-    // Assert - Malformed zone ID returns 400 Bad Request (routing error)
+    // Assert - Malformed zone ID fails at the routing layer (400 or 404 depending on the API's current behavior)
     await act.Should()
       .ThrowAsync<HttpRequestException>()
-      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest);
+      .Where(ex => ex.StatusCode == System.Net.HttpStatusCode.BadRequest || ex.StatusCode == System.Net.HttpStatusCode.NotFound);
   }
 
   #endregion
