@@ -43,6 +43,28 @@ public static class ServiceCollectionExtensions
   /// </exception>
   public static IServiceCollection AddCloudflareAnalytics(this IServiceCollection services)
   {
+    return services.AddCloudflareAnalytics(configureHttpClientBuilder: null);
+  }
+
+  /// <summary>
+  ///   Registers the <see cref="IAnalyticsApi" /> and its dependencies like
+  ///   <see cref="AddCloudflareAnalytics(IServiceCollection)" />, and hands the builder of the GraphQL HttpClient to the
+  ///   caller.
+  /// </summary>
+  /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
+  /// <param name="configureHttpClientBuilder">
+  ///   Called once with the builder of the HttpClient every GraphQL request uses, after the standard resilience handler
+  ///   was added. A message handler added here therefore runs inside the resilience pipeline, once per attempt, retries
+  ///   included (for example a handler that paces requests). <c>null</c> adds nothing.
+  /// </param>
+  /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
+  /// <exception cref="OptionsValidationException">
+  ///   Thrown at application startup if required configuration is missing or
+  ///   invalid.
+  /// </exception>
+  public static IServiceCollection AddCloudflareAnalytics(this IServiceCollection      services,
+                                                          Action<IHttpClientBuilder>? configureHttpClientBuilder)
+  {
     // Register the validator for early failure with clear error messages.
     // Use Analytics-specific requirements that validate ApiToken and GraphQlApiUrl.
     // Using AddSingleton allows multiple validators to be registered (e.g., Core + Analytics).
@@ -59,13 +81,17 @@ public static class ServiceCollectionExtensions
     services.AddSingleton<IAnalyticsApi, AnalyticsApi>();
 
     // Register a named HttpClient for GraphQL that uses the standard resilience pipeline.
-    services.AddHttpClient(Constants.GraphQlHttpClientName, (sp, client) =>
-            {
-              var options = sp.GetRequiredService<IOptions<CloudflareApiOptions>>().Value;
+    var httpClientBuilder = services.AddHttpClient(Constants.GraphQlHttpClientName, (sp, client) =>
+    {
+      var options = sp.GetRequiredService<IOptions<CloudflareApiOptions>>().Value;
 
-              ConfigureHttpClient(client, options);
-            })
-            .AddStandardResilienceHandler();
+      ConfigureHttpClient(client, options);
+    });
+
+    httpClientBuilder.AddStandardResilienceHandler();
+
+    // The caller's handlers are added after the resilience handler, so they run inside it, once per attempt.
+    configureHttpClientBuilder?.Invoke(httpClientBuilder);
 
     // Register a singleton GraphQL client built on the resilient HttpClient above. It's configured with the API endpoint and
     // authorization token from the Cloudflare options, which are expected to be
@@ -152,6 +178,26 @@ public static class ServiceCollectionExtensions
   public static IServiceCollection AddCloudflareAnalytics(this IServiceCollection services,
                                                           string                  name)
   {
+    return services.AddCloudflareAnalytics(name, configureHttpClientBuilder: null);
+  }
+
+  /// <summary>
+  ///   Registers a named <see cref="IAnalyticsApi" /> configuration like
+  ///   <see cref="AddCloudflareAnalytics(IServiceCollection, string)" />, and hands the builder of that client's GraphQL
+  ///   HttpClient to the caller.
+  /// </summary>
+  /// <param name="services">The <see cref="IServiceCollection" /> to add the services to.</param>
+  /// <param name="name">The unique name for this client configuration.</param>
+  /// <param name="configureHttpClientBuilder">
+  ///   Called once with the builder of the HttpClient this named client's GraphQL requests use, after the standard
+  ///   resilience handler was added, so a message handler added here runs once per attempt. <c>null</c> adds nothing.
+  /// </param>
+  /// <returns>The <see cref="IServiceCollection" /> so that additional calls can be chained.</returns>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is null or whitespace.</exception>
+  public static IServiceCollection AddCloudflareAnalytics(this IServiceCollection      services,
+                                                          string                       name,
+                                                          Action<IHttpClientBuilder>? configureHttpClientBuilder)
+  {
     ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
     // Register the validator for clear error messages when creating named clients.
@@ -163,14 +209,18 @@ public static class ServiceCollectionExtensions
     var httpClientName = AnalyticsApiFactory.GetHttpClientName(name);
 
     // Register a named HttpClient for this Analytics client.
-    services.AddHttpClient(httpClientName, (sp, client) =>
-            {
-              var optionsMonitor = sp.GetRequiredService<IOptionsMonitor<CloudflareApiOptions>>();
-              var options        = optionsMonitor.Get(name);
+    var httpClientBuilder = services.AddHttpClient(httpClientName, (sp, client) =>
+    {
+      var optionsMonitor = sp.GetRequiredService<IOptionsMonitor<CloudflareApiOptions>>();
+      var options        = optionsMonitor.Get(name);
 
-              ConfigureHttpClient(client, options);
-            })
-            .AddStandardResilienceHandler();
+      ConfigureHttpClient(client, options);
+    });
+
+    httpClientBuilder.AddStandardResilienceHandler();
+
+    // The caller's handlers are added after the resilience handler, so they run inside it, once per attempt.
+    configureHttpClientBuilder?.Invoke(httpClientBuilder);
 
     // Register the factory for named clients. TryAdd ensures we don't replace an existing registration.
     services.TryAddSingleton<IAnalyticsApiFactory, AnalyticsApiFactory>();

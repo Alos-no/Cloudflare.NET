@@ -54,6 +54,15 @@ builder.Services.AddCloudflareAnalytics();
 // ... rest of your service configuration
 ```
 
+To add your own message handlers to the HttpClient that sends the GraphQL requests (for example a handler that paces requests), pass a callback. It receives the client's `IHttpClientBuilder` after the standard resilience handler was added, so a handler added there runs once per attempt, retries included:
+
+```csharp
+builder.Services.AddCloudflareAnalytics(httpClientBuilder =>
+  httpClientBuilder.AddHttpMessageHandler<MyRequestPacingHandler>());
+```
+
+The named registration takes the same callback: `AddCloudflareAnalytics("account1", httpClientBuilder => ...)`.
+
 ### 3.3 Example: Querying R2 Analytics
 
 Inject `IAnalyticsApi` into your services. You can use it to send any valid GraphQL query to the Cloudflare API. The SDK provides response models that match the structure of the R2 analytics datasets.
