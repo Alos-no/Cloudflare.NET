@@ -11,18 +11,18 @@ using Xunit.Abstractions;
 
 /// <summary>
 ///   Contains integration tests for the User Audit Logs methods in <see cref="AuditLogsApi" /> (F15).
-///   These tests interact with the live Cloudflare API and require an account-scoped API token.
+///   These tests interact with the live Cloudflare API and require a user-scoped API token: Cloudflare refuses the route for an account-scoped one (code 9106).
 ///   <para>
 ///     <b>Note:</b> User audit logs show actions taken BY the authenticated user across all their accounts.
 ///     Logs are read-only and retained for 18 months (v1 API).
 ///   </para>
 ///   <para>
-///     <b>Permissions:</b> Audit Logs is an ACCOUNT-scoped permission ("Audit Logs Read"), not user-scoped.
+///     <b>Permissions:</b> The user-scoped token carries the "Audit Logs Read" permission.
 ///     Missing permissions will be caught by the PermissionValidationTests that run first.
 ///   </para>
 /// </summary>
 [Trait("Category", TestConstants.TestCategories.Integration)]
-public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixture>
+public class UserAuditLogsApiIntegrationTests : IClassFixture<UserApiTestFixture>
 {
   #region Properties & Fields - Non-Public
 
@@ -35,9 +35,9 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   #region Constructors
 
   /// <summary>Initializes a new instance of the <see cref="UserAuditLogsApiIntegrationTests" /> class.</summary>
-  /// <param name="fixture">The shared test fixture that provides an account-scoped API client.</param>
+  /// <param name="fixture">The shared test fixture that provides a client on the user-scoped API token.</param>
   /// <param name="output">The xUnit test output helper.</param>
-  public UserAuditLogsApiIntegrationTests(CloudflareApiTestFixture fixture, ITestOutputHelper output)
+  public UserAuditLogsApiIntegrationTests(UserApiTestFixture fixture, ITestOutputHelper output)
   {
     _sut = fixture.AuditLogsApi;
 
@@ -52,7 +52,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   #region List User Audit Logs Tests (I01-I04)
 
   /// <summary>I01: Verifies that ListUserAuditLogsAsync returns a valid CursorPaginatedResult.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_ReturnsValidResult()
   {
     // Arrange
@@ -67,7 +67,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I02: Verifies that returned logs have action timestamps populated.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_LogsHaveTimestamps()
   {
     // Arrange
@@ -88,7 +88,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I03: Verifies that actor info is populated (though email may be null for system/token actions).</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_ActorInfoRepresentsAuthenticatedUser()
   {
     // Arrange
@@ -115,7 +115,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I04: Verifies that action info includes type and result.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_ActionInfoIncludesTypeAndResult()
   {
     // Arrange
@@ -143,7 +143,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   #region Filter Tests (I05-I09)
 
   /// <summary>I05: Verifies that filtering by date range returns only logs in range.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_FilterByDateRange_ReturnsLogsInRange()
   {
     // Arrange - Last 3 days only
@@ -166,7 +166,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I07: Verifies that sorting ascending returns oldest first.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_SortAscending_ReturnsOldestFirst()
   {
     // Arrange
@@ -193,7 +193,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I08: Verifies that sorting descending returns newest first.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_SortDescending_ReturnsNewestFirst()
   {
     // Arrange
@@ -219,7 +219,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I09: Verifies that limit per page restricts result count.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_LimitPerPage_RestrictsResultCount()
   {
     // Arrange
@@ -283,7 +283,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I11: Verifies that ListAllUserAuditLogsAsync iterates through all pages.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListAllUserAuditLogsAsync_IteratesThroughAllPages()
   {
     // Arrange - Use filters to limit scope
@@ -312,7 +312,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   #region Edge Cases (I12-I15)
 
   /// <summary>I12: Verifies that future date range returns empty results without error.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_FutureDateRange_ReturnsEmptyResults()
   {
     // Arrange
@@ -333,7 +333,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   ///   The v1 User Audit Logs API retains logs for 18 months. When requesting data outside
   ///   the retention window, the API returns a 400 Bad Request error with code 113.
   /// </remarks>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_OldDateFilter_RejectedDueToRetention()
   {
     // Arrange - Filter for >18 months ago (outside v1 API retention period)
@@ -350,7 +350,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I14: Verifies that the API responds to valid authentication.</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_ValidToken_ReturnsResult()
   {
     // Arrange
@@ -364,7 +364,7 @@ public class UserAuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestF
   }
 
   /// <summary>I15: Verifies that invalid cursor is handled gracefully (either error or empty results).</summary>
-  [IntegrationTest]
+  [UserIntegrationTest]
   public async Task ListUserAuditLogsAsync_InvalidCursor_HandledGracefully()
   {
     // Arrange

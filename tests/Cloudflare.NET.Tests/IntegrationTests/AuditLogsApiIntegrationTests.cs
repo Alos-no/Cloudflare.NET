@@ -124,7 +124,7 @@ public class AuditLogsApiIntegrationTests : IClassFixture<CloudflareApiTestFixtu
   public async Task GetAllAccountAuditLogsAsync_YieldsAllPages()
   {
     // Arrange - Use filters to limit scope and prevent excessive API calls
-    var filters = CreateDefaultFilters(daysBack: 1, limit: 10);
+    var filters = CreateDefaultFilters(limit: 10);
 
     // Act
     var logs = new List<AuditLog>();

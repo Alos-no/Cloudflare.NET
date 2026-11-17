@@ -1,5 +1,9 @@
 namespace Cloudflare.NET.Analytics.Tests.UnitTests;
 
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using GraphQL;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
@@ -314,6 +318,84 @@ public class NamedAnalyticsClientTests
     // Assert - after disposal, creating a new client should throw.
     var action = () => factory.CreateClient(clientName);
     action.Should().Throw<ObjectDisposedException>();
+  }
+
+  /// <summary>
+  ///   Verifies that a message handler added through the named registration's HttpClient builder callback receives the
+  ///   named client's GraphQL request.
+  /// </summary>
+  [Fact]
+  public async Task NamedClient_WithHttpClientBuilderCallback_SendsRequestsThroughTheAddedHandler()
+  {
+    // Arrange
+    const string clientName = "account1";
+
+    var services = CreateServiceCollection();
+    var handler  = new AnsweringRequestCountingHandler();
+
+    services.AddCloudflareApiClient(clientName, options =>
+    {
+      options.ApiToken      = "test-token";
+      options.GraphQlApiUrl = "https://api.cloudflare.com/client/v4/graphql";
+    });
+
+    services.AddCloudflareAnalytics(clientName, builder => builder.AddHttpMessageHandler(() => handler));
+
+    var serviceProvider = services.BuildServiceProvider();
+    var client          = serviceProvider.GetRequiredService<IAnalyticsApiFactory>().CreateClient(clientName);
+
+    // Act
+    await client.SendQueryAsync<JsonElement>(new GraphQLRequest("{ viewer { __typename } }"));
+
+    // Assert
+    handler.RequestCount.Should().Be(1);
+  }
+
+  /// <summary>
+  ///   Verifies that a message handler added through the default registration's HttpClient builder callback receives the
+  ///   default client's GraphQL request.
+  /// </summary>
+  [Fact]
+  public async Task DefaultClient_WithHttpClientBuilderCallback_SendsRequestsThroughTheAddedHandler()
+  {
+    // Arrange
+    var services = CreateServiceCollection();
+    var handler  = new AnsweringRequestCountingHandler();
+
+    services.AddCloudflareApiClient(options =>
+    {
+      options.ApiToken      = "test-token";
+      options.GraphQlApiUrl = "https://api.cloudflare.com/client/v4/graphql";
+    });
+
+    services.AddCloudflareAnalytics(builder => builder.AddHttpMessageHandler(() => handler));
+
+    var serviceProvider = services.BuildServiceProvider();
+    var client          = serviceProvider.GetRequiredService<IAnalyticsApi>();
+
+    // Act
+    await client.SendQueryAsync<JsonElement>(new GraphQLRequest("{ viewer { __typename } }"));
+
+    // Assert
+    handler.RequestCount.Should().Be(1);
+  }
+
+  /// <summary>Counts the requests it receives and answers each with an empty GraphQL result, never calling the network.</summary>
+  private sealed class AnsweringRequestCountingHandler : DelegatingHandler
+  {
+    /// <summary>The number of requests received.</summary>
+    public int RequestCount { get; private set; }
+
+    /// <inheritdoc />
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+      RequestCount++;
+
+      return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+      {
+        Content = new StringContent("""{"data":{"viewer":{"__typename":"viewer"}}}""", Encoding.UTF8, "application/json")
+      });
+    }
   }
 
   /// <summary>Creates a service collection with common test dependencies.</summary>
