@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Getting Started | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Getting Started | Cloudflare.NET ">
+      <meta name="description" content="Get started with Cloudflare.NET SDK. Learn how to install, configure, and make your first API call to Cloudflare using C# and .NET.">
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="getting-started">Getting Started</h1>
+
+<p>This guide will help you get up and running with the Cloudflare.NET SDK.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>.NET 8.0, .NET 9.0, or .NET 10.0 SDK</li>
+<li>A Cloudflare account with an API token</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>Install the packages you need from NuGet:</p>
+<div class="tabGroup" id="tabgroup_1">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_1_dotnet-cli" role="tab" aria-controls="tabpanel_1_dotnet-cli" data-tab="dotnet-cli" tabindex="0" aria-selected="true">.NET CLI</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_package-manager" role="tab" aria-controls="tabpanel_1_package-manager" data-tab="package-manager" tabindex="-1">Package Manager</a>
+</li>
+</ul>
+<section id="tabpanel_1_dotnet-cli" role="tabpanel" data-tab="dotnet-cli">
+
+<pre><code class="lang-bash"># Core REST API Client (Required)
+dotnet add package Cloudflare.NET.Api
+
+# R2 S3-Compatible Client (Optional)
+dotnet add package Cloudflare.NET.R2
+
+# Analytics GraphQL Client (Optional)
+dotnet add package Cloudflare.NET.Analytics
+</code></pre>
+</section>
+<section id="tabpanel_1_package-manager" role="tabpanel" data-tab="package-manager" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-powershell"># Core REST API Client (Required)
+Install-Package Cloudflare.NET.Api
+
+# R2 S3-Compatible Client (Optional)
+Install-Package Cloudflare.NET.R2
+
+# Analytics GraphQL Client (Optional)
+Install-Package Cloudflare.NET.Analytics
+</code></pre>
+</section>
+</div>
+<h2 id="configuration">Configuration</h2>
+<p>The SDK supports two configuration approaches:</p>
+<ol>
+<li><strong>Dependency Injection</strong> (recommended for most applications) - Register clients at startup with <code>AddCloudflareApiClient()</code></li>
+<li><strong>Dynamic Creation</strong> - Create clients at runtime when configurations aren't known at startup (see <a href="#option-2-dynamic-clients-runtime-creation">Dynamic Clients</a>)</li>
+</ol>
+<h3 id="dependency-injection">Dependency Injection</h3>
+<p>Register the clients in your <code>Program.cs</code>:</p>
+<pre><code class="lang-csharp">var builder = WebApplication.CreateBuilder(args);
+
+// Register from IConfiguration (binds to &quot;Cloudflare&quot; and &quot;R2&quot; sections)
+builder.Services.AddCloudflareApiClient(builder.Configuration);
+builder.Services.AddCloudflareR2Client(builder.Configuration);
+builder.Services.AddCloudflareAnalytics();
+
+var app = builder.Build();
+</code></pre>
+<p>Alternatively, configure options programmatically:</p>
+<pre><code class="lang-csharp">builder.Services.AddCloudflareApiClient(options =&gt;
+{
+    options.ApiToken = &quot;your-api-token&quot;;
+    options.AccountId = &quot;your-account-id&quot;;
+    options.DefaultTimeout = TimeSpan.FromSeconds(30);
+    options.RateLimiting.IsEnabled = true;
+    options.RateLimiting.EnableProactiveThrottling = true;  // Delay requests when quota is low
+    options.RateLimiting.QuotaLowThreshold = 0.1;           // Throttle at 10% remaining
+});
+</code></pre>
+<h3 id="appsettingsjson">appsettings.json</h3>
+<p>Configure your Cloudflare credentials in <code>appsettings.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;Cloudflare&quot;: {
+    &quot;ApiToken&quot;: &quot;your-cloudflare-api-token&quot;,
+    &quot;AccountId&quot;: &quot;your-cloudflare-account-id&quot;,
+    &quot;DefaultTimeout&quot;: &quot;00:00:30&quot;,
+    &quot;RateLimiting&quot;: {
+      &quot;IsEnabled&quot;: true,
+      &quot;MaxRetries&quot;: 3,
+      &quot;PermitLimit&quot;: 25,
+      &quot;QueueLimit&quot;: 10,
+      &quot;EnableProactiveThrottling&quot;: true,
+      &quot;QuotaLowThreshold&quot;: 0.1
+    }
+  },
+  &quot;R2&quot;: {
+    &quot;AccessKeyId&quot;: &quot;your-r2-access-key-id&quot;,
+    &quot;SecretAccessKey&quot;: &quot;your-r2-secret-access-key&quot;
+  }
+}
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p><strong>Proactive Throttling</strong>: When <code>EnableProactiveThrottling</code> is enabled (default: <code>true</code>), the SDK automatically delays requests when the remaining API quota falls below <code>QuotaLowThreshold</code> (default: 10%). This prevents 429 errors before they occur by reading rate limit headers from Cloudflare's responses.</p>
+</div>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Never commit API tokens or secrets to source control. Use <a href="https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets">User Secrets</a> for development and environment variables or a managed Key Vault for production.</p>
+</div>
+<h2 id="basic-usage">Basic Usage</h2>
+<p>Inject <a class="xref" href="../api/Cloudflare.NET.ICloudflareApiClient.html">ICloudflareApiClient</a> into your services:</p>
+<pre><code class="lang-csharp">public class DnsService(ICloudflareApiClient cf)
+{
+    public async Task&lt;DnsRecord?&gt; FindRecordAsync(string zoneId, string hostname)
+    {
+        return await cf.Zones.FindDnsRecordByNameAsync(zoneId, hostname);
+    }
+
+    public async Task CreateCnameAsync(string zoneId, string name, string target)
+    {
+        await cf.Zones.CreateCnameRecordAsync(zoneId, name, target, proxied: true);
+    }
+
+    public async Task PurgeCacheAsync(string zoneId, IEnumerable&lt;string&gt; urls)
+    {
+        await cf.Zones.PurgeCacheAsync(zoneId, new PurgeCacheRequest
+        {
+            Files = urls.ToList()
+        });
+    }
+}
+</code></pre>
+<h2 id="multi-account-support">Multi-Account Support</h2>
+<p>For applications managing multiple Cloudflare accounts, you have two options:</p>
+<h3 id="option-1-named-clients-pre-registered">Option 1: Named Clients (Pre-Registered)</h3>
+<p>Use named clients when account configurations are known at startup:</p>
+<pre><code class="lang-csharp">// Register named clients
+builder.Services.AddCloudflareApiClient(&quot;production&quot;, options =&gt;
+{
+    options.ApiToken = &quot;prod-token&quot;;
+    options.AccountId = &quot;prod-account-id&quot;;
+});
+
+builder.Services.AddCloudflareApiClient(&quot;staging&quot;, options =&gt;
+{
+    options.ApiToken = &quot;staging-token&quot;;
+    options.AccountId = &quot;staging-account-id&quot;;
+});
+</code></pre>
+<h4 id="using-the-factory">Using the Factory</h4>
+<pre><code class="lang-csharp">public class MultiAccountService(ICloudflareApiClientFactory apiFactory)
+{
+    public async Task ManageProductionAsync()
+    {
+        var prodClient = apiFactory.CreateClient(&quot;production&quot;);
+        // Use the production client...
+    }
+}
+</code></pre>
+<h4 id="using-keyed-services-net-8">Using Keyed Services (.NET 8+)</h4>
+<pre><code class="lang-csharp">public class MyService(
+    [FromKeyedServices(&quot;production&quot;)] ICloudflareApiClient prodClient,
+    [FromKeyedServices(&quot;staging&quot;)] ICloudflareApiClient stagingClient)
+{
+    // Both clients are injected directly
+}
+</code></pre>
+<h3 id="option-2-dynamic-clients-runtime-creation">Option 2: Dynamic Clients (Runtime Creation)</h3>
+<p>Use dynamic clients when account configurations are not known at startup, such as when users can add Cloudflare accounts through a UI:</p>
+<pre><code class="lang-csharp">public class UserAccountService(ICloudflareApiClientFactory factory)
+{
+    public async Task&lt;IReadOnlyList&lt;Zone&gt;&gt; GetUserZonesAsync(UserCloudflareCredentials credentials)
+    {
+        var options = new CloudflareApiOptions
+        {
+            ApiToken = credentials.ApiToken,
+            AccountId = credentials.AccountId,
+            RateLimiting = new RateLimitingOptions
+            {
+                IsEnabled = true,
+                PermitLimit = 10  // Conservative limit for user accounts
+            }
+        };
+
+        // Dynamic clients must be disposed when done
+        using var client = factory.CreateClient(options);
+
+        var zones = new List&lt;Zone&gt;();
+        await foreach (var zone in client.Zones.ListAllZonesAsync())
+        {
+            zones.Add(zone);
+        }
+        return zones;
+    }
+}
+</code></pre>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Dynamic clients manage their own <code>HttpClient</code> and resilience pipeline. Always dispose them when finished using a <code>using</code> statement or by calling <code>Dispose()</code>. Each dynamic client has isolated state (rate limiter, circuit breaker) and does not share resources with other clients.</p>
+</div>
+<h2 id="error-handling">Error Handling</h2>
+<p>The SDK throws <a class="xref" href="../api/Cloudflare.NET.Core.Exceptions.CloudflareApiException.html">CloudflareApiException</a> when the API returns an error:</p>
+<pre><code class="lang-csharp">try
+{
+    await cf.Zones.CreateCnameRecordAsync(zoneId, name, target);
+}
+catch (CloudflareApiException ex)
+{
+    // API returned success=false
+    foreach (var error in ex.Errors)
+    {
+        Console.WriteLine($&quot;[{error.Code}] {error.Message}&quot;);
+    }
+}
+catch (HttpRequestException ex)
+{
+    // Network or HTTP error
+    Console.WriteLine($&quot;HTTP Error: {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li><a href="configuration.html">Configuration</a> - Advanced configuration options</li>
+<li><a href="zones/index.html">Zones API</a> - Manage DNS, cache, and custom hostnames</li>
+<li><a href="accounts/index.html">Accounts API</a> - Manage R2 buckets and account-level security</li>
+<li><a href="r2/index.html">R2 Object Storage</a> - Upload, download, and manage objects</li>
+<li><a href="analytics/index.html">Analytics</a> - Query traffic and security metrics</li>
+<li><a href="../api/index.html">API Reference</a> - Complete API documentation</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/getting-started.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

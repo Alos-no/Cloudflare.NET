@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Zone Access Rules | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Zone Access Rules | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/access-rules.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="zone-access-rules">Zone Access Rules</h1>
+
+<p>IP Access Rules allow you to block, challenge, or whitelist traffic based on IP address, IP range, ASN, or country at the zone level.</p>
+<h2 id="overview">Overview</h2>
+<p>Access the Zone Access Rules API through <code>cf.Zones.AccessRules</code>:</p>
+<pre><code class="lang-csharp">public class FirewallService(ICloudflareApiClient cf)
+{
+    public async Task BlockIpAsync(string zoneId, string ipAddress)
+    {
+        await cf.Zones.AccessRules.CreateAsync(zoneId,
+            new CreateAccessRuleRequest(
+                Mode: AccessRuleMode.Block,
+                Configuration: new IpConfiguration(ipAddress),
+                Notes: &quot;Blocked by automation&quot;
+            ));
+    }
+}
+</code></pre>
+<h2 id="creating-access-rules">Creating Access Rules</h2>
+<h3 id="block-an-ip-address">Block an IP Address</h3>
+<pre><code class="lang-csharp">var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Block,
+        Configuration: new IpConfiguration(&quot;192.168.1.1&quot;),
+        Notes: &quot;Malicious actor&quot;
+    ));
+</code></pre>
+<h3 id="challenge-an-ip-range">Challenge an IP Range</h3>
+<pre><code class="lang-csharp">var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Challenge,
+        Configuration: new CidrConfiguration(&quot;10.0.0.0/8&quot;),
+        Notes: &quot;Suspicious network&quot;
+    ));
+</code></pre>
+<h3 id="block-by-asn">Block by ASN</h3>
+<pre><code class="lang-csharp">var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Block,
+        Configuration: new AsnConfiguration(&quot;AS12345&quot;),
+        Notes: &quot;Known bad ASN&quot;
+    ));
+</code></pre>
+<h3 id="block-by-country">Block by Country</h3>
+<pre><code class="lang-csharp">var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Block,
+        Configuration: new CountryConfiguration(&quot;XX&quot;),
+        Notes: &quot;Geo-blocking&quot;
+    ));
+</code></pre>
+<h3 id="whitelist-an-ip">Whitelist an IP</h3>
+<pre><code class="lang-csharp">var rule = await cf.Zones.AccessRules.CreateAsync(zoneId,
+    new CreateAccessRuleRequest(
+        Mode: AccessRuleMode.Whitelist,
+        Configuration: new IpConfiguration(&quot;10.0.0.1&quot;),
+        Notes: &quot;Office IP - bypass all security&quot;
+    ));
+</code></pre>
+<h2 id="listing-access-rules">Listing Access Rules</h2>
+<h3 id="list-with-pagination">List with Pagination</h3>
+<pre><code class="lang-csharp">var page = await cf.Zones.AccessRules.ListAsync(zoneId,
+    new ListAccessRulesFilters
+    {
+        Mode = AccessRuleMode.Block,
+        Page = 1,
+        PerPage = 50
+    });
+
+foreach (var rule in page.Items)
+{
+    Console.WriteLine($&quot;{rule.Configuration.Value}: {rule.Mode}&quot;);
+}
+</code></pre>
+<h3 id="list-all-rules">List All Rules</h3>
+<pre><code class="lang-csharp">await foreach (var rule in cf.Zones.AccessRules.ListAllAsync(zoneId))
+{
+    Console.WriteLine($&quot;{rule.Id}: {rule.Configuration.Target} = {rule.Configuration.Value}&quot;);
+}
+</code></pre>
+<h3 id="filter-by-configuration">Filter by Configuration</h3>
+<pre><code class="lang-csharp">var filters = new ListAccessRulesFilters
+{
+    ConfigurationTarget = AccessRuleTarget.Ip,
+    ConfigurationValue = &quot;192.168.1.1&quot;
+};
+
+await foreach (var rule in cf.Zones.AccessRules.ListAllAsync(zoneId, filters))
+{
+    // Process matching rules
+}
+</code></pre>
+<h2 id="getting-a-specific-rule">Getting a Specific Rule</h2>
+<pre><code class="lang-csharp">var rule = await cf.Zones.AccessRules.GetAsync(zoneId, ruleId);
+Console.WriteLine($&quot;Mode: {rule.Mode}, Created: {rule.CreatedOn}&quot;);
+</code></pre>
+<h2 id="updating-access-rules">Updating Access Rules</h2>
+<pre><code class="lang-csharp">var updated = await cf.Zones.AccessRules.UpdateAsync(zoneId, ruleId,
+    new UpdateAccessRuleRequest(
+        Mode: AccessRuleMode.Challenge,
+        Notes: &quot;Changed from block to challenge&quot;
+    ));
+</code></pre>
+<h2 id="deleting-access-rules">Deleting Access Rules</h2>
+<pre><code class="lang-csharp">await cf.Zones.AccessRules.DeleteAsync(zoneId, ruleId);
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="accessrulemode-extensible-enum">AccessRuleMode (Extensible Enum)</h3>
+<p><a class="xref" href="../../../api/Cloudflare.NET.Security.Firewall.Models.AccessRuleMode.html">AccessRuleMode</a> defines the action to take when an access rule matches:</p>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>API Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Block</code></td>
+<td><code>block</code></td>
+<td>Block all requests (returns 403)</td>
+</tr>
+<tr>
+<td><code>Challenge</code></td>
+<td><code>challenge</code></td>
+<td>Present interactive CAPTCHA challenge</td>
+</tr>
+<tr>
+<td><code>JsChallenge</code></td>
+<td><code>js_challenge</code></td>
+<td>Present JavaScript challenge</td>
+</tr>
+<tr>
+<td><code>ManagedChallenge</code></td>
+<td><code>managed_challenge</code></td>
+<td>Cloudflare dynamically chooses challenge type</td>
+</tr>
+<tr>
+<td><code>Whitelist</code></td>
+<td><code>whitelist</code></td>
+<td>Allow requests, bypass all security checks</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Cloudflare.NET.Security.Firewall.Models;
+
+// Use static properties for IntelliSense support
+var mode = AccessRuleMode.Block;
+
+// Extensible for future modes
+AccessRuleMode customMode = &quot;new-mode&quot;;
+</code></pre>
+<h3 id="accessruletarget-extensible-enum">AccessRuleTarget (Extensible Enum)</h3>
+<p>The target type for access rule configuration. This is an <a href="../../conventions.html#extensible-enums">extensible enum</a> used in <code>ListAccessRulesFilters</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ip</code></td>
+<td>Single IPv4 or IPv6 address</td>
+</tr>
+<tr>
+<td><code>IpRange</code></td>
+<td>CIDR notation range</td>
+</tr>
+<tr>
+<td><code>Asn</code></td>
+<td>Autonomous System Number</td>
+</tr>
+<tr>
+<td><code>Country</code></td>
+<td>Two-letter country code</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration-types">Configuration Types</h3>
+<p>Use polymorphic configuration types to create rules for different targets:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Target</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IpConfiguration</code></td>
+<td>Single IP</td>
+<td><code>new IpConfiguration(&quot;192.168.1.1&quot;)</code></td>
+</tr>
+<tr>
+<td><code>CidrConfiguration</code></td>
+<td>IP range</td>
+<td><code>new CidrConfiguration(&quot;10.0.0.0/8&quot;)</code></td>
+</tr>
+<tr>
+<td><code>AsnConfiguration</code></td>
+<td>ASN</td>
+<td><code>new AsnConfiguration(&quot;AS12345&quot;)</code></td>
+</tr>
+<tr>
+<td><code>CountryConfiguration</code></td>
+<td>Country code</td>
+<td><code>new CountryConfiguration(&quot;US&quot;)</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="accessrule">AccessRule</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Unique identifier</td>
+</tr>
+<tr>
+<td><code>Mode</code></td>
+<td><code>AccessRuleMode</code></td>
+<td>Action to take</td>
+</tr>
+<tr>
+<td><code>Configuration</code></td>
+<td><code>AccessRuleConfiguration</code></td>
+<td>Match target</td>
+</tr>
+<tr>
+<td><code>Notes</code></td>
+<td><code>string?</code></td>
+<td>Optional notes</td>
+</tr>
+<tr>
+<td><code>AllowedModes</code></td>
+<td><code>IReadOnlyList&lt;AccessRuleMode&gt;</code></td>
+<td>Available modes</td>
+</tr>
+<tr>
+<td><code>Scope</code></td>
+<td><code>Scope</code></td>
+<td>Rule scope (zone/account)</td>
+</tr>
+<tr>
+<td><code>CreatedOn</code></td>
+<td><code>DateTimeOffset?</code></td>
+<td>Creation timestamp</td>
+</tr>
+<tr>
+<td><code>ModifiedOn</code></td>
+<td><code>DateTimeOffset?</code></td>
+<td>Last modification</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="bulk-block-ips">Bulk Block IPs</h3>
+<pre><code class="lang-csharp">public async Task BlockIpsAsync(string zoneId, IEnumerable&lt;string&gt; ips, string reason)
+{
+    foreach (var ip in ips)
+    {
+        await cf.Zones.AccessRules.CreateAsync(zoneId,
+            new CreateAccessRuleRequest(
+                Mode: AccessRuleMode.Block,
+                Configuration: new IpConfiguration(ip),
+                Notes: reason
+            ));
+    }
+}
+</code></pre>
+<h3 id="find-and-remove-rule">Find and Remove Rule</h3>
+<pre><code class="lang-csharp">public async Task UnblockIpAsync(string zoneId, string ip)
+{
+    var filters = new ListAccessRulesFilters
+    {
+        ConfigurationTarget = AccessRuleTarget.Ip,
+        ConfigurationValue = ip
+    };
+
+    await foreach (var rule in cf.Zones.AccessRules.ListAllAsync(zoneId, filters))
+    {
+        await cf.Zones.AccessRules.DeleteAsync(zoneId, rule.Id);
+    }
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Firewall Services</td>
+<td>Zone</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/security/access-rules.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

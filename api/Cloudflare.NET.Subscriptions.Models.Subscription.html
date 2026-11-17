@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Subscription | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Subscription | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Represents a subscription for Cloudflare services.    Subscriptions manage billing plans and add-ons at account, user, or zone level.   Each subscription has a rate plan that defines the features included and their pricing.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Subscriptions_Models_Subscription.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Subscriptions.Models.Subscription%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Subscriptions.Models.Subscription">
+
+
+
+  <h1 id="Cloudflare_NET_Subscriptions_Models_Subscription" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription" class="text-break">
+Class Subscription  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L403"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Subscriptions.html">Subscriptions</a>.<a class="xref" href="Cloudflare.NET.Subscriptions.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a subscription for Cloudflare services.</p>
+<p>
+  Subscriptions manage billing plans and add-ons at account, user, or zone level.
+  Each subscription has a rate plan that defines the features included and their pricing.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record Subscription : IEquatable&lt;Subscription&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Subscription</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.Subscription.html">Subscription</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Cloudflare_NET_Subscriptions_Models_Subscription_examples">Examples</h2>
+  <pre><code class="lang-csharp">var subscriptions = await client.Subscriptions.ListAccountSubscriptionsAsync(accountId);
+foreach (var sub in subscriptions)
+{
+  Console.WriteLine($"{sub.RatePlan?.PublicName}: {sub.Price} {sub.Currency}/{sub.Frequency}");
+  Console.WriteLine($"  State: {sub.State}");
+  Console.WriteLine($"  Period: {sub.CurrentPeriodStart} to {sub.CurrentPeriodEnd}");
+}</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription__ctor_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription__ctor_System_String_Cloudflare_NET_Subscriptions_Models_SubscriptionState_System_Decimal_System_String_Cloudflare_NET_Subscriptions_Models_SubscriptionFrequency_Cloudflare_NET_Subscriptions_Models_RatePlan_System_Nullable_System_DateTime__System_Nullable_System_DateTime__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Subscriptions_Models_SubscriptionComponent__" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.#ctor(System.String,Cloudflare.NET.Subscriptions.Models.SubscriptionState,System.Decimal,System.String,Cloudflare.NET.Subscriptions.Models.SubscriptionFrequency,Cloudflare.NET.Subscriptions.Models.RatePlan,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Collections.Generic.IReadOnlyList{Cloudflare.NET.Subscriptions.Models.SubscriptionComponent})">
+  Subscription(string, SubscriptionState, decimal, string, SubscriptionFrequency, RatePlan?, DateTime?, DateTime?, IReadOnlyList&lt;SubscriptionComponent&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L403"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a subscription for Cloudflare services.</p>
+<p>
+  Subscriptions manage billing plans and add-ons at account, user, or zone level.
+  Each subscription has a rate plan that defines the features included and their pricing.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Subscription(string Id, SubscriptionState State, decimal Price, string Currency, SubscriptionFrequency Frequency, RatePlan? RatePlan = null, DateTime? CurrentPeriodStart = null, DateTime? CurrentPeriodEnd = null, IReadOnlyList&lt;SubscriptionComponent&gt;? ComponentValues = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Subscription identifier.</p>
+</dd>
+    <dt><code>State</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.SubscriptionState.html">SubscriptionState</a></dt>
+    <dd><p>Current state of the subscription.</p>
+</dd>
+    <dt><code>Price</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>Subscription price in the specified currency.</p>
+</dd>
+    <dt><code>Currency</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Currency code (e.g., &quot;USD&quot;).</p>
+</dd>
+    <dt><code>Frequency</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.SubscriptionFrequency.html">SubscriptionFrequency</a></dt>
+    <dd><p>Billing frequency (weekly, monthly, quarterly, yearly).</p>
+</dd>
+    <dt><code>RatePlan</code> <a class="xref" href="Cloudflare.NET.Subscriptions.Models.RatePlan.html">RatePlan</a></dt>
+    <dd><p>The rate plan associated with this subscription.</p>
+</dd>
+    <dt><code>CurrentPeriodStart</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>Start of the current billing period.</p>
+</dd>
+    <dt><code>CurrentPeriodEnd</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>End of the current billing period.</p>
+</dd>
+    <dt><code>ComponentValues</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.SubscriptionComponent.html">SubscriptionComponent</a>&gt;</dt>
+    <dd><p>Optional component values for configurable features.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Subscriptions_Models_Subscription__ctor_System_String_Cloudflare_NET_Subscriptions_Models_SubscriptionState_System_Decimal_System_String_Cloudflare_NET_Subscriptions_Models_SubscriptionFrequency_Cloudflare_NET_Subscriptions_Models_RatePlan_System_Nullable_System_DateTime__System_Nullable_System_DateTime__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Subscriptions_Models_SubscriptionComponent___examples">Examples</h4>
+  <pre><code class="lang-csharp">var subscriptions = await client.Subscriptions.ListAccountSubscriptionsAsync(accountId);
+foreach (var sub in subscriptions)
+{
+  Console.WriteLine($"{sub.RatePlan?.PublicName}: {sub.Price} {sub.Currency}/{sub.Frequency}");
+  Console.WriteLine($"  State: {sub.State}");
+  Console.WriteLine($"  Period: {sub.CurrentPeriodStart} to {sub.CurrentPeriodEnd}");
+}</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_ComponentValues_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.ComponentValues*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_ComponentValues" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.ComponentValues">
+  ComponentValues
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L428"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Optional component values for configurable features.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;component_values&quot;)]
+public IReadOnlyList&lt;SubscriptionComponent&gt;? ComponentValues { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Subscriptions.Models.SubscriptionComponent.html">SubscriptionComponent</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_Currency_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Currency*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_Currency" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Currency">
+  Currency
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L413"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Currency code (e.g., &quot;USD&quot;).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;currency&quot;)]
+public string Currency { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_CurrentPeriodEnd_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.CurrentPeriodEnd*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_CurrentPeriodEnd" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.CurrentPeriodEnd">
+  CurrentPeriodEnd
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L425"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>End of the current billing period.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;current_period_end&quot;)]
+public DateTime? CurrentPeriodEnd { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_CurrentPeriodStart_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.CurrentPeriodStart*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_CurrentPeriodStart" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.CurrentPeriodStart">
+  CurrentPeriodStart
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L422"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Start of the current billing period.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;current_period_start&quot;)]
+public DateTime? CurrentPeriodStart { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_Frequency_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Frequency*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_Frequency" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Frequency">
+  Frequency
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L416"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Billing frequency (weekly, monthly, quarterly, yearly).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;frequency&quot;)]
+public SubscriptionFrequency Frequency { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Subscriptions.Models.SubscriptionFrequency.html">SubscriptionFrequency</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_Id_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Id*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_Id" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Id">
+  Id
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L404"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Subscription identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
+public string Id { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_Price_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Price*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_Price" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.Price">
+  Price
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L410"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Subscription price in the specified currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;price&quot;)]
+public decimal Price { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_RatePlan_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.RatePlan*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_RatePlan" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.RatePlan">
+  RatePlan
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L419"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The rate plan associated with this subscription.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;rate_plan&quot;)]
+public RatePlan? RatePlan { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Subscriptions.Models.RatePlan.html">RatePlan</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Subscriptions_Models_Subscription_State_" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.State*"></a>
+
+  <h3 id="Cloudflare_NET_Subscriptions_Models_Subscription_State" data-uid="Cloudflare.NET.Subscriptions.Models.Subscription.State">
+  State
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L407"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Current state of the subscription.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;state&quot;)]
+public SubscriptionState State { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Subscriptions.Models.SubscriptionState.html">SubscriptionState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Subscriptions/Models/SubscriptionModels.cs/#L403" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ZonesApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ZonesApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Implements the API for managing Cloudflare Zone resources.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Zones_ZonesApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Zones.ZonesApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Zones.ZonesApi">
+
+
+
+  <h1 id="Cloudflare_NET_Zones_ZonesApi" data-uid="Cloudflare.NET.Zones.ZonesApi" class="text-break">
+Class ZonesApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Zones.html">Zones</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements the API for managing Cloudflare Zone resources.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ZonesApi : ApiResource, IZonesApi</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Cloudflare.NET.Core.ApiResource.html">ApiResource</a></div>
+      <div><span class="xref">ZonesApi</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html">IZonesApi</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_HttpClient">ApiResource.HttpClient</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_Logger">ApiResource.Logger</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PostAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PutJsonAsync__1_System_String_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PutJsonAsync&lt;TResult&gt;(string, string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PatchAsync__1_System_String_System_Object_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.PatchAsync&lt;TResult&gt;(string, object, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_DeleteAsync__1_System_String_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.DeleteAsync&lt;TResult&gt;(string, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetStringAsync_System_String_System_Threading_CancellationToken_">ApiResource.GetStringAsync(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_PostMultipartFileAsync__1_System_String_System_IO_Stream_System_String_System_String_System_Threading_CancellationToken_">ApiResource.PostMultipartFileAsync&lt;TResult&gt;(string, Stream, string, string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPagePaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetPagePaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__1_System_String_System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TItem&gt;(string, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedResultAsync__2_System_String_System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedResultAsync&lt;TWrapper, TItem&gt;(string, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__1_System_String_System_Nullable_System_Int32__System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TItem&gt;(string, int?, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_GetCursorPaginatedAsync__2_System_String_System_Nullable_System_Int32__System_Func___0_System_Collections_Generic_IReadOnlyList___1___System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_System_String_System_String___System_Threading_CancellationToken_">ApiResource.GetCursorPaginatedAsync&lt;TWrapper, TItem&gt;(string, int?, Func&lt;TWrapper, IReadOnlyList&lt;TItem&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessResponse__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessResponse&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Cloudflare.NET.Core.ApiResource.html#Cloudflare_NET_Core_ApiResource_ProcessAndDeserializeAsync__1_System_Net_Http_HttpResponseMessage_System_Threading_CancellationToken_">ApiResource.ProcessAndDeserializeAsync&lt;T&gt;(HttpResponseMessage, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi__ctor_" data-uid="Cloudflare.NET.Zones.ZonesApi.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi__ctor_System_Net_Http_HttpClient_Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="Cloudflare.NET.Zones.ZonesApi.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory)">
+  ZonesApi(HttpClient, ILoggerFactory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Cloudflare.NET.Zones.ZonesApi.html">ZonesApi</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ZonesApi(HttpClient httpClient, ILoggerFactory loggerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd><p>The HttpClient for making requests.</p>
+</dd>
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The factory to create loggers for this and child resources.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_AccessRules_" data-uid="Cloudflare.NET.Zones.ZonesApi.AccessRules*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_AccessRules" data-uid="Cloudflare.NET.Zones.ZonesApi.AccessRules">
+  AccessRules
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API for managing zone-level IP Access Rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IZoneAccessRulesApi AccessRules { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.AccessRules.IZoneAccessRulesApi.html">IZoneAccessRulesApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_AccessRules_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to the <code>/zones/{zone_id}/firewall/access_rules/rules</code> endpoint.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_CustomHostnames_" data-uid="Cloudflare.NET.Zones.ZonesApi.CustomHostnames*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_CustomHostnames" data-uid="Cloudflare.NET.Zones.ZonesApi.CustomHostnames">
+  CustomHostnames
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API for managing Custom Hostnames (Cloudflare for SaaS).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ICustomHostnamesApi CustomHostnames { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.html">ICustomHostnamesApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_CustomHostnames_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to the <code>/zones/{zone_id}/custom_hostnames</code> endpoint family.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_Lockdown_" data-uid="Cloudflare.NET.Zones.ZonesApi.Lockdown*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_Lockdown" data-uid="Cloudflare.NET.Zones.ZonesApi.Lockdown">
+  Lockdown
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API for managing Zone Lockdown rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IZoneLockdownApi Lockdown { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Firewall.IZoneLockdownApi.html">IZoneLockdownApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_Lockdown_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to the <code>/zones/{zone_id}/firewall/lockdowns</code> endpoint.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_Rulesets_" data-uid="Cloudflare.NET.Zones.ZonesApi.Rulesets*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_Rulesets" data-uid="Cloudflare.NET.Zones.ZonesApi.Rulesets">
+  Rulesets
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API for managing zone-level Rulesets (e.g., WAF, Redirects).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IZoneRulesetsApi Rulesets { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Rulesets.IZoneRulesetsApi.html">IZoneRulesetsApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_Rulesets_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to the <code>/zones/{zone_id}/rulesets</code> endpoint family.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_UaRules_" data-uid="Cloudflare.NET.Zones.ZonesApi.UaRules*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_UaRules" data-uid="Cloudflare.NET.Zones.ZonesApi.UaRules">
+  UaRules
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the API for managing User-Agent blocking rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IZoneUaRulesApi UaRules { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Zones.Firewall.IZoneUaRulesApi.html">IZoneUaRulesApi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_UaRules_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to the <code>/zones/{zone_id}/firewall/ua_rules</code> endpoint.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_CreateCnameRecordAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.CreateCnameRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_CreateCnameRecordAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.CreateCnameRecordAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  CreateCnameRecordAsync(string, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L305"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a CNAME DNS record, typically used to point a custom domain to Cloudflare's infrastructure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord&gt; CreateCnameRecordAsync(string zoneId, string hostname, string cnameTarget, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone where the record will be created.</p>
+</dd>
+    <dt><code>hostname</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The hostname for the CNAME record (e.g., &quot;cdn.tenant.example.com&quot;).</p>
+</dd>
+    <dt><code>cnameTarget</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The target the CNAME should point to.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a> with
+details of the created record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_CreateZoneAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.CreateZoneAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_CreateZoneAsync_Cloudflare_NET_Zones_Models_CreateZoneRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.CreateZoneAsync(Cloudflare.NET.Zones.Models.CreateZoneRequest,System.Threading.CancellationToken)">
+  CreateZoneAsync(CreateZoneRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Zone&gt; CreateZoneAsync(CreateZoneRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Zones.Models.CreateZoneRequest.html">CreateZoneRequest</a></dt>
+    <dd><p>The zone creation request with name, type, and account.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</dt>
+    <dd><p>The newly created zone.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_CreateZoneAsync_Cloudflare_NET_Zones_Models_CreateZoneRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var request = new CreateZoneRequest(
+  Name: "example.com",
+  Type: ZoneType.Full,
+  Account: new ZoneAccountReference("account-id")
+);
+var zone = await zonesApi.CreateZoneAsync(request);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_CreateZoneAsync_Cloudflare_NET_Zones_Models_CreateZoneRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+<p>The zone will initially have a status of <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneStatus.html#Cloudflare_NET_Zones_Models_ZoneStatus_Pending">Pending</a> until nameserver verification completes.</p>
+<p>Use <a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html#Cloudflare_NET_Zones_IZonesApi_TriggerActivationCheckAsync_System_String_System_Threading_CancellationToken_">TriggerActivationCheckAsync(string, CancellationToken)</a> to manually trigger verification.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">request</code> is null.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/create/">https://developers.cloudflare.com/api/resources/zones/methods/create/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_CreateZoneHoldAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.CreateZoneHoldAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_CreateZoneHoldAsync_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.CreateZoneHoldAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
+  CreateZoneHoldAsync(string, bool, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates/enforces a zone hold, blocking creation of zones with this hostname.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ZoneHold&gt; CreateZoneHoldAsync(string zoneId, bool includeSubdomains = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>includeSubdomains</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When true, the hold extends to block any subdomain and SSL4SaaS Custom Hostnames.
+For example, a hold on &quot;example.com&quot; would also block &quot;staging.example.com&quot;.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneHold.html">ZoneHold</a>&gt;</dt>
+    <dd><p>The created zone hold.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_CreateZoneHoldAsync_System_String_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Create a basic hold
+var hold = await zonesApi.CreateZoneHoldAsync(zoneId);
+
+// Create a hold that includes subdomains
+var holdWithSubdomains = await zonesApi.CreateZoneHoldAsync(zoneId, includeSubdomains: true);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_CreateZoneHoldAsync_System_String_System_Boolean_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/create/">https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/create/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_DeleteDnsRecordAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.DeleteDnsRecordAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_DeleteDnsRecordAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.DeleteDnsRecordAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteDnsRecordAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L298"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a DNS record by its ID within a specific zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteDnsRecordAsync(string zoneId, string dnsRecordId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone where the record exists.</p>
+</dd>
+    <dt><code>dnsRecordId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The unique identifier of the DNS record to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_DeleteZoneAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.DeleteZoneAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_DeleteZoneAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.DeleteZoneAsync(System.String,System.Threading.CancellationToken)">
+  DeleteZoneAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a zone permanently.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task DeleteZoneAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the zone to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_DeleteZoneAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+<p>
+  <strong>Warning:</strong> This operation is irreversible. All DNS records, settings,
+  and configuration for the zone will be permanently deleted.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/delete/">https://developers.cloudflare.com/api/resources/zones/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_EditZoneAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.EditZoneAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_EditZoneAsync_System_String_Cloudflare_NET_Zones_Models_EditZoneRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.EditZoneAsync(System.String,Cloudflare.NET.Zones.Models.EditZoneRequest,System.Threading.CancellationToken)">
+  EditZoneAsync(string, EditZoneRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Edits a zone's properties. Only one property can be changed per call.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Zone&gt; EditZoneAsync(string zoneId, EditZoneRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the zone to edit.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Zones.Models.EditZoneRequest.html">EditZoneRequest</a></dt>
+    <dd><p>The edit request with the property to change.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</dt>
+    <dd><p>The updated zone.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_EditZoneAsync_System_String_Cloudflare_NET_Zones_Models_EditZoneRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Pause a zone
+var request = new EditZoneRequest(Paused: true);
+var zone = await zonesApi.EditZoneAsync(zoneId, request);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_EditZoneAsync_System_String_Cloudflare_NET_Zones_Models_EditZoneRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+<p>
+  <strong>Important:</strong> Only one property can be changed per API call.
+  Use the convenience methods (<a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html#Cloudflare_NET_Zones_IZonesApi_SetZonePausedAsync_System_String_System_Boolean_System_Threading_CancellationToken_">SetZonePausedAsync(string, bool, CancellationToken)</a>, <a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html#Cloudflare_NET_Zones_IZonesApi_SetZoneTypeAsync_System_String_Cloudflare_NET_Zones_Models_ZoneType_System_Threading_CancellationToken_">SetZoneTypeAsync(string, ZoneType, CancellationToken)</a>,
+  <a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html#Cloudflare_NET_Zones_IZonesApi_SetVanityNameServersAsync_System_String_System_Collections_Generic_IReadOnlyList_System_String__System_Threading_CancellationToken_">SetVanityNameServersAsync(string, IReadOnlyList&lt;string&gt;, CancellationToken)</a>) for clearer intent.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/edit/">https://developers.cloudflare.com/api/resources/zones/methods/edit/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_ExportDnsRecordsAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.ExportDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_ExportDnsRecordsAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.ExportDnsRecordsAsync(System.String,System.Threading.CancellationToken)">
+  ExportDnsRecordsAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L329"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exports all DNS records for a zone in BIND format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;string&gt; ExportDnsRecordsAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A string containing the zone's records in BIND format.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_FindDnsRecordByNameAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.FindDnsRecordByNameAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_FindDnsRecordByNameAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.FindDnsRecordByNameAsync(System.String,System.String,System.Threading.CancellationToken)">
+  FindDnsRecordByNameAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L349"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a DNS record by its fully qualified name within a specific zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsRecord?&gt; FindDnsRecordByNameAsync(string zoneId, string hostname, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone to search in.</p>
+</dd>
+    <dt><code>hostname</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the DNS record to find (e.g., &quot;test.example.com&quot;).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the <a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a> if
+found; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>. If multiple records exist with the same name (e.g., A and AAAA), this
+method returns the first one from the API response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_GetZoneDetailsAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.GetZoneDetailsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_GetZoneDetailsAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.GetZoneDetailsAsync(System.String,System.Threading.CancellationToken)">
+  GetZoneDetailsAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fetches the details for a specific Zone by its ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Zone&gt; GetZoneDetailsAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the Zone.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the <a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a> details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/get/">https://developers.cloudflare.com/api/resources/zones/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_GetZoneHoldAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.GetZoneHoldAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_GetZoneHoldAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.GetZoneHoldAsync(System.String,System.Threading.CancellationToken)">
+  GetZoneHoldAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the zone hold status and configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ZoneHold&gt; GetZoneHoldAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneHold.html">ZoneHold</a>&gt;</dt>
+    <dd><p>The zone hold status.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_GetZoneHoldAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var hold = await zonesApi.GetZoneHoldAsync(zoneId);
+if (hold.Hold)
+{
+    Console.WriteLine($"Zone is held since {hold.HoldAfter}");
+}</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_GetZoneHoldAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  A zone hold prevents creation and activation of zones with the same hostname.
+  Use <a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html#Cloudflare_NET_Zones_IZonesApi_CreateZoneHoldAsync_System_String_System_Boolean_System_Threading_CancellationToken_">CreateZoneHoldAsync(string, bool, CancellationToken)</a> to create a hold and <a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html#Cloudflare_NET_Zones_IZonesApi_RemoveZoneHoldAsync_System_String_System_Threading_CancellationToken_">RemoveZoneHoldAsync(string, CancellationToken)</a> to remove it.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/get/">https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_GetZoneSettingAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.GetZoneSettingAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_GetZoneSettingAsync_System_String_Cloudflare_NET_Zones_Models_ZoneSettingId_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.GetZoneSettingAsync(System.String,Cloudflare.NET.Zones.Models.ZoneSettingId,System.Threading.CancellationToken)">
+  GetZoneSettingAsync(string, ZoneSettingId, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L253"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a single zone setting by its identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ZoneSetting&gt; GetZoneSettingAsync(string zoneId, ZoneSettingId settingId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>settingId</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd><p>The setting identifier. Use <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a> static properties for known settings.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSetting.html">ZoneSetting</a>&gt;</dt>
+    <dd><p>The zone setting with its current value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_GetZoneSettingAsync_System_String_Cloudflare_NET_Zones_Models_ZoneSettingId_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Using the extensible enum (recommended)
+var setting = await zones.GetZoneSettingAsync(zoneId, ZoneSettingId.MinTlsVersion);
+string version = setting.Value.GetString(); // "1.2"
+
+var cacheTtl = await zones.GetZoneSettingAsync(zoneId, ZoneSettingId.BrowserCacheTtl);
+int ttlSeconds = cacheTtl.Value.GetInt32(); // 14400
+
+// String values are implicitly converted to ZoneSettingId
+var custom = await zones.GetZoneSettingAsync(zoneId, "custom_setting");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/subresources/settings/">https://developers.cloudflare.com/api/resources/zones/subresources/settings/</a></span></div>
+    <div><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_ImportDnsRecordsAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.ImportDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_ImportDnsRecordsAsync_System_String_System_IO_Stream_System_Boolean_System_Boolean_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.ImportDnsRecordsAsync(System.String,System.IO.Stream,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+  ImportDnsRecordsAsync(string, Stream, bool, bool, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L336"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Imports a BIND file to bulk create/overwrite DNS records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;DnsImportResult&gt; ImportDnsRecordsAsync(string zoneId, Stream bindStream, bool proxied, bool overwriteExisting, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>bindStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>A stream containing the BIND configuration file.</p>
+</dd>
+    <dt><code>proxied</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether to proxy the imported records.</p>
+</dd>
+    <dt><code>overwriteExisting</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether to overwrite existing records.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsImportResult.html">DnsImportResult</a>&gt;</dt>
+    <dd><p>A result object with a summary of the import operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_ListAllDnsRecordsAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListAllDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_ListAllDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListAllDnsRecordsAsync(System.String,Cloudflare.NET.Dns.Models.ListDnsRecordsFilters,System.Threading.CancellationToken)">
+  ListAllDnsRecordsAsync(string, ListDnsRecordsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L316"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all DNS records for a zone, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IAsyncEnumerable&lt;DnsRecord&gt; ListAllDnsRecordsAsync(string zoneId, ListDnsRecordsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Dns.Models.ListDnsRecordsFilters.html">ListDnsRecordsFilters</a></dt>
+    <dd><p>Optional filters for sorting and matching. Pagination options will be ignored.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;</dt>
+    <dd><p>An asynchronous stream of all matching DNS records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_ListAllZonesAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListAllZonesAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_ListAllZonesAsync_Cloudflare_NET_Zones_Models_ListZonesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListAllZonesAsync(Cloudflare.NET.Zones.Models.ListZonesFilters,System.Threading.CancellationToken)">
+  ListAllZonesAsync(ListZonesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all zones, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IAsyncEnumerable&lt;Zone&gt; ListAllZonesAsync(ListZonesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ListZonesFilters.html">ListZonesFilters</a></dt>
+    <dd><p>Optional filters for sorting and matching. Pagination options will be ignored.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</dt>
+    <dd><p>An asynchronous stream of all matching zones.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_ListAllZonesAsync_Cloudflare_NET_Zones_Models_ListZonesFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await foreach (var zone in zonesApi.ListAllZonesAsync())
+{
+    Console.WriteLine($"{zone.Name}: {zone.Status}");
+}</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_ListAllZonesAsync_Cloudflare_NET_Zones_Models_ListZonesFilters_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method automatically handles pagination by making multiple API requests as needed.
+The <a class="xref" href="Cloudflare.NET.Zones.Models.ListZonesFilters.html#Cloudflare_NET_Zones_Models_ListZonesFilters_Page">Page</a> and <a class="xref" href="Cloudflare.NET.Zones.Models.ListZonesFilters.html#Cloudflare_NET_Zones_Models_ListZonesFilters_PerPage">PerPage</a> properties
+are managed internally and will be ignored if provided.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/list/">https://developers.cloudflare.com/api/resources/zones/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_ListDnsRecordsAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListDnsRecordsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_ListDnsRecordsAsync_System_String_Cloudflare_NET_Dns_Models_ListDnsRecordsFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListDnsRecordsAsync(System.String,Cloudflare.NET.Dns.Models.ListDnsRecordsFilters,System.Threading.CancellationToken)">
+  ListDnsRecordsAsync(string, ListDnsRecordsFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L357"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists DNS records for a zone, with filtering and manual pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;PagePaginatedResult&lt;DnsRecord&gt;&gt; ListDnsRecordsAsync(string zoneId, ListDnsRecordsFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Dns.Models.ListDnsRecordsFilters.html">ListDnsRecordsFilters</a></dt>
+    <dd><p>Optional filters for pagination, sorting, and matching.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.DnsRecord.html">DnsRecord</a>&gt;&gt;</dt>
+    <dd><p>A single page of DNS records along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_ListZonesAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListZonesAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_ListZonesAsync_Cloudflare_NET_Zones_Models_ListZonesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.ListZonesAsync(Cloudflare.NET.Zones.Models.ListZonesFilters,System.Threading.CancellationToken)">
+  ListZonesAsync(ListZonesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists zones with filtering and pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;PagePaginatedResult&lt;Zone&gt;&gt; ListZonesAsync(ListZonesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ListZonesFilters.html">ListZonesFilters</a></dt>
+    <dd><p>Optional filters for pagination, sorting, and matching.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;&gt;</dt>
+    <dd><p>A single page of zones along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_ListZonesAsync_Cloudflare_NET_Zones_Models_ListZonesFilters_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// List active zones
+var result = await zonesApi.ListZonesAsync(new ListZonesFilters(Status: ZoneStatus.Active));
+foreach (var zone in result.Items)
+{
+    Console.WriteLine($"{zone.Name}: {zone.Status}");
+}</code></pre>
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/list/">https://developers.cloudflare.com/api/resources/zones/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_PurgeCacheAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.PurgeCacheAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_PurgeCacheAsync_System_String_Cloudflare_NET_Zones_Models_PurgeCacheRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.PurgeCacheAsync(System.String,Cloudflare.NET.Zones.Models.PurgeCacheRequest,System.Threading.CancellationToken)">
+  PurgeCacheAsync(string, PurgeCacheRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L373"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Purges assets from the Cloudflare cache for a zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;PurgeCacheResult&gt; PurgeCacheAsync(string zoneId, PurgeCacheRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Zones.Models.PurgeCacheRequest.html">PurgeCacheRequest</a></dt>
+    <dd><p>The request defining what to purge (e.g., files, prefixes, or everything).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.PurgeCacheResult.html">PurgeCacheResult</a>&gt;</dt>
+    <dd><p>The result of the purge operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_RemoveZoneHoldAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.RemoveZoneHoldAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_RemoveZoneHoldAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.RemoveZoneHoldAsync(System.String,System.Threading.CancellationToken)">
+  RemoveZoneHoldAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes a zone hold, allowing creation of zones with this hostname.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ZoneHold&gt; RemoveZoneHoldAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneHold.html">ZoneHold</a>&gt;</dt>
+    <dd><p>The removed zone hold (with Hold=false).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_RemoveZoneHoldAsync_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await zonesApi.RemoveZoneHoldAsync(zoneId);
+// result.Hold will be false</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/delete/">https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_SetVanityNameServersAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetVanityNameServersAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_SetVanityNameServersAsync_System_String_System_Collections_Generic_IReadOnlyList_System_String__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetVanityNameServersAsync(System.String,System.Collections.Generic.IReadOnlyList{System.String},System.Threading.CancellationToken)">
+  SetVanityNameServersAsync(string, IReadOnlyList&lt;string&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the zone's vanity nameservers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Zone&gt; SetVanityNameServersAsync(string zoneId, IReadOnlyList&lt;string&gt; nameservers, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the zone.</p>
+</dd>
+    <dt><code>nameservers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The list of vanity nameservers to set.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</dt>
+    <dd><p>The updated zone.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_SetVanityNameServersAsync_System_String_System_Collections_Generic_IReadOnlyList_System_String__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Vanity nameservers require a Business or Enterprise plan.
+  These are custom-branded nameservers (e.g., ns1.yourdomain.com instead of ns1.cloudflare.com).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">nameservers</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_SetZonePausedAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetZonePausedAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_SetZonePausedAsync_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetZonePausedAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
+  SetZonePausedAsync(string, bool, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the zone's paused state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Zone&gt; SetZonePausedAsync(string zoneId, bool paused, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the zone.</p>
+</dd>
+    <dt><code>paused</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether to pause the zone.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</dt>
+    <dd><p>The updated zone.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_SetZonePausedAsync_System_String_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Pause traffic proxying
+var zone = await zonesApi.SetZonePausedAsync(zoneId, true);
+
+// Resume traffic proxying
+zone = await zonesApi.SetZonePausedAsync(zoneId, false);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_SetZonePausedAsync_System_String_System_Boolean_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When a zone is paused, Cloudflare stops proxying traffic and the zone essentially becomes DNS-only.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_SetZoneSettingAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetZoneSettingAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_SetZoneSettingAsync__1_System_String_Cloudflare_NET_Zones_Models_ZoneSettingId___0_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetZoneSettingAsync``1(System.String,Cloudflare.NET.Zones.Models.ZoneSettingId,``0,System.Threading.CancellationToken)">
+  SetZoneSettingAsync&lt;T&gt;(string, ZoneSettingId, T, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L272"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates a zone setting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ZoneSetting&gt; SetZoneSettingAsync&lt;T&gt;(string zoneId, ZoneSettingId settingId, T value, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>settingId</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></dt>
+    <dd><p>The setting identifier. Use <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a> static properties for known settings.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The new value for the setting.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSetting.html">ZoneSetting</a>&gt;</dt>
+    <dd><p>The updated zone setting.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type (string, int, or complex object).</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_SetZoneSettingAsync__1_System_String_Cloudflare_NET_Zones_Models_ZoneSettingId___0_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Using the extensible enum (recommended)
+await zones.SetZoneSettingAsync(zoneId, ZoneSettingId.MinTlsVersion, "1.2");
+
+// Enable development mode
+await zones.SetZoneSettingAsync(zoneId, ZoneSettingId.DevelopmentMode, "on");
+
+// Set browser cache TTL to 4 hours
+await zones.SetZoneSettingAsync(zoneId, ZoneSettingId.BrowserCacheTtl, 14400);
+
+// String values are implicitly converted to ZoneSettingId
+await zones.SetZoneSettingAsync(zoneId, "custom_setting", "value");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/subresources/settings/">https://developers.cloudflare.com/api/resources/zones/subresources/settings/</a></span></div>
+    <div><a class="xref" href="Cloudflare.NET.Zones.Models.ZoneSettingId.html">ZoneSettingId</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_SetZoneTypeAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetZoneTypeAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_SetZoneTypeAsync_System_String_Cloudflare_NET_Zones_Models_ZoneType_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.SetZoneTypeAsync(System.String,Cloudflare.NET.Zones.Models.ZoneType,System.Threading.CancellationToken)">
+  SetZoneTypeAsync(string, ZoneType, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the zone's type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Zone&gt; SetZoneTypeAsync(string zoneId, ZoneType type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the zone.</p>
+</dd>
+    <dt><code>type</code> <a class="xref" href="Cloudflare.NET.Zones.Models.ZoneType.html">ZoneType</a></dt>
+    <dd><p>The zone type to set.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.Zone.html">Zone</a>&gt;</dt>
+    <dd><p>The updated zone.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_SetZoneTypeAsync_System_String_Cloudflare_NET_Zones_Models_ZoneType_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Changing zone type may require Enterprise plan for certain transitions.
+  Not all transitions are supported (e.g., secondary to full may not be available).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_TriggerActivationCheckAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.TriggerActivationCheckAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_TriggerActivationCheckAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.TriggerActivationCheckAsync(System.String,System.Threading.CancellationToken)">
+  TriggerActivationCheckAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Triggers activation check for a pending zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ActivationCheckResult&gt; TriggerActivationCheckAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The identifier of the zone to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ActivationCheckResult.html">ActivationCheckResult</a>&gt;</dt>
+    <dd><p>The result containing the zone ID.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_TriggerActivationCheckAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Rate limited: every 5 minutes (paid plans), every hour (free plans).
+  The API only returns the zone ID; use <a class="xref" href="Cloudflare.NET.Zones.IZonesApi.html#Cloudflare_NET_Zones_IZonesApi_GetZoneDetailsAsync_System_String_System_Threading_CancellationToken_">GetZoneDetailsAsync(string, CancellationToken)</a> to fetch updated status.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/methods/activation-check/">https://developers.cloudflare.com/api/resources/zones/methods/activation-check/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Zones_ZonesApi_UpdateZoneHoldAsync_" data-uid="Cloudflare.NET.Zones.ZonesApi.UpdateZoneHoldAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_ZonesApi_UpdateZoneHoldAsync_System_String_Cloudflare_NET_Zones_Models_UpdateZoneHoldRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.ZonesApi.UpdateZoneHoldAsync(System.String,Cloudflare.NET.Zones.Models.UpdateZoneHoldRequest,System.Threading.CancellationToken)">
+  UpdateZoneHoldAsync(string, UpdateZoneHoldRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing zone hold's configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ZoneHold&gt; UpdateZoneHoldAsync(string zoneId, UpdateZoneHoldRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The zone identifier.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Zones.Models.UpdateZoneHoldRequest.html">UpdateZoneHoldRequest</a></dt>
+    <dd><p>The update parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.Models.ZoneHold.html">ZoneHold</a>&gt;</dt>
+    <dd><p>The updated zone hold.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_UpdateZoneHoldAsync_System_String_Cloudflare_NET_Zones_Models_UpdateZoneHoldRequest_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Schedule a hold for the future
+var request = new UpdateZoneHoldRequest(HoldAfter: DateTime.UtcNow.AddDays(7));
+var hold = await zonesApi.UpdateZoneHoldAsync(zoneId, request);
+
+// Enable subdomain protection
+var request2 = new UpdateZoneHoldRequest(IncludeSubdomains: true);
+var hold2 = await zonesApi.UpdateZoneHoldAsync(zoneId, request2);</code></pre>
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_ZonesApi_UpdateZoneHoldAsync_System_String_Cloudflare_NET_Zones_Models_UpdateZoneHoldRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><b>Preview:</b> This operation has limited test coverage.</p>
+<p>
+  Both <a class="xref" href="Cloudflare.NET.Zones.Models.UpdateZoneHoldRequest.html#Cloudflare_NET_Zones_Models_UpdateZoneHoldRequest_HoldAfter">HoldAfter</a> and <a class="xref" href="Cloudflare.NET.Zones.Models.UpdateZoneHoldRequest.html#Cloudflare_NET_Zones_Models_UpdateZoneHoldRequest_IncludeSubdomains">IncludeSubdomains</a>
+  are optional. Only the provided fields will be updated.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> or <code class="paramref">request</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">zoneId</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/edit/">https://developers.cloudflare.com/api/resources/zones/subresources/holds/methods/edit/</a></span></div>
+    </dd>
+  </dl>
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/ZonesApi.cs/#L15" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

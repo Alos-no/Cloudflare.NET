@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface ICustomHostnamesApi | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface ICustomHostnamesApi | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Defines the contract for managing Custom Hostnames (Cloudflare for SaaS) at the zone level.    Custom Hostnames allow SaaS providers to extend Cloudflare&#39;s security and performance benefits to their   customers&#39; vanity domains.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi">
+
+
+
+  <h1 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi" class="text-break">
+Interface ICustomHostnamesApi  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Zones.html">Zones</a>.<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.html">CustomHostnames</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the contract for managing Custom Hostnames (Cloudflare for SaaS) at the zone level.</p>
+<p>
+  Custom Hostnames allow SaaS providers to extend Cloudflare's security and performance benefits to their
+  customers' vanity domains.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ICustomHostnamesApi</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_CreateAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.CreateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_CreateAsync_System_String_Cloudflare_NET_Zones_CustomHostnames_Models_CreateCustomHostnameRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.CreateAsync(System.String,Cloudflare.NET.Zones.CustomHostnames.Models.CreateCustomHostnameRequest,System.Threading.CancellationToken)">
+  CreateAsync(string, CreateCustomHostnameRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new custom hostname for the specified zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;CustomHostname&gt; CreateAsync(string zoneId, CreateCustomHostnameRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.CreateCustomHostnameRequest.html">CreateCustomHostnameRequest</a></dt>
+    <dd><p>The request containing the custom hostname configuration.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.CustomHostname.html">CustomHostname</a>&gt;</dt>
+    <dd><p>The created custom hostname with its initial status and SSL information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_DeleteAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_DeleteAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.DeleteAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a custom hostname and any associated SSL certificates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task DeleteAsync(string zoneId, string customHostnameId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>customHostnameId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the custom hostname to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_DeleteFallbackOriginAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.DeleteFallbackOriginAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_DeleteFallbackOriginAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.DeleteFallbackOriginAsync(System.String,System.Threading.CancellationToken)">
+  DeleteFallbackOriginAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the fallback origin configuration for the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task DeleteFallbackOriginAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_GetAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_GetAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.GetAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the details of a specific custom hostname.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;CustomHostname&gt; GetAsync(string zoneId, string customHostnameId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>customHostnameId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the custom hostname to retrieve.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.CustomHostname.html">CustomHostname</a>&gt;</dt>
+    <dd><p>The custom hostname details including current status and SSL information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_GetFallbackOriginAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.GetFallbackOriginAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_GetFallbackOriginAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.GetFallbackOriginAsync(System.String,System.Threading.CancellationToken)">
+  GetFallbackOriginAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the fallback origin for custom hostnames in the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;FallbackOrigin&gt; GetFallbackOriginAsync(string zoneId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.FallbackOrigin.html">FallbackOrigin</a>&gt;</dt>
+    <dd><p>The fallback origin configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_GetFallbackOriginAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The fallback origin is the default origin server used when a custom hostname does not have a specific
+custom_origin_server configured.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_ListAllAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.ListAllAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_ListAllAsync_System_String_Cloudflare_NET_Zones_CustomHostnames_Models_ListCustomHostnamesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.ListAllAsync(System.String,Cloudflare.NET.Zones.CustomHostnames.Models.ListCustomHostnamesFilters,System.Threading.CancellationToken)">
+  ListAllAsync(string, ListCustomHostnamesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all custom hostnames for the specified zone, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;CustomHostname&gt; ListAllAsync(string zoneId, ListCustomHostnamesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.ListCustomHostnamesFilters.html">ListCustomHostnamesFilters</a></dt>
+    <dd><p>Optional filters to apply. Pagination parameters (Page, PerPage) will be managed automatically.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.CustomHostname.html">CustomHostname</a>&gt;</dt>
+    <dd><p>An asynchronous stream of all custom hostnames matching the criteria.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_ListAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.ListAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_ListAsync_System_String_Cloudflare_NET_Zones_CustomHostnames_Models_ListCustomHostnamesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.ListAsync(System.String,Cloudflare.NET.Zones.CustomHostnames.Models.ListCustomHostnamesFilters,System.Threading.CancellationToken)">
+  ListAsync(string, ListCustomHostnamesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists custom hostnames for the specified zone, allowing for manual pagination control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;PagePaginatedResult&lt;CustomHostname&gt;&gt; ListAsync(string zoneId, ListCustomHostnamesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.ListCustomHostnamesFilters.html">ListCustomHostnamesFilters</a></dt>
+    <dd><p>Optional filters to apply, including pagination parameters.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.CustomHostname.html">CustomHostname</a>&gt;&gt;</dt>
+    <dd><p>A single page of custom hostnames along with pagination information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_ListAsync_System_String_Cloudflare_NET_Zones_CustomHostnames_Models_ListCustomHostnamesFilters_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is intended for developers who need to control the pagination process manually. Use the properties
+of the returned <a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult&lt;T&gt;</a> to determine if there are more pages and to construct the
+filter for the next call.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_UpdateAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.UpdateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_UpdateAsync_System_String_System_String_Cloudflare_NET_Zones_CustomHostnames_Models_UpdateCustomHostnameRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.UpdateAsync(System.String,System.String,Cloudflare.NET.Zones.CustomHostnames.Models.UpdateCustomHostnameRequest,System.Threading.CancellationToken)">
+  UpdateAsync(string, string, UpdateCustomHostnameRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates an existing custom hostname.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;CustomHostname&gt; UpdateAsync(string zoneId, string customHostnameId, UpdateCustomHostnameRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>customHostnameId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the custom hostname to update.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.UpdateCustomHostnameRequest.html">UpdateCustomHostnameRequest</a></dt>
+    <dd><p>The request containing the fields to update.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.CustomHostname.html">CustomHostname</a>&gt;</dt>
+    <dd><p>The updated custom hostname.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_UpdateAsync_System_String_System_String_Cloudflare_NET_Zones_CustomHostnames_Models_UpdateCustomHostnameRequest_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a PATCH operation. Only the properties set in the request will be updated. Sending a PATCH request can
+also be used to refresh the validation status.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_UpdateFallbackOriginAsync_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.UpdateFallbackOriginAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Zones_CustomHostnames_ICustomHostnamesApi_UpdateFallbackOriginAsync_System_String_Cloudflare_NET_Zones_CustomHostnames_Models_UpdateFallbackOriginRequest_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Zones.CustomHostnames.ICustomHostnamesApi.UpdateFallbackOriginAsync(System.String,Cloudflare.NET.Zones.CustomHostnames.Models.UpdateFallbackOriginRequest,System.Threading.CancellationToken)">
+  UpdateFallbackOriginAsync(string, UpdateFallbackOriginRequest, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the fallback origin for custom hostnames in the zone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;FallbackOrigin&gt; UpdateFallbackOriginAsync(string zoneId, UpdateFallbackOriginRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zoneId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the zone.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.UpdateFallbackOriginRequest.html">UpdateFallbackOriginRequest</a></dt>
+    <dd><p>The request containing the new fallback origin.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Zones.CustomHostnames.Models.FallbackOrigin.html">FallbackOrigin</a>&gt;</dt>
+    <dd><p>The updated fallback origin configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/">https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Zones/CustomHostnames/ICustomHostnamesApi.cs/#L14" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

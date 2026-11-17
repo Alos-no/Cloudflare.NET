@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Workers KV | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Workers KV | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/workers/kv.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="workers-kv">Workers KV</h1>
+
+<p>Workers KV is Cloudflare's global, low-latency key-value data store. This API allows you to manage KV namespaces and their key-value pairs programmatically.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class KvService(ICloudflareApiClient cf)
+{
+    public async Task StoreConfigAsync(string namespaceId, string key, string value)
+    {
+        await cf.Accounts.Kv.WriteValueAsync(namespaceId, key, value);
+    }
+
+    public async Task&lt;string?&gt; GetConfigAsync(string namespaceId, string key)
+    {
+        return await cf.Accounts.Kv.GetValueAsync(namespaceId, key);
+    }
+}
+</code></pre>
+<h2 id="api-limits">API Limits</h2>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Key name max length</td>
+<td>512 bytes</td>
+</tr>
+<tr>
+<td>Value max size</td>
+<td>25 MiB</td>
+</tr>
+<tr>
+<td>Metadata max size</td>
+<td>1024 bytes (serialized JSON)</td>
+</tr>
+<tr>
+<td>Minimum TTL</td>
+<td>60 seconds</td>
+</tr>
+<tr>
+<td>Write rate limit</td>
+<td>1 per second per key</td>
+</tr>
+<tr>
+<td>Bulk write max items</td>
+<td>10,000 pairs</td>
+</tr>
+<tr>
+<td>Bulk write max size</td>
+<td>100 MB total</td>
+</tr>
+<tr>
+<td>Bulk delete max keys</td>
+<td>10,000 keys</td>
+</tr>
+<tr>
+<td>Bulk get max keys</td>
+<td>100 keys</td>
+</tr>
+</tbody>
+</table>
+<h2 id="namespace-operations">Namespace Operations</h2>
+<h3 id="creating-a-namespace">Creating a Namespace</h3>
+<pre><code class="lang-csharp">var ns = await cf.Accounts.Kv.CreateAsync(&quot;my-config-store&quot;);
+
+Console.WriteLine($&quot;Created namespace: {ns.Id}&quot;);
+Console.WriteLine($&quot;Title: {ns.Title}&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Namespace titles must be unique within your account. Creating a namespace with a duplicate title returns error code 10014.</p>
+</div>
+<h3 id="listing-namespaces">Listing Namespaces</h3>
+<pre><code class="lang-csharp">// List all namespaces automatically
+await foreach (var ns in cf.Accounts.Kv.ListAllAsync())
+{
+    Console.WriteLine($&quot;{ns.Title}: {ns.Id}&quot;);
+}
+
+// With ordering
+var filters = new ListKvNamespacesFilters(
+    Order: KvNamespaceOrderField.Title,
+    Direction: ListOrderDirection.Ascending
+);
+
+await foreach (var ns in cf.Accounts.Kv.ListAllAsync(filters))
+{
+    Console.WriteLine(ns.Title);
+}
+</code></pre>
+<h4 id="manual-pagination">Manual Pagination</h4>
+<pre><code class="lang-csharp">var page = await cf.Accounts.Kv.ListAsync(new ListKvNamespacesFilters(
+    Page: 1,
+    PerPage: 50
+));
+
+Console.WriteLine($&quot;Page {page.PageInfo.Page} of {page.PageInfo.TotalPages}&quot;);
+
+foreach (var ns in page.Items)
+{
+    Console.WriteLine(ns.Title);
+}
+</code></pre>
+<h3 id="getting-a-namespace">Getting a Namespace</h3>
+<pre><code class="lang-csharp">var ns = await cf.Accounts.Kv.GetAsync(namespaceId);
+
+Console.WriteLine($&quot;Title: {ns.Title}&quot;);
+Console.WriteLine($&quot;Supports URL Encoding: {ns.SupportsUrlEncoding}&quot;);
+</code></pre>
+<h3 id="renaming-a-namespace">Renaming a Namespace</h3>
+<pre><code class="lang-csharp">var updated = await cf.Accounts.Kv.RenameAsync(namespaceId, &quot;new-title&quot;);
+
+Console.WriteLine($&quot;Renamed to: {updated.Title}&quot;);
+</code></pre>
+<h3 id="deleting-a-namespace">Deleting a Namespace</h3>
+<pre><code class="lang-csharp">await cf.Accounts.Kv.DeleteAsync(namespaceId);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Deleting a namespace permanently removes all keys and values within it. This action cannot be undone.</p>
+</div>
+<h2 id="key-value-operations">Key-Value Operations</h2>
+<h3 id="writing-values">Writing Values</h3>
+<h4 id="string-values">String Values</h4>
+<pre><code class="lang-csharp">await cf.Accounts.Kv.WriteValueAsync(namespaceId, &quot;config/app-name&quot;, &quot;MyApp&quot;);
+</code></pre>
+<h4 id="binary-values">Binary Values</h4>
+<pre><code class="lang-csharp">byte[] imageData = await File.ReadAllBytesAsync(&quot;logo.png&quot;);
+await cf.Accounts.Kv.WriteValueAsync(namespaceId, &quot;assets/logo&quot;, imageData);
+</code></pre>
+<h4 id="with-expiration">With Expiration</h4>
+<pre><code class="lang-csharp">// Expire at a specific Unix timestamp
+await cf.Accounts.Kv.WriteValueAsync(
+    namespaceId,
+    &quot;session/abc123&quot;,
+    sessionData,
+    new KvWriteOptions(Expiration: DateTimeOffset.UtcNow.AddHours(24).ToUnixTimeSeconds())
+);
+
+// Expire after a TTL (in seconds, minimum 60)
+await cf.Accounts.Kv.WriteValueAsync(
+    namespaceId,
+    &quot;cache/user-profile&quot;,
+    profileJson,
+    new KvWriteOptions(ExpirationTtl: 3600) // 1 hour
+);
+</code></pre>
+<h4 id="with-metadata">With Metadata</h4>
+<p>Attach arbitrary JSON metadata to any key:</p>
+<pre><code class="lang-csharp">var metadata = JsonSerializer.SerializeToElement(new
+{
+    contentType = &quot;application/json&quot;,
+    version = 2,
+    createdBy = &quot;system&quot;
+});
+
+await cf.Accounts.Kv.WriteValueAsync(
+    namespaceId,
+    &quot;config/settings&quot;,
+    settingsJson,
+    new KvWriteOptions(Metadata: metadata)
+);
+</code></pre>
+<h3 id="reading-values">Reading Values</h3>
+<h4 id="string-values-1">String Values</h4>
+<pre><code class="lang-csharp">string? value = await cf.Accounts.Kv.GetValueAsync(namespaceId, &quot;config/app-name&quot;);
+
+if (value is null)
+{
+    Console.WriteLine(&quot;Key not found&quot;);
+}
+else
+{
+    Console.WriteLine($&quot;Value: {value}&quot;);
+}
+</code></pre>
+<h4 id="binary-values-1">Binary Values</h4>
+<pre><code class="lang-csharp">byte[]? data = await cf.Accounts.Kv.GetValueBytesAsync(namespaceId, &quot;assets/logo&quot;);
+
+if (data is not null)
+{
+    await File.WriteAllBytesAsync(&quot;downloaded-logo.png&quot;, data);
+}
+</code></pre>
+<h4 id="with-expiration-info-string">With Expiration Info (String)</h4>
+<pre><code class="lang-csharp">var result = await cf.Accounts.Kv.GetValueWithExpirationAsync(namespaceId, &quot;session/abc123&quot;);
+
+if (result is not null)
+{
+    Console.WriteLine($&quot;Value: {result.Value}&quot;);
+
+    if (result.Expiration is not null)
+    {
+        var expiresAt = DateTimeOffset.FromUnixTimeSeconds(result.Expiration.Value);
+        Console.WriteLine($&quot;Expires: {expiresAt}&quot;);
+    }
+}
+</code></pre>
+<h4 id="with-expiration-info-binary">With Expiration Info (Binary)</h4>
+<pre><code class="lang-csharp">var result = await cf.Accounts.Kv.GetValueBytesWithExpirationAsync(namespaceId, &quot;assets/logo&quot;);
+
+if (result is not null)
+{
+    await File.WriteAllBytesAsync(&quot;downloaded-logo.png&quot;, result.Value);
+
+    if (result.Expiration is not null)
+    {
+        var expiresAt = DateTimeOffset.FromUnixTimeSeconds(result.Expiration.Value);
+        Console.WriteLine($&quot;Expires: {expiresAt}&quot;);
+    }
+}
+</code></pre>
+<h4 id="metadata-only">Metadata Only</h4>
+<p>Read metadata without fetching the value (useful for large values):</p>
+<pre><code class="lang-csharp">var metadata = await cf.Accounts.Kv.GetMetadataAsync(namespaceId, &quot;config/settings&quot;);
+
+if (metadata is not null)
+{
+    var version = metadata.Value.GetProperty(&quot;version&quot;).GetInt32();
+    Console.WriteLine($&quot;Version: {version}&quot;);
+}
+</code></pre>
+<h3 id="deleting-values">Deleting Values</h3>
+<pre><code class="lang-csharp">await cf.Accounts.Kv.DeleteValueAsync(namespaceId, &quot;config/old-setting&quot;);
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Delete operations are idempotent. Deleting a non-existent key does not throw an error.</p>
+</div>
+<h2 id="listing-keys">Listing Keys</h2>
+<h3 id="list-all-keys">List All Keys</h3>
+<pre><code class="lang-csharp">await foreach (var key in cf.Accounts.Kv.ListAllKeysAsync(namespaceId))
+{
+    Console.WriteLine($&quot;Key: {key.Name}&quot;);
+
+    if (key.Expiration is not null)
+    {
+        var expiresAt = DateTimeOffset.FromUnixTimeSeconds(key.Expiration.Value);
+        Console.WriteLine($&quot;  Expires: {expiresAt}&quot;);
+    }
+
+    if (key.Metadata is not null)
+    {
+        Console.WriteLine($&quot;  Metadata: {key.Metadata}&quot;);
+    }
+}
+</code></pre>
+<h3 id="filter-by-prefix">Filter by Prefix</h3>
+<pre><code class="lang-csharp">// List only keys under &quot;config/&quot;
+await foreach (var key in cf.Accounts.Kv.ListAllKeysAsync(namespaceId, prefix: &quot;config/&quot;))
+{
+    Console.WriteLine(key.Name);
+}
+</code></pre>
+<h3 id="manual-cursor-pagination">Manual Cursor Pagination</h3>
+<pre><code class="lang-csharp">var page = await cf.Accounts.Kv.ListKeysAsync(namespaceId, new ListKvKeysFilters(
+    Prefix: &quot;users/&quot;,
+    Limit: 100
+));
+
+foreach (var key in page.Items)
+{
+    Console.WriteLine(key.Name);
+}
+
+// Get next page using cursor
+if (page.CursorInfo?.Cursor is not null)
+{
+    var nextPage = await cf.Accounts.Kv.ListKeysAsync(namespaceId, new ListKvKeysFilters(
+        Prefix: &quot;users/&quot;,
+        Limit: 100,
+        Cursor: page.CursorInfo.Cursor
+    ));
+}
+</code></pre>
+<h2 id="bulk-operations">Bulk Operations</h2>
+<h3 id="bulk-write">Bulk Write</h3>
+<p>Write up to 10,000 key-value pairs in a single request:</p>
+<pre><code class="lang-csharp">var items = new[]
+{
+    new KvBulkWriteItem(&quot;config/setting1&quot;, &quot;value1&quot;),
+    new KvBulkWriteItem(&quot;config/setting2&quot;, &quot;value2&quot;),
+    new KvBulkWriteItem(&quot;config/setting3&quot;, &quot;value3&quot;, ExpirationTtl: 3600),
+};
+
+var result = await cf.Accounts.Kv.BulkWriteAsync(namespaceId, items);
+
+Console.WriteLine($&quot;Successfully written: {result.SuccessfulKeyCount}&quot;);
+
+if (result.UnsuccessfulKeys is { Count: &gt; 0 })
+{
+    Console.WriteLine($&quot;Failed keys: {string.Join(&quot;, &quot;, result.UnsuccessfulKeys)}&quot;);
+}
+</code></pre>
+<h4 id="with-metadata-1">With Metadata</h4>
+<pre><code class="lang-csharp">var metadata = JsonSerializer.SerializeToElement(new { source = &quot;import&quot; });
+
+var items = new[]
+{
+    new KvBulkWriteItem(
+        Key: &quot;data/item1&quot;,
+        Value: &quot;value1&quot;,
+        Metadata: metadata
+    ),
+    new KvBulkWriteItem(
+        Key: &quot;data/item2&quot;,
+        Value: &quot;value2&quot;,
+        Metadata: metadata,
+        ExpirationTtl: 86400 // 24 hours
+    )
+};
+
+await cf.Accounts.Kv.BulkWriteAsync(namespaceId, items);
+</code></pre>
+<h3 id="bulk-delete">Bulk Delete</h3>
+<p>Delete up to 10,000 keys in a single request:</p>
+<pre><code class="lang-csharp">var keysToDelete = new[] { &quot;old/key1&quot;, &quot;old/key2&quot;, &quot;old/key3&quot; };
+
+var result = await cf.Accounts.Kv.BulkDeleteAsync(namespaceId, keysToDelete);
+
+Console.WriteLine($&quot;Successfully deleted: {result.SuccessfulKeyCount}&quot;);
+</code></pre>
+<h3 id="bulk-get">Bulk Get</h3>
+<p>Retrieve up to 100 values in a single request:</p>
+<pre><code class="lang-csharp">var keys = new[] { &quot;config/a&quot;, &quot;config/b&quot;, &quot;config/c&quot; };
+
+var values = await cf.Accounts.Kv.BulkGetAsync(namespaceId, keys);
+
+foreach (var (key, value) in values)
+{
+    if (value is not null)
+    {
+        Console.WriteLine($&quot;{key}: {value}&quot;);
+    }
+    else
+    {
+        Console.WriteLine($&quot;{key}: (not found)&quot;);
+    }
+}
+</code></pre>
+<h4 id="with-metadata-2">With Metadata</h4>
+<pre><code class="lang-csharp">var results = await cf.Accounts.Kv.BulkGetWithMetadataAsync(namespaceId, keys);
+
+foreach (var (key, item) in results)
+{
+    if (item is not null)
+    {
+        Console.WriteLine($&quot;{key}: {item.Value}&quot;);
+
+        if (item.Metadata is not null)
+        {
+            Console.WriteLine($&quot;  Metadata: {item.Metadata}&quot;);
+        }
+    }
+}
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="kvnamespace">KvNamespace</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Unique namespace identifier</td>
+</tr>
+<tr>
+<td><code>Title</code></td>
+<td><code>string</code></td>
+<td>Human-readable namespace name</td>
+</tr>
+<tr>
+<td><code>SupportsUrlEncoding</code></td>
+<td><code>bool?</code></td>
+<td>Whether the namespace supports URL-encoded keys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvkey">KvKey</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>The key name</td>
+</tr>
+<tr>
+<td><code>Expiration</code></td>
+<td><code>long?</code></td>
+<td>Unix timestamp when the key expires</td>
+</tr>
+<tr>
+<td><code>Metadata</code></td>
+<td><code>JsonElement?</code></td>
+<td>Arbitrary JSON metadata attached to the key</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvwriteoptions">KvWriteOptions</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Expiration</code></td>
+<td><code>long?</code></td>
+<td>Absolute Unix timestamp for expiration</td>
+</tr>
+<tr>
+<td><code>ExpirationTtl</code></td>
+<td><code>int?</code></td>
+<td>Seconds until expiration (minimum 60)</td>
+</tr>
+<tr>
+<td><code>Metadata</code></td>
+<td><code>JsonElement?</code></td>
+<td>Arbitrary JSON metadata (max 1024 bytes)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvbulkwriteitem">KvBulkWriteItem</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Key</code></td>
+<td><code>string</code></td>
+<td>The key name (max 512 bytes)</td>
+</tr>
+<tr>
+<td><code>Value</code></td>
+<td><code>string</code></td>
+<td>The value to store</td>
+</tr>
+<tr>
+<td><code>Expiration</code></td>
+<td><code>long?</code></td>
+<td>Absolute Unix timestamp for expiration</td>
+</tr>
+<tr>
+<td><code>ExpirationTtl</code></td>
+<td><code>int?</code></td>
+<td>Seconds until expiration (minimum 60)</td>
+</tr>
+<tr>
+<td><code>Metadata</code></td>
+<td><code>JsonElement?</code></td>
+<td>Arbitrary JSON metadata</td>
+</tr>
+<tr>
+<td><code>Base64</code></td>
+<td><code>bool?</code></td>
+<td>Set to true if value is base64-encoded binary</td>
+</tr>
+</tbody>
+</table>
+<h3 id="listkvnamespacesfilters">ListKvNamespacesFilters</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Page</code></td>
+<td><code>int?</code></td>
+<td>Page number (1-based)</td>
+</tr>
+<tr>
+<td><code>PerPage</code></td>
+<td><code>int?</code></td>
+<td>Items per page</td>
+</tr>
+<tr>
+<td><code>Order</code></td>
+<td><code>KvNamespaceOrderField?</code></td>
+<td>Field to order by (<code>Id</code> or <code>Title</code>)</td>
+</tr>
+<tr>
+<td><code>Direction</code></td>
+<td><code>ListOrderDirection?</code></td>
+<td>Sort direction (<code>Ascending</code> or <code>Descending</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="listkvkeysfilters">ListKvKeysFilters</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Prefix</code></td>
+<td><code>string?</code></td>
+<td>Filter keys by prefix</td>
+</tr>
+<tr>
+<td><code>Limit</code></td>
+<td><code>int?</code></td>
+<td>Maximum keys to return (default 1000)</td>
+</tr>
+<tr>
+<td><code>Cursor</code></td>
+<td><code>string?</code></td>
+<td>Cursor for pagination</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvstringvalueresult">KvStringValueResult</h3>
+<p>Returned by <code>GetValueWithExpirationAsync</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Value</code></td>
+<td><code>string</code></td>
+<td>The value as a string</td>
+</tr>
+<tr>
+<td><code>Expiration</code></td>
+<td><code>long?</code></td>
+<td>Unix timestamp when the key expires</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvvalueresult">KvValueResult</h3>
+<p>Returned by <code>GetValueBytesWithExpirationAsync</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Value</code></td>
+<td><code>byte[]</code></td>
+<td>The raw value bytes</td>
+</tr>
+<tr>
+<td><code>Expiration</code></td>
+<td><code>long?</code></td>
+<td>Unix timestamp when the key expires</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvbulkwriteresult">KvBulkWriteResult</h3>
+<p>Returned by <code>BulkWriteAsync</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SuccessfulKeyCount</code></td>
+<td><code>int</code></td>
+<td>Number of keys successfully written</td>
+</tr>
+<tr>
+<td><code>UnsuccessfulKeys</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>Keys that failed to write (should be retried)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvbulkdeleteresult">KvBulkDeleteResult</h3>
+<p>Returned by <code>BulkDeleteAsync</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SuccessfulKeyCount</code></td>
+<td><code>int</code></td>
+<td>Number of keys successfully deleted</td>
+</tr>
+<tr>
+<td><code>UnsuccessfulKeys</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>Keys that failed to delete</td>
+</tr>
+</tbody>
+</table>
+<h3 id="kvbulkgetitemwithmetadata">KvBulkGetItemWithMetadata</h3>
+<p>Returned by <code>BulkGetWithMetadataAsync</code> as dictionary values.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Value</code></td>
+<td><code>string?</code></td>
+<td>The value (null if key not found)</td>
+</tr>
+<tr>
+<td><code>Metadata</code></td>
+<td><code>JsonElement?</code></td>
+<td>The metadata associated with the key</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="configuration-store">Configuration Store</h3>
+<pre><code class="lang-csharp">public class ConfigurationStore(ICloudflareApiClient cf, string namespaceId)
+{
+    public async Task&lt;T?&gt; GetAsync&lt;T&gt;(string key)
+    {
+        var json = await cf.Accounts.Kv.GetValueAsync(namespaceId, key);
+        return json is null ? default : JsonSerializer.Deserialize&lt;T&gt;(json);
+    }
+
+    public async Task SetAsync&lt;T&gt;(string key, T value, int? ttlSeconds = null)
+    {
+        var json = JsonSerializer.Serialize(value);
+        var options = ttlSeconds is not null
+            ? new KvWriteOptions(ExpirationTtl: ttlSeconds)
+            : null;
+
+        await cf.Accounts.Kv.WriteValueAsync(namespaceId, key, json, options);
+    }
+}
+</code></pre>
+<h3 id="session-store">Session Store</h3>
+<pre><code class="lang-csharp">public class SessionStore(ICloudflareApiClient cf, string namespaceId)
+{
+    private const int SessionTtlSeconds = 3600; // 1 hour
+
+    public async Task&lt;string?&gt; GetSessionAsync(string sessionId)
+    {
+        return await cf.Accounts.Kv.GetValueAsync(namespaceId, $&quot;session/{sessionId}&quot;);
+    }
+
+    public async Task SetSessionAsync(string sessionId, string data)
+    {
+        await cf.Accounts.Kv.WriteValueAsync(
+            namespaceId,
+            $&quot;session/{sessionId}&quot;,
+            data,
+            new KvWriteOptions(ExpirationTtl: SessionTtlSeconds)
+        );
+    }
+
+    public async Task DeleteSessionAsync(string sessionId)
+    {
+        await cf.Accounts.Kv.DeleteValueAsync(namespaceId, $&quot;session/{sessionId}&quot;);
+    }
+}
+</code></pre>
+<h3 id="bulk-import">Bulk Import</h3>
+<pre><code class="lang-csharp">public async Task ImportDataAsync(
+    ICloudflareApiClient cf,
+    string namespaceId,
+    IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt; data)
+{
+    // Process in batches of 10,000
+    var batches = data
+        .Select(kv =&gt; new KvBulkWriteItem(kv.Key, kv.Value))
+        .Chunk(10_000);
+
+    foreach (var batch in batches)
+    {
+        var result = await cf.Accounts.Kv.BulkWriteAsync(namespaceId, batch);
+
+        if (result.UnsuccessfulKeys is { Count: &gt; 0 })
+        {
+            // Handle failures - retry or log
+            Console.WriteLine($&quot;Failed to write: {string.Join(&quot;, &quot;, result.UnsuccessfulKeys)}&quot;);
+        }
+    }
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers KV Storage</td>
+<td>Account</td>
+<td>Read (for listing and reading)</td>
+</tr>
+<tr>
+<td>Workers KV Storage</td>
+<td>Account</td>
+<td>Write (for create, update, delete)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../../conventions.html">SDK Conventions</a> - Pagination patterns and common usage</li>
+<li><a href="../../api-coverage.html">API Coverage</a> - Full list of supported endpoints</li>
+<li><a href="../../configuration.html">Configuration</a> - SDK configuration options</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/workers/kv.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

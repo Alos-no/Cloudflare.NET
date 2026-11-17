@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CreateApiTokenResult | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CreateApiTokenResult | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Result of creating a new API token, including the secret value.    Important: The  property contains the token secret   and is only available at creation time. Store it securely - it cannot be retrieved again.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult.md&amp;value=---%0Auid%3A%20Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult">
+
+
+
+  <h1 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult" class="text-break">
+Class CreateApiTokenResult  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L408"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.ApiTokens.html">ApiTokens</a>.<a class="xref" href="Cloudflare.NET.ApiTokens.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Result of creating a new API token, including the secret value.</p>
+<p>
+  <b>Important:</b> The <a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.html#Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Value">Value</a> property contains the token secret
+  and is only available at creation time. Store it securely - it cannot be retrieved again.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record CreateApiTokenResult : IEquatable&lt;CreateApiTokenResult&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CreateApiTokenResult</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.html">CreateApiTokenResult</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult__ctor_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult__ctor_System_String_System_String_System_String_Cloudflare_NET_ApiTokens_Models_TokenStatus_System_DateTime_System_DateTime_System_Collections_Generic_IReadOnlyList_Cloudflare_NET_ApiTokens_Models_TokenPolicy__System_Nullable_System_DateTime__System_Nullable_System_DateTime__Cloudflare_NET_ApiTokens_Models_TokenCondition_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.#ctor(System.String,System.String,System.String,Cloudflare.NET.ApiTokens.Models.TokenStatus,System.DateTime,System.DateTime,System.Collections.Generic.IReadOnlyList{Cloudflare.NET.ApiTokens.Models.TokenPolicy},System.Nullable{System.DateTime},System.Nullable{System.DateTime},Cloudflare.NET.ApiTokens.Models.TokenCondition)">
+  CreateApiTokenResult(string, string, string, TokenStatus, DateTime, DateTime, IReadOnlyList&lt;TokenPolicy&gt;, DateTime?, DateTime?, TokenCondition?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L408"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Result of creating a new API token, including the secret value.</p>
+<p>
+  <b>Important:</b> The <a class="xref" href="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.html#Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Value">Value</a> property contains the token secret
+  and is only available at creation time. Store it securely - it cannot be retrieved again.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CreateApiTokenResult(string Id, string Name, string Value, TokenStatus Status, DateTime IssuedOn, DateTime ModifiedOn, IReadOnlyList&lt;TokenPolicy&gt; Policies, DateTime? ExpiresOn = null, DateTime? NotBefore = null, TokenCondition? Condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Token identifier.</p>
+</dd>
+    <dt><code>Name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Token name.</p>
+</dd>
+    <dt><code>Value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token secret value. Only returned on creation. Store securely.</p>
+</dd>
+    <dt><code>Status</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.TokenStatus.html">TokenStatus</a></dt>
+    <dd><p>Token status.</p>
+</dd>
+    <dt><code>IssuedOn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>When the token was created.</p>
+</dd>
+    <dt><code>ModifiedOn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>When the token was last modified.</p>
+</dd>
+    <dt><code>Policies</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.TokenPolicy.html">TokenPolicy</a>&gt;</dt>
+    <dd><p>Token policies.</p>
+</dd>
+    <dt><code>ExpiresOn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>Token expiration time.</p>
+</dd>
+    <dt><code>NotBefore</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>Token validity start time.</p>
+</dd>
+    <dt><code>Condition</code> <a class="xref" href="Cloudflare.NET.ApiTokens.Models.TokenCondition.html">TokenCondition</a></dt>
+    <dd><p>IP restrictions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Condition_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Condition*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Condition" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Condition">
+  Condition
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L427"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>IP restrictions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;condition&quot;)]
+public TokenCondition? Condition { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.ApiTokens.Models.TokenCondition.html">TokenCondition</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_ExpiresOn_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.ExpiresOn*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_ExpiresOn" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.ExpiresOn">
+  ExpiresOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L423"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Token expiration time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;expires_on&quot;)]
+public DateTime? ExpiresOn { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Id_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Id*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Id" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Id">
+  Id
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L409"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Token identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
+public string Id { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_IssuedOn_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.IssuedOn*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_IssuedOn" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.IssuedOn">
+  IssuedOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L417"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When the token was created.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;issued_on&quot;)]
+public DateTime IssuedOn { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_ModifiedOn_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.ModifiedOn*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_ModifiedOn" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.ModifiedOn">
+  ModifiedOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L419"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When the token was last modified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;modified_on&quot;)]
+public DateTime ModifiedOn { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Name_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Name*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Name" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Name">
+  Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L411"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Token name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
+public string Name { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_NotBefore_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.NotBefore*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_NotBefore" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.NotBefore">
+  NotBefore
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L425"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Token validity start time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;not_before&quot;)]
+public DateTime? NotBefore { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Policies_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Policies*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Policies" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Policies">
+  Policies
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L421"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Token policies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;policies&quot;)]
+public IReadOnlyList&lt;TokenPolicy&gt; Policies { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.ApiTokens.Models.TokenPolicy.html">TokenPolicy</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Status_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Status*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Status" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Status">
+  Status
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L415"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Token status.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;status&quot;)]
+public TokenStatus Status { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.ApiTokens.Models.TokenStatus.html">TokenStatus</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Value_" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Value*"></a>
+
+  <h3 id="Cloudflare_NET_ApiTokens_Models_CreateApiTokenResult_Value" data-uid="Cloudflare.NET.ApiTokens.Models.CreateApiTokenResult.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L413"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The token secret value. Only returned on creation. Store securely.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;value&quot;)]
+public string Value { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/ApiTokens/Models/ApiTokenModels.cs/#L408" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

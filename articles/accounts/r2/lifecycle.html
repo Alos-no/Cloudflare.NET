@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>R2 Lifecycle Policies | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="R2 Lifecycle Policies | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/lifecycle.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="r2-lifecycle-policies">R2 Lifecycle Policies</h1>
+
+<p>Configure lifecycle policies to automatically manage object retention, deletion, and storage class transitions in R2 buckets.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class LifecycleService(ICloudflareApiClient cf)
+{
+    public async Task SetRetentionPolicyAsync(string bucket, int days)
+    {
+        await cf.Accounts.Buckets.SetLifecycleAsync(bucket, new BucketLifecyclePolicy([
+            new LifecycleRule(
+                Id: &quot;auto-delete&quot;,
+                DeleteObjectsTransition: new DeleteObjectsTransition(
+                    Condition: LifecycleCondition.AfterDays(days)
+                )
+            )
+        ]));
+    }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Jurisdictional Buckets:</strong> If your bucket was created with a jurisdiction (e.g., <code>R2Jurisdiction.EuropeanUnion</code>), you must pass the jurisdiction parameter to all lifecycle operations. See <a href="buckets.html#working-with-jurisdictional-buckets">Working with Jurisdictional Buckets</a>.</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLifecycleAsync(&quot;my-eu-bucket&quot;, lifecyclePolicy, R2Jurisdiction.EuropeanUnion);
+</code></pre>
+</div>
+<h2 id="setting-lifecycle-policy">Setting Lifecycle Policy</h2>
+<h3 id="auto-delete-after-age">Auto-Delete After Age</h3>
+<p>Delete objects after a specified number of days:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLifecycleAsync(&quot;my-bucket&quot;, new BucketLifecyclePolicy([
+    new LifecycleRule(
+        Id: &quot;delete-after-30-days&quot;,
+        Enabled: true,
+        DeleteObjectsTransition: new DeleteObjectsTransition(
+            Condition: LifecycleCondition.AfterDays(30)
+        )
+    )
+]));
+</code></pre>
+<h3 id="delete-on-specific-date">Delete on Specific Date</h3>
+<p>Delete objects on a specific date:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLifecycleAsync(&quot;my-bucket&quot;, new BucketLifecyclePolicy([
+    new LifecycleRule(
+        Id: &quot;delete-on-date&quot;,
+        DeleteObjectsTransition: new DeleteObjectsTransition(
+            Condition: LifecycleCondition.OnDate(new DateTime(2025, 12, 31))
+        )
+    )
+]));
+</code></pre>
+<h3 id="transition-to-infrequent-access">Transition to Infrequent Access</h3>
+<p>Move objects to cheaper storage after a period:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLifecycleAsync(&quot;my-bucket&quot;, new BucketLifecyclePolicy([
+    new LifecycleRule(
+        Id: &quot;move-to-ia&quot;,
+        StorageClassTransitions: [
+            new StorageClassTransition(
+                Condition: LifecycleCondition.AfterDays(30),
+                StorageClass: R2StorageClass.InfrequentAccess
+            )
+        ]
+    )
+]));
+</code></pre>
+<h3 id="abort-incomplete-multipart-uploads">Abort Incomplete Multipart Uploads</h3>
+<p>Clean up failed multipart uploads:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLifecycleAsync(&quot;my-bucket&quot;, new BucketLifecyclePolicy([
+    new LifecycleRule(
+        Id: &quot;cleanup-multipart&quot;,
+        AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(
+            Condition: LifecycleCondition.AfterDays(7)
+        )
+    )
+]));
+</code></pre>
+<h3 id="apply-to-prefix-only">Apply to Prefix Only</h3>
+<p>Apply rules to objects with a specific prefix:</p>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLifecycleAsync(&quot;my-bucket&quot;, new BucketLifecyclePolicy([
+    new LifecycleRule(
+        Id: &quot;temp-files-cleanup&quot;,
+        Conditions: new LifecycleRuleConditions(Prefix: &quot;temp/&quot;),
+        DeleteObjectsTransition: new DeleteObjectsTransition(
+            Condition: LifecycleCondition.AfterDays(1)
+        )
+    )
+]));
+</code></pre>
+<h3 id="complete-lifecycle-configuration">Complete Lifecycle Configuration</h3>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.SetLifecycleAsync(&quot;my-bucket&quot;, new BucketLifecyclePolicy([
+    // Move to IA after 30 days
+    new LifecycleRule(
+        Id: &quot;archive-old-objects&quot;,
+        StorageClassTransitions: [
+            new StorageClassTransition(
+                Condition: LifecycleCondition.AfterDays(30),
+                StorageClass: R2StorageClass.InfrequentAccess
+            )
+        ]
+    ),
+    // Delete after 365 days
+    new LifecycleRule(
+        Id: &quot;delete-old-objects&quot;,
+        DeleteObjectsTransition: new DeleteObjectsTransition(
+            Condition: LifecycleCondition.AfterDays(365)
+        )
+    ),
+    // Cleanup incomplete uploads
+    new LifecycleRule(
+        Id: &quot;cleanup-multipart&quot;,
+        AbortMultipartUploadsTransition: new AbortMultipartUploadsTransition(
+            Condition: LifecycleCondition.AfterDays(7)
+        )
+    ),
+    // Delete temp files quickly
+    new LifecycleRule(
+        Id: &quot;temp-cleanup&quot;,
+        Conditions: new LifecycleRuleConditions(Prefix: &quot;temp/&quot;),
+        DeleteObjectsTransition: new DeleteObjectsTransition(
+            Condition: LifecycleCondition.AfterDays(1)
+        )
+    )
+]));
+</code></pre>
+<h2 id="getting-lifecycle-policy">Getting Lifecycle Policy</h2>
+<pre><code class="lang-csharp">var policy = await cf.Accounts.Buckets.GetLifecycleAsync(&quot;my-bucket&quot;);
+
+foreach (var rule in policy.Rules)
+{
+    Console.WriteLine($&quot;Rule: {rule.Id}&quot;);
+    Console.WriteLine($&quot;  Enabled: {rule.Enabled}&quot;);
+
+    if (rule.DeleteObjectsTransition is { } del)
+    {
+        Console.WriteLine($&quot;  Delete after: {del.Condition.MaxAge / 86400} days&quot;);
+    }
+}
+</code></pre>
+<h2 id="deleting-lifecycle-policy">Deleting Lifecycle Policy</h2>
+<pre><code class="lang-csharp">await cf.Accounts.Buckets.DeleteLifecycleAsync(&quot;my-bucket&quot;);
+</code></pre>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="lifecyclerule">LifecycleRule</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string?</code></td>
+<td>Rule identifier</td>
+</tr>
+<tr>
+<td><code>Enabled</code></td>
+<td><code>bool</code></td>
+<td>Whether rule is active (default: true)</td>
+</tr>
+<tr>
+<td><code>Conditions</code></td>
+<td><code>LifecycleRuleConditions?</code></td>
+<td>Object filtering conditions</td>
+</tr>
+<tr>
+<td><code>DeleteObjectsTransition</code></td>
+<td><code>DeleteObjectsTransition?</code></td>
+<td>Deletion trigger</td>
+</tr>
+<tr>
+<td><code>AbortMultipartUploadsTransition</code></td>
+<td><code>AbortMultipartUploadsTransition?</code></td>
+<td>Multipart cleanup trigger</td>
+</tr>
+<tr>
+<td><code>StorageClassTransitions</code></td>
+<td><code>IReadOnlyList&lt;StorageClassTransition&gt;?</code></td>
+<td>Storage class changes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lifecyclecondition">LifecycleCondition</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AfterDays(int days)</code></td>
+<td>Trigger after N days</td>
+</tr>
+<tr>
+<td><code>AfterSeconds(int seconds)</code></td>
+<td>Trigger after N seconds</td>
+</tr>
+<tr>
+<td><code>OnDate(DateTime date)</code></td>
+<td>Trigger on specific date</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lifecycleconditiontype">LifecycleConditionType</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Age</code></td>
+<td>Based on object age</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td>Based on specific date</td>
+</tr>
+</tbody>
+</table>
+<h3 id="r2storageclass-extensible-enum">R2StorageClass (Extensible Enum)</h3>
+<p>Storage class determines cost and access characteristics. This is an <strong>extensible enum</strong> that accepts both known constants and custom string values.</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Standard</code></td>
+<td><code>Standard</code></td>
+<td>Frequently accessed data (default)</td>
+</tr>
+<tr>
+<td><code>InfrequentAccess</code></td>
+<td><code>InfrequentAccess</code></td>
+<td>Lower cost, retrieval fees apply</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// Using known constants
+var standard = R2StorageClass.Standard;
+var ia = R2StorageClass.InfrequentAccess;
+
+// Using custom values for future storage classes
+R2StorageClass future = &quot;ArchiveStorage&quot;;
+</code></pre>
+<p>See <a href="../../conventions.html#extensible-enums">SDK Conventions</a> for more on extensible enums.</p>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="log-retention">Log Retention</h3>
+<pre><code class="lang-csharp">public async Task SetLogRetentionAsync(string bucket, int retentionDays)
+{
+    await cf.Accounts.Buckets.SetLifecycleAsync(bucket, new BucketLifecyclePolicy([
+        new LifecycleRule(
+            Id: &quot;log-retention&quot;,
+            Conditions: new LifecycleRuleConditions(Prefix: &quot;logs/&quot;),
+            StorageClassTransitions: [
+                new StorageClassTransition(
+                    Condition: LifecycleCondition.AfterDays(7),
+                    StorageClass: R2StorageClass.InfrequentAccess
+                )
+            ],
+            DeleteObjectsTransition: new DeleteObjectsTransition(
+                Condition: LifecycleCondition.AfterDays(retentionDays)
+            )
+        )
+    ]));
+}
+</code></pre>
+<h3 id="backup-lifecycle">Backup Lifecycle</h3>
+<pre><code class="lang-csharp">public async Task SetBackupPolicyAsync(string bucket)
+{
+    await cf.Accounts.Buckets.SetLifecycleAsync(bucket, new BucketLifecyclePolicy([
+        // Daily backups: keep 30 days
+        new LifecycleRule(
+            Id: &quot;daily-backups&quot;,
+            Conditions: new LifecycleRuleConditions(Prefix: &quot;daily/&quot;),
+            DeleteObjectsTransition: new DeleteObjectsTransition(
+                Condition: LifecycleCondition.AfterDays(30)
+            )
+        ),
+        // Weekly backups: move to IA after 30 days, keep 180 days
+        new LifecycleRule(
+            Id: &quot;weekly-backups-archive&quot;,
+            Conditions: new LifecycleRuleConditions(Prefix: &quot;weekly/&quot;),
+            StorageClassTransitions: [
+                new StorageClassTransition(
+                    Condition: LifecycleCondition.AfterDays(30),
+                    StorageClass: R2StorageClass.InfrequentAccess
+                )
+            ]
+        ),
+        new LifecycleRule(
+            Id: &quot;weekly-backups-delete&quot;,
+            Conditions: new LifecycleRuleConditions(Prefix: &quot;weekly/&quot;),
+            DeleteObjectsTransition: new DeleteObjectsTransition(
+                Condition: LifecycleCondition.AfterDays(180)
+            )
+        )
+    ]));
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workers R2 Storage</td>
+<td>Account</td>
+<td>Write</td>
+</tr>
+</tbody>
+</table>
+<h2 id="important-notes">Important Notes</h2>
+<ol>
+<li><strong>Processing delay</strong>: Rules are processed within 24 hours of being set</li>
+<li><strong>Maximum rules</strong>: Up to 1000 lifecycle rules per bucket</li>
+<li><strong>Age calculation</strong>: Based on object creation time</li>
+<li><strong>Prefix matching</strong>: Case-sensitive, matches key prefixes</li>
+</ol>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="buckets.html">Bucket Management</a> - Create and manage buckets</li>
+<li><a href="../../r2/deletes.html">R2 Deleting Objects</a> - Manual object deletion</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/accounts/r2/lifecycle.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

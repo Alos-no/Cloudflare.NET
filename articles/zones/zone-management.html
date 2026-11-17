@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Zone Management | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Zone Management | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/zone-management.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="zone-management">Zone Management</h1>
+
+<p>Manage Cloudflare zones (domains) through the SDK. This includes creating, listing, editing, and deleting zones, as well as triggering activation checks.</p>
+<h2 id="overview">Overview</h2>
+<p>Access zone management through <code>cf.Zones</code>:</p>
+<pre><code class="lang-csharp">public class ZoneService(ICloudflareApiClient cf)
+{
+    public async Task&lt;Zone&gt; GetZoneAsync(string zoneId)
+    {
+        return await cf.Zones.GetZoneDetailsAsync(zoneId);
+    }
+}
+</code></pre>
+<h2 id="creating-zones">Creating Zones</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Preview:</strong> This operation has limited test coverage.</p>
+</div>
+<h3 id="basic-zone-creation">Basic Zone Creation</h3>
+<pre><code class="lang-csharp">var request = new CreateZoneRequest(
+    Name: &quot;example.com&quot;,
+    Type: ZoneType.Full,
+    Account: new ZoneAccountReference(accountId)
+);
+
+var zone = await cf.Zones.CreateZoneAsync(request);
+Console.WriteLine($&quot;Created zone: {zone.Name} ({zone.Status})&quot;);
+</code></pre>
+<h3 id="with-dns-record-import-jump-start">With DNS Record Import (Jump Start)</h3>
+<p>Automatically import existing DNS records when adding a zone:</p>
+<pre><code class="lang-csharp">var request = new CreateZoneRequest(
+    Name: &quot;example.com&quot;,
+    Type: ZoneType.Full,
+    Account: new ZoneAccountReference(accountId),
+    JumpStart: true  // Attempts to fetch existing DNS records
+);
+
+var zone = await cf.Zones.CreateZoneAsync(request);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Jump Start is a best-effort operation. If DNS record import fails, the zone is still created successfully.</p>
+</div>
+<h3 id="zone-types">Zone Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZoneType.Full</code></td>
+<td>Full DNS hosting - Cloudflare becomes the authoritative nameserver</td>
+</tr>
+<tr>
+<td><code>ZoneType.Partial</code></td>
+<td>CNAME setup - DNS remains with current provider, specific records proxied via CNAME</td>
+</tr>
+<tr>
+<td><code>ZoneType.Secondary</code></td>
+<td>Secondary DNS - Cloudflare acts as secondary nameserver</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// Create a partial (CNAME) zone
+var partialZone = await cf.Zones.CreateZoneAsync(new CreateZoneRequest(
+    Name: &quot;saas-customer.com&quot;,
+    Type: ZoneType.Partial,
+    Account: new ZoneAccountReference(accountId)
+));
+</code></pre>
+<h2 id="listing-zones">Listing Zones</h2>
+<h3 id="list-with-pagination">List with Pagination</h3>
+<pre><code class="lang-csharp">var page = await cf.Zones.ListZonesAsync(new ListZonesFilters
+{
+    Status = ZoneStatus.Active,
+    Page = 1,
+    PerPage = 50
+});
+
+Console.WriteLine($&quot;Found {page.PageInfo.TotalCount} zones&quot;);
+
+foreach (var zone in page.Items)
+{
+    Console.WriteLine($&quot;{zone.Name}: {zone.Status}&quot;);
+}
+</code></pre>
+<h3 id="list-all-zones">List All Zones</h3>
+<p>Use automatic pagination to iterate through all zones:</p>
+<pre><code class="lang-csharp">await foreach (var zone in cf.Zones.ListAllZonesAsync())
+{
+    Console.WriteLine($&quot;{zone.Name} ({zone.Plan.Name})&quot;);
+}
+</code></pre>
+<h3 id="filtering-zones">Filtering Zones</h3>
+<pre><code class="lang-csharp">var filters = new ListZonesFilters
+{
+    Status = ZoneStatus.Active,           // Filter by status
+    AccountId = accountId,                 // Filter by account
+    Order = ZoneOrderField.Name,           // Sort by name
+    Direction = ListOrderDirection.Asc     // Ascending order
+};
+
+await foreach (var zone in cf.Zones.ListAllZonesAsync(filters))
+{
+    Console.WriteLine($&quot;{zone.Name}: {zone.Status}&quot;);
+}
+</code></pre>
+<h2 id="getting-zone-details">Getting Zone Details</h2>
+<pre><code class="lang-csharp">var zone = await cf.Zones.GetZoneDetailsAsync(zoneId);
+
+Console.WriteLine($&quot;Zone: {zone.Name}&quot;);
+Console.WriteLine($&quot;Status: {zone.Status}&quot;);
+Console.WriteLine($&quot;Plan: {zone.Plan.Name}&quot;);
+Console.WriteLine($&quot;Paused: {zone.Paused}&quot;);
+Console.WriteLine($&quot;Nameservers: {string.Join(&quot;, &quot;, zone.NameServers)}&quot;);
+</code></pre>
+<h2 id="editing-zones">Editing Zones</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Preview:</strong> This operation has limited test coverage.</p>
+</div>
+<h3 id="pauseunpause-a-zone">Pause/Unpause a Zone</h3>
+<p>When paused, Cloudflare stops proxying traffic:</p>
+<pre><code class="lang-csharp">// Pause the zone
+var paused = await cf.Zones.SetZonePausedAsync(zoneId, true);
+Console.WriteLine($&quot;Zone paused: {paused.Paused}&quot;);
+
+// Resume the zone
+var resumed = await cf.Zones.SetZonePausedAsync(zoneId, false);
+</code></pre>
+<h3 id="change-zone-type">Change Zone Type</h3>
+<pre><code class="lang-csharp">var updated = await cf.Zones.SetZoneTypeAsync(zoneId, ZoneType.Partial);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Not all type transitions are supported. Some require Enterprise plan.</p>
+</div>
+<h3 id="set-vanity-nameservers">Set Vanity Nameservers</h3>
+<p>Custom-branded nameservers (Business/Enterprise only):</p>
+<pre><code class="lang-csharp">var nameservers = new List&lt;string&gt;
+{
+    &quot;ns1.yourdomain.com&quot;,
+    &quot;ns2.yourdomain.com&quot;
+};
+
+var updated = await cf.Zones.SetVanityNameServersAsync(zoneId, nameservers);
+</code></pre>
+<h3 id="generic-edit">Generic Edit</h3>
+<p>Use <code>EditZoneAsync</code> for direct control:</p>
+<pre><code class="lang-csharp">var request = new EditZoneRequest(Paused: true);
+var zone = await cf.Zones.EditZoneAsync(zoneId, request);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Only one property can be changed per API call. The SDK provides convenience methods (<code>SetZonePausedAsync</code>, <code>SetZoneTypeAsync</code>) for clearer intent.</p>
+</div>
+<h2 id="triggering-activation-check">Triggering Activation Check</h2>
+<p>For pending zones, manually trigger nameserver verification:</p>
+<pre><code class="lang-csharp">var result = await cf.Zones.TriggerActivationCheckAsync(zoneId);
+
+// Fetch updated status
+var zone = await cf.Zones.GetZoneDetailsAsync(zoneId);
+Console.WriteLine($&quot;Zone status: {zone.Status}&quot;);
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Rate limited: every 5 minutes (paid plans), every hour (free plans).</p>
+</div>
+<h2 id="deleting-zones">Deleting Zones</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Preview:</strong> This operation has limited test coverage.</p>
+</div>
+<pre><code class="lang-csharp">await cf.Zones.DeleteZoneAsync(zoneId);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This operation is irreversible. All DNS records, settings, and configuration will be permanently deleted.</p>
+</div>
+<h2 id="models-reference">Models Reference</h2>
+<h3 id="zone">Zone</h3>
+<p>The main zone object returned by the API.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>string</code></td>
+<td>Unique zone identifier (32 hex characters)</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Domain name (e.g., &quot;example.com&quot;)</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td><code>ZoneStatus</code></td>
+<td>Zone status (active, pending, etc.)</td>
+</tr>
+<tr>
+<td><code>Account</code></td>
+<td><code>ZoneAccount</code></td>
+<td>Account that owns the zone</td>
+</tr>
+<tr>
+<td><code>Plan</code></td>
+<td><code>ZonePlan</code></td>
+<td>Billing plan (Free, Pro, Business, Enterprise)</td>
+</tr>
+<tr>
+<td><code>Paused</code></td>
+<td><code>bool</code></td>
+<td>Whether the zone is paused</td>
+</tr>
+<tr>
+<td><code>Type</code></td>
+<td><code>ZoneType</code></td>
+<td>Zone setup type (full, partial, secondary)</td>
+</tr>
+<tr>
+<td><code>NameServers</code></td>
+<td><code>IReadOnlyList&lt;string&gt;</code></td>
+<td>Cloudflare-assigned nameservers</td>
+</tr>
+<tr>
+<td><code>VanityNameServers</code></td>
+<td><code>IReadOnlyList&lt;string&gt;?</code></td>
+<td>Custom nameservers (if configured)</td>
+</tr>
+<tr>
+<td><code>CreatedOn</code></td>
+<td><code>DateTime</code></td>
+<td>Creation timestamp</td>
+</tr>
+<tr>
+<td><code>ModifiedOn</code></td>
+<td><code>DateTime</code></td>
+<td>Last modification timestamp</td>
+</tr>
+<tr>
+<td><code>ActivatedOn</code></td>
+<td><code>DateTime?</code></td>
+<td>Activation timestamp (null if pending)</td>
+</tr>
+<tr>
+<td><code>DevelopmentMode</code></td>
+<td><code>int</code></td>
+<td>Seconds remaining in dev mode (0 = off)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="zonestatus-extensible-enum">ZoneStatus (Extensible Enum)</h3>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Active</code></td>
+<td>Zone is active and proxying traffic</td>
+</tr>
+<tr>
+<td><code>Pending</code></td>
+<td>Awaiting nameserver verification</td>
+</tr>
+<tr>
+<td><code>Initializing</code></td>
+<td>Zone is being set up</td>
+</tr>
+<tr>
+<td><code>Moved</code></td>
+<td>Zone has been moved to another account</td>
+</tr>
+<tr>
+<td><code>Deleted</code></td>
+<td>Zone has been deleted</td>
+</tr>
+<tr>
+<td><code>Deactivated</code></td>
+<td>Zone has been deactivated</td>
+</tr>
+</tbody>
+</table>
+<h3 id="zonetype-extensible-enum">ZoneType (Extensible Enum)</h3>
+<table>
+<thead>
+<tr>
+<th>Known Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Full</code></td>
+<td>Full DNS hosting with Cloudflare nameservers</td>
+</tr>
+<tr>
+<td><code>Partial</code></td>
+<td>CNAME setup (DNS remains with current provider)</td>
+</tr>
+<tr>
+<td><code>Secondary</code></td>
+<td>Secondary DNS configuration</td>
+</tr>
+</tbody>
+</table>
+<h3 id="listzonesfilters">ListZonesFilters</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>string?</code></td>
+<td>Filter by exact domain name</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td><code>ZoneStatus?</code></td>
+<td>Filter by zone status</td>
+</tr>
+<tr>
+<td><code>AccountId</code></td>
+<td><code>string?</code></td>
+<td>Filter by account ID</td>
+</tr>
+<tr>
+<td><code>AccountName</code></td>
+<td><code>string?</code></td>
+<td>Filter by account name</td>
+</tr>
+<tr>
+<td><code>Page</code></td>
+<td><code>int?</code></td>
+<td>Page number (1-based)</td>
+</tr>
+<tr>
+<td><code>PerPage</code></td>
+<td><code>int?</code></td>
+<td>Results per page (1-50)</td>
+</tr>
+<tr>
+<td><code>Order</code></td>
+<td><code>ZoneOrderField?</code></td>
+<td>Field to order by</td>
+</tr>
+<tr>
+<td><code>Direction</code></td>
+<td><code>ListOrderDirection?</code></td>
+<td>Sort direction</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="find-zone-by-domain-name">Find Zone by Domain Name</h3>
+<pre><code class="lang-csharp">public async Task&lt;Zone?&gt; FindZoneByNameAsync(string domainName)
+{
+    var filters = new ListZonesFilters(Name: domainName);
+
+    await foreach (var zone in cf.Zones.ListAllZonesAsync(filters))
+    {
+        if (zone.Name.Equals(domainName, StringComparison.OrdinalIgnoreCase))
+        {
+            return zone;
+        }
+    }
+
+    return null;
+}
+</code></pre>
+<h3 id="create-zone-if-not-exists">Create Zone If Not Exists</h3>
+<pre><code class="lang-csharp">public async Task&lt;Zone&gt; EnsureZoneExistsAsync(string domainName, string accountId)
+{
+    var existing = await FindZoneByNameAsync(domainName);
+
+    if (existing is not null)
+    {
+        return existing;
+    }
+
+    return await cf.Zones.CreateZoneAsync(new CreateZoneRequest(
+        Name: domainName,
+        Type: ZoneType.Full,
+        Account: new ZoneAccountReference(accountId),
+        JumpStart: true
+    ));
+}
+</code></pre>
+<h3 id="wait-for-zone-activation">Wait for Zone Activation</h3>
+<pre><code class="lang-csharp">public async Task&lt;Zone&gt; WaitForActivationAsync(string zoneId, TimeSpan timeout)
+{
+    var deadline = DateTime.UtcNow + timeout;
+
+    while (DateTime.UtcNow &lt; deadline)
+    {
+        var zone = await cf.Zones.GetZoneDetailsAsync(zoneId);
+
+        if (zone.Status == ZoneStatus.Active)
+        {
+            return zone;
+        }
+
+        // Trigger activation check (respect rate limits)
+        await cf.Zones.TriggerActivationCheckAsync(zoneId);
+        await Task.Delay(TimeSpan.FromMinutes(5));
+    }
+
+    throw new TimeoutException($&quot;Zone {zoneId} did not activate within {timeout}&quot;);
+}
+</code></pre>
+<h2 id="required-permissions">Required Permissions</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Scope</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zone</td>
+<td>Zone</td>
+<td>Read (for listing/get)</td>
+</tr>
+<tr>
+<td>Zone</td>
+<td>Zone</td>
+<td>Write (for create/edit/delete)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="zone-holds.html">Zone Holds</a> - Prevent unauthorized zone takeovers</li>
+<li><a href="zone-settings.html">Zone Settings</a> - Configure zone-level settings</li>
+<li><a href="dns-records.html">DNS Records</a> - Manage DNS records</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/zones/zone-management.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

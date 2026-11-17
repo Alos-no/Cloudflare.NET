@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface ID1Api | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface ID1Api | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Provides access to Cloudflare D1 database operations. D1 is Cloudflare&#39;s native serverless SQL database built on SQLite.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Accounts_D1_ID1Api.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Accounts.D1.ID1Api%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.D1.ID1Api">
+
+
+
+  <h1 id="Cloudflare_NET_Accounts_D1_ID1Api" data-uid="Cloudflare.NET.Accounts.D1.ID1Api" class="text-break">
+Interface ID1Api  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Accounts.html">Accounts</a>.<a class="xref" href="Cloudflare.NET.Accounts.D1.html">D1</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides access to Cloudflare D1 database operations.
+D1 is Cloudflare's native serverless SQL database built on SQLite.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ID1Api</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="Cloudflare_NET_Accounts_D1_ID1Api_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+  All operations are account-scoped. The account ID is configured
+  via <a class="xref" href="Cloudflare.NET.Core.CloudflareApiOptions.html#Cloudflare_NET_Core_CloudflareApiOptions_AccountId">AccountId</a>.
+</p>
+<p>
+  <strong>API Limits (Workers Paid plan):</strong>
+  <ul><li>Max databases: 50,000 per account</li><li>Max database size: 10 GB</li><li>Max account storage: 1 TB</li><li>Max SQL statement length: 100 KB</li><li>Max query duration: 30 seconds</li><li>Max bound parameters: 100 per query</li><li>Max row/string/BLOB size: 2 MB</li><li>Max columns per table: 100</li></ul>
+
+<p>
+  <strong>Important:</strong> D1's REST API is best suited for administrative use
+  as the global Cloudflare API rate limit applies. For high-throughput query access
+  outside Workers, consider creating a proxy Worker with the D1 Worker binding.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_CompleteImportAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.CompleteImportAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_CompleteImportAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.CompleteImportAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  CompleteImportAsync(string, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L233"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Completes an import after uploading the SQL file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1ImportResponse&gt; CompleteImportAsync(string databaseId, string etag, string filename, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>etag</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MD5 hash/ETag of the uploaded file.</p>
+</dd>
+    <dt><code>filename</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The filename returned from <a class="xref" href="Cloudflare.NET.Accounts.D1.ID1Api.html#Cloudflare_NET_Accounts_D1_ID1Api_StartImportAsync_System_String_System_String_System_Threading_CancellationToken_">StartImportAsync(string, string, CancellationToken)</a>.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1ImportResponse.html">D1ImportResponse</a>&gt;</dt>
+    <dd><p>Import response with bookmark for polling.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_CreateAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.CreateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_CreateAsync_System_String_System_Nullable_Cloudflare_NET_Accounts_Models_R2LocationHint__System_Nullable_Cloudflare_NET_Accounts_D1_Models_D1Jurisdiction__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.CreateAsync(System.String,System.Nullable{Cloudflare.NET.Accounts.Models.R2LocationHint},System.Nullable{Cloudflare.NET.Accounts.D1.Models.D1Jurisdiction},System.Threading.CancellationToken)">
+  CreateAsync(string, R2LocationHint?, D1Jurisdiction?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new D1 database.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1Database&gt; CreateAsync(string name, R2LocationHint? primaryLocationHint = null, D1Jurisdiction? jurisdiction = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name for the new database.</p>
+</dd>
+    <dt><code>primaryLocationHint</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.R2LocationHint.html">R2LocationHint</a>?</dt>
+    <dd><p>Optional region hint for database placement.</p>
+</dd>
+    <dt><code>jurisdiction</code> <a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1Jurisdiction.html">D1Jurisdiction</a>?</dt>
+    <dd><p>Optional jurisdictional restriction (overrides location hint).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1Database.html">D1Database</a>&gt;</dt>
+    <dd><p>The created database.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/create/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/create/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_DeleteAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.DeleteAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_DeleteAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.DeleteAsync(System.String,System.Threading.CancellationToken)">
+  DeleteAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a D1 database.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task DeleteAsync(string databaseId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_D1_ID1Api_DeleteAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This permanently deletes the database and all its data.
+The operation cannot be undone.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/delete/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/delete/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_GetAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.GetAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_GetAsync_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.GetAsync(System.String,System.Threading.CancellationToken)">
+  GetAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a specific D1 database by ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1Database&gt; GetAsync(string databaseId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1Database.html">D1Database</a>&gt;</dt>
+    <dd><p>The database details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/get/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/get/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_ListAllAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.ListAllAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_ListAllAsync_Cloudflare_NET_Accounts_D1_Models_ListD1DatabasesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.ListAllAsync(Cloudflare.NET.Accounts.D1.Models.ListD1DatabasesFilters,System.Threading.CancellationToken)">
+  ListAllAsync(ListD1DatabasesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all D1 databases, automatically handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncEnumerable&lt;D1Database&gt; ListAllAsync(ListD1DatabasesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Accounts.D1.Models.ListD1DatabasesFilters.html">ListD1DatabasesFilters</a></dt>
+    <dd><p>Optional filters for name search.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1">IAsyncEnumerable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1Database.html">D1Database</a>&gt;</dt>
+    <dd><p>An async enumerable of all databases.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_ListAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.ListAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_ListAsync_Cloudflare_NET_Accounts_D1_Models_ListD1DatabasesFilters_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.ListAsync(Cloudflare.NET.Accounts.D1.Models.ListD1DatabasesFilters,System.Threading.CancellationToken)">
+  ListAsync(ListD1DatabasesFilters?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists D1 databases in the account.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;PagePaginatedResult&lt;D1Database&gt;&gt; ListAsync(ListD1DatabasesFilters? filters = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Cloudflare.NET.Accounts.D1.Models.ListD1DatabasesFilters.html">ListD1DatabasesFilters</a></dt>
+    <dd><p>Optional filters for pagination and name search.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Core.Models.PagePaginatedResult-1.html">PagePaginatedResult</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1Database.html">D1Database</a>&gt;&gt;</dt>
+    <dd><p>A page of databases with pagination info.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/list/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/list/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_PollExportAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.PollExportAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_PollExportAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.PollExportAsync(System.String,System.String,System.Threading.CancellationToken)">
+  PollExportAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Polls the status of an ongoing export operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1ExportResponse&gt; PollExportAsync(string databaseId, string bookmark, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>bookmark</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The bookmark from the previous response.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1ExportResponse.html">D1ExportResponse</a>&gt;</dt>
+    <dd><p>Export status. When complete, includes signed_url for download.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_PollImportAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.PollImportAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_PollImportAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.PollImportAsync(System.String,System.String,System.Threading.CancellationToken)">
+  PollImportAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L244"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Polls the status of an ongoing import operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1ImportResponse&gt; PollImportAsync(string databaseId, string bookmark, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>bookmark</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The bookmark from the previous response.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1ImportResponse.html">D1ImportResponse</a>&gt;</dt>
+    <dd><p>Import status with progress information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_QueryAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.QueryAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_QueryAsync_System_String_System_String_System_Collections_Generic_IReadOnlyList_System_Object__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.QueryAsync(System.String,System.String,System.Collections.Generic.IReadOnlyList{System.Object},System.Threading.CancellationToken)">
+  QueryAsync(string, string, IReadOnlyList&lt;object?&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a SQL query and returns results as objects.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyList&lt;D1QueryResult&gt;&gt; QueryAsync(string databaseId, string sql, IReadOnlyList&lt;object?&gt;? @params = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>sql</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The SQL statement to execute.</p>
+</dd>
+    <dt><code>params</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>Optional parameter values for parameterized queries.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1QueryResult.html">D1QueryResult</a>&gt;&gt;</dt>
+    <dd><p>Query results with metadata.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_D1_ID1Api_QueryAsync_System_String_System_String_System_Collections_Generic_IReadOnlyList_System_Object__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use ? placeholders in SQL and provide values in params array.
+Multiple statements can be separated by semicolons for batch execution.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/query/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/query/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_QueryAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.QueryAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_QueryAsync__1_System_String_System_String_System_Collections_Generic_IReadOnlyList_System_Object__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.QueryAsync``1(System.String,System.String,System.Collections.Generic.IReadOnlyList{System.Object},System.Threading.CancellationToken)">
+  QueryAsync&lt;TRow&gt;(string, string, IReadOnlyList&lt;object?&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a SQL query and returns strongly-typed results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyList&lt;D1QueryResult&lt;TRow&gt;&gt;&gt; QueryAsync&lt;TRow&gt;(string databaseId, string sql, IReadOnlyList&lt;object?&gt;? @params = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>sql</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The SQL statement to execute.</p>
+</dd>
+    <dt><code>params</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>Optional parameter values for parameterized queries.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1QueryResult-1.html">D1QueryResult</a>&lt;TRow&gt;&gt;&gt;</dt>
+    <dd><p>Typed query results with metadata.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TRow</code></dt>
+    <dd><p>The type to deserialize each row into.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_QueryRawAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.QueryRawAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_QueryRawAsync_System_String_System_String_System_Collections_Generic_IReadOnlyList_System_Object__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.QueryRawAsync(System.String,System.String,System.Collections.Generic.IReadOnlyList{System.Object},System.Threading.CancellationToken)">
+  QueryRawAsync(string, string, IReadOnlyList&lt;object?&gt;?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a SQL query and returns results as arrays (raw format).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyList&lt;D1RawQueryResult&gt;&gt; QueryRawAsync(string databaseId, string sql, IReadOnlyList&lt;object?&gt;? @params = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>sql</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The SQL statement to execute.</p>
+</dd>
+    <dt><code>params</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>&gt;</dt>
+    <dd><p>Optional parameter values for parameterized queries.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1RawQueryResult.html">D1RawQueryResult</a>&gt;&gt;</dt>
+    <dd><p>Raw query results with rows as arrays.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_D1_ID1Api_QueryRawAsync_System_String_System_String_System_Collections_Generic_IReadOnlyList_System_Object__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The raw endpoint returns rows as arrays instead of objects,
+which is more efficient for large result sets.
+Column order matches the SELECT clause order.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/raw/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/raw/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_StartExportAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.StartExportAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_StartExportAsync_System_String_Cloudflare_NET_Accounts_D1_Models_D1ExportDumpOptions_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.StartExportAsync(System.String,Cloudflare.NET.Accounts.D1.Models.D1ExportDumpOptions,System.Threading.CancellationToken)">
+  StartExportAsync(string, D1ExportDumpOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initiates an export of the database to SQL format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1ExportResponse&gt; StartExportAsync(string databaseId, D1ExportDumpOptions? dumpOptions = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>dumpOptions</code> <a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1ExportDumpOptions.html">D1ExportDumpOptions</a></dt>
+    <dd><p>Optional filtering options (schema only, data only, specific tables).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1ExportResponse.html">D1ExportResponse</a>&gt;</dt>
+    <dd><p>Initial export response with bookmark for polling.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_D1_ID1Api_StartExportAsync_System_String_Cloudflare_NET_Accounts_D1_Models_D1ExportDumpOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Export is an async operation that requires polling.
+  Call <a class="xref" href="Cloudflare.NET.Accounts.D1.ID1Api.html#Cloudflare_NET_Accounts_D1_ID1Api_PollExportAsync_System_String_System_String_System_Threading_CancellationToken_">PollExportAsync(string, string, CancellationToken)</a> with the returned bookmark until status is "complete".
+</p>
+<p>
+  The database is unavailable for queries during export.
+  Exports that aren't polled will auto-cancel.
+</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/export/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/export/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_StartImportAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.StartImportAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_StartImportAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.StartImportAsync(System.String,System.String,System.Threading.CancellationToken)">
+  StartImportAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initiates an import operation by requesting an upload URL.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1ImportResponse&gt; StartImportAsync(string databaseId, string etag, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>etag</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>MD5 hash of the SQL file content.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1ImportResponse.html">D1ImportResponse</a>&gt;</dt>
+    <dd><p>Response containing upload_url and filename for SQL file upload.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_D1_ID1Api_StartImportAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Import workflow:
+  <ol><li>Compute MD5 hash of your SQL file</li><li>Call <a class="xref" href="Cloudflare.NET.Accounts.D1.ID1Api.html#Cloudflare_NET_Accounts_D1_ID1Api_StartImportAsync_System_String_System_String_System_Threading_CancellationToken_">StartImportAsync(string, string, CancellationToken)</a> with the hash to get upload URL and filename</li><li>PUT your SQL file to the upload_url (verify ETag matches)</li><li>Call <a class="xref" href="Cloudflare.NET.Accounts.D1.ID1Api.html#Cloudflare_NET_Accounts_D1_ID1Api_CompleteImportAsync_System_String_System_String_System_String_System_Threading_CancellationToken_">CompleteImportAsync(string, string, string, CancellationToken)</a> with etag and filename to start ingestion</li><li>Poll with <a class="xref" href="Cloudflare.NET.Accounts.D1.ID1Api.html#Cloudflare_NET_Accounts_D1_ID1Api_PollImportAsync_System_String_System_String_System_Threading_CancellationToken_">PollImportAsync(string, string, CancellationToken)</a> until status is "complete"</li></ol>
+
+<p>
+  The database is blocked during import operations.
+</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/import/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/import/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <a id="Cloudflare_NET_Accounts_D1_ID1Api_UpdateAsync_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.UpdateAsync*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_D1_ID1Api_UpdateAsync_System_String_Cloudflare_NET_Accounts_D1_Models_UpdateD1DatabaseOptions_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.Accounts.D1.ID1Api.UpdateAsync(System.String,Cloudflare.NET.Accounts.D1.Models.UpdateD1DatabaseOptions,System.Threading.CancellationToken)">
+  UpdateAsync(string, UpdateD1DatabaseOptions, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates a D1 database's configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;D1Database&gt; UpdateAsync(string databaseId, UpdateD1DatabaseOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>databaseId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The database UUID.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Cloudflare.NET.Accounts.D1.Models.UpdateD1DatabaseOptions.html">UpdateD1DatabaseOptions</a></dt>
+    <dd><p>The update options (e.g., read replication settings).</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.D1.Models.D1Database.html">D1Database</a>&gt;</dt>
+    <dd><p>The updated database.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Accounts_D1_ID1Api_UpdateAsync_System_String_Cloudflare_NET_Accounts_D1_Models_UpdateD1DatabaseOptions_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this to enable/disable read replication by setting
+ReadReplication.Mode to &quot;auto&quot; or &quot;disabled&quot;.</p>
+</div>
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/update/">https://developers.cloudflare.com/api/resources/d1/subresources/database/methods/update/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/d1/">https://developers.cloudflare.com/d1/</a></span></div>
+      <div><span><a href="https://developers.cloudflare.com/d1/platform/limits/">https://developers.cloudflare.com/d1/platform/limits/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/D1/ID1Api.cs/#L37" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

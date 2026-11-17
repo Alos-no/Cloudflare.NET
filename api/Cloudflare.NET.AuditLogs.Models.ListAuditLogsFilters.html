@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ListAuditLogsFilters | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ListAuditLogsFilters | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Filtering and pagination options for listing audit logs.    All filter arrays support both inclusion and exclusion. Use the main array   for inclusion, and the corresponding Not array for exclusion.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters.md&amp;value=---%0Auid%3A%20Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters">
+
+
+
+  <h1 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters" class="text-break">
+Class ListAuditLogsFilters  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.AuditLogs.html">AuditLogs</a>.<a class="xref" href="Cloudflare.NET.AuditLogs.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Filtering and pagination options for listing audit logs.</p>
+<p>
+  All filter arrays support both inclusion and exclusion. Use the main array
+  for inclusion, and the corresponding <code>Not</code> array for exclusion.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record ListAuditLogsFilters : IEquatable&lt;ListAuditLogsFilters&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ListAuditLogsFilters</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.html">ListAuditLogsFilters</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Get logs for specific action types, excluding failures
+var filters = new ListAuditLogsFilters(
+  ActionTypes: new[] { "create", "update" },
+  ActionResultsNot: new[] { "failure" }
+);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters__ctor_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters__ctor_System_String_System_Nullable_System_Int32__System_Nullable_Cloudflare_NET_Security_Firewall_Models_ListOrderDirection__System_Nullable_System_DateTime__System_Nullable_System_DateTime__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_Int32__System_Collections_Generic_IReadOnlyList_System_Int32__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.#ctor(System.String,System.Nullable{System.Int32},System.Nullable{Cloudflare.NET.Security.Firewall.Models.ListOrderDirection},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.Int32},System.Collections.Generic.IReadOnlyList{System.Int32},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String})">
+  ListAuditLogsFilters(string?, int?, ListOrderDirection?, DateTime?, DateTime?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;int&gt;?, IReadOnlyList&lt;int&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?, IReadOnlyList&lt;string&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filtering and pagination options for listing audit logs.</p>
+<p>
+  All filter arrays support both inclusion and exclusion. Use the main array
+  for inclusion, and the corresponding <code>Not</code> array for exclusion.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ListAuditLogsFilters(string? Cursor = null, int? Limit = null, ListOrderDirection? Direction = null, DateTime? Before = null, DateTime? Since = null, IReadOnlyList&lt;string&gt;? Ids = null, IReadOnlyList&lt;string&gt;? IdsNot = null, IReadOnlyList&lt;string&gt;? ActorEmails = null, IReadOnlyList&lt;string&gt;? ActorEmailsNot = null, IReadOnlyList&lt;string&gt;? ActorIds = null, IReadOnlyList&lt;string&gt;? ActorIdsNot = null, IReadOnlyList&lt;string&gt;? ActorIpAddresses = null, IReadOnlyList&lt;string&gt;? ActorIpAddressesNot = null, IReadOnlyList&lt;string&gt;? ActorTokenIds = null, IReadOnlyList&lt;string&gt;? ActorTokenIdsNot = null, IReadOnlyList&lt;string&gt;? ActorTokenNames = null, IReadOnlyList&lt;string&gt;? ActorTokenNamesNot = null, IReadOnlyList&lt;string&gt;? ActorContexts = null, IReadOnlyList&lt;string&gt;? ActorContextsNot = null, IReadOnlyList&lt;string&gt;? ActorTypes = null, IReadOnlyList&lt;string&gt;? ActorTypesNot = null, IReadOnlyList&lt;string&gt;? ActionTypes = null, IReadOnlyList&lt;string&gt;? ActionTypesNot = null, IReadOnlyList&lt;string&gt;? ActionResults = null, IReadOnlyList&lt;string&gt;? ActionResultsNot = null, IReadOnlyList&lt;string&gt;? ResourceIds = null, IReadOnlyList&lt;string&gt;? ResourceIdsNot = null, IReadOnlyList&lt;string&gt;? ResourceProducts = null, IReadOnlyList&lt;string&gt;? ResourceProductsNot = null, IReadOnlyList&lt;string&gt;? ResourceTypes = null, IReadOnlyList&lt;string&gt;? ResourceTypesNot = null, IReadOnlyList&lt;string&gt;? ResourceScopes = null, IReadOnlyList&lt;string&gt;? ResourceScopesNot = null, IReadOnlyList&lt;string&gt;? ZoneIds = null, IReadOnlyList&lt;string&gt;? ZoneIdsNot = null, IReadOnlyList&lt;string&gt;? ZoneNames = null, IReadOnlyList&lt;string&gt;? ZoneNamesNot = null, IReadOnlyList&lt;string&gt;? RawCfRayIds = null, IReadOnlyList&lt;string&gt;? RawCfRayIdsNot = null, IReadOnlyList&lt;string&gt;? RawMethods = null, IReadOnlyList&lt;string&gt;? RawMethodsNot = null, IReadOnlyList&lt;int&gt;? RawStatusCodes = null, IReadOnlyList&lt;int&gt;? RawStatusCodesNot = null, IReadOnlyList&lt;string&gt;? RawUris = null, IReadOnlyList&lt;string&gt;? RawUrisNot = null, IReadOnlyList&lt;string&gt;? AccountNames = null, IReadOnlyList&lt;string&gt;? AccountNamesNot = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Cursor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Pagination cursor from previous response.</p>
+</dd>
+    <dt><code>Limit</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>Maximum results per request (1-1000, default 100).</p>
+</dd>
+    <dt><code>Direction</code> <a class="xref" href="Cloudflare.NET.Security.Firewall.Models.ListOrderDirection.html">ListOrderDirection</a>?</dt>
+    <dd><p>Sort direction.</p>
+</dd>
+    <dt><code>Before</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>Return logs from before this date (RFC3339).</p>
+</dd>
+    <dt><code>Since</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd><p>Return logs from after this date (RFC3339).</p>
+</dd>
+    <dt><code>Ids</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by specific audit log IDs.</p>
+</dd>
+    <dt><code>IdsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific audit log IDs.</p>
+</dd>
+    <dt><code>ActorEmails</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by actor email addresses.</p>
+</dd>
+    <dt><code>ActorEmailsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific actor email addresses.</p>
+</dd>
+    <dt><code>ActorIds</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by actor IDs.</p>
+</dd>
+    <dt><code>ActorIdsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific actor IDs.</p>
+</dd>
+    <dt><code>ActorIpAddresses</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by actor IP addresses.</p>
+</dd>
+    <dt><code>ActorIpAddressesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific actor IP addresses.</p>
+</dd>
+    <dt><code>ActorTokenIds</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by actor token IDs.</p>
+</dd>
+    <dt><code>ActorTokenIdsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific actor token IDs.</p>
+</dd>
+    <dt><code>ActorTokenNames</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by actor token names.</p>
+</dd>
+    <dt><code>ActorTokenNamesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific actor token names.</p>
+</dd>
+    <dt><code>ActorContexts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by actor contexts (e.g., &quot;dashboard&quot;, &quot;api&quot;).</p>
+</dd>
+    <dt><code>ActorContextsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific actor contexts.</p>
+</dd>
+    <dt><code>ActorTypes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by actor types (e.g., &quot;user&quot;, &quot;system&quot;).</p>
+</dd>
+    <dt><code>ActorTypesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific actor types.</p>
+</dd>
+    <dt><code>ActionTypes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by action types (e.g., &quot;create&quot;, &quot;update&quot;, &quot;delete&quot;).</p>
+</dd>
+    <dt><code>ActionTypesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific action types.</p>
+</dd>
+    <dt><code>ActionResults</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by action results (e.g., &quot;success&quot;, &quot;failure&quot;).</p>
+</dd>
+    <dt><code>ActionResultsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific action results.</p>
+</dd>
+    <dt><code>ResourceIds</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by resource IDs.</p>
+</dd>
+    <dt><code>ResourceIdsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific resource IDs.</p>
+</dd>
+    <dt><code>ResourceProducts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by resource products.</p>
+</dd>
+    <dt><code>ResourceProductsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific resource products.</p>
+</dd>
+    <dt><code>ResourceTypes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by resource types.</p>
+</dd>
+    <dt><code>ResourceTypesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific resource types.</p>
+</dd>
+    <dt><code>ResourceScopes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by resource scopes.</p>
+</dd>
+    <dt><code>ResourceScopesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific resource scopes.</p>
+</dd>
+    <dt><code>ZoneIds</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by zone IDs.</p>
+</dd>
+    <dt><code>ZoneIdsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific zone IDs.</p>
+</dd>
+    <dt><code>ZoneNames</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by zone names.</p>
+</dd>
+    <dt><code>ZoneNamesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific zone names.</p>
+</dd>
+    <dt><code>RawCfRayIds</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by Cloudflare Ray IDs.</p>
+</dd>
+    <dt><code>RawCfRayIdsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific Cloudflare Ray IDs.</p>
+</dd>
+    <dt><code>RawMethods</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by HTTP methods.</p>
+</dd>
+    <dt><code>RawMethodsNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific HTTP methods.</p>
+</dd>
+    <dt><code>RawStatusCodes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>Filter by HTTP status codes.</p>
+</dd>
+    <dt><code>RawStatusCodesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>Exclude specific HTTP status codes.</p>
+</dd>
+    <dt><code>RawUris</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by request URIs.</p>
+</dd>
+    <dt><code>RawUrisNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific request URIs.</p>
+</dd>
+    <dt><code>AccountNames</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Filter by account names.</p>
+</dd>
+    <dt><code>AccountNamesNot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Exclude specific account names.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters__ctor_System_String_System_Nullable_System_Int32__System_Nullable_Cloudflare_NET_Security_Firewall_Models_ListOrderDirection__System_Nullable_System_DateTime__System_Nullable_System_DateTime__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_Int32__System_Collections_Generic_IReadOnlyList_System_Int32__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String___examples">Examples</h4>
+  <pre><code class="lang-csharp">// Get logs for specific action types, excluding failures
+var filters = new ListAuditLogsFilters(
+  ActionTypes: new[] { "create", "update" },
+  ActionResultsNot: new[] { "failure" }
+);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_AccountNames_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.AccountNames*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_AccountNames" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.AccountNames">
+  AccountNames
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by account names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? AccountNames { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_AccountNamesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.AccountNamesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_AccountNamesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.AccountNamesNot">
+  AccountNamesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L301"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific account names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? AccountNamesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionResults_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionResults*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionResults" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionResults">
+  ActionResults
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L278"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by action results (e.g., &quot;success&quot;, &quot;failure&quot;).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActionResults { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionResultsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionResultsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionResultsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionResultsNot">
+  ActionResultsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L279"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific action results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActionResultsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionTypes_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionTypes*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionTypes" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionTypes">
+  ActionTypes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by action types (e.g., &quot;create&quot;, &quot;update&quot;, &quot;delete&quot;).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActionTypes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionTypesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionTypesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActionTypesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActionTypesNot">
+  ActionTypesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L277"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific action types.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActionTypesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorContexts_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorContexts*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorContexts" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorContexts">
+  ActorContexts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L272"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by actor contexts (e.g., &quot;dashboard&quot;, &quot;api&quot;).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorContexts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorContextsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorContextsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorContextsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorContextsNot">
+  ActorContextsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific actor contexts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorContextsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorEmails_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorEmails*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorEmails" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorEmails">
+  ActorEmails
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L262"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by actor email addresses.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorEmails { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorEmailsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorEmailsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorEmailsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorEmailsNot">
+  ActorEmailsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L263"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific actor email addresses.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorEmailsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIds_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIds*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIds" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIds">
+  ActorIds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by actor IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorIds { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIdsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIdsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIdsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIdsNot">
+  ActorIdsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L265"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific actor IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorIdsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIpAddresses_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIpAddresses*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIpAddresses" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIpAddresses">
+  ActorIpAddresses
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L266"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by actor IP addresses.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorIpAddresses { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIpAddressesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIpAddressesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorIpAddressesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorIpAddressesNot">
+  ActorIpAddressesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L267"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific actor IP addresses.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorIpAddressesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenIds_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenIds*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenIds" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenIds">
+  ActorTokenIds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L268"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by actor token IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorTokenIds { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenIdsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenIdsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenIdsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenIdsNot">
+  ActorTokenIdsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L269"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific actor token IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorTokenIdsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenNames_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenNames*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenNames" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenNames">
+  ActorTokenNames
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by actor token names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorTokenNames { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenNamesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenNamesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTokenNamesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTokenNamesNot">
+  ActorTokenNamesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L271"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific actor token names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorTokenNamesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTypes_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTypes*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTypes" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTypes">
+  ActorTypes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by actor types (e.g., &quot;user&quot;, &quot;system&quot;).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorTypes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTypesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTypesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ActorTypesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ActorTypesNot">
+  ActorTypesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L275"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific actor types.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ActorTypesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Before_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Before*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Before" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Before">
+  Before
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Return logs from before this date (RFC3339).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime? Before { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Cursor_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Cursor*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Cursor" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Cursor">
+  Cursor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pagination cursor from previous response.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Cursor { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Direction_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Direction*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Direction" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Direction">
+  Direction
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L257"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sort direction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ListOrderDirection? Direction { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Security.Firewall.Models.ListOrderDirection.html">ListOrderDirection</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Ids_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Ids*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Ids" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Ids">
+  Ids
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L260"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by specific audit log IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? Ids { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_IdsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.IdsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_IdsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.IdsNot">
+  IdsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L261"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific audit log IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? IdsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Limit_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Limit*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Limit" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Limit">
+  Limit
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L256"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maximum results per request (1-1000, default 100).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? Limit { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawCfRayIds_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawCfRayIds*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawCfRayIds" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawCfRayIds">
+  RawCfRayIds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L292"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by Cloudflare Ray IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? RawCfRayIds { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawCfRayIdsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawCfRayIdsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawCfRayIdsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawCfRayIdsNot">
+  RawCfRayIdsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L293"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific Cloudflare Ray IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? RawCfRayIdsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawMethods_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawMethods*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawMethods" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawMethods">
+  RawMethods
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L294"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by HTTP methods.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? RawMethods { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawMethodsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawMethodsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawMethodsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawMethodsNot">
+  RawMethodsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L295"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific HTTP methods.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? RawMethodsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawStatusCodes_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawStatusCodes*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawStatusCodes" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawStatusCodes">
+  RawStatusCodes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L296"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by HTTP status codes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;int&gt;? RawStatusCodes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawStatusCodesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawStatusCodesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawStatusCodesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawStatusCodesNot">
+  RawStatusCodesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L297"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific HTTP status codes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;int&gt;? RawStatusCodesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawUris_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawUris*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawUris" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawUris">
+  RawUris
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L298"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by request URIs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? RawUris { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawUrisNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawUrisNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_RawUrisNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.RawUrisNot">
+  RawUrisNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L299"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific request URIs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? RawUrisNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceIds_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceIds*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceIds" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceIds">
+  ResourceIds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L280"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by resource IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceIds { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceIdsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceIdsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceIdsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceIdsNot">
+  ResourceIdsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L281"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific resource IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceIdsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceProducts_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceProducts*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceProducts" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceProducts">
+  ResourceProducts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by resource products.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceProducts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceProductsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceProductsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceProductsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceProductsNot">
+  ResourceProductsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L283"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific resource products.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceProductsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceScopes_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceScopes*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceScopes" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceScopes">
+  ResourceScopes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L286"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by resource scopes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceScopes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceScopesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceScopesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceScopesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceScopesNot">
+  ResourceScopesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L287"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific resource scopes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceScopesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceTypes_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceTypes*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceTypes" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceTypes">
+  ResourceTypes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L284"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by resource types.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceTypes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceTypesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceTypesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ResourceTypesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ResourceTypesNot">
+  ResourceTypesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L285"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific resource types.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ResourceTypesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Since_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Since*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_Since" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.Since">
+  Since
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L259"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Return logs from after this date (RFC3339).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime? Since { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneIds_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneIds*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneIds" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneIds">
+  ZoneIds
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by zone IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ZoneIds { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneIdsNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneIdsNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneIdsNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneIdsNot">
+  ZoneIdsNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L289"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific zone IDs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ZoneIdsNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneNames_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneNames*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneNames" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneNames">
+  ZoneNames
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L290"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filter by zone names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ZoneNames { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneNamesNot_" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneNamesNot*"></a>
+
+  <h3 id="Cloudflare_NET_AuditLogs_Models_ListAuditLogsFilters_ZoneNamesNot" data-uid="Cloudflare.NET.AuditLogs.Models.ListAuditLogsFilters.ZoneNamesNot">
+  ZoneNamesNot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L291"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exclude specific zone names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? ZoneNamesNot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/AuditLogs/Models/AuditLogModels.cs/#L254" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

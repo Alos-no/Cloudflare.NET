@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class BatchDnsRecordsRequest | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class BatchDnsRecordsRequest | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Request to perform batch DNS record operations in a single API call.    Execution Order: Deletes → Patches → Puts → Posts.   This order ensures that deletions happen first, allowing re-creation   of records with the same name in the same batch.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest">
+
+
+
+  <h1 id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest" class="text-break">
+Class BatchDnsRecordsRequest  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordBatchModels.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Dns.html">Dns</a>.<a class="xref" href="Cloudflare.NET.Dns.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Request to perform batch DNS record operations in a single API call.</p>
+<p>
+  <strong>Execution Order:</strong> Deletes → Patches → Puts → Posts.
+  This order ensures that deletions happen first, allowing re-creation
+  of records with the same name in the same batch.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record BatchDnsRecordsRequest : IEquatable&lt;BatchDnsRecordsRequest&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">BatchDnsRecordsRequest</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.html">BatchDnsRecordsRequest</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Batch: delete one record, update another, create two new ones
+var batch = new BatchDnsRecordsRequest(
+  Deletes: [new BatchDeleteOperation("record-id-to-delete")],
+  Patches: [new BatchPatchOperation("record-id-to-update", Content: "192.0.2.100")],
+  Posts: [
+    new CreateDnsRecordRequest(DnsRecordType.A, "new.example.com", "192.0.2.1"),
+    new CreateDnsRecordRequest(DnsRecordType.A, "new2.example.com", "192.0.2.2")
+  ]
+);
+var result = await dns.BatchDnsRecordsAsync(zoneId, batch);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest__ctor_" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest__ctor_System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_BatchDeleteOperation__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_BatchPatchOperation__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_BatchPutOperation__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_CreateDnsRecordRequest__" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.#ctor(System.Collections.Generic.IReadOnlyList{Cloudflare.NET.Dns.Models.BatchDeleteOperation},System.Collections.Generic.IReadOnlyList{Cloudflare.NET.Dns.Models.BatchPatchOperation},System.Collections.Generic.IReadOnlyList{Cloudflare.NET.Dns.Models.BatchPutOperation},System.Collections.Generic.IReadOnlyList{Cloudflare.NET.Dns.Models.CreateDnsRecordRequest})">
+  BatchDnsRecordsRequest(IReadOnlyList&lt;BatchDeleteOperation&gt;?, IReadOnlyList&lt;BatchPatchOperation&gt;?, IReadOnlyList&lt;BatchPutOperation&gt;?, IReadOnlyList&lt;CreateDnsRecordRequest&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordBatchModels.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Request to perform batch DNS record operations in a single API call.</p>
+<p>
+  <strong>Execution Order:</strong> Deletes → Patches → Puts → Posts.
+  This order ensures that deletions happen first, allowing re-creation
+  of records with the same name in the same batch.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BatchDnsRecordsRequest(IReadOnlyList&lt;BatchDeleteOperation&gt;? Deletes = null, IReadOnlyList&lt;BatchPatchOperation&gt;? Patches = null, IReadOnlyList&lt;BatchPutOperation&gt;? Puts = null, IReadOnlyList&lt;CreateDnsRecordRequest&gt;? Posts = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Deletes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchDeleteOperation.html">BatchDeleteOperation</a>&gt;</dt>
+    <dd><p>Records to delete (by ID). Executed first.</p>
+</dd>
+    <dt><code>Patches</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchPatchOperation.html">BatchPatchOperation</a>&gt;</dt>
+    <dd><p>Records to partially update (PATCH). Executed second.</p>
+</dd>
+    <dt><code>Puts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchPutOperation.html">BatchPutOperation</a>&gt;</dt>
+    <dd><p>Records to fully replace (PUT). Executed third.</p>
+</dd>
+    <dt><code>Posts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.CreateDnsRecordRequest.html">CreateDnsRecordRequest</a>&gt;</dt>
+    <dd><p>Records to create (POST). Executed last.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest__ctor_System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_BatchDeleteOperation__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_BatchPatchOperation__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_BatchPutOperation__System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Dns_Models_CreateDnsRecordRequest___examples">Examples</h4>
+  <pre><code class="lang-csharp">// Batch: delete one record, update another, create two new ones
+var batch = new BatchDnsRecordsRequest(
+  Deletes: [new BatchDeleteOperation("record-id-to-delete")],
+  Patches: [new BatchPatchOperation("record-id-to-update", Content: "192.0.2.100")],
+  Posts: [
+    new CreateDnsRecordRequest(DnsRecordType.A, "new.example.com", "192.0.2.1"),
+    new CreateDnsRecordRequest(DnsRecordType.A, "new2.example.com", "192.0.2.2")
+  ]
+);
+var result = await dns.BatchDnsRecordsAsync(zoneId, batch);</code></pre>
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/batch/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/batch/</a></span></div>
+    </dd>
+  </dl>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Deletes_" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Deletes*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Deletes" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Deletes">
+  Deletes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordBatchModels.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records to delete (by ID). Executed first.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;deletes&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+public IReadOnlyList&lt;BatchDeleteOperation&gt;? Deletes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchDeleteOperation.html">BatchDeleteOperation</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Patches_" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Patches*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Patches" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Patches">
+  Patches
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordBatchModels.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records to partially update (PATCH). Executed second.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;patches&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+public IReadOnlyList&lt;BatchPatchOperation&gt;? Patches { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchPatchOperation.html">BatchPatchOperation</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Posts_" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Posts*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Posts" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Posts">
+  Posts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordBatchModels.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records to create (POST). Executed last.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;posts&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+public IReadOnlyList&lt;CreateDnsRecordRequest&gt;? Posts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.CreateDnsRecordRequest.html">CreateDnsRecordRequest</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Puts_" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Puts*"></a>
+
+  <h3 id="Cloudflare_NET_Dns_Models_BatchDnsRecordsRequest_Puts" data-uid="Cloudflare.NET.Dns.Models.BatchDnsRecordsRequest.Puts">
+  Puts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordBatchModels.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records to fully replace (PUT). Executed third.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;puts&quot;)]
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+public IReadOnlyList&lt;BatchPutOperation&gt;? Puts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Dns.Models.BatchPutOperation.html">BatchPutOperation</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><span><a href="https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/batch/">https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/batch/</a></span></div>
+  </div>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Dns/Models/DnsRecordBatchModels.cs/#L32" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

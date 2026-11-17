@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Presigned URLs | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Presigned URLs | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/presigned-urls.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="presigned-urls">Presigned URLs</h1>
+
+<p>Generate secure, time-limited URLs that allow clients to upload directly to R2 without exposing credentials.</p>
+<h2 id="overview">Overview</h2>
+<pre><code class="lang-csharp">public class PresignedService(IR2Client r2)
+{
+    public string GenerateUploadUrl(string key, long fileSize, string contentType)
+    {
+        return r2.CreatePresignedPutUrl(&quot;my-bucket&quot;, new PresignedPutRequest(
+            Key: key,
+            ExpiresAfter: TimeSpan.FromMinutes(15),
+            ContentLength: fileSize,
+            ContentType: contentType
+        ));
+    }
+}
+</code></pre>
+<h2 id="single-part-presigned-url">Single-Part Presigned URL</h2>
+<p>Generate a URL for direct file upload:</p>
+<pre><code class="lang-csharp">var url = r2.CreatePresignedPutUrl(&quot;my-bucket&quot;, new PresignedPutRequest(
+    Key: &quot;uploads/document.pdf&quot;,
+    ExpiresAfter: TimeSpan.FromMinutes(30),
+    ContentLength: 1024 * 1024 * 10, // 10 MB
+    ContentType: &quot;application/pdf&quot;
+));
+
+Console.WriteLine($&quot;Upload URL: {url}&quot;);
+</code></pre>
+<h3 id="presignedputrequest-properties">PresignedPutRequest Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Key</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>Object key (path)</td>
+</tr>
+<tr>
+<td><code>ExpiresAfter</code></td>
+<td><code>TimeSpan</code></td>
+<td>Yes</td>
+<td>URL validity duration</td>
+</tr>
+<tr>
+<td><code>ContentLength</code></td>
+<td><code>long</code></td>
+<td>Yes</td>
+<td>Exact file size in bytes</td>
+</tr>
+<tr>
+<td><code>ContentType</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>MIME type of the file</td>
+</tr>
+<tr>
+<td><code>Conditions</code></td>
+<td><code>IEnumerable&lt;S3PostCondition&gt;?</code></td>
+<td>No</td>
+<td>Additional S3 conditions</td>
+</tr>
+<tr>
+<td><code>HeadersToSign</code></td>
+<td><code>IReadOnlyDictionary&lt;string, string&gt;?</code></td>
+<td>No</td>
+<td>Headers to include in signature</td>
+</tr>
+<tr>
+<td><code>Checksum</code></td>
+<td><code>UploadChecksum?</code></td>
+<td>No</td>
+<td>Digest the uploaded bytes must hash to; see <a href="#checksum-verification">Checksum Verification</a></td>
+</tr>
+<tr>
+<td><code>CacheControl</code></td>
+<td><code>string?</code></td>
+<td>No</td>
+<td><code>Cache-Control</code> to store on the object; see <a href="#storing-cache-control">Storing Cache-Control</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="presigned-download-url">Presigned Download URL</h2>
+<p><code>CreatePresignedGetUrl</code> produces a URL that lets the holder download one object without a Cloudflare
+credential and without your service relaying the bytes. Use it to hand a private object to a browser,
+a mobile client, or a third party for a limited window:</p>
+<pre><code class="lang-csharp">var url = r2.CreatePresignedGetUrl(&quot;my-bucket&quot;, new PresignedGetRequest(
+    Key: &quot;invoices/2026-08.pdf&quot;,
+    ExpiresAfter: TimeSpan.FromMinutes(15)
+));
+
+Console.WriteLine($&quot;Download URL: {url}&quot;);
+</code></pre>
+<h3 id="presignedgetrequest-properties">PresignedGetRequest Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Key</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>Object key (path)</td>
+</tr>
+<tr>
+<td><code>ExpiresAfter</code></td>
+<td><code>TimeSpan</code></td>
+<td>Yes</td>
+<td>URL validity duration</td>
+</tr>
+<tr>
+<td><code>ResponseContentType</code></td>
+<td><code>string?</code></td>
+<td>No</td>
+<td>Overrides the <code>Content-Type</code> header R2 returns</td>
+</tr>
+<tr>
+<td><code>ResponseContentDisposition</code></td>
+<td><code>string?</code></td>
+<td>No</td>
+<td>Overrides the <code>Content-Disposition</code> header R2 returns</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controlling-the-response-headers">Controlling the Response Headers</h3>
+<p>The two optional properties change the headers R2 sends when the URL is fetched, without touching the
+stored object. This is how you make a browser download a file under a different name, or open it
+inline rather than saving it:</p>
+<pre><code class="lang-csharp">// The browser saves the file as &quot;August invoice.pdf&quot; no matter what the key is.
+var url = r2.CreatePresignedGetUrl(&quot;my-bucket&quot;, new PresignedGetRequest(
+    Key: &quot;invoices/8f2c1a90.bin&quot;,
+    ExpiresAfter: TimeSpan.FromMinutes(5),
+    ResponseContentType: &quot;application/pdf&quot;,
+    ResponseContentDisposition: &quot;attachment; filename=\&quot;August invoice.pdf\&quot;&quot;
+));
+</code></pre>
+<p>Both values are part of the signature, so a recipient cannot edit them in the URL. Changing either
+one invalidates the signature and R2 rejects the request.</p>
+<h3 id="after-expiry">After Expiry</h3>
+<p>Once <code>ExpiresAfter</code> has elapsed, R2 answers the URL with HTTP 403. Generate a fresh URL rather than
+issuing long-lived ones:</p>
+<pre><code class="lang-csharp">[HttpGet(&quot;download/{id}&quot;)]
+public IActionResult GetDownloadUrl(string id)
+{
+    var url = r2.CreatePresignedGetUrl(&quot;documents&quot;, new PresignedGetRequest(
+        Key: $&quot;user-uploads/{id}&quot;,
+        ExpiresAfter: TimeSpan.FromMinutes(10)
+    ));
+
+    return Redirect(url);
+}
+</code></pre>
+<h2 id="using-presigned-urls">Using Presigned URLs</h2>
+<h3 id="server-side-generate-url">Server-Side (Generate URL)</h3>
+<pre><code class="lang-csharp">[HttpPost(&quot;upload-url&quot;)]
+public IActionResult GetUploadUrl([FromBody] UploadRequest request)
+{
+    var url = r2.CreatePresignedPutUrl(&quot;uploads&quot;, new PresignedPutRequest(
+        Key: $&quot;{Guid.NewGuid()}/{request.FileName}&quot;,
+        ExpiresAfter: TimeSpan.FromMinutes(15),
+        ContentLength: request.FileSize,
+        ContentType: request.ContentType
+    ));
+
+    return Ok(new { uploadUrl = url });
+}
+</code></pre>
+<h3 id="client-side-javascript">Client-Side (JavaScript)</h3>
+<pre><code class="lang-javascript">// Get presigned URL from your API
+const { uploadUrl } = await fetch('/api/upload-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        fileName: file.name,
+        fileSize: file.size,
+        contentType: file.type
+    })
+}).then(r =&gt; r.json());
+
+// Upload directly to R2
+await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: {
+        'Content-Type': file.type,
+        'Content-Length': file.size
+    },
+    body: file
+});
+</code></pre>
+<h2 id="multipart-presigned-urls">Multipart Presigned URLs</h2>
+<p>Generate presigned URLs for multipart upload parts:</p>
+<h3 id="single-part">Single Part</h3>
+<pre><code class="lang-csharp">var partUrl = r2.CreatePresignedUploadPartUrl(&quot;my-bucket&quot;, new PresignedUploadPartRequest(
+    Key: &quot;uploads/large-file.zip&quot;,
+    UploadId: &quot;your-upload-id&quot;,
+    PartNumber: 1,
+    ExpiresAfter: TimeSpan.FromMinutes(60),
+    ContentLength: 100 * 1024 * 1024, // 100 MiB
+    ContentType: &quot;application/octet-stream&quot;
+));
+</code></pre>
+<h3 id="batch-presigned-urls">Batch Presigned URLs</h3>
+<p>Generate URLs for all parts at once. Each part is given by its part number and its exact size in bytes,
+because the size is signed into that part's URL:</p>
+<pre><code class="lang-csharp">const long partSize = 100L * 1024 * 1024; // 100 MiB
+
+var partUrls = r2.CreatePresignedUploadPartsUrls(&quot;my-bucket&quot;, new PresignedUploadPartsRequest(
+    Key: &quot;uploads/large-file.zip&quot;,
+    UploadId: &quot;your-upload-id&quot;,
+    ExpiresAfter: TimeSpan.FromHours(1),
+    PartNumberAndLength: Enumerable.Range(1, 10).ToDictionary(n =&gt; n, _ =&gt; partSize)
+));
+
+foreach (var (partNumber, url) in partUrls)
+{
+    Console.WriteLine($&quot;Part {partNumber}: {url}&quot;);
+}
+</code></pre>
+<p>Every part except the last must be the same size, and each part must fall between 5 MiB and 5 GiB. The
+method throws <code>ArgumentException</code> before signing anything if those rules are broken.</p>
+<h2 id="signed-headers">Signed Headers</h2>
+<p>Include additional headers in the signature to enforce constraints:</p>
+<pre><code class="lang-csharp">var url = r2.CreatePresignedPutUrl(&quot;my-bucket&quot;, new PresignedPutRequest(
+    Key: &quot;uploads/image.jpg&quot;,
+    ExpiresAfter: TimeSpan.FromMinutes(15),
+    ContentLength: fileSize,
+    ContentType: &quot;image/jpeg&quot;,
+    HeadersToSign: new Dictionary&lt;string, string&gt;
+    {
+        [&quot;x-amz-meta-user-id&quot;] = &quot;user-123&quot;,
+        [&quot;x-amz-meta-upload-source&quot;] = &quot;web-app&quot;
+    }
+));
+
+// Client must include these headers when uploading
+</code></pre>
+<p>A signed header is not a suggestion. The client's request is rejected unless it sends the header with
+exactly the signed value, because the header name appears in the URL's <code>X-Amz-SignedHeaders</code> list and
+its value feeds the signature. Omitting it, or sending a different value, produces a different
+signature and R2 answers 403 with <code>SignatureDoesNotMatch</code>. Nothing is stored.</p>
+<h3 id="requiring-server-side-encryption">Requiring Server-Side Encryption</h3>
+<p>The same mechanism can force a client to declare server-side encryption on every upload:</p>
+<pre><code class="lang-csharp">var encryptionHeader = new Dictionary&lt;string, string&gt;
+{
+    [&quot;x-amz-server-side-encryption&quot;] = &quot;AES256&quot;
+};
+
+var putUrl = r2.CreatePresignedPutUrl(&quot;my-bucket&quot;, new PresignedPutRequest(
+    Key: &quot;uploads/document.pdf&quot;,
+    ExpiresAfter: TimeSpan.FromMinutes(15),
+    ContentLength: fileSize,
+    ContentType: &quot;application/pdf&quot;,
+    HeadersToSign: encryptionHeader
+));
+
+var partUrl = r2.CreatePresignedUploadPartUrl(&quot;my-bucket&quot;, new PresignedUploadPartRequest(
+    Key: &quot;uploads/large-file.zip&quot;,
+    UploadId: uploadId,
+    PartNumber: 1,
+    ExpiresAfter: TimeSpan.FromHours(1),
+    ContentLength: partSize,
+    ContentType: &quot;application/octet-stream&quot;,
+    HeadersToSign: encryptionHeader
+));
+</code></pre>
+<p>R2 accepts this header on both a single-part PUT and a part upload, and a multipart upload whose parts
+all carry it assembles normally. R2 does not echo the header back in its response.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>R2 encrypts every object at rest whether or not this header is sent, so signing it does not change
+how the object is stored. What it changes is that a client cannot upload without presenting it.</p>
+</div>
+<h2 id="checksum-verification">Checksum Verification</h2>
+<p>Bind a presigned upload to a digest of the expected bytes. The digest's header is signed into the URL,
+so the client must send it, and R2 hashes the bytes that actually arrive: when they do not hash to the
+stated digest, R2 rejects the upload with 400 <code>BadDigest</code> and stores nothing.</p>
+<pre><code class="lang-csharp">// Compute the digest locally, then sign it into the URL.
+var checksum = UploadChecksum.FromDigestBytes(R2ChecksumAlgorithm.Sha256, SHA256.HashData(fileBytes));
+
+var url = r2.CreatePresignedPutUrl(&quot;my-bucket&quot;, new PresignedPutRequest(
+    Key: &quot;uploads/document.pdf&quot;,
+    ExpiresAfter: TimeSpan.FromMinutes(15),
+    ContentLength: fileBytes.Length,
+    ContentType: &quot;application/pdf&quot;,
+    Checksum: checksum
+));
+
+// The client must now send: x-amz-checksum-sha256: &lt;the base64 digest&gt;
+</code></pre>
+<p><code>R2ChecksumAlgorithm</code> carries everything a caller would otherwise have to look up: the wire name, the
+header the digest travels in, and the exact digest length. The set is closed to the algorithms R2 was
+verified to enforce (verified against live R2, 2026-08-24, and pinned by this repository's integration
+tests):</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Header</th>
+<th>Digest bytes</th>
+<th>Single-part PUT</th>
+<th>Multipart part upload</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Crc32</code></td>
+<td><code>x-amz-checksum-crc32</code></td>
+<td>4</td>
+<td>Verified</td>
+<td>Verified</td>
+</tr>
+<tr>
+<td><code>Crc32C</code></td>
+<td><code>x-amz-checksum-crc32c</code></td>
+<td>4</td>
+<td>Verified</td>
+<td>Verified</td>
+</tr>
+<tr>
+<td><code>Sha1</code></td>
+<td><code>x-amz-checksum-sha1</code></td>
+<td>20</td>
+<td>Verified</td>
+<td>Rejected: R2 answers 501 <code>NotImplemented</code></td>
+</tr>
+<tr>
+<td><code>Sha256</code></td>
+<td><code>x-amz-checksum-sha256</code></td>
+<td>32</td>
+<td>Verified</td>
+<td>Rejected: R2 answers 501 <code>NotImplemented</code></td>
+</tr>
+<tr>
+<td><code>Md5</code></td>
+<td><code>Content-MD5</code></td>
+<td>16</td>
+<td>Verified</td>
+<td>Verified</td>
+</tr>
+</tbody>
+</table>
+<p>Because R2 answers 501 to any part upload carrying a SHA-1 or SHA-256 checksum header, the part URL
+methods refuse those two algorithms with <code>ArgumentException</code> before signing anything. Use <code>Crc32</code>,
+<code>Crc32C</code> or <code>Md5</code> for parts.</p>
+<p><code>UploadChecksum</code> validates at construction: the digest must be well-formed base64 decoding to exactly
+the algorithm's digest length, so a URL is never signed for a digest R2 could not accept. For untrusted
+input, such as an algorithm name and digest arriving in an API request, use <code>TryCreate</code>:</p>
+<pre><code class="lang-csharp">if (!UploadChecksum.TryCreate(request.Algorithm, request.Digest, out var checksum))
+    return BadRequest(&quot;Unknown checksum algorithm or malformed digest.&quot;);
+</code></pre>
+<p>The batch part URL generator takes one digest per part, keyed by part number. A part without an entry
+gets no checksum header; a part number missing from <code>PartNumberAndLength</code> fails the whole call:</p>
+<pre><code class="lang-csharp">var partUrls = r2.CreatePresignedUploadPartsUrls(&quot;my-bucket&quot;, new PresignedUploadPartsRequest(
+    Key: &quot;uploads/large-file.zip&quot;,
+    UploadId: uploadId,
+    ExpiresAfter: TimeSpan.FromHours(1),
+    PartNumberAndLength: partSizes,
+    ChecksumsByPartNumber: partDigests // IReadOnlyDictionary&lt;int, UploadChecksum&gt;
+));
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Content-MD5</code> is a content header in <code>HttpClient</code>'s model: attach it to
+<code>HttpContent.Headers</code>, not <code>HttpRequestMessage.Headers</code>. The <code>x-amz-checksum-*</code> headers are plain
+request headers.</p>
+</div>
+<h2 id="storing-cache-control">Storing Cache-Control</h2>
+<p>R2 stores the <code>Cache-Control</code> header a PUT carries and serves it on every GET, which is what drives
+Cloudflare edge and browser caching when the object is served through the bucket's custom domain. For a
+browser upload, pass the value as <code>CacheControl</code> on <code>PresignedPutRequest</code>: the header is signed into the
+URL, so the uploading client must send exactly that value (omitting or changing it produces 403 with
+<code>SignatureDoesNotMatch</code>, and nothing is stored):</p>
+<pre><code class="lang-csharp">var url = r2.CreatePresignedPutUrl(&quot;my-bucket&quot;, new PresignedPutRequest(
+    Key: &quot;thumbnails/photo-small.webp&quot;,
+    ExpiresAfter: TimeSpan.FromMinutes(15),
+    ContentLength: fileSize,
+    ContentType: &quot;image/webp&quot;,
+    CacheControl: &quot;public, max-age=3600&quot;
+));
+
+// The client must now send: Cache-Control: public, max-age=3600
+</code></pre>
+<p>For an upload whose parts go through presigned part URLs, the assembled object's headers come from the
+initiate call and never from the parts, so state the value when the upload starts:</p>
+<pre><code class="lang-csharp">var initiate = await r2.InitiateMultipartUploadAsync(
+    &quot;my-bucket&quot;, &quot;videos/clip.mp4&quot;, &quot;video/mp4&quot;, &quot;public, max-age=3600&quot;);
+</code></pre>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="secure-file-upload-api">Secure File Upload API</h3>
+<pre><code class="lang-csharp">public class SecureUploadService(IR2Client r2)
+{
+    public UploadSession CreateUploadSession(
+        string userId, string fileName, long fileSize, string contentType)
+    {
+        var key = $&quot;user-uploads/{userId}/{Guid.NewGuid()}/{SanitizeFileName(fileName)}&quot;;
+
+        var url = r2.CreatePresignedPutUrl(&quot;uploads&quot;, new PresignedPutRequest(
+            Key: key,
+            ExpiresAfter: TimeSpan.FromMinutes(30),
+            ContentLength: fileSize,
+            ContentType: contentType,
+            HeadersToSign: new Dictionary&lt;string, string&gt;
+            {
+                [&quot;x-amz-meta-user-id&quot;] = userId,
+                [&quot;x-amz-meta-original-name&quot;] = fileName
+            }
+        ));
+
+        return new UploadSession(key, url, DateTime.UtcNow.AddMinutes(30));
+    }
+
+    private static string SanitizeFileName(string fileName)
+    {
+        // Remove dangerous characters
+        var invalid = Path.GetInvalidFileNameChars();
+        return string.Join(&quot;_&quot;, fileName.Split(invalid));
+    }
+}
+
+public record UploadSession(string Key, string UploadUrl, DateTime ExpiresAt);
+</code></pre>
+<h3 id="browser-multipart-upload-flow">Browser Multipart Upload Flow</h3>
+<pre><code class="lang-csharp">public class MultipartUploadSession(IR2Client r2)
+{
+    public async Task&lt;MultipartUploadInfo&gt; InitiateAsync(
+        string bucket, string key, long fileSize, long partSize)
+    {
+        // Calculate number of parts
+        var partCount = (int)Math.Ceiling((double)fileSize / partSize);
+
+        // Initiate multipart upload
+        var initResult = await r2.InitiateMultipartUploadAsync(bucket, key);
+        var uploadId = initResult.Data;
+
+        // Generate presigned URLs for all parts. Each part is named with its exact size, because the
+        // size is signed into that part's URL.
+        var partUrls = r2.CreatePresignedUploadPartsUrls(bucket, new PresignedUploadPartsRequest(
+            Key: key,
+            UploadId: uploadId,
+            ExpiresAfter: TimeSpan.FromHours(24),
+            PartNumberAndLength: Enumerable.Range(1, partCount).ToDictionary(n =&gt; n, _ =&gt; partSize)
+        ));
+
+        return new MultipartUploadInfo(uploadId, partUrls, partSize);
+    }
+
+    public async Task CompleteAsync(
+        string bucket, string key, string uploadId, IEnumerable&lt;PartETag&gt; parts)
+    {
+        await r2.CompleteMultipartUploadAsync(bucket, key, uploadId, parts);
+    }
+
+    public async Task AbortAsync(string bucket, string key, string uploadId)
+    {
+        await r2.AbortMultipartUploadAsync(bucket, key, uploadId);
+    }
+}
+
+public record MultipartUploadInfo(
+    string UploadId,
+    IReadOnlyDictionary&lt;int, string&gt; PartUrls,
+    long PartSize
+);
+</code></pre>
+<h3 id="image-upload-with-validation">Image Upload with Validation</h3>
+<pre><code class="lang-csharp">public class ImageUploadService(IR2Client r2)
+{
+    private static readonly HashSet&lt;string&gt; AllowedTypes = new()
+    {
+        &quot;image/jpeg&quot;, &quot;image/png&quot;, &quot;image/gif&quot;, &quot;image/webp&quot;
+    };
+
+    private const long MaxImageSize = 10 * 1024 * 1024; // 10 MB
+
+    public string? CreateImageUploadUrl(
+        string userId, string contentType, long contentLength)
+    {
+        if (!AllowedTypes.Contains(contentType))
+        {
+            return null; // Invalid content type
+        }
+
+        if (contentLength &gt; MaxImageSize)
+        {
+            return null; // Too large
+        }
+
+        var extension = contentType.Split('/')[1];
+        var key = $&quot;images/{userId}/{Guid.NewGuid()}.{extension}&quot;;
+
+        return r2.CreatePresignedPutUrl(&quot;media&quot;, new PresignedPutRequest(
+            Key: key,
+            ExpiresAfter: TimeSpan.FromMinutes(10),
+            ContentLength: contentLength,
+            ContentType: contentType
+        ));
+    }
+}
+</code></pre>
+<h2 id="url-expiration">URL Expiration</h2>
+<table>
+<thead>
+<tr>
+<th>Duration</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5-15 minutes</td>
+<td>Interactive uploads</td>
+</tr>
+<tr>
+<td>1 hour</td>
+<td>Background processing</td>
+</tr>
+<tr>
+<td>24 hours</td>
+<td>Long-running multipart uploads</td>
+</tr>
+<tr>
+<td>7 days (max)</td>
+<td>Batch processing</td>
+</tr>
+</tbody>
+</table>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Keep expiration times short to minimize security risk.</p>
+</div>
+<h2 id="security-considerations">Security Considerations</h2>
+<ol>
+<li><strong>Always validate file metadata</strong> before generating URLs</li>
+<li><strong>Use short expiration times</strong> when possible</li>
+<li><strong>Enforce Content-Length</strong> to prevent quota attacks</li>
+<li><strong>Validate Content-Type</strong> to prevent wrong file types</li>
+<li><strong>Include user context</strong> in signed headers for auditing</li>
+<li><strong>Rate limit</strong> URL generation to prevent abuse</li>
+</ol>
+<h2 id="error-handling">Error Handling</h2>
+<pre><code class="lang-csharp">try
+{
+    var url = r2.CreatePresignedPutUrl(&quot;bucket&quot;, request);
+}
+catch (CloudflareR2OperationException ex)
+{
+    Console.WriteLine($&quot;Failed to generate URL: {ex.Message}&quot;);
+}
+catch (ArgumentException ex)
+{
+    Console.WriteLine($&quot;Invalid parameters: {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="uploads.html">Uploading Objects</a> - Server-side uploads</li>
+<li><a href="multipart.html">Multipart Uploads</a> - Large file handling</li>
+<li><a href="../accounts/r2/cors.html">CORS Configuration</a> - Enable browser uploads</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/docs/articles/r2/presigned-urls.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

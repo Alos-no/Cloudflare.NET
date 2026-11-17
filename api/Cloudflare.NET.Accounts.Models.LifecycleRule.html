@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LifecycleRule | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LifecycleRule | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Represents a single lifecycle rule for an R2 bucket.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_Accounts_Models_LifecycleRule.md&amp;value=---%0Auid%3A%20Cloudflare.NET.Accounts.Models.LifecycleRule%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule">
+
+
+
+  <h1 id="Cloudflare_NET_Accounts_Models_LifecycleRule" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule" class="text-break">
+Class LifecycleRule  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.Accounts.html">Accounts</a>.<a class="xref" href="Cloudflare.NET.Accounts.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a single lifecycle rule for an R2 bucket.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public record LifecycleRule : IEquatable&lt;LifecycleRule&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">LifecycleRule</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.LifecycleRule.html">LifecycleRule</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Models_LifecycleRule__ctor_" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_LifecycleRule__ctor_System_String_System_Boolean_Cloudflare_NET_Accounts_Models_LifecycleRuleConditions_Cloudflare_NET_Accounts_Models_AbortMultipartUploadsTransition_Cloudflare_NET_Accounts_Models_DeleteObjectsTransition_System_Collections_Generic_IReadOnlyList_Cloudflare_NET_Accounts_Models_StorageClassTransition__" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.#ctor(System.String,System.Boolean,Cloudflare.NET.Accounts.Models.LifecycleRuleConditions,Cloudflare.NET.Accounts.Models.AbortMultipartUploadsTransition,Cloudflare.NET.Accounts.Models.DeleteObjectsTransition,System.Collections.Generic.IReadOnlyList{Cloudflare.NET.Accounts.Models.StorageClassTransition})">
+  LifecycleRule(string?, bool, LifecycleRuleConditions?, AbortMultipartUploadsTransition?, DeleteObjectsTransition?, IReadOnlyList&lt;StorageClassTransition&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a single lifecycle rule for an R2 bucket.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LifecycleRule(string? Id = null, bool Enabled = true, LifecycleRuleConditions? Conditions = null, AbortMultipartUploadsTransition? AbortMultipartUploadsTransition = null, DeleteObjectsTransition? DeleteObjectsTransition = null, IReadOnlyList&lt;StorageClassTransition&gt;? StorageClassTransitions = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A unique identifier for this lifecycle rule.</p>
+</dd>
+    <dt><code>Enabled</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether this rule is currently active.</p>
+</dd>
+    <dt><code>Conditions</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.LifecycleRuleConditions.html">LifecycleRuleConditions</a></dt>
+    <dd><p>The filtering conditions that determine which objects this rule applies to.</p>
+</dd>
+    <dt><code>AbortMultipartUploadsTransition</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.AbortMultipartUploadsTransition.html">AbortMultipartUploadsTransition</a></dt>
+    <dd><p>The transition to abort incomplete multipart uploads.</p>
+</dd>
+    <dt><code>DeleteObjectsTransition</code> <a class="xref" href="Cloudflare.NET.Accounts.Models.DeleteObjectsTransition.html">DeleteObjectsTransition</a></dt>
+    <dd><p>The transition to delete objects.</p>
+</dd>
+    <dt><code>StorageClassTransitions</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.StorageClassTransition.html">StorageClassTransition</a>&gt;</dt>
+    <dd><p>The transitions to change object storage classes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Cloudflare_NET_Accounts_Models_LifecycleRule_AbortMultipartUploadsTransition_" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.AbortMultipartUploadsTransition*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_LifecycleRule_AbortMultipartUploadsTransition" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.AbortMultipartUploadsTransition">
+  AbortMultipartUploadsTransition
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The transition to abort incomplete multipart uploads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;abortMultipartUploadsTransition&quot;)]
+public AbortMultipartUploadsTransition? AbortMultipartUploadsTransition { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.AbortMultipartUploadsTransition.html">AbortMultipartUploadsTransition</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_LifecycleRule_Conditions_" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.Conditions*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_LifecycleRule_Conditions" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.Conditions">
+  Conditions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The filtering conditions that determine which objects this rule applies to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;conditions&quot;)]
+public LifecycleRuleConditions? Conditions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.LifecycleRuleConditions.html">LifecycleRuleConditions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_LifecycleRule_DeleteObjectsTransition_" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.DeleteObjectsTransition*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_LifecycleRule_DeleteObjectsTransition" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.DeleteObjectsTransition">
+  DeleteObjectsTransition
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The transition to delete objects.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;deleteObjectsTransition&quot;)]
+public DeleteObjectsTransition? DeleteObjectsTransition { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.Accounts.Models.DeleteObjectsTransition.html">DeleteObjectsTransition</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_LifecycleRule_Enabled_" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.Enabled*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_LifecycleRule_Enabled" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.Enabled">
+  Enabled
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether this rule is currently active.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;enabled&quot;)]
+public bool Enabled { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_LifecycleRule_Id_" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.Id*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_LifecycleRule_Id" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.Id">
+  Id
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A unique identifier for this lifecycle rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
+public string? Id { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_Accounts_Models_LifecycleRule_StorageClassTransitions_" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.StorageClassTransitions*"></a>
+
+  <h3 id="Cloudflare_NET_Accounts_Models_LifecycleRule_StorageClassTransitions" data-uid="Cloudflare.NET.Accounts.Models.LifecycleRule.StorageClassTransitions">
+  StorageClassTransitions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The transitions to change object storage classes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;storageClassTransitions&quot;)]
+public IReadOnlyList&lt;StorageClassTransition&gt;? StorageClassTransitions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.Accounts.Models.StorageClassTransition.html">StorageClassTransition</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET/Accounts/Models/R2BucketModels.cs/#L211" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

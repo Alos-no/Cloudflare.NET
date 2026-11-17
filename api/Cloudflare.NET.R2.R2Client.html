@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class R2Client | Cloudflare.NET </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class R2Client | Cloudflare.NET ">
+      <meta name="description" content="Cloudflare.NET SDK - A comprehensive C# client library for the Cloudflare REST API. Manage DNS, Zones, R2 storage, Workers, WAF, and security with strongly-typed .NET code.">
+      <meta name="description" content="Implements the client that interacts with Cloudflare R2&#39;s S3-compatible API.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Alos-no/Cloudflare.NET/new/main/docs/api/new?filename=Cloudflare_NET_R2_R2Client.md&amp;value=---%0Auid%3A%20Cloudflare.NET.R2.R2Client%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-J3X1J125E2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-J3X1J125E2');
+      </script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Cloudflare.NET">
+            Cloudflare.NET
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Cloudflare.NET.R2.R2Client">
+
+
+
+  <h1 id="Cloudflare_NET_R2_R2Client" data-uid="Cloudflare.NET.R2.R2Client" class="text-break">
+Class R2Client  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Cloudflare.html">Cloudflare</a>.<a class="xref" href="Cloudflare.NET.html">NET</a>.<a class="xref" href="Cloudflare.NET.R2.html">R2</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Cloudflare.NET.R2.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Implements the client that interacts with Cloudflare R2's S3-compatible API.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class R2Client : IR2Client, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">R2Client</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Cloudflare.NET.R2.IR2Client.html">IR2Client</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_R2Client__ctor_" data-uid="Cloudflare.NET.R2.R2Client.#ctor*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client__ctor_Microsoft_Extensions_Logging_ILoggerFactory_Amazon_S3_IAmazonS3_" data-uid="Cloudflare.NET.R2.R2Client.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,Amazon.S3.IAmazonS3)">
+  R2Client(ILoggerFactory, IAmazonS3)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Cloudflare.NET.R2.R2Client.html">R2Client</a> class. This is the designated constructor for
+dependency injection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public R2Client(ILoggerFactory loggerFactory, IAmazonS3 s3Client)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>loggerFactory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></dt>
+    <dd><p>The logger factory used to create a typed logger.</p>
+</dd>
+    <dt><code>s3Client</code> <a class="xref" href="https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Custom/IAmazonS3.Extensions.cs">IAmazonS3</a></dt>
+    <dd><p>The underlying S3-compatible client.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Cloudflare_NET_R2_R2Client_AbortMultipartUploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.AbortMultipartUploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_AbortMultipartUploadAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.AbortMultipartUploadAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  AbortMultipartUploadAsync(string, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L1319"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Aborts a multipart upload, deleting any parts that have already been uploaded. This is a free operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; AbortMultipartUploadAsync(string bucketName, string objectKey, string uploadId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the object.</p>
+</dd>
+    <dt><code>uploadId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the multipart upload to abort.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the abort operation (should be zero).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the operation fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_ClearBucketAsync_" data-uid="Cloudflare.NET.R2.R2Client.ClearBucketAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_ClearBucketAsync_System_String_System_Boolean_System_Boolean_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.ClearBucketAsync(System.String,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+  ClearBucketAsync(string, bool, bool, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L518"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clears all objects from an R2 bucket by repeatedly listing and deleting them in batches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; ClearBucketAsync(string bucketName, bool continueOnError = true, bool abortIncompleteMultipartUploads = true, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket to clear.</p>
+</dd>
+    <dt><code>continueOnError</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>If true, the operation will continue even if some delete batches fail.</p>
+</dd>
+    <dt><code>abortIncompleteMultipartUploads</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <code>true</code> (the default), the method finds every multipart upload left open in the bucket and
+aborts each one after the objects are deleted, at the cost of one extra billable Class A operation for
+the discovery call. Aborting an upload is itself free. Set this to <code>false</code> to delete only objects.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the total metrics of all list, delete, and abort operations.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_ClearBucketAsync_System_String_System_Boolean_System_Boolean_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Deleting every object does not by itself leave the bucket deletable. A multipart upload that was
+  started and never completed or aborted keeps holding storage that object listing never reports, and
+  Cloudflare then refuses to delete the bucket, reporting that it is not empty even though no object is
+  visible. <code class="paramref">abortIncompleteMultipartUploads</code> controls whether this method also finds
+  those uploads and aborts them.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2BatchException-1.html">CloudflareR2BatchException</a>&lt;T&gt;</dt>
+    <dd><p>Thrown if some objects could not be deleted.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ListException-1.html">CloudflareR2ListException</a>&lt;T&gt;</dt>
+    <dd><p>Thrown if listing objects or open multipart uploads fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_CompleteMultipartUploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.CompleteMultipartUploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_CompleteMultipartUploadAsync_System_String_System_String_System_String_System_Collections_Generic_IEnumerable_Amazon_S3_Model_PartETag__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.CompleteMultipartUploadAsync(System.String,System.String,System.String,System.Collections.Generic.IEnumerable{Amazon.S3.Model.PartETag},System.Threading.CancellationToken)">
+  CompleteMultipartUploadAsync(string, string, string, IEnumerable&lt;PartETag&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L1288"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Completes a multipart upload after all parts are uploaded.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; CompleteMultipartUploadAsync(string bucketName, string objectKey, string uploadId, IEnumerable&lt;PartETag&gt; parts, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the object.</p>
+</dd>
+    <dt><code>uploadId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the multipart upload.</p>
+</dd>
+    <dt><code>parts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Custom/Model/PartEtag.cs">PartETag</a>&gt;</dt>
+    <dd><p>A list of the part numbers and their corresponding ETags.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the finalization operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the operation fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_CreatePresignedGetUrl_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedGetUrl*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_CreatePresignedGetUrl_System_String_Cloudflare_NET_R2_Models_PresignedGetRequest_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedGetUrl(System.String,Cloudflare.NET.R2.Models.PresignedGetRequest)">
+  CreatePresignedGetUrl(string, PresignedGetRequest)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L930"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a presigned GET URL that allows for downloading an object directly from R2, optionally enforcing
+response header overrides via the signed query string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CreatePresignedGetUrl(string bucketName, PresignedGetRequest request)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket holding the object.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.R2.Models.PresignedGetRequest.html">PresignedGetRequest</a></dt>
+    <dd><p>A request object defining the key, validity window, and response header overrides.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string containing the generated presigned URL.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if URL generation fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_CreatePresignedPutUrl_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedPutUrl*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_CreatePresignedPutUrl_System_String_Cloudflare_NET_R2_Models_PresignedPutRequest_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedPutUrl(System.String,Cloudflare.NET.R2.Models.PresignedPutRequest)">
+  CreatePresignedPutUrl(string, PresignedPutRequest)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L885"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a presigned PUT URL that allows for uploading a file directly to R2, enforcing constraints via signed
+headers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CreatePresignedPutUrl(string bucketName, PresignedPutRequest request)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the bucket where the upload will occur.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.R2.Models.PresignedPutRequest.html">PresignedPutRequest</a></dt>
+    <dd><p>A request object defining the key and headers to enforce.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string containing the generated presigned URL.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if URL generation fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_CreatePresignedUploadPartUrl_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedUploadPartUrl*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_CreatePresignedUploadPartUrl_System_String_Cloudflare_NET_R2_Models_PresignedUploadPartRequest_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedUploadPartUrl(System.String,Cloudflare.NET.R2.Models.PresignedUploadPartRequest)">
+  CreatePresignedUploadPartUrl(string, PresignedUploadPartRequest)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L1060"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a presigned URL for uploading a single part of a multipart upload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string CreatePresignedUploadPartUrl(string bucketName, PresignedUploadPartRequest request)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.R2.Models.PresignedUploadPartRequest.html">PresignedUploadPartRequest</a></dt>
+    <dd><p>The parameters for the presigned part URL.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string containing the generated presigned URL for the part.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if URL generation fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_CreatePresignedUploadPartsUrls_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedUploadPartsUrls*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_CreatePresignedUploadPartsUrls_System_String_Cloudflare_NET_R2_Models_PresignedUploadPartsRequest_" data-uid="Cloudflare.NET.R2.R2Client.CreatePresignedUploadPartsUrls(System.String,Cloudflare.NET.R2.Models.PresignedUploadPartsRequest)">
+  CreatePresignedUploadPartsUrls(string, PresignedUploadPartsRequest)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L1165"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a batch of presigned URLs for uploading multiple parts of a multipart upload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;int, string&gt; CreatePresignedUploadPartsUrls(string bucketName, PresignedUploadPartsRequest request)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>request</code> <a class="xref" href="Cloudflare.NET.R2.Models.PresignedUploadPartsRequest.html">PresignedUploadPartsRequest</a></dt>
+    <dd><p>The parameters for the presigned part URLs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A dictionary mapping each part number to its generated presigned URL.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if URL generation fails for any part.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_DeleteObjectAsync_" data-uid="Cloudflare.NET.R2.R2Client.DeleteObjectAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_DeleteObjectAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.DeleteObjectAsync(System.String,System.String,System.Threading.CancellationToken)">
+  DeleteObjectAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L416"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a single object from an R2 bucket. This is a free operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; DeleteObjectAsync(string bucketName, string objectKey, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the object to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the delete operation (should be zero).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the delete fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_DeleteObjectsAsync_" data-uid="Cloudflare.NET.R2.R2Client.DeleteObjectsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_DeleteObjectsAsync_System_String_System_Collections_Generic_IEnumerable_System_String__System_Boolean_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.DeleteObjectsAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Boolean,System.Threading.CancellationToken)">
+  DeleteObjectsAsync(string, IEnumerable&lt;string&gt;, bool, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L439"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes multiple objects from an R2 bucket in batches. This is a free operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; DeleteObjectsAsync(string bucketName, IEnumerable&lt;string&gt; objectKeys, bool continueOnError = true, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKeys</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>An enumeration of object keys to delete.</p>
+</dd>
+    <dt><code>continueOnError</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>If true, the operation will continue even if some batches fail, throwing an exception
+only at the end. If false, it will stop on the first error.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the total metrics of all attempted operations (should be zero).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2BatchException-1.html">CloudflareR2BatchException</a>&lt;T&gt;</dt>
+    <dd><p>Thrown if one or more objects could not be deleted. Contains a list of
+the failed keys.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_Dispose_" data-uid="Cloudflare.NET.R2.R2Client.Dispose*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_Dispose" data-uid="Cloudflare.NET.R2.R2Client.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Disposes the underlying S3 client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_DownloadFileAsync_" data-uid="Cloudflare.NET.R2.R2Client.DownloadFileAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_DownloadFileAsync_System_String_System_String_System_IO_Stream_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.DownloadFileAsync(System.String,System.String,System.IO.Stream,System.Threading.CancellationToken)">
+  DownloadFileAsync(string, string, Stream, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L382"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Downloads a file from an R2 bucket to a stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; DownloadFileAsync(string bucketName, string objectKey, Stream outputStream, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the object to download.</p>
+</dd>
+    <dt><code>outputStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to write the downloaded data to.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics, including egress bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the download fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_DownloadFileAsync_" data-uid="Cloudflare.NET.R2.R2Client.DownloadFileAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_DownloadFileAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.DownloadFileAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  DownloadFileAsync(string, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L371"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Downloads a file from an R2 bucket to a local file path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; DownloadFileAsync(string bucketName, string objectKey, string downloadPath, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the object to download.</p>
+</dd>
+    <dt><code>downloadPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The local path to save the downloaded file to.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics, including egress bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the download fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_GeneratePresignedUrl_" data-uid="Cloudflare.NET.R2.R2Client.GeneratePresignedUrl*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_GeneratePresignedUrl_Amazon_S3_Model_GetPreSignedUrlRequest_" data-uid="Cloudflare.NET.R2.R2Client.GeneratePresignedUrl(Amazon.S3.Model.GetPreSignedUrlRequest)">
+  GeneratePresignedUrl(GetPreSignedUrlRequest)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L1004"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a presigned URL using the underlying S3 client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual string GeneratePresignedUrl(GetPreSignedUrlRequest request)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Custom/Model/GetPreSignedUrlRequest.cs">GetPreSignedUrlRequest</a></dt>
+    <dd><p>The request for the presigned URL.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The generated presigned URL.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_GeneratePresignedUrl_Amazon_S3_Model_GetPreSignedUrlRequest__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is virtual to allow for mocking in unit tests.</p>
+</div>
+
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_InitiateMultipartUploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.InitiateMultipartUploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_InitiateMultipartUploadAsync_System_String_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.InitiateMultipartUploadAsync(System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+  InitiateMultipartUploadAsync(string, string, string?, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L1020"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initiates a new multipart upload and records the content type the assembled object will carry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&lt;string&gt;&gt; InitiateMultipartUploadAsync(string bucketName, string objectKey, string? contentType, string? cacheControl = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key for the object in the bucket.</p>
+</dd>
+    <dt><code>contentType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MIME type to record for the assembled object, for example <code>application/pdf</code>.</p>
+</dd>
+    <dt><code>cacheControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional <code>Cache-Control</code> value to store on the assembled object; R2 serves it on every GET, which
+drives edge and browser caching. Like the content type, it can only be supplied here: the individual parts
+cannot carry it, so a flow uploading parts through presigned URLs must state it when the upload starts.
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the header unset.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result-1.html">R2Result</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>A result object containing the UploadId and operation metrics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_InitiateMultipartUploadAsync_System_String_System_String_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  S3 reads the finished object's <code>Content-Type</code> from this request and never from the individual parts.
+  A caller that hands out presigned part URLs therefore has no later opportunity to set it: the content type
+  must be supplied here, when the upload starts.
+</p>
+<p>
+  Passing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the property unset, so R2 applies its own default
+  and this method behaves exactly like
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_InitiateMultipartUploadAsync_System_String_System_String_System_Threading_CancellationToken_">InitiateMultipartUploadAsync(string, string, CancellationToken)</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the operation fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_InitiateMultipartUploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.InitiateMultipartUploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_InitiateMultipartUploadAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.InitiateMultipartUploadAsync(System.String,System.String,System.Threading.CancellationToken)">
+  InitiateMultipartUploadAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L1010"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initiates a new multipart upload, letting R2 choose the assembled object's content type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&lt;string&gt;&gt; InitiateMultipartUploadAsync(string bucketName, string objectKey, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key for the object in the bucket.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result-1.html">R2Result</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>A result object containing the UploadId and operation metrics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the operation fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_ListMultipartUploadsAsync_" data-uid="Cloudflare.NET.R2.R2Client.ListMultipartUploadsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_ListMultipartUploadsAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.ListMultipartUploadsAsync(System.String,System.String,System.Threading.CancellationToken)">
+  ListMultipartUploadsAsync(string, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L762"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists every multipart upload initiated under a prefix that has neither completed nor been aborted, handling
+pagination internally.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&lt;IReadOnlyList&lt;MultipartUpload&gt;&gt;&gt; ListMultipartUploadsAsync(string bucketName, string? prefix, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>prefix</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key prefix to restrict discovery to, or <code>null</code> for the whole bucket.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result-1.html">R2Result</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Custom/Model/MultipartUpload.cs">MultipartUpload</a>&gt;&gt;&gt;</dt>
+    <dd><p>A result object containing every open multipart upload under the prefix and the aggregated metrics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_ListMultipartUploadsAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  An open multipart upload's parts are invisible to <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_ListObjectsAsync_System_String_System_String_System_Threading_CancellationToken_">ListObjectsAsync(string, string?, CancellationToken)</a> until the upload completes,
+  so draining the objects under a prefix can never end one. A teardown that must leave the prefix genuinely
+  empty discovers the open uploads here and aborts each one.
+</p>
+<p>
+  Pass the <code>UploadId</code> from each returned <a class="xref" href="https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Custom/Model/MultipartUpload.cs">MultipartUpload</a> to
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_AbortMultipartUploadAsync_System_String_System_String_System_String_System_Threading_CancellationToken_">AbortMultipartUploadAsync(string, string, string, CancellationToken)</a>. R2 has been observed to report an upload identifier here that
+  differs from the one it returned when the upload was started, so the value from this listing is the one to
+  use for the abort.
+</p>
+<p>
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_ClearBucketAsync_System_String_System_Boolean_System_Boolean_System_Threading_CancellationToken_">ClearBucketAsync(string, bool, bool, CancellationToken)</a> performs this discovery and abort itself unless the caller opts out.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ListException-1.html">CloudflareR2ListException</a>&lt;T&gt;</dt>
+    <dd><p>Thrown if listing fails mid-stream, containing any uploads fetched successfully.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_ListObjectsAsync_" data-uid="Cloudflare.NET.R2.R2Client.ListObjectsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_ListObjectsAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.ListObjectsAsync(System.String,System.String,System.Threading.CancellationToken)">
+  ListObjectsAsync(string, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L652"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all objects in an R2 bucket, optionally filtered by a prefix, handling pagination automatically.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&lt;IReadOnlyList&lt;S3Object&gt;&gt;&gt; ListObjectsAsync(string bucketName, string? prefix, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>prefix</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The prefix to filter the object listing by.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result-1.html">R2Result</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Custom/Model/S3Object.cs">S3Object</a>&gt;&gt;&gt;</dt>
+    <dd><p>A result object containing a read-only list of all <a class="xref" href="https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Custom/Model/S3Object.cs">S3Object</a> items found and aggregated metrics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ListException-1.html">CloudflareR2ListException</a>&lt;T&gt;</dt>
+    <dd><p>Thrown if listing fails mid-stream, containing any objects fetched
+successfully.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_ListObjectsPageAsync_" data-uid="Cloudflare.NET.R2.R2Client.ListObjectsPageAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_ListObjectsPageAsync_System_String_System_String_System_Int32_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.ListObjectsPageAsync(System.String,System.String,System.Int32,System.String,System.Threading.CancellationToken)">
+  ListObjectsPageAsync(string, string?, int, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L713"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists ONE page of objects under a prefix and returns the token that fetches the next page, leaving the walk
+across pages to the caller.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&lt;R2ObjectPage&gt;&gt; ListObjectsPageAsync(string bucketName, string? prefix, int maxKeys, string? continuationToken, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>prefix</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The prefix to filter the object listing by.</p>
+</dd>
+    <dt><code>maxKeys</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The maximum number of keys to return in this page (clamped to 1000).</p>
+</dd>
+    <dt><code>continuationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The token returned by the previous page, or <code>null</code> to start from the beginning of the prefix.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result-1.html">R2Result</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2ObjectPage.html">R2ObjectPage</a>&gt;&gt;</dt>
+    <dd><p>A result object containing one <a class="xref" href="Cloudflare.NET.R2.Models.R2ObjectPage.html">R2ObjectPage</a> and the metrics of the single list call.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_ListObjectsPageAsync_System_String_System_String_System_Int32_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_ListObjectsAsync_System_String_System_String_System_Threading_CancellationToken_">ListObjectsAsync(string, string?, CancellationToken)</a> pages internally and returns the whole prefix. A caller that must bound how
+  many pages it reads in one run, and resume the walk on a later run, needs the page and the token instead.
+</p>
+<p><code class="paramref">maxKeys</code> is clamped to the S3 page ceiling of 1000; a value at or below zero requests 1000.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ListException-1.html">CloudflareR2ListException</a>&lt;T&gt;</dt>
+    <dd><p>Thrown if listing fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_ListPartsAsync_" data-uid="Cloudflare.NET.R2.R2Client.ListPartsAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_ListPartsAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.ListPartsAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  ListPartsAsync(string, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L825"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists the parts that have been uploaded for a specific multipart upload, transparently handling pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&lt;IReadOnlyList&lt;ListedPart&gt;&gt;&gt; ListPartsAsync(string bucketName, string objectKey, string uploadId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key of the object.</p>
+</dd>
+    <dt><code>uploadId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ID of the multipart upload.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result-1.html">R2Result</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.ListedPart.html">ListedPart</a>&gt;&gt;&gt;</dt>
+    <dd><p>A result object containing the full list of parts and the aggregated metrics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2ListException-1.html">CloudflareR2ListException</a>&lt;T&gt;</dt>
+    <dd><p>Thrown if listing fails mid-stream, containing any parts fetched
+successfully.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync(System.String,System.String,System.IO.Stream,System.Nullable{System.Int64},System.String,Cloudflare.NET.R2.Models.UploadChecksum,System.String,System.Threading.CancellationToken)">
+  UploadAsync(string, string, Stream, long?, string?, UploadChecksum?, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a stream, automatically choosing between a single PUT request or a multipart upload, and
+records the object's content type. If the stream is seekable, the choice is based on its length. If it is not
+seekable, it will always attempt a multipart upload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadAsync(string bucketName, string objectKey, Stream fileStream, long? partSize, string? contentType, UploadChecksum? checksum = null, string? cacheControl = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>fileStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to upload.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part in a multipart upload. If null, a sensible default is
+used. The value is clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>contentType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MIME type to record for the object, for example <code>image/webp</code>.</p>
+</dd>
+    <dt><code>checksum</code> <a class="xref" href="Cloudflare.NET.R2.Models.UploadChecksum.html">UploadChecksum</a></dt>
+    <dd><p>An optional digest of the whole object's bytes for R2 to verify on a single-part upload.</p>
+</dd>
+    <dt><code>cacheControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional <code>Cache-Control</code> value to store on the object; R2 serves it on every GET, which drives edge
+and browser caching. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the header unset. On the multipart
+path the value is recorded on the initiate request, alongside the content type.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_UploadAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Passing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank <code class="paramref">contentType</code> leaves the property unset, so R2
+  applies its own default and this method behaves exactly like
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_Threading_CancellationToken_">UploadAsync(string, string, Stream, long?, CancellationToken)</a>. A non-blank value is applied
+  verbatim; the type is never inferred from the stream contents or the object key. When the stream goes
+  multipart, the type is recorded on the initiate request, the only place S3 reads the assembled object's
+  <code>Content-Type</code> from.
+</p>
+<p>
+  A <code class="paramref">checksum</code> binds the upload to a digest of the whole object: R2 hashes the arriving
+  bytes and fails the upload with <code>BadDigest</code>, storing nothing, when they do not hash to the stated
+  digest. Because the digest covers the whole object while a multipart upload is verified per part, a checksum
+  is only accepted when the stream takes the single PUT path; a stream that would go multipart (too large, or
+  not seekable) with a checksum throws before anything is sent.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the stream is seekable and its length exceeds R2's 5 TiB limit, or if a <code class="paramref">checksum</code>
+accompanies a stream that would go multipart.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown if a multipart upload is attempted but the stream is not seekable.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync(System.String,System.String,System.IO.Stream,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+  UploadAsync(string, string, Stream, long?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a stream, automatically choosing between a single PUT request or a multipart upload. If
+the stream is seekable, the choice is based on its length. If it is not seekable, it will always attempt a multipart
+upload.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadAsync(string bucketName, string objectKey, Stream fileStream, long? partSize = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>fileStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to upload.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part in a multipart upload. If null, a sensible default is
+used. The value is clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the stream is seekable and its length exceeds R2's 5 TiB limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown if a multipart upload is attempted but the stream is not seekable.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync(System.String,System.String,System.String,System.Nullable{System.Int64},System.String,Cloudflare.NET.R2.Models.UploadChecksum,System.String,System.Threading.CancellationToken)">
+  UploadAsync(string, string, string, long?, string?, UploadChecksum?, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a local path, automatically choosing between a single PUT request or a multipart upload
+based on the file size, and records the object's content type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadAsync(string bucketName, string objectKey, string filePath, long? partSize, string? contentType, UploadChecksum? checksum = null, string? cacheControl = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>filePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the local file to upload.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part in a multipart upload. If null, a sensible default is
+used. The value is clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>contentType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MIME type to record for the object, for example <code>image/webp</code>.</p>
+</dd>
+    <dt><code>checksum</code> <a class="xref" href="Cloudflare.NET.R2.Models.UploadChecksum.html">UploadChecksum</a></dt>
+    <dd><p>An optional digest of the whole object's bytes for R2 to verify on a single-part upload.</p>
+</dd>
+    <dt><code>cacheControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional <code>Cache-Control</code> value to store on the object; R2 serves it on every GET, which drives edge
+and browser caching. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the header unset. On the multipart
+path the value is recorded on the initiate request, alongside the content type.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_UploadAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Passing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank <code class="paramref">contentType</code> leaves the property unset, so R2
+  applies its own default and this method behaves exactly like
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_Threading_CancellationToken_">UploadAsync(string, string, string, long?, CancellationToken)</a>. A non-blank value is applied
+  verbatim; the type is never inferred from the file extension, the bytes, or the object key. When the file is
+  large enough to go multipart, the type is recorded on the initiate request, the only place S3 reads the
+  assembled object's <code>Content-Type</code> from.
+</p>
+<p>
+  A <code class="paramref">checksum</code> binds the upload to a digest of the whole object: R2 hashes the arriving
+  bytes and fails the upload with <code>BadDigest</code>, storing nothing, when they do not hash to the stated
+  digest. Because the digest covers the whole object while a multipart upload is verified per part, a checksum
+  is only accepted for files small enough for a single PUT; a multipart-sized file with a checksum throws
+  before anything is sent.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the file size exceeds R2's 5 TiB limit, or if a <code class="paramref">checksum</code> accompanies a file
+large enough to go multipart.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>Thrown if the specified <code class="paramref">filePath</code> does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadAsync(System.String,System.String,System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+  UploadAsync(string, string, string, long?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a local path, automatically choosing between a single PUT request or a multipart upload
+based on the file size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadAsync(string bucketName, string objectKey, string filePath, long? partSize = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>filePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the local file to upload.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part in a multipart upload. If null, a sensible default is
+used. The value is clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the file size exceeds R2's 5 TiB limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>Thrown if the specified <code class="paramref">filePath</code> does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync(System.String,System.String,System.IO.Stream,System.Nullable{System.Int64},System.String,System.String,System.Threading.CancellationToken)">
+  UploadMultipartAsync(string, string, Stream, long?, string?, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L259"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a stream using a multipart upload, recording the content type the assembled object will
+carry. The stream must be seekable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadMultipartAsync(string bucketName, string objectKey, Stream inputStream, long? partSize, string? contentType, string? cacheControl = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>inputStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to upload. Must be seekable.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part. If null, a sensible default is used. The value is
+clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>contentType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MIME type to record for the assembled object, for example <code>image/webp</code>.</p>
+</dd>
+    <dt><code>cacheControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional <code>Cache-Control</code> value to store on the assembled object, recorded on the initiate request
+like the content type; R2 serves it on every GET, which drives edge and browser caching.
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the header unset.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the aggregate metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  The type is recorded on the initiate request, because S3 reads the assembled object's <code>Content-Type</code>
+  from the initiate call and never from the individual parts.
+</p>
+<p>
+  Passing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank <code class="paramref">contentType</code> leaves the property unset, so R2
+  applies its own default and this method behaves exactly like
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadMultipartAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_Threading_CancellationToken_">UploadMultipartAsync(string, string, Stream, long?, CancellationToken)</a>. A non-blank value is
+  applied verbatim; the type is never inferred from the stream contents or the object key.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the stream length exceeds R2's 5 TiB limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if any part of the upload fails.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown if the provided stream is not seekable.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync(System.String,System.String,System.IO.Stream,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+  UploadMultipartAsync(string, string, Stream, long?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L251"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a stream using a multipart upload. The stream must be seekable. This method provides
+direct control over multipart uploads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadMultipartAsync(string bucketName, string objectKey, Stream inputStream, long? partSize = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>inputStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to upload. Must be seekable.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part. If null, a sensible default is used. The value is
+clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the aggregate metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the stream length exceeds R2's 5 TiB limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if any part of the upload fails.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown if the provided stream is not seekable.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync(System.String,System.String,System.String,System.Nullable{System.Int64},System.String,System.String,System.Threading.CancellationToken)">
+  UploadMultipartAsync(string, string, string, long?, string?, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L237"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file using a multipart upload, recording the content type the assembled object will carry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadMultipartAsync(string bucketName, string objectKey, string filePath, long? partSize, string? contentType, string? cacheControl = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>filePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the local file to upload.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part. If null, a sensible default is used. The value is
+clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>contentType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MIME type to record for the assembled object, for example <code>image/webp</code>.</p>
+</dd>
+    <dt><code>cacheControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional <code>Cache-Control</code> value to store on the assembled object, recorded on the initiate request
+like the content type; R2 serves it on every GET, which drives edge and browser caching.
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the header unset.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the aggregate metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  The type is recorded on the initiate request, because S3 reads the assembled object's <code>Content-Type</code>
+  from the initiate call and never from the individual parts.
+</p>
+<p>
+  Passing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank <code class="paramref">contentType</code> leaves the property unset, so R2
+  applies its own default and this method behaves exactly like
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadMultipartAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_Threading_CancellationToken_">UploadMultipartAsync(string, string, string, long?, CancellationToken)</a>. A non-blank value is
+  applied verbatim; the type is never inferred from the file extension, the bytes, or the object key.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the file size exceeds R2's 5 TiB limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if any part of the upload fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadMultipartAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadMultipartAsync(System.String,System.String,System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+  UploadMultipartAsync(string, string, string, long?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L229"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file using a multipart upload. This method provides direct control over multipart uploads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadMultipartAsync(string bucketName, string objectKey, string filePath, long? partSize = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>filePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the local file to upload.</p>
+</dd>
+    <dt><code>partSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The desired size in bytes for each part. If null, a sensible default is used. The value is
+clamped between 5MiB and 5GiB.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the aggregate metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the file size exceeds R2's 5 TiB limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if any part of the upload fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_System_String_System_String_System_IO_Stream_System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync(System.String,System.String,System.IO.Stream,System.String,Cloudflare.NET.R2.Models.UploadChecksum,System.String,System.Threading.CancellationToken)">
+  UploadSinglePartAsync(string, string, Stream, string?, UploadChecksum?, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a stream using a single PUT request, recording the object's content type and optionally
+binding the upload to a checksum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadSinglePartAsync(string bucketName, string objectKey, Stream inputStream, string? contentType, UploadChecksum? checksum = null, string? cacheControl = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>inputStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to upload.</p>
+</dd>
+    <dt><code>contentType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MIME type to record for the object, for example <code>image/webp</code>.</p>
+</dd>
+    <dt><code>checksum</code> <a class="xref" href="Cloudflare.NET.R2.Models.UploadChecksum.html">UploadChecksum</a></dt>
+    <dd><p>An optional digest of the object's bytes for R2 to verify.</p>
+</dd>
+    <dt><code>cacheControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional <code>Cache-Control</code> value to store on the object; R2 serves it on every GET, which drives edge
+and browser caching. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the header unset.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_System_String_System_String_System_IO_Stream_System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Passing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank <code class="paramref">contentType</code> leaves the property unset, so R2
+  applies its own default and this method behaves exactly like
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadSinglePartAsync_System_String_System_String_System_IO_Stream_System_Threading_CancellationToken_">UploadSinglePartAsync(string, string, Stream, CancellationToken)</a>. A non-blank value is applied
+  verbatim; the type is never inferred from the stream contents or the object key.
+</p>
+<p>
+  A <code class="paramref">checksum</code> binds the upload to a digest of the object's bytes. R2 hashes what actually
+  arrives and fails the upload with <code>BadDigest</code>, storing nothing, when the bytes do not hash to the
+  stated digest (verified against live R2 for every <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a> on single-part
+  uploads).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the stream is seekable and its length exceeds the 5 GiB single-part
+upload limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_System_String_System_String_System_IO_Stream_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync(System.String,System.String,System.IO.Stream,System.Threading.CancellationToken)">
+  UploadSinglePartAsync(string, string, Stream, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file from a stream using a single PUT request. This method provides direct control and should be
+used when the automatic selection in <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadAsync_System_String_System_String_System_IO_Stream_System_Nullable_System_Int64__System_Threading_CancellationToken_">UploadAsync(string, string, Stream, long?, CancellationToken)</a> is not
+desired.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadSinglePartAsync(string bucketName, string objectKey, Stream inputStream, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>inputStream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to upload.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the stream is seekable and its length exceeds the 5 GiB single-part
+upload limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_System_String_System_String_System_String_System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync(System.String,System.String,System.String,System.String,Cloudflare.NET.R2.Models.UploadChecksum,System.String,System.Threading.CancellationToken)">
+  UploadSinglePartAsync(string, string, string, string?, UploadChecksum?, string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file using a single PUT request, recording the object's content type and optionally binding the
+upload to a checksum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadSinglePartAsync(string bucketName, string objectKey, string filePath, string? contentType, UploadChecksum? checksum = null, string? cacheControl = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>filePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the local file to upload.</p>
+</dd>
+    <dt><code>contentType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The MIME type to record for the object, for example <code>image/webp</code>.</p>
+</dd>
+    <dt><code>checksum</code> <a class="xref" href="Cloudflare.NET.R2.Models.UploadChecksum.html">UploadChecksum</a></dt>
+    <dd><p>An optional digest of the object's bytes for R2 to verify.</p>
+</dd>
+    <dt><code>cacheControl</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional <code>Cache-Control</code> value to store on the object; R2 serves it on every GET, which drives edge
+and browser caching. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank string leaves the header unset.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_System_String_System_String_System_String_System_String_Cloudflare_NET_R2_Models_UploadChecksum_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+  Passing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or a blank <code class="paramref">contentType</code> leaves the property unset, so R2
+  applies its own default and this method behaves exactly like
+  <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadSinglePartAsync_System_String_System_String_System_String_System_Threading_CancellationToken_">UploadSinglePartAsync(string, string, string, CancellationToken)</a>. A non-blank value is applied
+  verbatim; the type is never inferred from the file extension, the bytes, or the object key.
+</p>
+<p>
+  A <code class="paramref">checksum</code> binds the upload to a digest of the object's bytes. R2 hashes what actually
+  arrives and fails the upload with <code>BadDigest</code>, storing nothing, when the bytes do not hash to the
+  stated digest (verified against live R2 for every <a class="xref" href="Cloudflare.NET.R2.Models.R2ChecksumAlgorithm.html">R2ChecksumAlgorithm</a> on single-part
+  uploads).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the file size exceeds the 5 GiB single-part upload limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync*"></a>
+
+  <h3 id="Cloudflare_NET_R2_R2Client_UploadSinglePartAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Cloudflare.NET.R2.R2Client.UploadSinglePartAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  UploadSinglePartAsync(string, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads a file using a single PUT request. This method provides direct control and should be used when the
+automatic selection in <a class="xref" href="Cloudflare.NET.R2.IR2Client.html#Cloudflare_NET_R2_IR2Client_UploadAsync_System_String_System_String_System_String_System_Nullable_System_Int64__System_Threading_CancellationToken_">UploadAsync(string, string, string, long?, CancellationToken)</a> is not desired.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;R2Result&gt; UploadSinglePartAsync(string bucketName, string objectKey, string filePath, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bucketName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the target bucket.</p>
+</dd>
+    <dt><code>objectKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key (path) for the object in the bucket.</p>
+</dd>
+    <dt><code>filePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the local file to upload.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a>&gt;</dt>
+    <dd><p>An <a class="xref" href="Cloudflare.NET.R2.Models.R2Result.html">R2Result</a> detailing the metrics of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the file size exceeds the 5 GiB single-part upload limit.</p>
+</dd>
+    <dt><a class="xref" href="Cloudflare.NET.R2.Exceptions.CloudflareR2OperationException.html">CloudflareR2OperationException</a></dt>
+    <dd><p>Thrown if the upload fails.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/src/Cloudflare.NET.R2/R2Client.cs/#L10" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Built and maintained by <a href="https://alos.no" target="_blank" rel="noopener">Alos Engineering</a> · Licensed under <a href="https://github.com/Alos-no/Cloudflare.NET/blob/main/LICENSE.txt" target="_blank" rel="noopener">Apache 2.0</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
